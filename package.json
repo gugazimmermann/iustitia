@@ -9,6 +9,7 @@
   },
   "private": true,
   "dependencies": {
+    "@tailwindcss/forms": "^0.3.3",
     "autoprefixer": "^10.3.3",
     "core-js": "^3.6.5",
     "postcss": "^8.3.6",
