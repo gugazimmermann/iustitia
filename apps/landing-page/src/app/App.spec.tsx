@@ -2,7 +2,7 @@ import { render } from '@testing-library/react';
 
 import { BrowserRouter } from 'react-router-dom';
 
-import App from './app';
+import App from './App';
 
 describe('App', () => {
   it('should render successfully', () => {
@@ -15,13 +15,13 @@ describe('App', () => {
     expect(baseElement).toBeTruthy();
   });
 
-  it('should have a greeting as the title', () => {
-    const { getByText } = render(
+  it('should have a iustitia text', () => {
+    const { getAllByText } = render(
       <BrowserRouter>
         <App />
       </BrowserRouter>
     );
 
-    expect(getByText('Welcome to landing-page!')).toBeTruthy();
+    expect(getAllByText('Iustitia')).toBeTruthy();
   });
 });

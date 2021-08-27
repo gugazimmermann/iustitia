@@ -1,6 +1,7 @@
 {
   "name": "iustitia",
-  "version": "0.0.0",
+  "description": "Iustitia - App pra Advogados",
+  "version": "0.3.0",
   "license": "MIT",
   "scripts": {
     "start": "nx serve",
