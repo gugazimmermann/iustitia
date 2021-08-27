@@ -8,6 +8,7 @@ export function Nav() {
   const location = useLocation();
   const [menu, SetMenu] = useState(false);
   const [scrollPosition, setScrollPosition] = useState(0);
+  const appSite = process.env.NX_APP_SITE || '';
 
   const handleScroll = () => {
     const position = window.pageYOffset;
@@ -87,7 +88,7 @@ export function Nav() {
           <button
             id="navAction"
             className="gradient2 mx-auto lg:mx-0 hover:underline text-gray-800 font-extrabold rounded mt-4 lg:mt-0 py-4 px-8 shadow opacity-75"
-            onClick={() => history.push(Routes.SignIn)}
+            onClick={() => window.location.assign(appSite)}
           >
             Entrar
           </button>
