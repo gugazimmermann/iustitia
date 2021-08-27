@@ -33,6 +33,13 @@
     "landing-page-e2e": {
       "tags": [],
       "implicitDependencies": ["landing-page"]
+    },
+    "site": {
+      "tags": []
+    },
+    "site-e2e": {
+      "tags": [],
+      "implicitDependencies": ["site"]
     }
   }
 }
