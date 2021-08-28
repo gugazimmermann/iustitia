@@ -1,6 +1,3 @@
-import { Link } from "react-router-dom";
-import { Routes } from "../../../app/App";
-
 export function Footer() {
   return (
     <footer className="max-w-lg mx-auto flex justify-center text-white">

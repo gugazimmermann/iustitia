@@ -1,6 +1,6 @@
-import { Routes } from '../../../app/App';
+import { Routes } from '../../../App';
 import Title from '../../../components/auth/title/Title';
-import AuthLink from '../../..//components/auth/auth-link/AuthLink';
+import AuthLink from '../../../components/auth/auth-link/AuthLink';
 
 export function ForgotPassword() {
   return (
