@@ -1,11 +1,10 @@
 import { render } from '@testing-library/react';
-import { MemoryRouter } from 'react-router-dom';
 
 import ProductDetails from './ProductDetails';
 
 describe('ProductDetails', () => {
   it('should render successfully', () => {
-    const { baseElement } = render(<MemoryRouter><ProductDetails /></MemoryRouter>);
+    const { baseElement } = render(<ProductDetails />);
     expect(baseElement).toBeTruthy();
   });
 });
