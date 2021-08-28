@@ -1,7 +1,6 @@
-/* eslint-disable-next-line */
-interface ActionProps {}
+export function Action() {
+  const appSite = process.env.NX_APP_SITE || '';
 
-export function Action(props: ActionProps) {
   return (
     <section className="gradient w-full mx-auto text-center pt-6 pb-12">
     <h2 className="w-full my-2 text-5xl font-black leading-tight text-center text-white">
@@ -15,7 +14,10 @@ export function Action(props: ActionProps) {
       Comece a trabalhar de qualquer lugar, a qualquer hora!
     </h3>
 
-    <button className="gradient2 mx-auto lg:mx-0 hover:underline bg-white text-gray-800 font-bold rounded my-6 py-4 px-8 shadow-lg">
+    <button
+    className="gradient2 mx-auto lg:mx-0 hover:underline bg-white text-gray-800 font-bold rounded my-6 py-4 px-8 shadow-lg"
+    onClick={() => window.location.assign(`${appSite}/cadastrar`)}
+    >
       Cadastrar
     </button>
   </section>

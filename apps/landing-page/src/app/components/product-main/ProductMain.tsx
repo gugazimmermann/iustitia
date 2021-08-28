@@ -1,7 +1,4 @@
-/* eslint-disable-next-line */
-interface ProductMainProps {}
-
-export function ProductMain(props: ProductMainProps) {
+export function ProductMain() {
   return (
     <section className="bg-gray-100 border-b py-8">
       <div className="container max-w-5xl mx-auto m-8">

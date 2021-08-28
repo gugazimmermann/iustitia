@@ -2,6 +2,8 @@ import ProductDetailsItem from "./ProductDetailsItem";
 
 // TODO: make it like a Carousel
 export function ProductDetails() {
+  const appSite = process.env.NX_APP_SITE || '';
+
   return (
     <section className="bg-white border-b py-8">
       <div className="container mx-auto flex flex-wrap pt-4 pb-12">
@@ -15,19 +17,19 @@ export function ProductDetails() {
           title="Agenda"
           subTitle="Lorem ipsum dolor sit amet."
           text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam at ipsum eu nunc commodo posuere et sit amet ligula"
-          link="/"
+          link={`${appSite}/cadastrar`}
         />
         <ProductDetailsItem
           title="Calendário"
           subTitle="Lorem ipsum dolor sit amet."
           text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam at ipsum eu nunc commodo posuere et sit amet ligula"
-          link="/"
+          link={`${appSite}/cadastrar`}
         />
         <ProductDetailsItem
           title="Processos"
           subTitle="Lorem ipsum dolor sit amet."
           text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam at ipsum eu nunc commodo posuere et sit amet ligula"
-          link="/"
+          link={`${appSite}/cadastrar`}
         />
       </div>
     </section>

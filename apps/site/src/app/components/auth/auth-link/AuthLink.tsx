@@ -1,7 +1,6 @@
 import { Link } from 'react-router-dom';
-import './AuthLink.css';
 
-export interface AuthLinkProps {
+interface AuthLinkProps {
   link: string;
   text: string;
 }

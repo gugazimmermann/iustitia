@@ -1,7 +1,8 @@
-import { Routes } from '../../App';
 import PricingItem from './PricingItem';
 
 export function Pricing() {
+  const appSite = process.env.NX_APP_SITE || '';
+
   return (
     <section className="bg-gray-100 py-8">
       <div className="container mx-auto px-2 pt-4 pb-12 text-gray-800">
@@ -18,7 +19,7 @@ export function Pricing() {
             functionalities={['Thing', 'Thing', 'Thing']}
             price={0}
             priceText="teste por 7 dias"
-            link={Routes.SignUp}
+            link={`${appSite}/cadastrar/gratuito`}
             active={false}
           />
           <PricingItem
@@ -26,7 +27,7 @@ export function Pricing() {
             functionalities={['Thing', 'Thing', 'Thing']}
             price={25}
             priceText="/ por usuário"
-            link={Routes.SignUp}
+            link={`${appSite}/cadastrar/basico`}
             active={true}
           />
           <PricingItem
@@ -34,7 +35,7 @@ export function Pricing() {
             functionalities={['Thing', 'Thing', 'Thing']}
             price={99}
             priceText="usuários ilimitados"
-            link={Routes.SignUp}
+            link={`${appSite}/cadastrar/profissional`}
             active={false}
           />
         </div>

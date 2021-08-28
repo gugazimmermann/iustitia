@@ -1,5 +1,3 @@
-import { useHistory } from "react-router-dom";
-
 interface ProductDetailsItemProps {
   title: string;
   subTitle: string;
@@ -13,8 +11,6 @@ export function ProductDetailsItem({
   text,
   link,
 }: ProductDetailsItemProps) {
-  const history = useHistory();
-
   return (
     <div className="w-full md:w-1/3 p-6 flex flex-col flex-grow flex-shrink">
       <div className="flex-1 bg-white rounded-t rounded-b-none overflow-hidden shadow">
@@ -30,7 +26,7 @@ export function ProductDetailsItem({
         <div className="flex items-center justify-center">
           <button
             className="mx-auto lg:mx-0 hover:underline gradient2 text-gray-800 font-extrabold rounded my-6 py-4 px-8 shadow-lg"
-            onClick={() => history.push(link)}
+            onClick={() => window.location.assign(link)}
           >
             Testar
           </button>

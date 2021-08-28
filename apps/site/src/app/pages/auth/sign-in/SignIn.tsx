@@ -50,7 +50,7 @@ export function SignIn() {
       <div className="max-w-lg mx-auto text-center mt-12 mb-6">
         <p className="text-white">
           Não tem uma conta?{' '}
-          <Link to={Routes.ForgotPassword}>
+          <Link to={Routes.SignUp}>
             <span className="font-bold hover:underline">Cadastrar</span>.
           </Link>
         </p>

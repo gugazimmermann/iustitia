@@ -1,10 +1,9 @@
 import { useState, useEffect } from 'react';
-import { Link, useLocation, useHistory } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { Routes } from '../../App';
 import NavItem from './NavItem';
 
 export function Nav() {
-  const history = useHistory();
   const location = useLocation();
   const [menu, SetMenu] = useState(false);
   const [scrollPosition, setScrollPosition] = useState(0);

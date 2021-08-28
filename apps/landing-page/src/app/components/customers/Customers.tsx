@@ -1,7 +1,4 @@
-/* eslint-disable-next-line */
-interface CustomersProps {}
-
-export function Customers(props: CustomersProps) {
+export function Customers() {
   return (
     <section className="bg-white border-b py-12 ">
       <div className="container mx-auto flex flex-wrap items-center justify-between pb-12">

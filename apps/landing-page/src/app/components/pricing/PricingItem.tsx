@@ -36,7 +36,7 @@ export function PricingItem({
           <div className="w-full pt-6 text-3xl text-gray-600 font-bold text-center">
             ${price} <span className="text-base">{priceText}</span>
           </div>
-          <PricingItemButton link={link} plan={title} />
+          <PricingItemButton link={link} />
         </div>
       </div>
     );
@@ -60,7 +60,7 @@ export function PricingItem({
             ${price} <span className="text-base">{priceText}</span>
           </div>
         </div>
-        <PricingItemButton link={link} plan={title} />
+        <PricingItemButton link={link} />
       </div>
     );
   }

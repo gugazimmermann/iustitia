@@ -1,6 +1,6 @@
-import { Link } from 'react-router-dom';
-
 export function Hero() {
+  const appSite = process.env.NX_APP_SITE || '';
+
   return (
     <div className="gradient w-full h-screen">
       <div className="container mx-auto">
@@ -12,7 +12,10 @@ export function Hero() {
             Um paragrafo maior para deixar o visitante com vontade de assinar!
           </p>
 
-          <button className="gradient2 mx-auto lg:mx-0 hover:underline text-gray-800 font-extrabold rounded my-2 md:my-6 py-4 px-8 shadow-lg w-48">
+          <button
+            className="gradient2 mx-auto lg:mx-0 hover:underline text-gray-800 font-extrabold rounded my-2 md:my-6 py-4 px-8 shadow-lg w-48"
+            onClick={() => window.location.assign(`${appSite}/cadastrar`)}
+          >
             Cadastrar
           </button>
         </div>
