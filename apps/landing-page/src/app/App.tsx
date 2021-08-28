@@ -1,17 +1,16 @@
-import { useEffect, useState } from 'react';
 import { Switch, Route } from 'react-router-dom';
 
-import Layout from '../pages/layout/Layout';
-import Main from '../pages/main/Main';
-import Functionalities from '../pages/functionalities/Functionalities';
-import Plans from '../pages/plans/Plans';
-import Faq from '../pages/faq/Faq';
-import Help from '../pages/help/Help';
-import Suport from '../pages/suport/Suport';
-import Terms from '../pages/terms/Terms';
-import Privacity from '../pages/privacity/Privacity';
-import AboutUs from '../pages/about-us/AboutUs';
-import Contact from '../pages/contact/Contact';
+import Layout from './pages/layout/Layout';
+import Main from './pages//main/Main';
+import Functionalities from './pages//functionalities/Functionalities';
+import Plans from './pages//plans/Plans';
+import Faq from './pages//faq/Faq';
+import Help from './pages//help/Help';
+import Suport from './pages//suport/Suport';
+import Terms from './pages//terms/Terms';
+import Privacity from './pages//privacity/Privacity';
+import AboutUs from './pages//about-us/AboutUs';
+import Contact from './pages//contact/Contact';
 
 export enum Routes {
   Functionalities = '/funcionalidades',

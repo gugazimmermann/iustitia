@@ -1,4 +1,4 @@
-import { Routes } from '../../app/App';
+import { Routes } from '../../App';
 import PricingItem from './PricingItem';
 
 export function Pricing() {

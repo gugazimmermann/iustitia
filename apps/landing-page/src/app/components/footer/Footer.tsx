@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { Routes } from '../../app/App';
+import { Routes } from '../../App';
 
 export function Footer() {
   return (

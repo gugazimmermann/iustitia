@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link, useLocation, useHistory } from 'react-router-dom';
-import { Routes } from '../../app/App';
+import { Routes } from '../../App';
 import NavItem from './NavItem';
 
 export function Nav() {
