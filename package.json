@@ -29,7 +29,8 @@
     "build:landing-page": "nx build landing-page",
     "build:site": "nx build site",
     "test:landing-page": "nx test landing-page",
-    "test:site": "nx test site"
+    "test:site": "nx test site",
+    "postinstall": "husky install"
   },
   "private": true,
   "dependencies": {
