@@ -36,7 +36,7 @@ export const App = () => {
         path="/"
         render={() => (
           <Layout>
-            <Main />
+                      <Main />
           </Layout>
         )}
       />
