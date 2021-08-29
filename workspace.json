@@ -1,6 +1,56 @@
 {
   "version": 2,
   "projects": {
+    "api": {
+      "root": "apps/api",
+      "sourceRoot": "apps/api/src",
+      "projectType": "application",
+      "targets": {
+        "build": {
+          "executor": "@nrwl/node:build",
+          "outputs": ["{options.outputPath}"],
+          "options": {
+            "outputPath": "dist/apps/api",
+            "main": "apps/api/src/main.js",
+            "tsConfig": "apps/api/tsconfig.app.json",
+            "assets": ["apps/api/src/assets"]
+          },
+          "configurations": {
+            "production": {
+              "optimization": true,
+              "extractLicenses": true,
+              "inspect": false,
+              "fileReplacements": [
+                {
+                  "replace": "apps/api/src/environments/environment.js",
+                  "with": "apps/api/src/environments/environment.prod.js"
+                }
+              ]
+            }
+          }
+        },
+        "serve": {
+          "executor": "@nrwl/node:execute",
+          "options": {
+            "buildTarget": "api:build"
+          }
+        },
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["apps/api/**/*.js"]
+          }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": ["coverage/apps/api"],
+          "options": {
+            "jestConfig": "apps/api/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
     "landing-page": {
       "root": "apps/landing-page",
       "sourceRoot": "apps/landing-page/src",
@@ -15,10 +65,7 @@
             "main": "apps/landing-page/src/main.tsx",
             "polyfills": "apps/landing-page/src/polyfills.ts",
             "tsConfig": "apps/landing-page/tsconfig.app.json",
-            "assets": [
-              "apps/landing-page/src/favicon.ico",
-              "apps/landing-page/src/assets"
-            ],
+            "assets": ["apps/landing-page/src/favicon.ico", "apps/landing-page/src/assets"],
             "styles": [],
             "scripts": [],
             "webpackConfig": "@nrwl/react/plugins/webpack"
@@ -151,7 +198,8 @@
           "executor": "@nrwl/web:dev-server",
           "options": {
             "buildTarget": "site:build",
-            "hmr": true
+            "hmr": true,
+            "proxyConfig": "apps/site/proxy.conf.json"
           },
           "configurations": {
             "production": {
