@@ -3,6 +3,25 @@
   "description": "Iustitia - App pra Advogados",
   "version": "0.6.0",
   "license": "MIT",
+  "engines": {
+    "node": ">=14"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged",
+      "pre-push": [
+        "yarn test ",
+        "yarn integration"
+      ]
+    }
+  },
+  "lint-staged": {
+    "**/*.ts*": [
+      "prettier --write",
+      "eslint --fix",
+      "git add"
+    ]
+  },
   "scripts": {
     "start:db": "docker-compose up -d",
     "start:landing-page": "nx serve landing-page --port=4200",
@@ -53,6 +72,7 @@
     "eslint-plugin-jsx-a11y": "6.4.1",
     "eslint-plugin-react": "7.23.1",
     "eslint-plugin-react-hooks": "4.2.0",
+    "husky": "^7.0.2",
     "jest": "27.0.3",
     "prettier": "^2.3.1",
     "ts-jest": "27.0.3",
