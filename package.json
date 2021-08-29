@@ -1,7 +1,7 @@
 {
   "name": "iustitia",
   "description": "Iustitia - App pra Advogados",
-  "version": "0.6.1",
+  "version": "0.6.2",
   "license": "MIT",
   "engines": {
     "node": ">=14"
@@ -24,6 +24,7 @@
   },
   "scripts": {
     "start:db": "docker-compose up -d",
+    "stop:db": "docker-compose down",
     "start:landing-page": "nx serve landing-page --port=4200",
     "start:site": "nx serve site --port=4201",
     "build:landing-page": "nx build landing-page",
