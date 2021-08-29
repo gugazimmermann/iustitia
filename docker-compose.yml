@@ -1,0 +1,35 @@
+version: '3.6'
+services:
+  iustitia-postgres:
+    image: postgres:12
+    # restart: always
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    ports:
+      - "5432:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    networks:
+      - iustitia-network
+
+  iustitia-pgadmin:
+    image: dpage/pgadmin4
+    # restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
+    ports:
+      - "16543:80"
+    depends_on:
+      - iustitia-postgres
+    networks:
+      - iustitia-network
+
+networks:
+  iustitia-network:
+    driver: bridge
+
+volumes:
+  db_data:
