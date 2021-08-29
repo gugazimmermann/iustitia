@@ -65,7 +65,10 @@
             "main": "apps/landing-page/src/main.tsx",
             "polyfills": "apps/landing-page/src/polyfills.ts",
             "tsConfig": "apps/landing-page/tsconfig.app.json",
-            "assets": ["apps/landing-page/src/favicon.ico", "apps/landing-page/src/assets"],
+            "assets": [
+              "apps/landing-page/src/favicon.ico",
+              "apps/landing-page/src/assets"
+            ],
             "styles": [],
             "scripts": [],
             "webpackConfig": "@nrwl/react/plugins/webpack"
@@ -124,6 +127,29 @@
         }
       }
     },
+    "landing-page-components": {
+      "root": "libs/landing-page/components",
+      "sourceRoot": "libs/landing-page/components/src",
+      "projectType": "library",
+      "targets": {
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": [
+              "libs/landing-page/components/**/*.{ts,tsx,js,jsx}"
+            ]
+          }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/landing-page/components"],
+          "options": {
+            "jestConfig": "libs/landing-page/components/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
     "landing-page-e2e": {
       "root": "apps/landing-page-e2e",
       "sourceRoot": "apps/landing-page-e2e/src",
@@ -146,6 +172,48 @@
           "executor": "@nrwl/linter:eslint",
           "options": {
             "lintFilePatterns": ["apps/landing-page-e2e/**/*.{js,ts}"]
+          }
+        }
+      }
+    },
+    "landing-page-pages": {
+      "root": "libs/landing-page/pages",
+      "sourceRoot": "libs/landing-page/pages/src",
+      "projectType": "library",
+      "targets": {
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["libs/landing-page/pages/**/*.{ts,tsx,js,jsx}"]
+          }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/landing-page/pages"],
+          "options": {
+            "jestConfig": "libs/landing-page/pages/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "react-routes": {
+      "root": "libs/react-routes",
+      "sourceRoot": "libs/react-routes/src",
+      "projectType": "library",
+      "targets": {
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["libs/react-routes/**/*.ts"]
+          }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/react-routes"],
+          "options": {
+            "jestConfig": "libs/react-routes/jest.config.js",
+            "passWithNoTests": true
           }
         }
       }

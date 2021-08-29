@@ -14,7 +14,13 @@
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
-    "paths": {}
+    "paths": {
+      "@iustitia/landing-page/components": [
+        "libs/landing-page/components/src/index.ts"
+      ],
+      "@iustitia/landing-page/pages": ["libs/landing-page/pages/src/index.ts"],
+      "@iustitia/react-routes": ["libs/react-routes/src/index.ts"]
+    }
   },
   "exclude": ["node_modules", "tmp"]
 }

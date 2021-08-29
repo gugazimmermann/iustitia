@@ -1,32 +1,18 @@
-import { Switch, Route } from 'react-router-dom';
-
-import Layout from './pages/layout/Layout';
-import Main from './pages//main/Main';
-import Functionalities from './pages//functionalities/Functionalities';
-import Plans from './pages//plans/Plans';
-import Faq from './pages//faq/Faq';
-import Help from './pages//help/Help';
-import Suport from './pages//suport/Suport';
-import Terms from './pages//terms/Terms';
-import Privacity from './pages//privacity/Privacity';
-import AboutUs from './pages//about-us/AboutUs';
-import Contact from './pages//contact/Contact';
-
-export enum Routes {
-  Functionalities = '/funcionalidades',
-  Plans = '/planos',
-  Faq = '/faq',
-  Help = '/ajuda',
-  Suport = '/suporte',
-  Terms = '/termos',
-  Privacity = '/privacidade',
-  AboutUs = '/sobre-nos',
-  Contact = '/contato',
-  SignIn = '/entrar',
-  SignUp = '/cadastro',
-  ForgotPassword = '/esqueceu-senha',
-  ChangePassword = '/nova-senha',
-}
+import { Switch, Route } from "react-router-dom";
+import { LandingPageRoutes as Routes } from '@iustitia/react-routes'
+import {
+  Layout,
+  Main,
+  Functionalities,
+  Plans,
+  Faq,
+  Help,
+  Suport,
+  Terms,
+  Privacity,
+  AboutUs,
+  Contact,
+} from "@iustitia/landing-page/pages";
 
 export const App = () => {
   return (
@@ -36,7 +22,7 @@ export const App = () => {
         path="/"
         render={() => (
           <Layout>
-                      <Main />
+            <Main />
           </Layout>
         )}
       />

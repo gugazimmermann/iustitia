@@ -33,9 +33,18 @@
     "landing-page": {
       "tags": []
     },
+    "landing-page-components": {
+      "tags": []
+    },
     "landing-page-e2e": {
       "tags": [],
       "implicitDependencies": ["landing-page"]
+    },
+    "landing-page-pages": {
+      "tags": []
+    },
+    "react-routes": {
+      "tags": []
     },
     "site": {
       "tags": []
