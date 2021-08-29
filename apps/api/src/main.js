@@ -1,18 +1,24 @@
-/**
- * This is not a production server yet!
- * This is only a minimal backend to get started.
- */
+import * as express from "express";
+import * as cors from "cors";
+import db from "./app/db";
+import authRoute from "./app/routes/auth";
+import userRoute from "./app/routes/user";
 
-import * as express from 'express'
+const app = express();
+app.use(cors({ origin: process.env.NX_APP_SITE }));
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
-const app = express()
+// db.sequelize.sync();
+db.sequelize.sync({ force: true });
 
-app.get('/api', (req, res) => {
-  res.send({ message: 'Welcome to api!' })
-})
+app.get("/api", (req, res) => res.send({ message: "Welcome to api!" }));
 
-const port = process.env.port || 3333
+authRoute(app);
+userRoute(app);
+
+const port = process.env.NX_API_PORT || 3333;
 const server = app.listen(port, () => {
-  console.log(`Listening at http://localhost:${port}/api`)
-})
-server.on('error', console.error)
+  console.log(`Listening at http://localhost:${port}`);
+});
+server.on("error", console.error);
