@@ -1,20 +1,20 @@
-import { Link } from 'react-router-dom';
+import { Link as RouterLink } from 'react-router-dom';
 
-interface AuthLinkProps {
+interface LinkProps {
   link: string;
   text: string;
 }
 
-export function AuthLink({link, text}: AuthLinkProps) {
+export function Link({link, text}: LinkProps) {
   return (
     <div className="flex justify-end">
-    <Link to={link}>
+    <RouterLink to={link}>
       <div className="text-sm text-purple-600 hover:text-purple-700 hover:underline mb-6">
         {text}
       </div>
-    </Link>
+    </RouterLink>
   </div>
   );
 }
 
-export default AuthLink;
+export default Link;

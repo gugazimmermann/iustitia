@@ -13,3 +13,12 @@ export enum LandingPageRoutes {
   ForgotPassword = "/esqueceu-senha",
   ChangePassword = "/nova-senha",
 }
+
+
+export enum SiteRoutes {
+  SignIn = "/entrar",
+  ForgotPassword = "/esqueceu-senha",
+  ChangePassword = "/mudar-senha",
+  SignUp = "/cadastrar",
+  Dashboard = "/dashboard",
+}

@@ -1,10 +1,10 @@
 import { render } from '@testing-library/react';
 import { MemoryRouter } from 'react-router';
-import AuthLink from './AuthLink';
+import Link from './Link';
 
-describe('AuthLink', () => {
+describe('Link', () => {
   it('should render successfully', () => {
-    const { baseElement } = render(<MemoryRouter><AuthLink link="/" text="AAA" /></MemoryRouter>);
+    const { baseElement } = render(<MemoryRouter><Link link="/" text="AAA" /></MemoryRouter>);
     expect(baseElement).toBeTruthy();
   });
 });

@@ -1,7 +1,6 @@
-import { Link } from 'react-router-dom';
-import { Routes } from '../../../App';
-import Title from '../../../components/auth/title/Title';
-import AuthLink from '../../../components/auth/auth-link/AuthLink';
+import { Link as RouterLink } from 'react-router-dom';
+import { SiteRoutes as Routes} from '@iustitia/react-routes'
+import { Title, Link } from '../..';
 
 export function SignIn() {
   return (
@@ -36,7 +35,7 @@ export function SignIn() {
                 className="bg-gray-200 rounded w-full text-gray-700 focus:outline-none border-b-4 border-gray-300 focus:border-purple-600 transition duration-500 px-3 pb-3"
               />
             </div>
-              <AuthLink link={Routes.ForgotPassword} text="Esqueceu sua senha?" />
+              <Link link={Routes.ForgotPassword} text="Esqueceu sua senha?" />
             <button
               className="bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 rounded shadow-lg hover:shadow-xl transition duration-200"
               type="submit"
@@ -50,9 +49,9 @@ export function SignIn() {
       <div className="max-w-lg mx-auto text-center mt-12 mb-6">
         <p className="text-white">
           Não tem uma conta?{' '}
-          <Link to={Routes.SignUp}>
+          <RouterLink to={Routes.SignUp}>
             <span className="font-bold hover:underline">Cadastrar</span>.
-          </Link>
+          </RouterLink>
         </p>
       </div>
     </>

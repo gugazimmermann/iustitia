@@ -1,6 +1,5 @@
-import { Routes } from '../../../App';
-import Title from '../../../components/auth/title/Title';
-import AuthLink from '../../../components/auth/auth-link/AuthLink';
+import { SiteRoutes as Routes} from '@iustitia/react-routes'
+import { Title, Link } from '../..';
 
 export function ForgotPassword() {
   return (
@@ -25,7 +24,7 @@ export function ForgotPassword() {
               className="bg-gray-200 rounded w-full text-gray-700 focus:outline-none border-b-4 border-gray-300 focus:border-purple-600 transition duration-500 px-3 pb-3"
             />
           </div>
-          <AuthLink link={Routes.SignIn} text="Voltar para Entrar" />
+          <Link link={Routes.SignIn} text="Voltar para Entrar" />
           <button
             className="bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 rounded shadow-lg hover:shadow-xl transition duration-200"
             type="submit"

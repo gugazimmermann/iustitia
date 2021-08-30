@@ -49,6 +49,9 @@
     "site": {
       "tags": []
     },
+    "site-auth": {
+      "tags": []
+    },
     "site-e2e": {
       "tags": [],
       "implicitDependencies": ["site"]

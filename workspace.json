@@ -292,6 +292,27 @@
         }
       }
     },
+    "site-auth": {
+      "root": "libs/site/auth",
+      "sourceRoot": "libs/site/auth/src",
+      "projectType": "library",
+      "targets": {
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["libs/site/auth/**/*.{ts,tsx,js,jsx}"]
+          }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/site/auth"],
+          "options": {
+            "jestConfig": "libs/site/auth/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
     "site-e2e": {
       "root": "apps/site-e2e",
       "sourceRoot": "apps/site-e2e/src",

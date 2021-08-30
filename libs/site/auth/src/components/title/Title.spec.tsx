@@ -1,10 +1,10 @@
 import { render } from '@testing-library/react';
 
-import Dashboard from './Dashboard';
+import Title from './Title';
 
-describe('Dashboard', () => {
+describe('Title', () => {
   it('should render successfully', () => {
-    const { baseElement } = render(<Dashboard />);
+    const { baseElement } = render(<Title title="AAA" />);
     expect(baseElement).toBeTruthy();
   });
 });

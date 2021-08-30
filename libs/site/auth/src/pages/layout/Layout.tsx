@@ -1,5 +1,4 @@
-import Header from '../../../components/auth/header/Header';
-import Footer from '../../../components/auth/footer/Footer';
+import { Header, Footer } from '../..';
 import './Layout.css';
 
 interface LayoutProps {

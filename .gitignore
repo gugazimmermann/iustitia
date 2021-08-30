@@ -39,3 +39,4 @@ testem.log
 Thumbs.db
 
 .env
+apps/site/src/app/components
