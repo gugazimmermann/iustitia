@@ -31,7 +31,10 @@
     "build:landing-page": "nx build landing-page",
     "build:site": "nx build site",
     "test:landing-page": "nx test landing-page",
+    "test:landing-page-components": "nx test landing-page-components",
+    "test:landing-page-pages": "nx test landing-page-pages",
     "test:site": "nx test site",
+    "test:site-auth": "nx test site-auth",
     "postinstall": "husky install"
   },
   "private": true,

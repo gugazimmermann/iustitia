@@ -1,10 +1,10 @@
 import { render } from "@testing-library/react";
-
+import { MemoryRouter } from 'react-router';
 import Nav from "./Nav";
 
 describe("Nav", () => {
   it("should render successfully", () => {
-    const { baseElement } = render(<Nav />);
+    const { baseElement } = render(<MemoryRouter><Nav /></MemoryRouter>);
     expect(baseElement).toBeTruthy();
   });
 });
