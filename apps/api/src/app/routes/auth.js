@@ -1,5 +1,5 @@
 import checkDuplicateEmail from "../middleware/verifySignUp";
-import { signup, signin } from "../controllers/auth";
+import { signup, signin, refreshToken } from "../controllers/auth";
 
 export default function authRoute(app) {
   app.use((req, res, next) => {
@@ -13,4 +13,6 @@ export default function authRoute(app) {
   app.post("/api/auth/signup", [checkDuplicateEmail], signup);
 
   app.post("/api/auth/signin", signin);
+
+  app.post("/api/auth/refreshtoken", refreshToken);
 }

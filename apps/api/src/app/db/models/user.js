@@ -8,7 +8,7 @@ const ID = {
   primaryKey: true,
 };
 
-export function userModel(sequelize) {
+export default function userModel(sequelize) {
   const User = sequelize.define("users", {
     id: ID,
     username: { type: Sequelize.STRING },
