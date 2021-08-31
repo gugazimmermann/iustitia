@@ -1,30 +1,61 @@
-import { useEffect, useState } from 'react';
-import { Link as RouterLink, useParams } from 'react-router-dom';
-import { Title } from '../..'
+import { useEffect, useState } from "react";
+import { Link as RouterLink, useParams, useHistory } from "react-router-dom";
+import { useForm } from "react-hook-form";
+import { Title } from "../..";
+import { signup } from "../../services/auth";
+import { SiteRoutes as Routes } from "@iustitia/react-routes";
+
+type User = {
+  username: string;
+  email: string;
+  password: string;
+  repeatPassword: string;
+};
 
 interface useParamsProps {
   planParam: string;
 }
 
 export function SignUp() {
+  const history = useHistory();
   const { planParam } = useParams<useParamsProps>();
-  const [plan, setPlan] = useState('');
+  const [plan, setPlan] = useState("");
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<User>();
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
   useEffect(() => {
     switch (planParam) {
-      case 'gratuito':
-        setPlan('Gratuito');
+      case "gratuito":
+        setPlan("Gratuito");
         break;
-      case 'basico':
-        setPlan('Básico');
+      case "basico":
+        setPlan("Básico");
         break;
-      case 'profissional':
-        setPlan('Profissional');
+      case "profissional":
+        setPlan("Profissional");
         break;
       default:
-        setPlan('Gratuito');
+        setPlan("Gratuito");
     }
   }, [planParam]);
+
+  const onSubmit = async (data: User) => {
+    setLoading(true);
+    setError("");
+    try {
+      await signup(data);
+      history.push(Routes.SignIn, { email: data.email });
+      setLoading(false);
+    } catch (err: any) {
+      setError(err.message as string);
+      setLoading(false);
+    }
+  };
 
   return (
     <main className="bg-white max-w-lg mx-auto p-8 md:p-12 my-10 rounded-lg shadow-2xl">
@@ -33,8 +64,29 @@ export function SignUp() {
         subtitle="Faça seu cadastro no plano"
         plan={plan}
       />
+      {error && (
+        <div
+          className="bg-red-100 border-t-4 border-red-500 rounded-b text-red-900 px-4 py-3 mt-3 shadow-md"
+          role="alert"
+        >
+          <div className="flex">
+            <div className="py-1">
+              <svg
+                className="fill-current h-6 w-6 text-teal-500 mr-4"
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 20 20"
+              >
+                <path d="M2.93 17.07A10 10 0 1 1 17.07 2.93 10 10 0 0 1 2.93 17.07zm12.73-1.41A8 8 0 1 0 4.34 4.34a8 8 0 0 0 11.32 11.32zM9 11V9h2v6H9v-4zm0-6h2v2H9V5z" />
+              </svg>
+            </div>
+            <div>
+              <p className="font-bold py-1">{error}</p>
+            </div>
+          </div>
+        </div>
+      )}
       <section className="mt-5">
-        <form className="flex flex-col" method="POST" action="#">
+        <form className="flex flex-col" onSubmit={handleSubmit(onSubmit)}>
           <div className="mb-6 rounded">
             <label
               className="block text-gray-700 text-sm font-bold mb-2 ml-3"
@@ -44,8 +96,14 @@ export function SignUp() {
             </label>
             <input
               type="text"
-              id="nome"
-              className="bg-gray-200 rounded w-full text-gray-700 focus:outline-none border-b-4 border-gray-300 focus:border-purple-600 transition duration-500 px-3 pb-3"
+              id="username"
+              {...register("username", { required: true })}
+              className={
+                `bg-gray-200 rounded w-full text-gray-700 focus:outline-none border-b-4 border-gray-300 transition duration-500 px-3 pb-3 ` +
+                (errors.username
+                  ? `border-red-600 `
+                  : `focus:border-purple-600`)
+              }
             />
           </div>
           <div className="mb-6 rounded">
@@ -58,7 +116,11 @@ export function SignUp() {
             <input
               type="text"
               id="email"
-              className="bg-gray-200 rounded w-full text-gray-700 focus:outline-none border-b-4 border-gray-300 focus:border-purple-600 transition duration-500 px-3 pb-3"
+              {...register("email", { required: true })}
+              className={
+                `bg-gray-200 rounded w-full text-gray-700 focus:outline-none border-b-4 border-gray-300 transition duration-500 px-3 pb-3 ` +
+                (errors.email ? `border-red-600 ` : `focus:border-purple-600`)
+              }
             />
           </div>
           <div className="mb-6 rounded">
@@ -71,7 +133,13 @@ export function SignUp() {
             <input
               type="password"
               id="password"
-              className="bg-gray-200 rounded w-full text-gray-700 focus:outline-none border-b-4 border-gray-300 focus:border-purple-600 transition duration-500 px-3 pb-3"
+              {...register("password", { required: true })}
+              className={
+                `bg-gray-200 rounded w-full text-gray-700 focus:outline-none border-b-4 border-gray-300 transition duration-500 px-3 pb-3 ` +
+                (errors.password
+                  ? `border-red-600 `
+                  : `focus:border-purple-600`)
+              }
             />
           </div>
           <div className="mb-6 rounded">
@@ -84,7 +152,13 @@ export function SignUp() {
             <input
               type="password"
               id="repeatPassword"
-              className="bg-gray-200 rounded w-full text-gray-700 focus:outline-none border-b-4 border-gray-300 focus:border-purple-600 transition duration-500 px-3 pb-3"
+              {...register("repeatPassword", { required: true })}
+              className={
+                `bg-gray-200 rounded w-full text-gray-700 focus:outline-none border-b-4 border-gray-300 transition duration-500 px-3 pb-3 ` +
+                (errors.repeatPassword
+                  ? `border-red-600 `
+                  : `focus:border-purple-600`)
+              }
             />
           </div>
           <div className="flex justify-end">
@@ -97,6 +171,7 @@ export function SignUp() {
           <button
             className="bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 rounded shadow-lg hover:shadow-xl transition duration-200"
             type="submit"
+            disabled={loading}
           >
             Cadastrar
           </button>

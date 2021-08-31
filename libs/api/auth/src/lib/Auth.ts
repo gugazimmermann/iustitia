@@ -11,11 +11,11 @@ export default function Auth(app) {
     next();
   });
 
-  app.post("/api/auth/signup", [checkDuplicateEmail], signup);
+  app.post("/auth/signup", [checkDuplicateEmail], signup);
 
-  app.post("/api/auth/signin", signin);
+  app.post("/auth/signin", signin);
 
-  app.post("/api/auth/refreshtoken", refreshToken);
+  app.post("/auth/refreshtoken", refreshToken);
 
-  app.get("/api/me", [verifyToken], userInfo);
+  app.get("/auth/me", [verifyToken], userInfo);
 }

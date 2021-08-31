@@ -1,7 +1,7 @@
 {
   "name": "iustitia",
   "description": "Iustitia - App pra Advogados",
-  "version": "0.7.6",
+  "version": "0.7.7",
   "license": "MIT",
   "engines": {
     "node": ">=14"
@@ -41,6 +41,7 @@
   "dependencies": {
     "@tailwindcss/forms": "^0.3.3",
     "autoprefixer": "^10.3.3",
+    "axios": "^0.21.1",
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.19.0",
     "core-js": "^3.6.5",
@@ -52,6 +53,7 @@
     "postcss": "^8.3.6",
     "react": "17.0.2",
     "react-dom": "17.0.2",
+    "react-hook-form": "^7.14.1",
     "react-router-dom": "5.2.0",
     "regenerator-runtime": "0.13.7",
     "sequelize": "^6.6.5",
