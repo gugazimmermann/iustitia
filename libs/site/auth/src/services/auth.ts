@@ -1,6 +1,6 @@
 import axios from "axios";
-
-const API_URL = `${process.env.NX_APP_API}:${process.env.NX_API_PORT}/auth`;
+import api from "./api";
+import TokenService from "./token";
 
 interface IAuth {
   username?: string;
@@ -17,7 +17,7 @@ function errorHandler(err: unknown): Error {
 
 export async function signup({ username, email, password }: IAuth) {
   try {
-    return await axios.post(API_URL + "/signup", { username, email, password })
+    return await api.post("/auth/signup", { username, email, password })
   } catch (err) {
     return errorHandler(err)
   }
@@ -25,9 +25,9 @@ export async function signup({ username, email, password }: IAuth) {
 
 export async function signin({ email, password }: IAuth) {
   try {
-    const { data } = await axios.post(API_URL + "/signin", { email, password })
+    const { data } = await api.post("/auth/signin", { email, password })
     if (data?.accessToken) {
-      localStorage.setItem("userData", JSON.stringify(data));
+      TokenService.setUser(data);
     }
     return data;
   } catch (err) {
@@ -36,5 +36,5 @@ export async function signin({ email, password }: IAuth) {
 };
 
 export function logout() {
-  localStorage.removeItem("userData");
+  TokenService.removeUser();
 };

@@ -61,6 +61,9 @@
     "site-auth": {
       "tags": []
     },
+    "site-dashboard": {
+      "tags": []
+    },
     "site-e2e": {
       "tags": [],
       "implicitDependencies": ["site"]

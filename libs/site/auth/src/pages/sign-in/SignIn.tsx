@@ -1,10 +1,10 @@
-import { Link as RouterLink, useLocation } from "react-router-dom";
-import { useForm } from "react-hook-form";
+import { Link as RouterLink, useLocation, useHistory } from "react-router-dom";
 import { SiteRoutes as Routes } from "@iustitia/react-routes";
+import { useForm } from "react-hook-form";
 import { Title, Link } from "../..";
 import { useEffect, useState } from "react";
-import { getCurrentUser } from "../../services/user";
 import { signin } from "../../services/auth";
+import { getCurrentUser } from "../../services/user";
 
 type User = {
   email: string;
@@ -16,6 +16,7 @@ interface State {
 }
 
 export function SignIn() {
+  const history = useHistory();
   const location = useLocation();
   const state = location.state as State;
   const {
@@ -26,6 +27,7 @@ export function SignIn() {
   } = useForm<User>();
   const [loading, setLoading] = useState(false);
   const [cadastro, setCadastro] = useState(false);
+  const [error, setError] = useState("");
 
   useEffect(() => {
     if (state?.email) {
@@ -34,23 +36,18 @@ export function SignIn() {
     }
   }, [state, setValue]);
 
-  const seeUser = async () => {
-    try {
-      const user = await getCurrentUser();
-      console.log(user.data);
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
-  const onSubmit = async (data: User) => {
+  const onSubmit = async (user: User) => {
+    setCadastro(false)
     setLoading(true);
+    setError("");
     try {
-      const res = await signin(data);
-      seeUser();
+      await signin(user);
+      const { data } = await getCurrentUser()
+      history.push(Routes.Dashboard, { user: data });
       setLoading(false);
-    } catch (err) {
-      console.log(err);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (err: any) {
+      setError(err.message as string);
       setLoading(false);
     }
   };
@@ -78,6 +75,27 @@ export function SignIn() {
                 <p className="font-bold py-1">
                   Cadastro realizado com sucesso!
                 </p>
+              </div>
+            </div>
+          </div>
+        )}
+        {error && (
+          <div
+            className="bg-red-100 border-t-4 border-red-500 rounded-b text-red-900 px-4 py-3 mt-3 shadow-md"
+            role="alert"
+          >
+            <div className="flex">
+              <div className="py-1">
+                <svg
+                  className="fill-current h-6 w-6 text-teal-500 mr-4"
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 20 20"
+                >
+                  <path d="M2.93 17.07A10 10 0 1 1 17.07 2.93 10 10 0 0 1 2.93 17.07zm12.73-1.41A8 8 0 1 0 4.34 4.34a8 8 0 0 0 11.32 11.32zM9 11V9h2v6H9v-4zm0-6h2v2H9V5z" />
+                </svg>
+              </div>
+              <div>
+                <p className="font-bold py-1">{error}</p>
               </div>
             </div>
           </div>

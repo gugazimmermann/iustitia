@@ -376,6 +376,27 @@
         }
       }
     },
+    "site-dashboard": {
+      "root": "libs/site/dashboard",
+      "sourceRoot": "libs/site/dashboard/src",
+      "projectType": "library",
+      "targets": {
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["libs/site/dashboard/**/*.{ts,tsx,js,jsx}"]
+          }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/site/dashboard"],
+          "options": {
+            "jestConfig": "libs/site/dashboard/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
     "site-e2e": {
       "root": "apps/site-e2e",
       "sourceRoot": "apps/site-e2e/src",

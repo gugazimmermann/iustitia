@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import { Link as RouterLink, useParams, useHistory } from "react-router-dom";
+import { SiteRoutes as Routes } from "@iustitia/react-routes";
 import { useForm } from "react-hook-form";
 import { Title } from "../..";
 import { signup } from "../../services/auth";
-import { SiteRoutes as Routes } from "@iustitia/react-routes";
 
 type User = {
   username: string;
@@ -51,6 +51,7 @@ export function SignUp() {
       await signup(data);
       history.push(Routes.SignIn, { email: data.email });
       setLoading(false);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       setError(err.message as string);
       setLoading(false);

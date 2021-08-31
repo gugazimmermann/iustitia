@@ -23,7 +23,8 @@
       ],
       "@iustitia/landing-page/pages": ["libs/landing-page/pages/src/index.ts"],
       "@iustitia/react-routes": ["libs/react-routes/src/index.ts"],
-      "@iustitia/site/auth": ["libs/site/auth/src/index.ts"]
+      "@iustitia/site/auth": ["libs/site/auth/src/index.ts"],
+      "@iustitia/site/dashboard": ["libs/site/dashboard/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

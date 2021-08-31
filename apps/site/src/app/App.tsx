@@ -1,6 +1,13 @@
 import { Switch, Route } from "react-router-dom";
-import { SiteRoutes as Routes } from '@iustitia/react-routes'
-import { Layout, SignIn, ForgotPassword, ChangePassword, SignUp } from "@iustitia/site/auth";
+import { SiteRoutes as Routes } from "@iustitia/react-routes";
+import {
+  Layout,
+  SignIn,
+  ForgotPassword,
+  ChangePassword,
+  SignUp,
+} from "@iustitia/site/auth";
+import { Dashboard } from "@iustitia/site/dashboard";
 
 export const App = () => {
   return (
@@ -50,7 +57,7 @@ export const App = () => {
           </Layout>
         )}
       />
-      {/* <Route exact path={Routes.Dashboard} component={Dashboard} /> */}
+      <Route exact path={Routes.Dashboard} component={Dashboard} />
     </Switch>
   );
 };
