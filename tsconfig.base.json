@@ -15,6 +15,9 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
+      "@iustitia/api/auth": ["libs/api/auth/src/index.ts"],
+      "@iustitia/api/database": ["libs/api/database/src/index.ts"],
+      "@iustitia/api/public": ["libs/api/public/src/index.ts"],
       "@iustitia/landing-page/components": [
         "libs/landing-page/components/src/index.ts"
       ],

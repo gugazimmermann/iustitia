@@ -1,7 +1,8 @@
-import checkDuplicateEmail from "../middleware/verifySignUp";
-import { signup, signin, refreshToken } from "../controllers/auth";
+import checkDuplicateEmail from "./middleware/checkDuplicateEmail";
+import { signin, signup, refreshToken, userInfo } from "./controllers";
+import verifyToken from "./middleware/verifyToken";
 
-export default function authRoute(app) {
+export default function Auth(app) {
   app.use((req, res, next) => {
     res.header(
       "Access-Control-Allow-Headers",
@@ -15,4 +16,6 @@ export default function authRoute(app) {
   app.post("/api/auth/signin", signin);
 
   app.post("/api/auth/refreshtoken", refreshToken);
+
+  app.get("/api/me", [verifyToken], userInfo);
 }

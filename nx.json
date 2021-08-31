@@ -30,6 +30,15 @@
     "api": {
       "tags": []
     },
+    "api-auth": {
+      "tags": []
+    },
+    "api-database": {
+      "tags": []
+    },
+    "api-public": {
+      "tags": []
+    },
     "landing-page": {
       "tags": []
     },
