@@ -1,10 +1,12 @@
-export * from "./components/title/Title";
-export * from "./components/header/Header";
 export * from "./components/footer/Footer";
+export * from "./components/header/Header";
 export * from "./components/link/Link";
+export * from "./components/signup-link/SignupLink";
+export * from "./components/title/Title";
 export * from "./pages/sign-up/SignUp";
 export * from "./pages/sign-in/SignIn";
 export * from "./pages/forgot-password/ForgotPassword";
 export * from "./pages/change-password/ChangePassword";
 export * from "./pages/layout/Layout";
 export { logout } from "./services/auth";
+export { getCurrentUser } from "./services/user";

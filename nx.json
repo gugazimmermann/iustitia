@@ -36,6 +36,9 @@
     "api-database": {
       "tags": []
     },
+    "api-email": {
+      "tags": []
+    },
     "api-public": {
       "tags": []
     },
@@ -67,6 +70,9 @@
     "site-e2e": {
       "tags": [],
       "implicitDependencies": ["site"]
+    },
+    "site-shared-components": {
+      "tags": []
     }
   }
 }

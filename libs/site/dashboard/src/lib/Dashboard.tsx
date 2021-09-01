@@ -1,12 +1,13 @@
-import { useLocation, useHistory } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useHistory } from "react-router-dom";
 import { SiteRoutes as Routes } from "@iustitia/react-routes";
-import { logout } from "@iustitia/site/auth";
+import { getCurrentUser, logout } from "@iustitia/site/auth";
 import "./Dashboard.css";
 
 /* eslint-disable-next-line */
 export interface DashboardProps {}
 
-interface State {
+interface Me {
   username: string;
   email: string;
   tenant: string;
@@ -16,8 +17,17 @@ interface State {
 
 export function Dashboard(props: DashboardProps) {
   const history = useHistory();
-  const location = useLocation();
-  const state = location.state as State;
+  const [me, setMe] = useState({} as Me);
+
+  useEffect(() => {
+    getMe();
+
+    async function getMe() {
+      const res = await getCurrentUser();
+      console.log(res)
+      setMe(res.data)
+    }
+  }, []);
 
   const handleLogout = async () => {
     await logout();
@@ -26,7 +36,7 @@ export function Dashboard(props: DashboardProps) {
 
   return (
     <div>
-      <h1>{JSON.stringify(state, undefined, 2)}</h1>
+      <h1>{JSON.stringify(me, undefined, 2)}</h1>
       <button
         className="bg-blue-500 hover:bg-blue-400 text-white font-bold py-2 px-4 border-b-4 border-blue-700 hover:border-blue-500 rounded"
         onClick={handleLogout}

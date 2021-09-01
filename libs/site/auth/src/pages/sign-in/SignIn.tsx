@@ -1,18 +1,20 @@
-import { Link as RouterLink, useLocation, useHistory } from "react-router-dom";
-import { SiteRoutes as Routes } from "@iustitia/react-routes";
-import { useForm } from "react-hook-form";
-import { Title, Link } from "../..";
 import { useEffect, useState } from "react";
+import { useLocation, useHistory } from "react-router-dom";
+import { useForm } from "react-hook-form";
+import { SiteRoutes as Routes } from "@iustitia/react-routes";
+import { AlertError, AlertSuccess, LoadingButton } from "@iustitia/site/shared-components";
+import { Title, Link, SignupLink } from "../..";
+import validateEmail from "../../utils/validate-email";
 import { signin } from "../../services/auth";
-import { getCurrentUser } from "../../services/user";
 
-type User = {
+type Form = {
   email: string;
   password: string;
 };
 
 interface State {
   email: string;
+  changePassword: boolean;
 }
 
 export function SignIn() {
@@ -24,8 +26,9 @@ export function SignIn() {
     handleSubmit,
     formState: { errors },
     setValue,
-  } = useForm<User>();
+  } = useForm<Form>();
   const [loading, setLoading] = useState(false);
+  const [changepassword, setChangepassword] = useState(false);
   const [cadastro, setCadastro] = useState(false);
   const [error, setError] = useState("");
 
@@ -34,17 +37,26 @@ export function SignIn() {
       setValue("email", state.email);
       setCadastro(true);
     }
+    if (state?.changePassword) {
+      console.log(state)
+      setChangepassword(true);
+    }
   }, [state, setValue]);
 
-  const onSubmit = async (user: User) => {
+  const onSubmit = async (form: Form) => {
+    setChangepassword(false)
     setCadastro(false)
     setLoading(true);
     setError("");
-    try {
-      await signin(user);
-      const { data } = await getCurrentUser()
-      history.push(Routes.Dashboard, { user: data });
+    if (!validateEmail(form.email)) {
+      setError("Email inválido!");
       setLoading(false);
+      return;
+    }
+    try {
+      await signin(form);
+      setLoading(false);
+      history.push(Routes.Dashboard);
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       setError(err.message as string);
@@ -56,50 +68,9 @@ export function SignIn() {
     <>
       <main className="bg-white max-w-lg mx-auto p-8 md:p-12 my-10 rounded-lg shadow-2xl">
         <Title title="Entre em seu escritório" />
-        {cadastro && (
-          <div
-            className="bg-green-100 border-t-4 border-green-500 rounded-b text-green-900 px-4 py-3 mt-3 shadow-md"
-            role="alert"
-          >
-            <div className="flex">
-              <div className="py-1">
-                <svg
-                  className="fill-current h-6 w-6 text-teal-500 mr-4"
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 20 20"
-                >
-                  <path d="M2.93 17.07A10 10 0 1 1 17.07 2.93 10 10 0 0 1 2.93 17.07zm12.73-1.41A8 8 0 1 0 4.34 4.34a8 8 0 0 0 11.32 11.32zM9 11V9h2v6H9v-4zm0-6h2v2H9V5z" />
-                </svg>
-              </div>
-              <div>
-                <p className="font-bold py-1">
-                  Cadastro realizado com sucesso!
-                </p>
-              </div>
-            </div>
-          </div>
-        )}
-        {error && (
-          <div
-            className="bg-red-100 border-t-4 border-red-500 rounded-b text-red-900 px-4 py-3 mt-3 shadow-md"
-            role="alert"
-          >
-            <div className="flex">
-              <div className="py-1">
-                <svg
-                  className="fill-current h-6 w-6 text-teal-500 mr-4"
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 20 20"
-                >
-                  <path d="M2.93 17.07A10 10 0 1 1 17.07 2.93 10 10 0 0 1 2.93 17.07zm12.73-1.41A8 8 0 1 0 4.34 4.34a8 8 0 0 0 11.32 11.32zM9 11V9h2v6H9v-4zm0-6h2v2H9V5z" />
-                </svg>
-              </div>
-              <div>
-                <p className="font-bold py-1">{error}</p>
-              </div>
-            </div>
-          </div>
-        )}
+        {changepassword && (<AlertSuccess text="Senha alterada com sucesso!" />)}
+        {cadastro && (<AlertSuccess text="Cadastro realizado com sucesso!" />)}
+        {error && (<AlertError text={error} />)}
         <section className="mt-5">
           <form className="flex flex-col" onSubmit={handleSubmit(onSubmit)}>
             <div className="mb-6 rounded">
@@ -139,25 +110,11 @@ export function SignIn() {
               />
             </div>
             <Link link={Routes.ForgotPassword} text="Esqueceu sua senha?" />
-            <button
-              className="bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 rounded shadow-lg hover:shadow-xl transition duration-200"
-              type="submit"
-              disabled={loading}
-            >
-              Entrar
-            </button>
+            <LoadingButton type="submit" text="Entrar" loading={loading} />
           </form>
         </section>
       </main>
-
-      <div className="max-w-lg mx-auto text-center mt-12 mb-6">
-        <p className="text-white">
-          Não tem uma conta?{" "}
-          <RouterLink to={Routes.SignUp}>
-            <span className="font-bold hover:underline">Cadastrar</span>.
-          </RouterLink>
-        </p>
-      </div>
+      <SignupLink />
     </>
   );
 }

@@ -41,7 +41,7 @@ export const App = () => {
       />
       <Route
         exact
-        path={Routes.ChangePassword}
+        path={`${Routes.ChangePassword}/:urlcode?`}
         render={() => (
           <Layout>
             <ChangePassword />

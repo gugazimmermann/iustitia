@@ -1,11 +1,13 @@
 import { useEffect, useState } from "react";
 import { Link as RouterLink, useParams, useHistory } from "react-router-dom";
-import { SiteRoutes as Routes } from "@iustitia/react-routes";
 import { useForm } from "react-hook-form";
+import { SiteRoutes as Routes } from "@iustitia/react-routes";
+import { AlertError, LoadingButton } from "@iustitia/site/shared-components";
 import { Title } from "../..";
+import validateEmail from "../../utils/validate-email";
 import { signup } from "../../services/auth";
 
-type User = {
+type Form = {
   username: string;
   email: string;
   password: string;
@@ -16,6 +18,7 @@ interface useParamsProps {
   planParam: string;
 }
 
+// TODO: send a welcome email
 export function SignUp() {
   const history = useHistory();
   const { planParam } = useParams<useParamsProps>();
@@ -24,7 +27,7 @@ export function SignUp() {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<User>();
+  } = useForm<Form>();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -44,13 +47,23 @@ export function SignUp() {
     }
   }, [planParam]);
 
-  const onSubmit = async (data: User) => {
+  const onSubmit = async (form: Form) => {
     setLoading(true);
     setError("");
-    try {
-      await signup(data);
-      history.push(Routes.SignIn, { email: data.email });
+    if (!validateEmail(form.email)) {
+      setError("Email inválido!");
       setLoading(false);
+      return;
+    }
+    if (form.password !== form.repeatPassword) {
+      setError("Senhas são diferentes!");
+      setLoading(false);
+      return;
+    }
+    try {
+      await signup(form);
+      setLoading(false);
+      history.push(Routes.SignIn, { email: form.email });
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       setError(err.message as string);
@@ -65,27 +78,7 @@ export function SignUp() {
         subtitle="Faça seu cadastro no plano"
         plan={plan}
       />
-      {error && (
-        <div
-          className="bg-red-100 border-t-4 border-red-500 rounded-b text-red-900 px-4 py-3 mt-3 shadow-md"
-          role="alert"
-        >
-          <div className="flex">
-            <div className="py-1">
-              <svg
-                className="fill-current h-6 w-6 text-teal-500 mr-4"
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 20 20"
-              >
-                <path d="M2.93 17.07A10 10 0 1 1 17.07 2.93 10 10 0 0 1 2.93 17.07zm12.73-1.41A8 8 0 1 0 4.34 4.34a8 8 0 0 0 11.32 11.32zM9 11V9h2v6H9v-4zm0-6h2v2H9V5z" />
-              </svg>
-            </div>
-            <div>
-              <p className="font-bold py-1">{error}</p>
-            </div>
-          </div>
-        </div>
-      )}
+      {error && (<AlertError text={error} />)}
       <section className="mt-5">
         <form className="flex flex-col" onSubmit={handleSubmit(onSubmit)}>
           <div className="mb-6 rounded">
@@ -169,13 +162,7 @@ export function SignUp() {
               </div>
             </RouterLink>
           </div>
-          <button
-            className="bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 rounded shadow-lg hover:shadow-xl transition duration-200"
-            type="submit"
-            disabled={loading}
-          >
-            Cadastrar
-          </button>
+          <LoadingButton type="submit" text="Cadastrar" loading={loading} />
         </form>
       </section>
     </main>

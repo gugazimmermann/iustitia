@@ -93,6 +93,27 @@
         }
       }
     },
+    "api-email": {
+      "root": "libs/api/email",
+      "sourceRoot": "libs/api/email/src",
+      "projectType": "library",
+      "targets": {
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["libs/api/email/**/*.ts"]
+          }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/api/email"],
+          "options": {
+            "jestConfig": "libs/api/email/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
     "api-public": {
       "root": "libs/api/public",
       "sourceRoot": "libs/api/public/src",
@@ -418,6 +439,29 @@
           "executor": "@nrwl/linter:eslint",
           "options": {
             "lintFilePatterns": ["apps/site-e2e/**/*.{js,ts}"]
+          }
+        }
+      }
+    },
+    "site-shared-components": {
+      "root": "libs/site/shared-components",
+      "sourceRoot": "libs/site/shared-components/src",
+      "projectType": "library",
+      "targets": {
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": [
+              "libs/site/shared-components/**/*.{ts,tsx,js,jsx}"
+            ]
+          }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/site/shared-components"],
+          "options": {
+            "jestConfig": "libs/site/shared-components/jest.config.js",
+            "passWithNoTests": true
           }
         }
       }
