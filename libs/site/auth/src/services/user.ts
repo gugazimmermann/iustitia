@@ -1,6 +1,15 @@
 import api from './api'
 
-export async function getCurrentUser() {
-  return await api.get("/auth/me");
+export type ICurrentUser = {
+  username: string;
+  email: string;
+  tenant: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export async function getCurrentUser(): Promise<ICurrentUser> {
+  const { data } = await api.get("/auth/me");
+  return data
 };
 

@@ -23,8 +23,12 @@ export function Dashboard(props: DashboardProps) {
     getMe();
 
     async function getMe() {
-      const res = await getCurrentUser();
-      setMe(res.data)
+      try {
+        const res = await getCurrentUser();
+        setMe(res);
+      } catch (err) {
+        console.log(err);
+      }
     }
   }, []);
 

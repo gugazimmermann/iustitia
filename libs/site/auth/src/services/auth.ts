@@ -9,7 +9,7 @@ function errorHandler(err: unknown): Error {
   throw new Error("Ocorreu um error ao acessar o servidor")
 }
 
-export async function signup({ username, email, password }: {username: string, email: string, password: string}) {
+export async function signup({ username, email, password }: { username: string, email: string, password: string }) {
   try {
     return await api.post("/auth/signup", { username, email, password })
   } catch (err) {
@@ -17,7 +17,7 @@ export async function signup({ username, email, password }: {username: string, e
   }
 };
 
-export async function signin({ email, password }: { email: string, password: string}) {
+export async function signin({ email, password }: { email: string, password: string }) {
   try {
     const { data } = await api.post("/auth/signin", { email, password })
     if (data?.accessToken) {
@@ -60,3 +60,7 @@ export async function changepassword(code: string, password: string) {
 export function logout() {
   TokenService.removeUser();
 };
+
+export function getUser() {
+  return TokenService.getLocalAccessToken();
+}

@@ -1,63 +1,47 @@
-import { Switch, Route } from "react-router-dom";
+import { Switch } from "react-router-dom";
 import { SiteRoutes as Routes } from "@iustitia/react-routes";
 import {
+  ChangePassword,
+  ForgotPassword,
   Layout,
   SignIn,
-  ForgotPassword,
-  ChangePassword,
   SignUp,
 } from "@iustitia/site/auth";
 import { Dashboard } from "@iustitia/site/dashboard";
+import ProtectedRoute from "./routes/protected-route/ProtectedRoute";
+import PublicRoute from "./routes/public-route/PublicRoute";
 
 export const App = () => {
   return (
     <Switch>
-      <Route
-        exact
-        path="/"
-        render={() => (
-          <Layout>
-            <SignIn />
-          </Layout>
-        )}
-      />
-      <Route
-        exact
-        path={Routes.SignIn}
-        render={() => (
-          <Layout>
-            <SignIn />
-          </Layout>
-        )}
-      />
-      <Route
-        exact
-        path={Routes.ForgotPassword}
-        render={() => (
-          <Layout>
-            <ForgotPassword />
-          </Layout>
-        )}
-      />
-      <Route
-        exact
-        path={`${Routes.ChangePassword}/:urlcode?`}
-        render={() => (
-          <Layout>
-            <ChangePassword />
-          </Layout>
-        )}
-      />
-      <Route
-        exact
-        path={`${Routes.SignUp}/:planParam?`}
-        render={() => (
-          <Layout>
-            <SignUp />
-          </Layout>
-        )}
-      />
-      <Route exact path={Routes.Dashboard} component={Dashboard} />
+      <PublicRoute exact path="/">
+        <Layout>
+          <SignIn />
+        </Layout>
+      </PublicRoute>
+      <PublicRoute exact path={Routes.SignIn}>
+        <Layout>
+          <SignIn />
+        </Layout>
+      </PublicRoute>
+      <PublicRoute exact path={Routes.ForgotPassword}>
+        <Layout>
+          <ForgotPassword />
+        </Layout>
+      </PublicRoute>
+      <PublicRoute exact path={`${Routes.ChangePassword}/:urlcode?`}>
+        <Layout>
+          <ChangePassword />
+        </Layout>
+      </PublicRoute>
+      <PublicRoute exact path={`${Routes.SignUp}/:planParam?`}>
+        <Layout>
+          <SignUp />
+        </Layout>
+      </PublicRoute>
+      <ProtectedRoute exact path={Routes.Dashboard}>
+      <Dashboard />
+      </ProtectedRoute>
     </Switch>
   );
 };
