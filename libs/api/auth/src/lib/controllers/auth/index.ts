@@ -120,8 +120,6 @@ export async function changePassword(req, res) {
     }
     const dt = DateTime.now();
     const forgotPasswordDate = DateTime.fromJSDate(forgotPassword.expiryDate)
-    console.log(dt.toFormat("dd/MM/yyyy HH:mm:ss"))
-    console.log(forgotPasswordDate.toFormat("dd/MM/yyyy HH:mm:ss"))
     if (dt <= forgotPasswordDate) {
       const user = await database.User.findOne({ where: { email: forgotPassword.email } });
       if (!user) {

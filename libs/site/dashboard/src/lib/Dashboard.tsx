@@ -24,7 +24,6 @@ export function Dashboard(props: DashboardProps) {
 
     async function getMe() {
       const res = await getCurrentUser();
-      console.log(res)
       setMe(res.data)
     }
   }, []);
