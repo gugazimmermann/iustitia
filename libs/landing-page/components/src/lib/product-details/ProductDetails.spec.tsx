@@ -7,4 +7,9 @@ describe("ProductDetails", () => {
     const { baseElement } = render(<ProductDetails />);
     expect(baseElement).toBeTruthy();
   });
+
+  it('should have Módulos text', () => {
+    const { getAllByText } = render(<ProductDetails />);
+    expect(getAllByText('Módulos')).toBeTruthy();
+  });
 });

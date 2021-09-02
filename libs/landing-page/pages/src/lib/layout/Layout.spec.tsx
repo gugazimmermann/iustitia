@@ -14,4 +14,26 @@ describe("Layout", () => {
     );
     expect(baseElement).toBeTruthy();
   });
+
+  it('should have Menu text', () => {
+    const { getAllByText } = render(
+      <MemoryRouter>
+        <Layout>
+          <Main />
+        </Layout>
+      </MemoryRouter>
+    );
+    expect(getAllByText('Menu')).toBeTruthy();
+  });
+
+  it('should have Links text', () => {
+    const { getAllByText } = render(
+      <MemoryRouter>
+        <Layout>
+          <Main />
+        </Layout>
+      </MemoryRouter>
+    );
+    expect(getAllByText('Links')).toBeTruthy();
+  });
 });

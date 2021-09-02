@@ -7,4 +7,9 @@ describe("Nav", () => {
     const { baseElement } = render(<MemoryRouter><Nav /></MemoryRouter>);
     expect(baseElement).toBeTruthy();
   });
+
+  it('should have Menu as the title', () => {
+    const { getAllByText } = render(<MemoryRouter><Nav /></MemoryRouter>);
+    expect(getAllByText('Menu')).toBeTruthy();
+  });
 });

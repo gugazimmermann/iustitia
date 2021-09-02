@@ -39,7 +39,8 @@ export function Dashboard(props: DashboardProps) {
 
   return (
     <div>
-      <h1>{JSON.stringify(me, undefined, 2)}</h1>
+      <h1>Dashboard</h1>
+      <h2>{JSON.stringify(me, undefined, 2)}</h2>
       <button
         className="bg-blue-500 hover:bg-blue-400 text-white font-bold py-2 px-4 border-b-4 border-blue-700 hover:border-blue-500 rounded"
         onClick={handleLogout}

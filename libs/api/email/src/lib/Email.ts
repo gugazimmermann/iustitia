@@ -4,8 +4,8 @@ export interface SendForgotPasswordEmailParams {
   route: string;
   email: string;
   date: string;
-  code?: number;
-  codeUrl?: string;
+  code: number;
+  codeUrl: string;
 }
 
 export async function sendForgotPasswordEmail({ route, email, date, code, codeUrl }: SendForgotPasswordEmailParams) {

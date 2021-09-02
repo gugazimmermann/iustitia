@@ -1,7 +1,15 @@
-import { apiDatabase } from "./Database";
+import database from "./Database";
 
-describe("apiDatabase", () => {
-  it("should work", () => {
-    expect(apiDatabase()).toEqual("api-database");
+describe("database", () => {
+  it("should have users table", () => {
+    expect(database.User.tableName).toEqual("users");
+  });
+
+  it("should have refreshTokens table", () => {
+    expect(database.RefreshToken.tableName).toEqual("refreshTokens");
+  });
+
+  it("should have forgotPasswords table", () => {
+    expect(database.ForgotPassword.tableName).toEqual("forgotPasswords");
   });
 });

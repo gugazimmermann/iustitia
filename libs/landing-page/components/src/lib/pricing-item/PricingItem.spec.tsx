@@ -16,7 +16,7 @@ describe("PricingItem", () => {
     );
     expect(baseElement).toBeTruthy();
   });
-  it('should have iustitia as the title', () => {
+  it('should have func 2 text', () => {
     const { getAllByText } = render(
       <PricingItem
         title="AAA"
@@ -27,6 +27,6 @@ describe("PricingItem", () => {
         active={true}
       />
     );
-    expect(getAllByText('func 1')).toBeTruthy();
+    expect(getAllByText('func 2')).toBeTruthy();
   });
 });

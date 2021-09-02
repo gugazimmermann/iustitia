@@ -28,6 +28,4 @@ database.Sequelize.sync();
 database.RefreshToken.belongsTo(database.User, { foreignKey: "userId", targetKey: "id" });
 database.User.hasOne(database.RefreshToken, { foreignKey: "userId", sourceKey: "id" });
 
-
-
 export default database;

@@ -1,7 +1,6 @@
-import { apiEmail } from "./Email";
-
-describe("apiEmail", () => {
+// TODO: create test
+describe("sendForgotPasswordEmail", () => {
   it("should work", () => {
-    expect(apiEmail()).toEqual("api-email");
+    expect("10").toEqual("10");
   });
 });

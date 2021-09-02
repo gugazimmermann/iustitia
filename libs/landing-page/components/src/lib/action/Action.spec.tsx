@@ -7,4 +7,9 @@ describe('Action', () => {
     const { baseElement } = render(<Action />);
     expect(baseElement).toBeTruthy();
   });
+
+  it('should have Escritório Virtual as the title', () => {
+    const { getAllByText } = render(<Action />);
+    expect(getAllByText('Escritório Virtual')).toBeTruthy();
+  });
 });

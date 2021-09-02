@@ -7,4 +7,9 @@ describe("ProductMain", () => {
     const { baseElement } = render(<ProductMain />);
     expect(baseElement).toBeTruthy();
   });
+
+  it('should have Seu Escritório Virtual text', () => {
+    const { getAllByText } = render(<ProductMain />);
+    expect(getAllByText('Seu Escritório Virtual')).toBeTruthy();
+  });
 });

@@ -2,9 +2,8 @@ import { database } from '@iustitia/api/database';
 
 export const publicAccess = (req, res) => res.status(200).send("Public Content.");
 
-
 export async function userById(req, res) {
-  if (!req.body.user) {
+  if (!req.body?.user) {
     return res.status(400).send({ message: "Failed! User is needed!" });
   }
   try {

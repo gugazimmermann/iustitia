@@ -11,4 +11,13 @@ describe("Footer", () => {
     );
     expect(baseElement).toBeTruthy();
   });
+
+  it('should have Links as the title', () => {
+    const { getAllByText } = render(
+      <MemoryRouter>
+        <Footer />
+      </MemoryRouter>
+    );
+    expect(getAllByText('Links')).toBeTruthy();
+  });
 });
