@@ -38,7 +38,6 @@ export function SignIn() {
       setCadastro(true);
     }
     if (state?.changePassword) {
-      console.log(state)
       setChangepassword(true);
     }
   }, [state, setValue]);

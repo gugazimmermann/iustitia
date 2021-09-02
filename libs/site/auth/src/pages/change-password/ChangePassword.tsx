@@ -160,7 +160,7 @@ export function ChangePassword() {
           <div className="mb-6 rounded">
             <label
               className="block text-gray-700 text-sm font-bold mb-2 ml-3"
-              htmlFor="newpassword"
+              htmlFor="repeatnewpassword"
             >
               Repita Nova Senha
             </label>
