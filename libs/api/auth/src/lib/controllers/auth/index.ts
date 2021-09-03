@@ -6,6 +6,7 @@ import { SiteRoutes as Routes } from '@iustitia/react-routes';
 import { database } from '@iustitia/api/database';
 import { sendForgotPasswordEmail } from '@iustitia/api/email';
 import config from "../../config"
+import validateEmail from "../../utils/validate-email";
 
 async function createToken(user) {
   const expiredAt = new Date();
@@ -23,6 +24,9 @@ function verifyExpiration(token) {
 };
 
 export async function signup(req, res) {
+  if (!req.body?.username || !req.body?.password || !req.body?.email || !validateEmail(req.body.email)) {
+    return res.status(401).send({ message: "Dados inválidos!" });
+  }
   try {
     const userData = {
       username: req.body.username,
@@ -38,6 +42,9 @@ export async function signup(req, res) {
 }
 
 export async function signin(req, res) {
+  if (!req.body?.password || !req.body?.email || !validateEmail(req.body.email)) {
+    return res.status(401).send({ message: "Dados inválidos!" });
+  }
   try {
     const user = await database.User.findOne({ where: { email: req.body.email } });
     if (!user) {
@@ -61,7 +68,7 @@ export async function signin(req, res) {
 }
 
 export async function forgotPassword(req, res) {
-  if (!req.body.email) {
+  if (!req.body.email || !validateEmail(req.body.email)) {
     return res.status(403).json({ message: "Email é necessário!" });
   }
   try {
