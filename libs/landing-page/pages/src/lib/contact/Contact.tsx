@@ -1,9 +1,4 @@
-import './Contact.css';
-
-/* eslint-disable-next-line */
-interface ContactProps {}
-
-export function Contact(props: ContactProps) {
+export function Contact() {
   return (
     <div>
       <h1>Welcome to Contact!</h1>

@@ -3,11 +3,11 @@ import { SiteRoutes as Routes } from "@iustitia/react-routes";
 import {
   ChangePassword,
   ForgotPassword,
-  Layout,
+  Layout as AuthLayout,
   SignIn,
   SignUp,
 } from "@iustitia/site/auth";
-import { Dashboard } from "@iustitia/site/dashboard";
+import { Layout, Main } from "@iustitia/site/dashboard";
 import ProtectedRoute from "./routes/protected-route/ProtectedRoute";
 import PublicRoute from "./routes/public-route/PublicRoute";
 
@@ -15,32 +15,34 @@ export const App = () => {
   return (
     <Switch>
       <PublicRoute exact path="/">
-        <Layout>
+        <AuthLayout>
           <SignIn />
-        </Layout>
+        </AuthLayout>
       </PublicRoute>
       <PublicRoute exact path={Routes.SignIn}>
-        <Layout>
+        <AuthLayout>
           <SignIn />
-        </Layout>
+        </AuthLayout>
       </PublicRoute>
       <PublicRoute exact path={Routes.ForgotPassword}>
-        <Layout>
+        <AuthLayout>
           <ForgotPassword />
-        </Layout>
+        </AuthLayout>
       </PublicRoute>
       <PublicRoute exact path={`${Routes.ChangePassword}/:urlcode?`}>
-        <Layout>
+        <AuthLayout>
           <ChangePassword />
-        </Layout>
+        </AuthLayout>
       </PublicRoute>
       <PublicRoute exact path={`${Routes.SignUp}/:planParam?`}>
-        <Layout>
+        <AuthLayout>
           <SignUp />
-        </Layout>
+        </AuthLayout>
       </PublicRoute>
       <ProtectedRoute exact path={Routes.Dashboard}>
-      <Dashboard />
+      <Layout>
+        <Main />
+      </Layout>
       </ProtectedRoute>
     </Switch>
   );

@@ -1,6 +1,5 @@
 import { Link as RouterLink } from "react-router-dom";
 import { SiteRoutes as Routes } from "@iustitia/react-routes";
-import "./SignupLink.css";
 
 /* eslint-disable-next-line */
 export interface SignupLinkProps {}
