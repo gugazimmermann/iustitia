@@ -9,7 +9,6 @@ export function ProtectedRoute({ children, ...rest }: RouteProps) {
 
   useEffect(() => {
     if (getUser()) {
-      console.log(getUser())
       currentUser();
     } else {
       setLoading(false);
