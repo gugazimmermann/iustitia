@@ -7,7 +7,8 @@ const RefreshTokenAuthPaths = [
   "/auth/signup",
   "/auth/signin",
   "/auth/forgotpassword",
-  "/auth/changepassword"
+  "/auth/changepassword",
+  "/auth/me"
 ]
 
 const api: AxiosInstance = axios.create({

@@ -3,14 +3,6 @@ import { signin, signup, forgotPassword, forgotPasswordCode, changePassword, ref
 import verifyToken from "./middleware/verifyToken";
 
 export default function Auth(app) {
-  app.use((req, res, next) => {
-    res.header(
-      "Access-Control-Allow-Headers",
-      "x-access-token, Origin, Content-Type, Accept"
-    );
-    next();
-  });
-
   app.post("/auth/signup", [checkDuplicateEmail], signup);
 
   app.post("/auth/signin", signin);

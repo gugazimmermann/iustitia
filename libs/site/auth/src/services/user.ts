@@ -1,3 +1,4 @@
+import errorHandler from '../utils/error-handler';
 import api from './api'
 
 export type ICurrentUser = {
@@ -8,8 +9,13 @@ export type ICurrentUser = {
   updatedAt: string;
 }
 
-export async function getCurrentUser(): Promise<ICurrentUser> {
-  const { data } = await api.get("/auth/me");
-  return data
+export async function getCurrentUser() {
+  try {
+    const { data } = await api.get("/auth/me");
+    return data
+  } catch (err) {
+    return errorHandler(err)
+  }
+
 };
 

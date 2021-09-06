@@ -1,13 +1,6 @@
-import axios from "axios";
+import errorHandler from "../utils/error-handler";
 import api from "./api";
 import TokenService from "./token";
-
-function errorHandler(err: unknown): Error {
-  if (axios.isAxiosError(err)) {
-    throw new Error(err.response?.data.message)
-  }
-  throw new Error("Ocorreu um error ao acessar o servidor")
-}
 
 export async function signup({ username, email, password }: { username: string, email: string, password: string }) {
   try {
