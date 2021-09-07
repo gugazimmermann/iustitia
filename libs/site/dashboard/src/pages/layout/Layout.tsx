@@ -51,7 +51,7 @@ export function Layout({ children }: LayoutProps) {
           notificationOpen={notificationOpen}
           me={me}
         />
-        <div className="w-full h-full p-4">
+        <div className="w-full h-full p-4 flex justify-center">
           <main>{children}</main>
         </div>
       </div>
