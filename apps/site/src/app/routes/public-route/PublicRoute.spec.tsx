@@ -20,20 +20,20 @@ describe("PublicRoute", () => {
     expect(getUserSpy).toHaveBeenCalledTimes(1);
   });
 
-  it("Should not call getCurrentUser", () => {
+  it("Should not call getMe", () => {
     const getUserSpy = jest.spyOn(auth, "getUser").mockImplementation(() => false);
-    const getCurrentUserSpy = jest.spyOn(auth, "getCurrentUser").mockImplementation(() => Promise.resolve({}));
+    const getMeSpy = jest.spyOn(auth, "getMe").mockImplementation(() => Promise.resolve({}));
     render(<MemoryRouter><PublicRoute /></MemoryRouter>);
     expect(getUserSpy).toHaveBeenCalledTimes(1);
-    expect(getCurrentUserSpy).toHaveBeenCalledTimes(0);
+    expect(getMeSpy).toHaveBeenCalledTimes(0);
   });
 
-  it("Should call getCurrentUser", async () => {
+  it("Should call getMe", async () => {
     const getUserSpy = jest.spyOn(auth, "getUser").mockImplementation(() => true);
-    const getCurrentUserSpy = jest.spyOn(auth, "getCurrentUser").mockImplementation(() => Promise.resolve({}));
+    const getMeSpy = jest.spyOn(auth, "getMe").mockImplementation(() => Promise.resolve({}));
     render(<MemoryRouter><PublicRoute /></MemoryRouter>);
     expect(getUserSpy).toHaveBeenCalledTimes(1);
-    await waitFor(() => expect(getCurrentUserSpy).toHaveBeenCalledTimes(1));
+    await waitFor(() => expect(getMeSpy).toHaveBeenCalledTimes(1));
   });
 
 });
