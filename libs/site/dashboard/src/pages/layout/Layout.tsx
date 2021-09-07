@@ -2,6 +2,9 @@ import { useEffect, useState } from "react";
 import { getCurrentUser } from "@iustitia/site/auth";
 import { Menu } from "../..";
 import Nav from "../../components/nav/Nav";
+import Callout, {
+  CALLOUTTYPES,
+} from "../../components/dashboard/callout/Callout";
 
 export interface Me {
   username: string;
@@ -51,9 +54,23 @@ export function Layout({ children }: LayoutProps) {
           notificationOpen={notificationOpen}
           me={me}
         />
-        <div className="w-full h-full p-4 flex justify-center">
-          <main>{children}</main>
-        </div>
+
+        <main className="w-full lg:max-w-screen-lg h-full bg-gray-50 flex flex-col self-center">
+          <Callout
+            type={CALLOUTTYPES.WARNING}
+            title="Seu cadastro está"
+            emphasis="Incompleto"
+            content="Por favor, acesse seu perfil e complete os items destacados."
+          />
+
+          <Callout
+            type={CALLOUTTYPES.ERROR}
+            title="Nenhum Escritório Cadastrado"
+            content="Por favor, acesse seu perfil e complete os items destacados."
+          />
+
+          {children}
+        </main>
       </div>
     </div>
   );

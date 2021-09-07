@@ -1,6 +1,6 @@
 import { IconProps } from ".";
 
-export function SearchIcon({ styles }: IconProps) {
+export function GraphUpIcon({ styles, stroke }: IconProps) {
   return (
     <svg
       className={styles}
@@ -12,11 +12,17 @@ export function SearchIcon({ styles }: IconProps) {
       <path
         strokeLinecap="round"
         strokeLinejoin="round"
-        strokeWidth="2"
-        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+        strokeWidth={stroke}
+        d="M3 3v18h18"
+      />
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth={stroke}
+        d="M18.7 8l-5.1 5.2-2.8-2.7L7 14.3"
       />
     </svg>
   );
 }
 
-export default SearchIcon;
+export default GraphUpIcon;

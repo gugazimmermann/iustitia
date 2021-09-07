@@ -67,7 +67,7 @@ export function NavAvatar({ me }: NavAvatarProps) {
   }
 
   return (
-    <div className="relative">
+    <div className="relative z-50">
       {avatarButton(me)}
       <div
         ref={divRef}
