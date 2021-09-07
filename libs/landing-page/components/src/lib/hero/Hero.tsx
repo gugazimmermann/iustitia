@@ -1,3 +1,5 @@
+import styles from './Hero.module.css';
+
 export function Hero() {
   const appSite = process.env.NX_APP_SITE || '';
 
@@ -21,7 +23,7 @@ export function Hero() {
         </div>
 
         <div className="flex items-center w-full mx-auto content-end">
-          <div className="browser-mockup flex flex-1 m-6 md:px-0 md:m-12 bg-white w-1/2 rounded shadow-xl"></div>
+          <div className={`${styles.browsermockup} flex flex-1 m-6 md:px-0 md:m-12 bg-white w-1/2 rounded shadow-xl`}></div>
         </div>
       </div>
     </div>

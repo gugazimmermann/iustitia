@@ -45,7 +45,7 @@ export function NavAvatar({ me }: NavAvatarProps) {
       return (
         <button
           onClick={() => setOpen(!open)}
-          className="w-11 h-11 rounded-full flex justify-center items-center text-center font-bold text-2xl text-purple-500 bg-purple-50 hover:text-purple-900 hover:bg-purple-100 focus:outline-none focus:bg-purple-100 focus:ring-purple-900"
+          className="w-11 h-11 rounded-full flex justify-center items-center text-center font-bold text-2xl text-primary-500 bg-primary-50 hover:text-primary-900 hover:bg-primary-100 focus:outline-none focus:bg-primary-100 focus:ring-primary-900"
         >
           {getInitials(me.username)}
         </button>

@@ -31,7 +31,7 @@ describe("ForgotPassword", () => {
 
     const inputNode = screen.getByLabelText("Email");
     expect(
-      inputNode.className.split(" ").includes("focus:border-purple-600")
+      inputNode.className.split(" ").includes("focus:border-primary-600")
     ).toBe(true);
     const button = screen.getByText("Enviar Código");
     await waitFor(() => fireEvent.click(button));

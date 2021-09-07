@@ -9,7 +9,7 @@ export interface LoadingButtonProps {
 export function LoadingButton({ type, text, loading }: LoadingButtonProps) {
   return (
     <button
-      className="bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 rounded shadow-lg hover:shadow-xl transition duration-200"
+      className="bg-primary-600 hover:bg-primary-700 text-white font-bold py-2 rounded shadow-lg hover:shadow-xl transition duration-200"
       type={type}
       disabled={loading}
     >

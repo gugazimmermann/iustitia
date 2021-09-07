@@ -96,7 +96,7 @@ export function SignUp() {
                 `bg-gray-200 rounded w-full text-gray-700 focus:outline-none border-b-4 border-gray-300 transition duration-500 px-3 pb-3 ` +
                 (errors.username
                   ? `border-red-600 `
-                  : `focus:border-purple-600`)
+                  : `focus:border-primary-600`)
               }
             />
           </div>
@@ -113,7 +113,7 @@ export function SignUp() {
               {...register("email", { required: true })}
               className={
                 `bg-gray-200 rounded w-full text-gray-700 focus:outline-none border-b-4 border-gray-300 transition duration-500 px-3 pb-3 ` +
-                (errors.email ? `border-red-600 ` : `focus:border-purple-600`)
+                (errors.email ? `border-red-600 ` : `focus:border-primary-600`)
               }
             />
           </div>
@@ -132,7 +132,7 @@ export function SignUp() {
                 `bg-gray-200 rounded w-full text-gray-700 focus:outline-none border-b-4 border-gray-300 transition duration-500 px-3 pb-3 ` +
                 (errors.password
                   ? `border-red-600 `
-                  : `focus:border-purple-600`)
+                  : `focus:border-primary-600`)
               }
             />
           </div>
@@ -151,13 +151,13 @@ export function SignUp() {
                 `bg-gray-200 rounded w-full text-gray-700 focus:outline-none border-b-4 border-gray-300 transition duration-500 px-3 pb-3 ` +
                 (errors.repeatPassword
                   ? `border-red-600 `
-                  : `focus:border-purple-600`)
+                  : `focus:border-primary-600`)
               }
             />
           </div>
           <div className="flex justify-end">
             <RouterLink to="/entrar">
-              <div className="text-sm text-purple-600 hover:text-purple-700 hover:underline mb-6">
+              <div className="text-sm text-primary-600 hover:text-primary-700 hover:underline mb-6">
                 Voltar para Entrar
               </div>
             </RouterLink>

@@ -23,7 +23,7 @@ export function Breadcrumb({ before, main }: BreadcrumbProps) {
         </li>
       ))}
       <li className="inline-flex items-center">
-        <span className="text-purple-500 text-2xl">{main}</span>
+        <span className="text-primary-500 text-2xl">{main}</span>
       </li>
     </ul>
   );

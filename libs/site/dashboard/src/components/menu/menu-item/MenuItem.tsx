@@ -37,8 +37,8 @@ export function MenuItem({ item, icon, subitems }: MenuItemProps) {
         onClick={() => setActive(!active)}
         className={`flex items-center p-2 transition-colors rounded-md cursor-pointer ${
           active
-            ? `rotate-180 text-white bg-purple-500`
-            : `text-gray-900 hover:bg-purple-100`
+            ? `rotate-180 text-white bg-primary-500`
+            : `text-gray-900 hover:bg-primary-100`
         }`}
       >
         {getIcon(icon)}

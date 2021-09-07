@@ -9,7 +9,7 @@ export function NavMenuButton({ setMenuOpen, menuOpen }: NavMenuButtonProps) {
   return (
     <button
       onClick={() => setMenuOpen(!menuOpen)}
-      className={`p-1 transition-colors duration-200 rounded-md text-purple-500 bg-purple-50 hover:text-grey-900 hover:bg-purple-100 focus:outline-none focus:ring ring-purple-300 ${menuOpen ? `hidden` : ``}`}
+      className={`p-1 transition-colors duration-200 rounded-md text-primary-500 bg-primary-50 hover:text-grey-900 hover:bg-primary-100 focus:outline-none focus:ring ring-primary-300 ${menuOpen ? `hidden` : ``}`}
     >
       <MenuIcon styles="w-8 h-8" />
     </button>

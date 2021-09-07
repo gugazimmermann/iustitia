@@ -18,9 +18,9 @@ describe('SignIn', () => {
   it("should change input class on missing field", async () => {
     render(<MemoryRouter><SignIn /></MemoryRouter>);
     const email = screen.getByLabelText("Email");
-    expect(email.className.split(" ").includes("focus:border-purple-600")).toBe(true);
+    expect(email.className.split(" ").includes("focus:border-primary-600")).toBe(true);
     const password = screen.getByLabelText("Senha");
-    expect(password.className.split(" ").includes("focus:border-purple-600")).toBe(true);
+    expect(password.className.split(" ").includes("focus:border-primary-600")).toBe(true);
     const button = screen.getByText("Entrar");
     await waitFor(() => fireEvent.click(button));
     expect(email.className.split(" ").includes("border-red-600")).toBe(true);

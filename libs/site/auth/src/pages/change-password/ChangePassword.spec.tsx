@@ -33,7 +33,7 @@ describe("ChangePassword", () => {
 
     const inputNode = screen.getByLabelText("Nova Senha");
     expect(
-      inputNode.className.split(" ").includes("focus:border-purple-600")
+      inputNode.className.split(" ").includes("focus:border-primary-600")
     ).toBe(true);
     const button = screen.getByText("Alterar Senha");
     await waitFor(() => fireEvent.click(button));

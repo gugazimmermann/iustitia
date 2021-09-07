@@ -1,35 +1,12 @@
 .gradient {
-  background-image: linear-gradient(250deg, #9921e8 0%, #5f72be 74%);
+  background-image: linear-gradient(250deg, #6366F1 0%, #A5B4FC 74%);
 }
 
 .menu {
-  background-color: #5f72be;
+  background-color: #6366F1;
 }
 
 .gradient2 {
-  background-color: #f57c00;
-  background-image: linear-gradient(315deg, #f57c00 0%, #ffcc80 74%);
-}
-
-.browser-mockup {
-  border-top: 2em solid rgba(230, 230, 230, 0.7);
-  position: relative;
-  height: 60vh;
-}
-
-.browser-mockup:before {
-  display: block;
-  position: absolute;
-  content: '';
-  top: -1.25em;
-  left: 1em;
-  width: 0.5em;
-  height: 0.5em;
-  border-radius: 50%;
-  background-color: #f44;
-  box-shadow: 0 0 0 2px #f44, 1.5em 0 0 2px #9b3, 3em 0 0 2px #fb5;
-}
-
-.browser-mockup > * {
-  display: block;
+  background-color: #D97706;
+  background-image: linear-gradient(315deg, #D97706 0%, #FCD34D 74%);
 }

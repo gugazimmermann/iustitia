@@ -15,25 +15,25 @@ export interface CalloutProps {
 
 export function Callout({ type, title, emphasis, content }: CalloutProps) {
   const text = !type
-    ? `text-purple-500`
+    ? `text-primary-500`
     : type === CALLOUTTYPES.WARNING
-    ? `text-yellow-500`
+    ? `text-secondary-500`
     : type === CALLOUTTYPES.ERROR
     ? `text-red-500`
     : `text-blue-500`;
 
     const bg = !type
-    ? `bg-purple-300`
+    ? `bg-primary-300`
     : type === CALLOUTTYPES.WARNING
-    ? `bg-yellow-300`
+    ? `bg-secondary-300`
     : type === CALLOUTTYPES.ERROR
     ? `bg-red-300`
     : `bg-blue-300`;
 
     const border = !type
-    ? `border-purple-500`
+    ? `border-primary-500`
     : type === CALLOUTTYPES.WARNING
-    ? `border-yellow-500`
+    ? `border-secondary-500`
     : type === CALLOUTTYPES.ERROR
     ? `border-red-500`
     : `border-blue-500`;

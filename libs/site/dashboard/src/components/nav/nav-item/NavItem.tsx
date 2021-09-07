@@ -37,12 +37,12 @@ export function NavItem({ item, icon, alert, open, openState }: NavItemProps) {
   return (
     <button
       onClick={() => (open ? open(!openState) : () => false)}
-      className="p-2 relative transition-colors duration-200 rounded-full text-purple-500 bg-purple-50 hover:text-purple-900 hover:bg-purple-100 focus:outline-none focus:bg-purple-100 focus:ring-purple-900"
+      className="p-2 relative transition-colors duration-200 rounded-full text-primary-500 bg-primary-50 hover:text-primary-900 hover:bg-primary-100 focus:outline-none focus:bg-primary-100 focus:ring-primary-900"
     >
       <span className="sr-only">Open {item}</span>
       {getIcon(icon)}
       {alert && (
-        <span className="absolute top-0 right-0 inline-block w-3 h-3 bg-yellow-500 border-2 border-white rounded-full"></span>
+        <span className="absolute top-0 right-0 inline-block w-3 h-3 bg-secondary-500 border-2 border-white rounded-full"></span>
       )}
     </button>
   );

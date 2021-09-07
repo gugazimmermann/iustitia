@@ -30,7 +30,7 @@ export function InfoCard({
   icon,
 }: InfoCardProps) {
   function showIcon(icon: INFOCARDSICONS) {
-    const iconStyle = "w-12 h-12 text-purple-400";
+    const iconStyle = "w-12 h-12 text-primary-400";
     switch (icon) {
       case INFOCARDSICONS.MONEY: {
         return <MoneyIcon styles={iconStyle} stroke={1} />;

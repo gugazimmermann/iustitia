@@ -25,7 +25,7 @@ export function NavNotification({
         </button>
       </div>
       <div className="flex flex-col h-screen">
-        <div className="flex space-x-2 bg-purple-500 text-white items-center justify-center h-14 border-b">
+        <div className="flex space-x-2 bg-primary-500 text-white items-center justify-center h-14 border-b">
           <NotificationIcon styles="w-5 h-5" />
           <h2 className="text-xl font-medium">Notificações</h2>
         </div>

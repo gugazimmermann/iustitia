@@ -3,7 +3,7 @@ export function MenuFooter() {
     <div className="flex-shrink-0 px-2 py-4 space-y-2">
       <button
         type="button"
-        className="flex items-center justify-center w-full px-4 py-2 text-sm text-gray-900 rounded-md bg-purple-300 hover:bg-purple-500 hover:text-white focus:outline-none focus:ring-1 focus:ring-purple-300"
+        className="flex items-center justify-center w-full px-4 py-2 text-sm text-gray-900 rounded-md bg-primary-300 hover:bg-primary-500 hover:text-white focus:outline-none focus:ring-1 focus:ring-primary-300"
       >
         <span aria-hidden="true">
           <svg

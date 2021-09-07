@@ -30,19 +30,19 @@ describe("SignUp", () => {
       </MemoryRouter>
     );
     const nome = screen.getByLabelText("Nome");
-    expect(nome.className.split(" ").includes("focus:border-purple-600")).toBe(
+    expect(nome.className.split(" ").includes("focus:border-primary-600")).toBe(
       true
     );
     const email = screen.getByLabelText("Email");
-    expect(nome.className.split(" ").includes("focus:border-purple-600")).toBe(
+    expect(nome.className.split(" ").includes("focus:border-primary-600")).toBe(
       true
     );
     const password = screen.getByLabelText("Senha");
-    expect(nome.className.split(" ").includes("focus:border-purple-600")).toBe(
+    expect(nome.className.split(" ").includes("focus:border-primary-600")).toBe(
       true
     );
     const repeatPassword = screen.getByLabelText("Repita a Senha");
-    expect(nome.className.split(" ").includes("focus:border-purple-600")).toBe(
+    expect(nome.className.split(" ").includes("focus:border-primary-600")).toBe(
       true
     );
     const button = screen.getByText("Cadastrar");

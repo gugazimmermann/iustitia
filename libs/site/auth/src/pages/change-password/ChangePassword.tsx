@@ -134,7 +134,7 @@ export function ChangePassword() {
               {...register("code", { required: true })}
               className={
                 `bg-gray-200 rounded w-full text-gray-700 focus:outline-none border-b-4 border-gray-300 transition duration-500 px-3 pb-3 ` +
-                (errors.code ? `border-red-600 ` : `focus:border-purple-600`)
+                (errors.code ? `border-red-600 ` : `focus:border-primary-600`)
               }
             />
           </div>
@@ -153,7 +153,7 @@ export function ChangePassword() {
                 `bg-gray-200 rounded w-full text-gray-700 focus:outline-none border-b-4 border-gray-300 transition duration-500 px-3 pb-3 ` +
                 (errors.newpassword
                   ? `border-red-600 `
-                  : `focus:border-purple-600`)
+                  : `focus:border-primary-600`)
               }
             />
           </div>
@@ -172,7 +172,7 @@ export function ChangePassword() {
                 `bg-gray-200 rounded w-full text-gray-700 focus:outline-none border-b-4 border-gray-300 transition duration-500 px-3 pb-3 ` +
                 (errors.repeatnewpassword
                   ? `border-red-600 `
-                  : `focus:border-purple-600`)
+                  : `focus:border-primary-600`)
               }
             />
           </div>
