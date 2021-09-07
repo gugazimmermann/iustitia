@@ -9,13 +9,21 @@ export type ICurrentUser = {
   updatedAt: string;
 }
 
-export async function getCurrentUser() {
+export async function getMe() {
   try {
     const { data } = await api.get("/auth/me");
     return data
   } catch (err) {
     return errorHandler(err)
   }
+};
 
+export async function getCurrentUser() {
+  try {
+    const { data } = await api.get("/auth/currentuser");
+    return data
+  } catch (err) {
+    return errorHandler(err)
+  }
 };
 

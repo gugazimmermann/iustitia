@@ -16,4 +16,6 @@ export default function Auth(app) {
   app.post("/auth/refreshtoken", refreshToken);
 
   app.get("/auth/me", [verifyToken], userInfo);
+
+  app.get("/auth/currentuser", [verifyToken], userInfo);
 }
