@@ -1,17 +1,25 @@
 import { render } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
-import { Me } from "../../../pages/layout/Layout";
+import { IProfile } from "../../../interfaces";
 
 import NavAvatar from "./NavAvatar";
 
 describe("NavAvatar", () => {
   it("should render successfully", () => {
-    const me: Me = {
-      email: "teste@teste.com",
-      createdAt: "01/01/2021 18:30:30",
-      updatedAt: "01/01/2021 18:30:30",
+    const profile: IProfile = {
+      avatar: "AAA",
+      name: "BBB",
+      email: "CCC",
+      phone: "DDD",
+      zip: "EEE",
+      address: "FFF",
+      number: "GGG",
+      complement: "HHH",
+      neighborhood:  "III",
+      city:  "JJJ",
+      state: "KKK",
     }
-    const { baseElement } = render(<MemoryRouter><NavAvatar me={me} /></MemoryRouter>);
+    const { baseElement } = render(<MemoryRouter><NavAvatar profile={profile} /></MemoryRouter>);
     expect(baseElement).toBeTruthy();
   });
 });
