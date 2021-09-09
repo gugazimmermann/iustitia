@@ -1,12 +1,12 @@
 import { useEffect, useRef } from "react";
 import {
-  Me,
   NavAvatar,
   NAVICONS,
   NavItem,
   NavMenuButton,
   NavMobileButton,
 } from "../..";
+import { IProfile } from "../../interfaces";
 import NavNotification from "./nav-notification/NavNotification";
 
 export interface NavProps {
@@ -16,7 +16,7 @@ export interface NavProps {
   navOpen: boolean;
   setNotificationOpen(notificationOpen: boolean): void;
   notificationOpen: boolean;
-  me: Me;
+  profile: IProfile;
 }
 
 export function Nav({
@@ -26,7 +26,7 @@ export function Nav({
   navOpen,
   setNotificationOpen,
   notificationOpen,
-  me,
+  profile,
 }: NavProps) {
   const divRef = useRef<HTMLDivElement>(null);
 
@@ -43,13 +43,13 @@ export function Nav({
     };
   }, [navOpen, setNavOpen]);
 
-  function showNavItems(me: Me) {
+  function showNavItems(profile: IProfile) {
     return (
       <>
         <NavItem item="Notification" icon={NAVICONS.NOTIFICATION} alert={true} open={setNotificationOpen} openState={notificationOpen} />
         <NavItem item="Search" icon={NAVICONS.SEARCH} alert={false} />
         <NavItem item="Settings" icon={NAVICONS.SETTINGS} alert={false} />
-        <NavAvatar me={me} />
+        <NavAvatar profile={profile} />
       </>
     );
   }
@@ -68,12 +68,12 @@ export function Nav({
             navOpen ? `` : `hidden`
           }`}
         >
-          {showNavItems(me)}
+          {showNavItems(profile)}
         </nav>
 
         {/* DESKTOP */}
         <nav className="hidden justify-end space-x-2 md:flex w-full">
-          {showNavItems(me)}
+          {showNavItems(profile)}
         </nav>
       </div>
       <NavNotification setNotificationOpen={setNotificationOpen} notificationOpen={notificationOpen} />

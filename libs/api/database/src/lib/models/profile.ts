@@ -17,7 +17,7 @@ export interface ProfileAttributes {
   userId: string;
 }
 
-export type ProfileCreationAttributes = Optional<ProfileAttributes, 'id'>
+export type ProfileCreationAttributes = Optional<ProfileAttributes, 'id' | 'avatar' | 'phone' | 'zip' | 'address' | 'number' | 'complement' | 'neighborhood' | 'city' | 'state'>
 
 export interface ProfileInstance
   extends Model<ProfileAttributes, ProfileCreationAttributes>,
@@ -39,16 +39,16 @@ export default function profile(sequelize: Sequelize) {
     },
     avatar: { type: DataTypes.TEXT, allowNull: true },
     name: { type: DataTypes.TEXT, allowNull: false },
-    phone: { type: DataTypes.TEXT, allowNull: false },
+    phone: { type: DataTypes.TEXT, allowNull: true },
     email: { type: DataTypes.TEXT, allowNull: false },
-    zip: { type: DataTypes.TEXT, allowNull: false },
-    address: { type: DataTypes.TEXT, allowNull: false },
+    zip: { type: DataTypes.TEXT, allowNull: true },
+    address: { type: DataTypes.TEXT, allowNull: true },
     number: { type: DataTypes.TEXT, allowNull: true },
     complement: { type: DataTypes.TEXT, allowNull: true },
-    neighborhood: { type: DataTypes.TEXT, allowNull: false },
-    city: { type: DataTypes.TEXT, allowNull: false },
-    state: { type: DataTypes.TEXT, allowNull: false },
-    userId: { allowNull: false, type: DataTypes.UUID },
+    neighborhood: { type: DataTypes.TEXT, allowNull: true },
+    city: { type: DataTypes.TEXT, allowNull: true },
+    state: { type: DataTypes.TEXT, allowNull: true },
+    userId: { type: DataTypes.UUID, allowNull: false },
   });
 
   return Profile;

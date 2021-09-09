@@ -1,32 +1,23 @@
-import { ChangeEvent, useEffect, useMemo, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import NumberFormat from "react-number-format";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { getAddressFromCEP, getUserInitials } from "@iustitia/site/shared-utils";
-import { Me } from "../..";
+import {
+  getAddressFromCEP,
+  getUserInitials,
+} from "@iustitia/site/shared-utils";
 import Header from "../../components/dashboard/header/Header";
 import { UploadCloudIcon } from "../../icons";
-import { setProfile } from "../../services";
+import { IProfile } from "../../interfaces";
+import { updateProfile } from "../../services";
 
 interface ProfileProps {
-  me?: Me;
-  setMe?(me: Me): void;
+  profile?: IProfile;
+  setProfile?(profile: IProfile): void;
 }
 
-type IFormValues = {
-  name: string;
-  email: string;
-  phone: string;
-  zip: string;
-  address: string;
-  number: string;
-  complement: string;
-  neighborhood: string;
-  city: string;
-  state: string;
-  avatar: FileList;
-};
+export type IProfileForm = Omit<IProfile, "avatar"> & { avatar: FileList };
 
 const schema = yup.object().shape({
   name: yup.string().required(),
@@ -37,31 +28,21 @@ const schema = yup.object().shape({
   neighborhood: yup.string().required(),
   city: yup.string().required(),
   state: yup.string().required(),
-  avatar: yup
-    .mixed()
-    .test("fileSize", "Arquivo é muito grande", (value) => {
-      return value && value[0].size <= 2000000;
-    })
-    .test("type", "Somente Imagens são permitidas", (value) => {
-      const allowedExtension = ["image/jpeg", "image/jpg", "image/png"];
-      return value && allowedExtension.includes(value[0].type);
-    }),
 });
 
-export function Profile({ me, setMe }: ProfileProps) {
+export function Profile({ profile, setProfile }: ProfileProps) {
   const defaultValues = {
-    name: "",
-    email: me?.email || "",
-    phone: "",
-    zip: "",
-    address: "",
-    number: "",
-    complement: "",
-    neighborhood: "",
-    city: "",
-    state: "",
+    name: profile?.name || "",
+    email: profile?.email || "",
+    phone: profile?.phone || "",
+    zip: profile?.zip || "",
+    address: profile?.address || "",
+    number: profile?.number || "",
+    complement: profile?.complement || "",
+    neighborhood: profile?.neighborhood || "",
+    city: profile?.city || "",
+    state: profile?.state || "",
   };
-
   const {
     control,
     register,
@@ -70,18 +51,51 @@ export function Profile({ me, setMe }: ProfileProps) {
     setError,
     clearErrors,
     formState: { errors },
-  } = useForm<IFormValues>({
+  } = useForm<IProfileForm>({
     resolver: yupResolver(schema),
     defaultValues,
   });
   const avatarRegister = register("avatar");
   const [selectedFile, setSelectedFile] = useState<File>();
   const [preview, setPreview] = useState<string | undefined>("");
+  const [validZip, setValidZip] = useState(!!defaultValues.zip);
+
+  useEffect(() => {
+    if (!selectedFile) {
+      if (profile?.avatar) {
+        setPreview(`${process.env.NX_AVATAR_URL}${profile?.avatar}`);
+      }
+      return;
+    }
+    const objectUrl = URL.createObjectURL(selectedFile);
+    setPreview(objectUrl);
+    return () => URL.revokeObjectURL(objectUrl);
+  }, [profile?.avatar, selectedFile]);
+
+  const onSelectFile = (e: ChangeEvent<HTMLInputElement>) => {
+    if (!e.target.files || e.target.files.length === 0) {
+      setSelectedFile(undefined);
+      return;
+    }
+    const file = e.target.files[0];
+    const allowedExtension = ["image/jpeg", "image/jpg", "image/png"];
+    if (!allowedExtension.includes(file.type)) {
+      setError("avatar", { message: "Somente arquivo JPG ou PNG" });
+      return;
+    }
+    if (file.size > 1000000) {
+      setError("avatar", { message: "Arquivo deve ter até 1 mega" });
+      return;
+    }
+    clearErrors("avatar");
+    setSelectedFile(file);
+  };
 
   async function fetchCEP(zip: string) {
     try {
       const data = await getAddressFromCEP(zip);
       if (data) {
+        setValidZip(true);
         clearErrors("zip");
         setValue("state", data.uf);
         clearErrors("state");
@@ -93,7 +107,7 @@ export function Profile({ me, setMe }: ProfileProps) {
         clearErrors("city");
       }
     } catch (err) {
-      console.log(err);
+      setValidZip(false);
       setError("zip", { type: "manual" });
       setValue("address", "");
       setValue("neighborhood", "");
@@ -102,27 +116,11 @@ export function Profile({ me, setMe }: ProfileProps) {
     }
   }
 
-  useEffect(() => {
-    if (!selectedFile) {
-      setPreview(`${process.env.NX_AVATAR_URL}${me?.avatar}`);
+  async function onSubmit(data: IProfileForm) {
+    if (!validZip) {
+      setError("zip", { type: "manual" });
       return;
     }
-    const objectUrl = URL.createObjectURL(selectedFile);
-    setPreview(objectUrl);
-
-    // free memory when ever this component is unmounted
-    return () => URL.revokeObjectURL(objectUrl);
-  }, [me?.avatar, selectedFile]);
-
-  const onSelectFile = (e: ChangeEvent<HTMLInputElement>) => {
-    if (!e.target.files || e.target.files.length === 0) {
-      setSelectedFile(undefined);
-      return;
-    }
-    setSelectedFile(e.target.files[0]);
-  };
-
-  async function onSubmit(data: IFormValues) {
     const formData = new FormData();
     Object.entries(data).forEach(([key, value]) => {
       if (key !== "avatar") {
@@ -133,10 +131,12 @@ export function Profile({ me, setMe }: ProfileProps) {
     });
 
     try {
-      const res = await setProfile(formData);
-      console.log("onSubmit res", res)
-    }catch (err) {
-      console.log(err)
+      const profileData: IProfile = await updateProfile(formData);
+      if (profileData && setProfile) {
+        setProfile(profileData);
+      }
+    } catch (err) {
+      console.log(err);
     }
   }
 
@@ -149,7 +149,7 @@ export function Profile({ me, setMe }: ProfileProps) {
           <div className="grid grid-cols-12 gap-4 col-span-full lg:col-span-3">
             <div className="col-span-full sm:col-span-4">
               <label htmlFor="name" className="text-sm">
-                Nome
+                Nome *
               </label>
               <input
                 {...register("name")}
@@ -165,7 +165,7 @@ export function Profile({ me, setMe }: ProfileProps) {
             </div>
             <div className="col-span-full sm:col-span-4">
               <label htmlFor="name" className="text-sm">
-                Email
+                Email *
               </label>
               <input
                 {...register("email")}
@@ -181,7 +181,7 @@ export function Profile({ me, setMe }: ProfileProps) {
             </div>
             <div className="col-span-full sm:col-span-4">
               <label htmlFor="name" className="text-sm">
-                Telefone
+                Telefone *
               </label>
               <Controller
                 name="phone"
@@ -210,7 +210,7 @@ export function Profile({ me, setMe }: ProfileProps) {
             </div>
             <div className="col-span-full sm:col-span-3">
               <label htmlFor="name" className="text-sm">
-                CEP
+                CEP *
               </label>
               <Controller
                 name="zip"
@@ -240,7 +240,7 @@ export function Profile({ me, setMe }: ProfileProps) {
             </div>
             <div className="col-span-full sm:col-span-9">
               <label htmlFor="name" className="text-sm">
-                Endereço
+                Endereço *
               </label>
               <input
                 {...register("address")}
@@ -286,9 +286,9 @@ export function Profile({ me, setMe }: ProfileProps) {
                 }`}
               />
             </div>
-            <div className="col-span-full sm:col-span-4">
+            <div className="col-span-full sm:col-span-3">
               <label htmlFor="name" className="text-sm">
-                Bairro
+                Bairro *
               </label>
               <input
                 {...register("neighborhood")}
@@ -304,7 +304,7 @@ export function Profile({ me, setMe }: ProfileProps) {
             </div>
             <div className="col-span-full sm:col-span-4">
               <label htmlFor="name" className="text-sm">
-                Cidade
+                Cidade *
               </label>
               <input
                 {...register("city")}
@@ -318,22 +318,50 @@ export function Profile({ me, setMe }: ProfileProps) {
                 }`}
               />
             </div>
-            <div className="col-span-full sm:col-span-1">
+            <div className="col-span-full sm:col-span-2">
               <label htmlFor="name" className="text-sm">
-                Estado
+                UF *
               </label>
-              <input
+              <select
                 {...register("state")}
                 id="state"
-                type="text"
-                placeholder="Estado"
                 className={`w-full rounded-md focus:ring-0 focus:ring-opacity-75 text-gray-900 ${
                   errors.state
                     ? `focus:ring-red-500 border-red-500`
                     : `focus:ring-primary-500 border-gray-300`
                 }`}
-              />
+              >
+                <option value="">UF</option>
+                <option value={"AC"}>AC</option>
+                <option value={"AL"}>AL</option>
+                <option value={"AP"}>AP</option>
+                <option value={"AM"}>AM</option>
+                <option value={"BA"}>BA</option>
+                <option value={"CE"}>CE</option>
+                <option value={"DF"}>DF</option>
+                <option value={"ES"}>ES</option>
+                <option value={"GO"}>GO</option>
+                <option value={"MA"}>MA</option>
+                <option value={"MT"}>MT</option>
+                <option value={"MS"}>MS</option>
+                <option value={"MG"}>MG</option>
+                <option value={"PA"}>PA</option>
+                <option value={"PB"}>PB</option>
+                <option value={"PR"}>PR</option>
+                <option value={"PE"}>PE</option>
+                <option value={"PI"}>PI</option>
+                <option value={"RJ"}>RJ</option>
+                <option value={"RN"}>RN</option>
+                <option value={"RS"}>RS</option>
+                <option value={"RO"}>RO</option>
+                <option value={"RR"}>RR</option>
+                <option value={"SC"}>SC</option>
+                <option value={"SP"}>SP</option>
+                <option value={"SE"}>SE</option>
+                <option value={"TO"}>TO</option>
+              </select>
             </div>
+
             <div className="col-span-full flex flex-col items-center md:items-end">
               <label
                 htmlFor="avatar"
@@ -348,7 +376,7 @@ export function Profile({ me, setMe }: ProfileProps) {
                     />
                   ) : (
                     <div className="w-11 h-11 rounded-full flex justify-center items-center text-center font-bold text-2xl text-primary-500 bg-primary-50 hover:text-primary-900 hover:bg-primary-100 focus:outline-none focus:bg-primary-100 focus:ring-primary-900">
-                      {getUserInitials(me?.username)}
+                      {profile?.name ? getUserInitials(profile?.name) : "I"}
                     </div>
                   )}
                   <UploadCloudIcon styles="w-8 h-8" />

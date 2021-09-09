@@ -3,13 +3,13 @@ import { Link, useHistory } from "react-router-dom";
 import { SiteRoutes as Routes, SiteRoutes } from "@iustitia/react-routes";
 import { logout } from "@iustitia/site/auth";
 import { getUserInitials } from "@iustitia/site/shared-utils";
-import { Me } from "../../../pages/layout/Layout";
+import { IProfile } from "../../../interfaces";
 
 export interface NavAvatarProps {
-  me: Me;
+  profile: IProfile;
 }
 
-export function NavAvatar({ me }: NavAvatarProps) {
+export function NavAvatar({ profile }: NavAvatarProps) {
   const history = useHistory();
   const divRef = useRef<HTMLDivElement>(null);
   const [open, setOpen] = useState(false);
@@ -32,14 +32,14 @@ export function NavAvatar({ me }: NavAvatarProps) {
     history.push(Routes.SignIn);
   };
 
-  function avatarButton(me: Me) {
-    if (!me.avatar) {
+  function avatarButton(profile: IProfile) {
+    if (!profile.avatar) {
       return (
         <button
           onClick={() => setOpen(!open)}
           className="w-11 h-11 rounded-full flex justify-center items-center text-center font-bold text-2xl text-primary-500 bg-primary-50 hover:text-primary-900 hover:bg-primary-100 focus:outline-none focus:bg-primary-100 focus:ring-primary-900"
         >
-          {getUserInitials(me.username)}
+          {profile.name ? getUserInitials(profile.name) : "I"}
         </button>
       );
     }
@@ -51,8 +51,8 @@ export function NavAvatar({ me }: NavAvatarProps) {
         <span className="sr-only">Perfil Menu</span>
         <img
           className="w-10 h-10 rounded-full"
-          src={`${process.env.NX_AVATAR_URL}${me.avatar}`}
-          alt={me.username}
+          src={`${process.env.NX_AVATAR_URL}${profile.avatar}`}
+          alt={profile.name}
         />
       </button>
     );
@@ -60,7 +60,7 @@ export function NavAvatar({ me }: NavAvatarProps) {
 
   return (
     <div className="relative z-50">
-      {avatarButton(me)}
+      {avatarButton(profile)}
       <div
         ref={divRef}
         className={`absolute right-0 w-48 py-1 bg-white rounded-md shadow-lg top-12 ring-1 ring-black ring-opacity-5 focus:outline-none ${

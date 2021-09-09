@@ -6,18 +6,13 @@ import {
   useEffect,
   useState,
 } from "react";
-import { getCurrentUser } from "@iustitia/site/auth";
+import { getProfile } from "../../services";
 import { Menu } from "../..";
 import Nav from "../../components/nav/Nav";
 import Callout, {
   CALLOUTTYPES,
 } from "../../components/dashboard/callout/Callout";
-
-export interface Me {
-  email: string;
-  createdAt: string;
-  updatedAt: string;
-}
+import { IProfile } from "../../interfaces";
 
 interface LayoutProps {
   children: ReactNode;
@@ -27,7 +22,7 @@ export function Layout({ children }: LayoutProps) {
   const [menuOpen, setMenuOpen] = useState(true);
   const [navOpen, setNavOpen] = useState(false);
   const [notificationOpen, setNotificationOpen] = useState(false);
-  const [me, setMe] = useState({} as Me);
+  const [profile, setProfile] = useState({} as IProfile);
 
   useEffect(() => {
     const { innerWidth: width } = window;
@@ -36,8 +31,8 @@ export function Layout({ children }: LayoutProps) {
     whoIAm();
     async function whoIAm() {
       try {
-        const data: Me = await getCurrentUser();
-        setMe(data);
+        const data: IProfile = await getProfile();
+        setProfile(data);
       } catch (err) {
         console.log(err);
       }
@@ -55,27 +50,31 @@ export function Layout({ children }: LayoutProps) {
           navOpen={navOpen}
           setNotificationOpen={setNotificationOpen}
           notificationOpen={notificationOpen}
-          me={me}
+          profile={profile}
         />
 
-        <main className="w-full lg:max-w-screen-lg h-full bg-gray-50 flex flex-col self-center">
-          <Callout
-            type={CALLOUTTYPES.WARNING}
-            title="Seu cadastro está"
-            emphasis="Incompleto"
-            content="Por favor, acesse seu perfil e complete os items destacados."
-          />
+       <main className="w-full lg:max-w-screen-lg h-full bg-gray-50 flex flex-col self-center">
+
+          {!profile.zip && (
+            <Callout
+              type={CALLOUTTYPES.WARNING}
+              title="Seu cadastro está"
+              emphasis="Incompleto"
+              content="Acesse seu Perfil clicando em suas iniciais no canto superior direito."
+            />
+          )}
+
 
           <Callout
-            type={CALLOUTTYPES.ERROR}
+            type={CALLOUTTYPES.WARNING}
             title="Nenhum Escritório Cadastrado"
             content="Por favor, acesse seu perfil e complete os items destacados."
           />
 
-          {me.email &&
+          {profile.email &&
             Children.map(children, (child) => {
               if (isValidElement(child)) {
-                return cloneElement(child, { me, setMe });
+                return cloneElement(child, { profile, setProfile });
               }
               return child;
             })}

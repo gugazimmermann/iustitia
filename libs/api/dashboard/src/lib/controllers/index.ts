@@ -19,32 +19,67 @@ export async function updateProfile(req, res) {
   }
   body.userId = req.userId
   try {
-    let profile = await database.Profile.findOne({ where: { userId: req.userId } });
-    if (!profile) {
-      await database.Profile.create(body);
+    const profile = await database.Profile.findOne({ where: { userId: req.userId } });
+    profile.update(body)
+    if (req.file) {
+      const fileName = `${req.userId.split("-").join("")}.${req.file.originalname.split('.').pop()}`
+      AWS.config.update({
+        accessKeyId: process.env.NX_ACCESS_KEY_ID,
+        secretAccessKey: process.env.NX_SECRET_ACCESS_KEY,
+        region: "us-east-1"
+      })
+      const s3 = new AWS.S3();
+      const params = {
+        Bucket: 'iustitia-io-avatars',
+        Key: fileName,
+        Body: req.file.buffer
+      };
+      s3.putObject(params, async (err, data) => {
+        if (err) {
+          console.error(err);
+        } else {
+          profile.update({ avatar: fileName });
+        }
+      });
     } else {
-      profile.update(body)
+      profile.update({ avatar: null });
     }
-    const fileName = `${req.userId.split("-").join("")}.${req.file.originalname.split('.').pop()}`
-    AWS.config.update({
-      accessKeyId: process.env.NX_ACCESS_KEY_ID,
-      secretAccessKey: process.env.NX_SECRET_ACCESS_KEY,
-      region: "us-east-1"
-    })
-    const s3 = new AWS.S3();
-    const params = {
-      Bucket: 'iustitia-io-avatars',
-      Key: fileName,
-      Body: req.file.buffer
-    };
-    s3.putObject(params, async (err, data) => {
-      if (err) {
-        console.error(err);
-      } else {
-        profile = await database.Profile.findOne({ where: { userId: req.userId } });
-        profile.update({ avatar: fileName });
-        return res.send({ message: "Perfil alterado com sucesso!" });
-      }
+    return res.send({
+      avatar: profile.avatar,
+      name: profile.name,
+      email: profile.email,
+      phone: profile.phone,
+      zip: profile.zip,
+      address: profile.address,
+      number: profile.number,
+      complement: profile.complement,
+      neighborhood: profile.neighborhood,
+      city: profile.city,
+      state: profile.state
+    });
+  } catch (err) {
+    return res.status(500).send({ message: err.message });
+  }
+}
+
+export async function getProfile(req, res) {
+  try {
+    const profile = await database.Profile.findOne({ where: { userId: req.userId } });
+    if (!profile) {
+      return res.status(404).send({ message: "Perfil não encontrado!" });
+    }
+    return res.status(200).send({
+      avatar: profile.avatar,
+      name: profile.name,
+      email: profile.email,
+      phone: profile.phone,
+      zip: profile.zip,
+      address: profile.address,
+      number: profile.number,
+      complement: profile.complement,
+      neighborhood: profile.neighborhood,
+      city: profile.city,
+      state: profile.state
     });
   } catch (err) {
     return res.status(500).send({ message: err.message });

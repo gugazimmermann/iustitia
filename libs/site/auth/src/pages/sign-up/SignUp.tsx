@@ -3,11 +3,12 @@ import { Link as RouterLink, useParams, useHistory } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { SiteRoutes as Routes } from "@iustitia/react-routes";
 import { AlertError, LoadingButton } from "@iustitia/site/shared-components";
-import {validateEmail} from "@iustitia/site/shared-utils";
+import { validateEmail } from "@iustitia/site/shared-utils";
 import { Title } from "../..";
 import { signup } from "../../services/auth";
 
 type Form = {
+  name: string;
   email: string;
   password: string;
   repeatPassword: string;
@@ -63,7 +64,7 @@ export function SignUp() {
       await signup(form);
       setLoading(false);
       history.push(Routes.SignIn, { email: form.email });
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       setError(err.message as string);
       setLoading(false);
@@ -77,9 +78,28 @@ export function SignUp() {
         subtitle="Faça seu cadastro no plano"
         plan={plan}
       />
-      {error && (<AlertError text={error} />)}
+      {error && <AlertError text={error} />}
       <section className="mt-5">
         <form className="flex flex-col" onSubmit={handleSubmit(onSubmit)}>
+          <div className="mb-6 rounded">
+            <label
+              className="block text-gray-700 text-sm font-bold mb-2 ml-3"
+              htmlFor="username"
+            >
+              Nome
+            </label>
+            <input
+              type="text"
+              id="username"
+              {...register("name", { required: true })}
+              className={
+                `bg-gray-200 rounded w-full text-gray-700 focus:outline-none border-b-4 border-gray-300 transition duration-500 px-3 pb-3 ` +
+                (errors.name
+                  ? `border-red-600 `
+                  : `focus:border-primary-600`)
+              }
+            />
+          </div>
           <div className="mb-6 rounded">
             <label
               className="block text-gray-700 text-sm font-bold mb-2 ml-3"

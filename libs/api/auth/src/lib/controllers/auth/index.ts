@@ -24,7 +24,7 @@ function verifyExpiration(token) {
 };
 
 export async function signup(req, res) {
-  if (!req.body?.password || !req.body?.email || !validateEmail(req.body.email)) {
+  if (!req.body?.name || !req.body?.password || !req.body?.email || !validateEmail(req.body.email)) {
     return res.status(401).send({ message: "Dados inválidos!" });
   }
   try {
@@ -32,7 +32,12 @@ export async function signup(req, res) {
       email: req.body.email,
       password: bcrypt.hashSync(req.body.password, 8),
     };
-    await database.User.create(userData);
+    const user = await database.User.create(userData);
+    await database.Profile.create({
+      name: req.body.name,
+      email: userData.email,
+      userId: user.id
+    })
     return res.send({ message: "Usuário cadastrado com sucesso!" });
   } catch (err) {
     return res.status(500).send({ message: err.message });

@@ -15,13 +15,3 @@ export async function getMe() {
     return errorHandler(err)
   }
 };
-
-export async function getCurrentUser() {
-  try {
-    const { data } = await api.get("/auth/currentuser");
-    return data
-  } catch (err) {
-    return errorHandler(err)
-  }
-};
-
