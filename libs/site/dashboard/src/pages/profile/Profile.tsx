@@ -123,7 +123,6 @@ export function Profile({ me, setMe }: ProfileProps) {
   };
 
   async function onSubmit(data: IFormValues) {
-    console.log("onSubmit data", data)
     const formData = new FormData();
     Object.entries(data).forEach(([key, value]) => {
       if (key !== "avatar") {
