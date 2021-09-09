@@ -1,6 +1,6 @@
 import { database } from '@iustitia/api/database';
 import { validateEmail } from '@iustitia/site/shared-utils';
-
+import * as AWS from 'aws-sdk';
 
 export async function updateProfile(req, res) {
   const { body } = req;
@@ -26,9 +26,28 @@ export async function updateProfile(req, res) {
       profile.update(body)
     }
     const user = await database.User.findOne({ where: { id: req.userId } });
-    const file = `${req.userId.split("-").join("")}.${req.file.originalname.split('.').pop()}`
-    user.update({ avatar: file });
-    return res.send({ message: "Perfil alterado com sucesso!" });
+    const fileName = `${req.userId.split("-").join("")}.${req.file.originalname.split('.').pop()}`
+
+    AWS.config.update({
+      accessKeyId: process.env.NX_ACCESS_KEY_ID,
+      secretAccessKey: process.env.NX_SECRET_ACCESS_KEY,
+      region: "us-east-1"
+    })
+    const s3 = new AWS.S3();
+    const params = {
+      Bucket: 'iustitia-io-avatars',
+      Key: fileName,
+      Body: req.file.buffer
+    };
+    s3.putObject(params, (err, data) => {
+      if (err) {
+        console.error(err);
+      } else {
+        console.log(data);
+        user.update({ avatar: fileName });
+        return res.send({ message: "Perfil alterado com sucesso!" });
+      }
+    });
   } catch (err) {
     return res.status(500).send({ message: err.message });
   }

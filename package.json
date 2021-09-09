@@ -1,7 +1,7 @@
 {
   "name": "iustitia",
   "description": "Iustitia - App pra Advogados",
-  "version": "0.8.7",
+  "version": "0.8.8",
   "license": "MIT",
   "engines": {
     "node": ">=14"
@@ -42,6 +42,7 @@
     "@hookform/resolvers": "^2.8.0",
     "@tailwindcss/forms": "^0.3.3",
     "autoprefixer": "^10.3.3",
+    "aws-sdk": "^2.985.0",
     "axios": "^0.21.1",
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.19.0",
