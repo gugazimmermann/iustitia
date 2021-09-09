@@ -7,7 +7,7 @@ import {
   SignIn,
   SignUp,
 } from "@iustitia/site/auth";
-import { Layout, Main, NotFound } from "@iustitia/site/dashboard";
+import { Layout, Main, NotFound, Profile } from "@iustitia/site/dashboard";
 import ProtectedRoute from "./routes/protected-route/ProtectedRoute";
 import PublicRoute from "./routes/public-route/PublicRoute";
 
@@ -42,6 +42,11 @@ export const App = () => {
       <ProtectedRoute exact path={Routes.Dashboard}>
         <Layout>
           <Main />
+        </Layout>
+      </ProtectedRoute>
+      <ProtectedRoute exact path={Routes.Profile}>
+        <Layout>
+          <Profile />
         </Layout>
       </ProtectedRoute>
       <Route path="*">

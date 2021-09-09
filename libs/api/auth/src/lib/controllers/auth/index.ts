@@ -5,8 +5,8 @@ import { DateTime } from "luxon";
 import { SiteRoutes as Routes } from '@iustitia/react-routes';
 import { database } from '@iustitia/api/database';
 import { sendForgotPasswordEmail } from '@iustitia/api/email';
+import { validateEmail } from "@iustitia/site/shared-utils";
 import config from "../../config"
-import validateEmail from "../../utils/validate-email";
 
 async function createToken(user) {
   const expiredAt = new Date();

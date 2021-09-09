@@ -8,5 +8,6 @@ export * from "./pages/sign-in/SignIn";
 export * from "./pages/forgot-password/ForgotPassword";
 export * from "./pages/change-password/ChangePassword";
 export * from "./pages/layout/Layout";
+export { default as api } from "./services/api";
 export { getUser, logout } from "./services/auth";
 export * from "./services/user";

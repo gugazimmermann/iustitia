@@ -4,6 +4,7 @@ import * as cors from "cors";
 import { database } from "@iustitia/api/database";
 import { authRoutes } from "@iustitia/api/auth";
 import { publicRoutes } from "@iustitia/api/public";
+import { dashboardRoutes } from "@iustitia/api/dashboard";
 
 const app = express();
 app.use(morgan("dev"));
@@ -22,8 +23,9 @@ app.use((req, res, next) => {
   next();
 });
 
-authRoutes(app);
 publicRoutes(app);
+authRoutes(app);
+dashboardRoutes(app);
 
 app.use((req, res) => res.status(404).send("Not Found!"));
 app.use((err, req, res, next) => {

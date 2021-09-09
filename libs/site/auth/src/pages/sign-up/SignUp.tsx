@@ -3,8 +3,8 @@ import { Link as RouterLink, useParams, useHistory } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { SiteRoutes as Routes } from "@iustitia/react-routes";
 import { AlertError, LoadingButton } from "@iustitia/site/shared-components";
+import {validateEmail} from "@iustitia/site/shared-utils";
 import { Title } from "../..";
-import validateEmail from "../../utils/validate-email";
 import { signup } from "../../services/auth";
 
 type Form = {

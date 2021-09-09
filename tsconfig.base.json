@@ -16,6 +16,7 @@
     "baseUrl": ".",
     "paths": {
       "@iustitia/api/auth": ["libs/api/auth/src/index.ts"],
+      "@iustitia/api/dashboard": ["libs/api/dashboard/src/index.ts"],
       "@iustitia/api/database": ["libs/api/database/src/index.ts"],
       "@iustitia/api/email": ["libs/api/email/src/index.ts"],
       "@iustitia/api/public": ["libs/api/public/src/index.ts"],
@@ -28,7 +29,8 @@
       "@iustitia/site/dashboard": ["libs/site/dashboard/src/index.ts"],
       "@iustitia/site/shared-components": [
         "libs/site/shared-components/src/index.ts"
-      ]
+      ],
+      "@iustitia/site/shared-utils": ["libs/site/shared-utils/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

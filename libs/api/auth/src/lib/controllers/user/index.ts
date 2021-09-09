@@ -10,6 +10,7 @@ export async function userInfo(req, res) {
       username: user.username,
       email: user.email,
       tenant: user.tenant,
+      avatar: user.avatar,
       createdAt: user.createdAt,
       updatedAt: user.updatedAt
     });

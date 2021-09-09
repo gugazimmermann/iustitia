@@ -1,4 +1,4 @@
-import errorHandler from "../utils/error-handler";
+import { errorHandler } from "@iustitia/site/shared-utils";
 import api from "./api";
 import TokenService from "./token";
 

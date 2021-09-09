@@ -33,6 +33,9 @@
     "api-auth": {
       "tags": []
     },
+    "api-dashboard": {
+      "tags": []
+    },
     "api-database": {
       "tags": []
     },
@@ -72,6 +75,9 @@
       "implicitDependencies": ["site"]
     },
     "site-shared-components": {
+      "tags": []
+    },
+    "site-shared-utils": {
       "tags": []
     }
   }

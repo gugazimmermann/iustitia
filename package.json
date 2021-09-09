@@ -1,7 +1,7 @@
 {
   "name": "iustitia",
   "description": "Iustitia - App pra Advogados",
-  "version": "0.8.6",
+  "version": "0.8.7",
   "license": "MIT",
   "engines": {
     "node": ">=14"
@@ -39,6 +39,7 @@
   },
   "private": true,
   "dependencies": {
+    "@hookform/resolvers": "^2.8.0",
     "@tailwindcss/forms": "^0.3.3",
     "autoprefixer": "^10.3.3",
     "axios": "^0.21.1",
@@ -50,19 +51,22 @@
     "jsonwebtoken": "^8.5.1",
     "luxon": "^2.0.2",
     "morgan": "^1.10.0",
+    "multer": "^1.4.3",
     "nodemailer": "^6.6.3",
     "pg": "^8.7.1",
     "pg-hstore": "^2.3.4",
     "postcss": "^8.3.6",
     "react": "17.0.2",
     "react-dom": "17.0.2",
-    "react-hook-form": "^7.14.1",
+    "react-hook-form": "^7.15.1",
+    "react-number-format": "^4.7.3",
     "react-router-dom": "5.2.0",
     "regenerator-runtime": "0.13.7",
     "sequelize": "^6.6.5",
     "tailwindcss": "^2.2.8",
     "tslib": "^2.0.0",
-    "uuid": "^8.3.2"
+    "uuid": "^8.3.2",
+    "yup": "^0.32.9"
   },
   "devDependencies": {
     "@nrwl/cli": "12.8.0",

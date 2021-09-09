@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState } from "react";
-import { useHistory } from "react-router-dom";
-import { SiteRoutes as Routes } from "@iustitia/react-routes";
+import { Link, useHistory } from "react-router-dom";
+import { SiteRoutes as Routes, SiteRoutes } from "@iustitia/react-routes";
 import { logout } from "@iustitia/site/auth";
+import { getUserInitials } from "@iustitia/site/shared-utils";
 import { Me } from "../../../pages/layout/Layout";
 
 export interface NavAvatarProps {
@@ -26,15 +27,6 @@ export function NavAvatar({ me }: NavAvatarProps) {
     };
   }, [open]);
 
-  function getInitials(username: string) {
-    if (username) {
-      const name = username.split(" ");
-      if (name.length === 1) return name[0][0];
-      return `${name[0][0]}${name[1][0]}`;
-    }
-    return ".";
-  }
-
   const handleLogout = () => {
     logout();
     history.push(Routes.SignIn);
@@ -47,7 +39,7 @@ export function NavAvatar({ me }: NavAvatarProps) {
           onClick={() => setOpen(!open)}
           className="w-11 h-11 rounded-full flex justify-center items-center text-center font-bold text-2xl text-primary-500 bg-primary-50 hover:text-primary-900 hover:bg-primary-100 focus:outline-none focus:bg-primary-100 focus:ring-primary-900"
         >
-          {getInitials(me.username)}
+          {getUserInitials(me.username)}
         </button>
       );
     }
@@ -75,9 +67,12 @@ export function NavAvatar({ me }: NavAvatarProps) {
           !open ? `hidden` : ``
         }`}
       >
-        <div className="cursor-pointer w-full block px-4 py-2 text-sm text-gray-700 transition-colors hover:bg-gray-100">
+        <Link
+          to={SiteRoutes.Profile}
+          className="cursor-pointer w-full block px-4 py-2 text-sm text-gray-700 transition-colors hover:bg-gray-100"
+        >
           Seu Perfil
-        </div>
+        </Link>
         <div className="cursor-pointer w-full block px-4 py-2 text-sm text-gray-700 transition-colors hover:bg-gray-100">
           Configurações
         </div>

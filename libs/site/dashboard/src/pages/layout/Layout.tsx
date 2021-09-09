@@ -1,4 +1,11 @@
-import { useEffect, useState } from "react";
+import {
+  Children,
+  cloneElement,
+  isValidElement,
+  ReactNode,
+  useEffect,
+  useState,
+} from "react";
 import { getCurrentUser } from "@iustitia/site/auth";
 import { Menu } from "../..";
 import Nav from "../../components/nav/Nav";
@@ -12,11 +19,11 @@ export interface Me {
   tenant: string;
   createdAt: string;
   updatedAt: string;
-  avatar?: string;
+  avatar: string;
 }
 
 interface LayoutProps {
-  children: React.ReactNode;
+  children: ReactNode;
 }
 
 export function Layout({ children }: LayoutProps) {
@@ -33,7 +40,6 @@ export function Layout({ children }: LayoutProps) {
     async function whoIAm() {
       try {
         const data: Me = await getCurrentUser();
-        // data.avatar = "https://avatars.githubusercontent.com/u/48167381?v=4"
         setMe(data);
       } catch (err) {
         console.log(err);
@@ -69,7 +75,13 @@ export function Layout({ children }: LayoutProps) {
             content="Por favor, acesse seu perfil e complete os items destacados."
           />
 
-          {children}
+          {me.email &&
+            Children.map(children, (child) => {
+              if (isValidElement(child)) {
+                return cloneElement(child, { me, setMe });
+              }
+              return child;
+            })}
         </main>
       </div>
     </div>

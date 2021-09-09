@@ -39,7 +39,7 @@ export function Callout({ type, title, emphasis, content }: CalloutProps) {
     : `border-blue-500`;
 
   return (
-    <div className="m-2 relative flex flex-wrap sm:flex-no-wrap justify-between bg-white rounded overflow-hidden p-2 space-x-0 sm:space-x-2 shadow-md">
+    <div className="m-2 relative flex flex-wrap sm:flex-no-wrap justify-between bg-white rounded p-2 space-x-0 sm:space-x-2 shadow-md">
       <div
         className={`absolute inset-0 border-l-4 ${border}`}
       ></div>
