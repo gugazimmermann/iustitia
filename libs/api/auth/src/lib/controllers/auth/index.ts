@@ -24,17 +24,15 @@ function verifyExpiration(token) {
 };
 
 export async function signup(req, res) {
-  if (!req.body?.username || !req.body?.password || !req.body?.email || !validateEmail(req.body.email)) {
+  if (!req.body?.password || !req.body?.email || !validateEmail(req.body.email)) {
     return res.status(401).send({ message: "Dados inválidos!" });
   }
   try {
     const userData = {
-      username: req.body.username,
       email: req.body.email,
       password: bcrypt.hashSync(req.body.password, 8),
     };
-    const user = await database.User.create(userData);
-    await user.update({ tenant: user.id });
+    await database.User.create(userData);
     return res.send({ message: "Usuário cadastrado com sucesso!" });
   } catch (err) {
     return res.status(500).send({ message: err.message });

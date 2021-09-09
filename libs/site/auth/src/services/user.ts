@@ -2,9 +2,7 @@ import { errorHandler } from "@iustitia/site/shared-utils";
 import api from './api'
 
 export type ICurrentUser = {
-  username: string;
   email: string;
-  tenant: string;
   createdAt: string;
   updatedAt: string;
 }

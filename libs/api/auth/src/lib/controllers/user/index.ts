@@ -7,10 +7,7 @@ export async function userInfo(req, res) {
       return res.status(404).send({ message: "Usuário não encontrado!" });
     }
     return res.status(200).send({
-      username: user.username,
       email: user.email,
-      tenant: user.tenant,
-      avatar: user.avatar,
       createdAt: user.createdAt,
       updatedAt: user.updatedAt
     });

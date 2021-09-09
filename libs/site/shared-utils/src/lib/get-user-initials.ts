@@ -1,8 +1,8 @@
-export default function getUserInitials(username: string | undefined) {
-  if (username) {
-    const name = username.split(" ");
-    if (name.length === 1) return name[0][0];
-    return `${name[0][0]}${name[1][0]}`;
+export default function getUserInitials(name: string | undefined) {
+  if (name) {
+    const splitMame = name.split(" ");
+    if (splitMame.length === 1) return splitMame[0][0];
+    return `${splitMame[0][0]}${splitMame[1][0]}`;
   }
   return ".";
 }

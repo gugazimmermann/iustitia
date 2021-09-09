@@ -2,14 +2,11 @@ import { Sequelize, DataTypes, Optional, Model } from "sequelize";
 
 export interface UserAttributes {
   id: string;
-  username: string;
   email: string;
   password: string;
-  tenant: string;
-  avatar: string;
 }
 
-export type UserCreationAttributes = Optional<UserAttributes, 'id' | 'tenant' | 'avatar'>
+export type UserCreationAttributes = Optional<UserAttributes, 'id'>
 
 export interface UserInstance
   extends Model<UserAttributes, UserCreationAttributes>,
@@ -28,11 +25,8 @@ export default function user(sequelize: Sequelize) {
       unique: true,
       primaryKey: true,
     },
-    username: { type: DataTypes.TEXT, allowNull: false },
     email: { type: DataTypes.TEXT, allowNull: false },
-    password: { type: DataTypes.TEXT, allowNull: false },
-    tenant: { type: DataTypes.UUID, allowNull: true },
-    avatar: { type: DataTypes.TEXT, allowNull: true },
+    password: { type: DataTypes.TEXT, allowNull: false }
   });
 
   return User;

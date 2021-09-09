@@ -14,12 +14,9 @@ import Callout, {
 } from "../../components/dashboard/callout/Callout";
 
 export interface Me {
-  username: string;
   email: string;
-  tenant: string;
   createdAt: string;
   updatedAt: string;
-  avatar: string;
 }
 
 interface LayoutProps {

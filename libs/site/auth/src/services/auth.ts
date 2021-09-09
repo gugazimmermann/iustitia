@@ -2,9 +2,9 @@ import { errorHandler } from "@iustitia/site/shared-utils";
 import api from "./api";
 import TokenService from "./token";
 
-export async function signup({ username, email, password }: { username: string, email: string, password: string }) {
+export async function signup({ email, password }: { email: string, password: string }) {
   try {
-    return await api.post("/auth/signup", { username, email, password })
+    return await api.post("/auth/signup", { email, password })
   } catch (err) {
     return errorHandler(err)
   }

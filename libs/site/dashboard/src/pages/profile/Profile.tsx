@@ -50,7 +50,7 @@ const schema = yup.object().shape({
 
 export function Profile({ me, setMe }: ProfileProps) {
   const defaultValues = {
-    name: me?.username || "",
+    name: "",
     email: me?.email || "",
     phone: "",
     zip: "",

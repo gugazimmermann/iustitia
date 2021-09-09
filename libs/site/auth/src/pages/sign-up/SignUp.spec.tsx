@@ -100,15 +100,11 @@ describe("SignUp", () => {
         <SignUp />
       </MemoryRouter>
     );
-    const username = container.querySelector('input[id="username"]') as Element;
     const email = container.querySelector('input[id="email"]') as Element;
     const password = container.querySelector('input[id="password"]') as Element;
     const repeatPassword = container.querySelector(
       'input[id="repeatPassword"]'
     ) as Element;
-    await waitFor(() =>
-      fireEvent.input(username, { target: { value: "Test" } })
-    );
     await waitFor(() => fireEvent.input(email, { target: { value: "teste" } }));
     await waitFor(() =>
       fireEvent.input(password, { target: { value: "123" } })
@@ -132,15 +128,11 @@ describe("SignUp", () => {
         <SignUp />
       </MemoryRouter>
     );
-    const username = container.querySelector('input[id="username"]') as Element;
     const email = container.querySelector('input[id="email"]') as Element;
     const password = container.querySelector('input[id="password"]') as Element;
     const repeatPassword = container.querySelector(
       'input[id="repeatPassword"]'
     ) as Element;
-    await waitFor(() =>
-      fireEvent.input(username, { target: { value: "Test" } })
-    );
     await waitFor(() =>
       fireEvent.input(email, { target: { value: "teste@teste.com" } })
     );
@@ -168,15 +160,11 @@ describe("SignUp", () => {
         <SignUp />
       </MemoryRouter>
     );
-    const username = container.querySelector('input[id="username"]') as Element;
     const email = container.querySelector('input[id="email"]') as Element;
     const password = container.querySelector('input[id="password"]') as Element;
     const repeatPassword = container.querySelector(
       'input[id="repeatPassword"]'
     ) as Element;
-    await waitFor(() =>
-      fireEvent.input(username, { target: { value: "Test" } })
-    );
     await waitFor(() =>
       fireEvent.input(email, { target: { value: "teste@teste.com" } })
     );
@@ -191,7 +179,6 @@ describe("SignUp", () => {
     await waitFor(() => {
       expect(signupSpy).toBeCalled();
       expect(signupSpy).toBeCalledWith({
-        username: "Test",
         email: "teste@teste.com",
         password: "123",
         repeatPassword: "123",

@@ -3,6 +3,7 @@ import { UserInstance } from "./user";
 
 export interface ProfileAttributes {
   id: string;
+  avatar: string;
   name: string;
   email: string;
   phone: string;
@@ -36,6 +37,7 @@ export default function profile(sequelize: Sequelize) {
       unique: true,
       primaryKey: true,
     },
+    avatar: { type: DataTypes.TEXT, allowNull: true },
     name: { type: DataTypes.TEXT, allowNull: false },
     phone: { type: DataTypes.TEXT, allowNull: false },
     email: { type: DataTypes.TEXT, allowNull: false },

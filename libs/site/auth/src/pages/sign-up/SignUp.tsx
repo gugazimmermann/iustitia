@@ -8,7 +8,6 @@ import { Title } from "../..";
 import { signup } from "../../services/auth";
 
 type Form = {
-  username: string;
   email: string;
   password: string;
   repeatPassword: string;
@@ -81,25 +80,6 @@ export function SignUp() {
       {error && (<AlertError text={error} />)}
       <section className="mt-5">
         <form className="flex flex-col" onSubmit={handleSubmit(onSubmit)}>
-          <div className="mb-6 rounded">
-            <label
-              className="block text-gray-700 text-sm font-bold mb-2 ml-3"
-              htmlFor="username"
-            >
-              Nome
-            </label>
-            <input
-              type="text"
-              id="username"
-              {...register("username", { required: true })}
-              className={
-                `bg-gray-200 rounded w-full text-gray-700 focus:outline-none border-b-4 border-gray-300 transition duration-500 px-3 pb-3 ` +
-                (errors.username
-                  ? `border-red-600 `
-                  : `focus:border-primary-600`)
-              }
-            />
-          </div>
           <div className="mb-6 rounded">
             <label
               className="block text-gray-700 text-sm font-bold mb-2 ml-3"

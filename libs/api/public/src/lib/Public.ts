@@ -1,7 +1,5 @@
-import { publicAccess, userById } from "./controllers";
+import { publicAccess } from "./controllers";
 
 export default function Public(app) {
   app.get("/api/public", publicAccess);
-
-  app.post("/api/user", userById);
 }

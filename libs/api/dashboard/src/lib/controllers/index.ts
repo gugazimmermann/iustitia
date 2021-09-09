@@ -19,15 +19,13 @@ export async function updateProfile(req, res) {
   }
   body.userId = req.userId
   try {
-    const profile = await database.Profile.findOne({ where: { userId: req.userId } });
+    let profile = await database.Profile.findOne({ where: { userId: req.userId } });
     if (!profile) {
       await database.Profile.create(body);
     } else {
       profile.update(body)
     }
-    const user = await database.User.findOne({ where: { id: req.userId } });
     const fileName = `${req.userId.split("-").join("")}.${req.file.originalname.split('.').pop()}`
-
     AWS.config.update({
       accessKeyId: process.env.NX_ACCESS_KEY_ID,
       secretAccessKey: process.env.NX_SECRET_ACCESS_KEY,
@@ -39,12 +37,12 @@ export async function updateProfile(req, res) {
       Key: fileName,
       Body: req.file.buffer
     };
-    s3.putObject(params, (err, data) => {
+    s3.putObject(params, async (err, data) => {
       if (err) {
         console.error(err);
       } else {
-        console.log(data);
-        user.update({ avatar: fileName });
+        profile = await database.Profile.findOne({ where: { userId: req.userId } });
+        profile.update({ avatar: fileName });
         return res.send({ message: "Perfil alterado com sucesso!" });
       }
     });
