@@ -29,25 +29,20 @@ describe("SignUp", () => {
         <SignUp />
       </MemoryRouter>
     );
-    const nome = screen.getByLabelText("Nome");
-    expect(nome.className.split(" ").includes("focus:border-primary-600")).toBe(
-      true
-    );
     const email = screen.getByLabelText("Email");
-    expect(nome.className.split(" ").includes("focus:border-primary-600")).toBe(
+    expect(email.className.split(" ").includes("focus:border-primary-600")).toBe(
       true
     );
     const password = screen.getByLabelText("Senha");
-    expect(nome.className.split(" ").includes("focus:border-primary-600")).toBe(
+    expect(password.className.split(" ").includes("focus:border-primary-600")).toBe(
       true
     );
     const repeatPassword = screen.getByLabelText("Repita a Senha");
-    expect(nome.className.split(" ").includes("focus:border-primary-600")).toBe(
+    expect(repeatPassword.className.split(" ").includes("focus:border-primary-600")).toBe(
       true
     );
     const button = screen.getByText("Cadastrar");
     await waitFor(() => fireEvent.click(button));
-    expect(nome.className.split(" ").includes("border-red-600")).toBe(true);
     expect(email.className.split(" ").includes("border-red-600")).toBe(true);
     expect(password.className.split(" ").includes("border-red-600")).toBe(true);
     expect(repeatPassword.className.split(" ").includes("border-red-600")).toBe(
