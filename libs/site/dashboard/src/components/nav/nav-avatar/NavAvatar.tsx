@@ -51,7 +51,7 @@ export function NavAvatar({ me }: NavAvatarProps) {
         <span className="sr-only">Perfil Menu</span>
         <img
           className="w-10 h-10 rounded-full"
-          src={me.avatar}
+          src={`${process.env.NX_AVATAR_URL}${me.avatar}`}
           alt={me.username}
         />
       </button>

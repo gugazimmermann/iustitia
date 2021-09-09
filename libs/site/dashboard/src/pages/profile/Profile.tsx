@@ -104,7 +104,7 @@ export function Profile({ me, setMe }: ProfileProps) {
 
   useEffect(() => {
     if (!selectedFile) {
-      setPreview(me?.avatar);
+      setPreview(`${process.env.NX_AVATAR_URL}${me?.avatar}`);
       return;
     }
     const objectUrl = URL.createObjectURL(selectedFile);
