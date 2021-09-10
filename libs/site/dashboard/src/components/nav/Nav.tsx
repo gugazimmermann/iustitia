@@ -55,7 +55,7 @@ export function Nav({
   }
 
   return (
-    <header className="relative flex-shrink-0 bg-white">
+    <header className="relative flex-shrink-0 bg-white z-40">
       <div className="flex items-center justify-between p-2 border-b h-14">
         <NavMenuButton setMenuOpen={setMenuOpen} menuOpen={menuOpen} />
 
