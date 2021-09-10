@@ -21,5 +21,6 @@ export enum SiteRoutes {
   ChangePassword = "/mudar-senha",
   SignUp = "/cadastrar",
   Dashboard = "/dashboard",
-  Profile = "/perfil"
+  Profile = "/perfil",
+  Escritorios = "/escritorios"
 }

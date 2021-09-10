@@ -19,12 +19,12 @@ export function Menu({ setMenuOpen, menuOpen }: MenuProps) {
           <MenuItem
             item="Dashboards"
             icon={MENUICONS.DASHBOARD}
-            subitems={["dashboard 1", "dashboard 2"]}
+            subitems={["Escritório", "Processos"]}
           />
           <MenuItem
-            item="Documents"
+            item="Processos"
             icon={MENUICONS.DOCUMENT}
-            subitems={["Onboarding", "Office"]}
+            subitems={["Listagem", "Cadastrar"]}
           />
         </nav>
         <MenuFooter />

@@ -73,9 +73,12 @@ export function NavAvatar({ profile }: NavAvatarProps) {
         >
           Seu Perfil
         </Link>
-        <div className="cursor-pointer w-full block px-4 py-2 text-sm text-gray-700 transition-colors hover:bg-gray-100">
-          Configurações
-        </div>
+        <Link
+          to={SiteRoutes.Escritorios}
+          className="cursor-pointer w-full block px-4 py-2 text-sm text-gray-700 transition-colors hover:bg-gray-100"
+        >
+          Escritórios
+        </Link>
         <div
           onClick={() => handleLogout()}
           className="cursor-pointer w-full block px-4 py-2 text-sm text-gray-700 transition-colors hover:bg-gray-100"
