@@ -1,6 +1,22 @@
 import { database } from '@iustitia/api/database';
 import { validateEmail } from '@iustitia/site/shared-utils';
 
+export async function getOneOffice(req, res) {
+  const { tenantId, officeId } = req.params;
+  if (!tenantId || !officeId) {
+    return res.status(400).send({ message: "Dados inválidos!" });
+  }
+  const user = await database.User.findOne({ where: { id: req.userId } });
+  if (user.tenant !== tenantId) {
+    return res.status(401).send({ message: "Sem permissão!" });
+  }
+  try {
+    const office = await database.Office.findByPk(officeId);
+    return res.status(200).send(office);
+  } catch (err) {
+    return res.status(500).send({ message: err.message });
+  }
+}
 
 export async function getAllOffices(req, res) {
   const { tenantId } = req.params;
@@ -9,7 +25,7 @@ export async function getAllOffices(req, res) {
   }
   const user = await database.User.findOne({ where: { id: req.userId } });
   if (user.tenant !== tenantId) {
-    return res.status(404).send({ message: "Nenhum escritório encontrado!" });
+    return res.status(401).send({ message: "Sem permissão!" });
   }
   try {
     const offices = await database.Office.findAll({ where: { tenantId } });
@@ -107,7 +123,7 @@ export async function deleteOffice(req, res) {
   }
   const user = await database.User.findOne({ where: { id: req.userId } });
   if (user.tenant !== office.tenantId) {
-    return res.status(401).send({ message: "Sem permissão para deletar o escritório!" });
+    return res.status(401).send({ message: "Sem permissão!" });
   }
   try {
     await database.Office.destroy({ where: { id: officeId } });

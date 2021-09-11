@@ -19,7 +19,7 @@ export function Menu({ setMenuOpen, menuOpen }: MenuProps) {
           <MenuItem
             item="Dashboards"
             icon={MENUICONS.DASHBOARD}
-            subitems={["Escritório", "Processos"]}
+            subitems={["Escritórios", "Processos"]}
           />
           <MenuItem
             item="Processos"

@@ -85,7 +85,7 @@ export function Layout({ children }: LayoutProps) {
           {profile.email &&
             Children.map(children, (child) => {
               if (isValidElement(child)) {
-                return cloneElement(child, { profile, setProfile, setOffices });
+                return cloneElement(child, { profile, setProfile, offices, setOffices });
               }
               return child;
             })}

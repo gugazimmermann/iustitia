@@ -1,11 +1,12 @@
 export interface BreadcrumbProps {
   before: string[];
   main: string;
+  hide?: boolean;
 }
 
-export function Breadcrumb({ before, main }: BreadcrumbProps) {
+export function Breadcrumb({ before, main, hide  }: BreadcrumbProps) {
   return (
-    <ul className="flex text-gray-500 text-sm lg:text-base">
+    <ul className={`text-gray-500 text-sm ${hide ? `hidden sm:flex` : `flex`}`}>
       {before.map((item, i) => (
         <li key={i} className="inline-flex items-center">
           <span>{item}</span>
@@ -23,7 +24,7 @@ export function Breadcrumb({ before, main }: BreadcrumbProps) {
         </li>
       ))}
       <li className="inline-flex items-center">
-        <span className="text-primary-500 text-2xl">{main}</span>
+        <span className="text-primary-500 text-lg">{main}</span>
       </li>
     </ul>
   );

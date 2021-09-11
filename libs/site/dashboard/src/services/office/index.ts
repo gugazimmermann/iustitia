@@ -2,6 +2,16 @@ import { api, TokenService } from "@iustitia/site/auth";
 import { errorHandler } from "@iustitia/site/shared-utils";
 import { IOffice } from "../../interfaces";
 
+export async function getOne(officeId: string) {
+  try {
+    const tenantId = TokenService.getLocalTenantId();
+    const { data } = await api.get(`/api/office/${tenantId}/${officeId}`);
+    return data
+  } catch (err) {
+    return errorHandler(err)
+  }
+};
+
 export async function getAll() {
   try {
     const tenantId = TokenService.getLocalTenantId();
