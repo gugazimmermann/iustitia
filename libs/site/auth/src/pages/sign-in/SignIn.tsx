@@ -2,8 +2,12 @@ import { useEffect, useState } from "react";
 import { useLocation, useHistory } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { SiteRoutes as Routes } from "@iustitia/react-routes";
-import { AlertError, AlertSuccess, LoadingButton } from "@iustitia/site/shared-components";
-import {validateEmail} from "@iustitia/site/shared-utils"
+import {
+  AlertError,
+  AlertSuccess,
+  LoadingButton,
+} from "@iustitia/site/shared-components";
+import { validateEmail } from "@iustitia/site/shared-utils";
 import { Title, Link, SignupLink } from "../..";
 import { signin } from "../../services/auth";
 
@@ -43,8 +47,8 @@ export function SignIn() {
   }, [state, setValue]);
 
   const onSubmit = async (form: Form) => {
-    setChangepassword(false)
-    setCadastro(false)
+    setChangepassword(false);
+    setCadastro(false);
     setLoading(true);
     setError("");
     if (!validateEmail(form.email)) {
@@ -56,7 +60,7 @@ export function SignIn() {
       await signin(form);
       setLoading(false);
       history.push(Routes.Dashboard);
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       setError(err.message as string);
       setLoading(false);
@@ -67,9 +71,9 @@ export function SignIn() {
     <>
       <main className="bg-white max-w-lg mx-auto p-8 md:p-12 my-10 rounded-lg shadow-2xl">
         <Title title="Entre em seu escritório" />
-        {changepassword && (<AlertSuccess text="Senha alterada com sucesso!" />)}
-        {cadastro && (<AlertSuccess text="Cadastro realizado com sucesso!" />)}
-        {error && (<AlertError text={error} />)}
+        {changepassword && <AlertSuccess text="Senha alterada com sucesso!" />}
+        {cadastro && <AlertSuccess text="Cadastro realizado com sucesso!" />}
+        {error && <AlertError text={error} />}
         <section className="mt-5">
           <form className="flex flex-col" onSubmit={handleSubmit(onSubmit)}>
             <div className="mb-6 rounded">
@@ -85,7 +89,9 @@ export function SignIn() {
                 {...register("email", { required: true })}
                 className={
                   `bg-gray-200 rounded w-full text-gray-700 focus:outline-none border-b-4 border-gray-300 transition duration-500 px-3 pb-3 ` +
-                  (errors.email ? `border-red-600 ` : `focus:border-primary-600`)
+                  (errors.email
+                    ? `border-red-600 `
+                    : `focus:border-primary-600`)
                 }
               />
             </div>
@@ -109,7 +115,12 @@ export function SignIn() {
               />
             </div>
             <Link link={Routes.ForgotPassword} text="Esqueceu sua senha?" />
-            <LoadingButton type="submit" text="Entrar" loading={loading} />
+            <LoadingButton
+              styles="bg-primary-600 hover:bg-primary-700 text-white font-bold py-2 rounded shadow-lg hover:shadow-xl transition duration-200"
+              type="submit"
+              text="Entrar"
+              loading={loading}
+            />
           </form>
         </section>
       </main>

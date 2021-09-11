@@ -6,11 +6,13 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import {
   getAddressFromCEP,
   getUserInitials,
+  validateEmail,
 } from "@iustitia/site/shared-utils";
 import Header from "../../components/dashboard/header/Header";
 import { UploadCloudIcon } from "../../icons";
 import { IProfile } from "../../interfaces";
 import { updateProfile } from "../../services/profile";
+import { LoadingButton } from "@iustitia/site/shared-components";
 
 interface ProfileProps {
   profile?: IProfile;
@@ -55,6 +57,7 @@ export function Profile({ profile, setProfile }: ProfileProps) {
     resolver: yupResolver(schema),
     defaultValues,
   });
+  const [loading, setLoading] = useState(false);
   const avatarRegister = register("avatar");
   const [selectedFile, setSelectedFile] = useState<File>();
   const [preview, setPreview] = useState<string | undefined>("");
@@ -117,8 +120,15 @@ export function Profile({ profile, setProfile }: ProfileProps) {
   }
 
   async function onSubmit(data: IProfileForm) {
+    setLoading(true);
     if (!validZip) {
       setError("zip", { type: "manual" });
+      setLoading(false);
+      return;
+    }
+    if (data.email && !validateEmail(data.email)) {
+      setError("email", { type: "manual" });
+      setLoading(false);
       return;
     }
     const formData = new FormData();
@@ -134,8 +144,10 @@ export function Profile({ profile, setProfile }: ProfileProps) {
       const profileData: IProfile = await updateProfile(formData);
       if (profileData && setProfile) {
         setProfile(profileData);
+        setLoading(false);
       }
     } catch (err) {
+      setLoading(false);
       console.log(err);
     }
   }
@@ -409,12 +421,12 @@ export function Profile({ profile, setProfile }: ProfileProps) {
                       )}
                     </div>
                     <div className="col-span-full flex justify-center">
-                      <button
+                      <LoadingButton
+                        styles="w-full md:w-64 px-2 py-2 text-sm text-white rounded-md bg-primary-500 hover:bg-primary-900 focus:outline-none focus:ring focus:ring-primary-500 focus:ring-offset-1 focus:ring-offset-white"
                         type="submit"
-                        className="w-full md:w-64 px-2 py-2 text-sm text-white rounded-md bg-primary-500 hover:bg-primary-900 focus:outline-none focus:ring focus:ring-primary-500 focus:ring-offset-1 focus:ring-offset-white"
-                      >
-                        Alterar Cadastro
-                      </button>
+                        text="Alterar Perfil"
+                        loading={loading}
+                      />
                     </div>
                   </div>
                 </fieldset>

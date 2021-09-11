@@ -5,8 +5,10 @@ import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { getAddressFromCEP, validateEmail } from "@iustitia/site/shared-utils";
 import { IOffice } from "../../../interfaces";
+import { LoadingButton } from "@iustitia/site/shared-components";
 
 export interface FormProps {
+  loading: boolean;
   office?: IOffice;
   createOffice?(office: IOffice): void;
   updateOffice?(office: IOffice): void;
@@ -21,7 +23,7 @@ const schema = yup.object().shape({
   state: yup.string().required(),
 });
 
-export function Form({ office, createOffice, updateOffice }: FormProps) {
+export function Form({ loading, office, createOffice, updateOffice }: FormProps) {
   const defaultValues = {
     name: office?.name || "",
     email: office?.email || "",
@@ -323,12 +325,12 @@ export function Form({ office, createOffice, updateOffice }: FormProps) {
                     </select>
                   </div>
                   <div className="col-span-full flex justify-center">
-                    <button
-                      type="submit"
-                      className="w-full md:w-64 px-2 py-2 text-sm text-white rounded-md bg-primary-500 hover:bg-primary-900 focus:outline-none focus:ring focus:ring-primary-500 focus:ring-offset-1 focus:ring-offset-white"
-                    >
-                      Alterar Cadastro
-                    </button>
+                    <LoadingButton
+                        styles="w-full md:w-64 px-2 py-2 text-sm text-white rounded-md bg-primary-500 hover:bg-primary-900 focus:outline-none focus:ring focus:ring-primary-500 focus:ring-offset-1 focus:ring-offset-white"
+                        type="submit"
+                        text={createOffice ? `Cadastrar Escritório` : `Editar Escritório`}
+                        loading={loading}
+                      />
                   </div>
                 </div>
               </fieldset>

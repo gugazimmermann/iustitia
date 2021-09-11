@@ -23,7 +23,7 @@ interface useParamsProps {
 
 export function ChangePassword() {
   const { urlcode } = useParams<useParamsProps>();
-  const [codeurl, setCodeurl] = useState(urlcode)
+  const [codeurl, setCodeurl] = useState(urlcode);
   const location = useLocation();
   const [state, setState] = useState(location.state as State);
   const history = useHistory();
@@ -31,14 +31,14 @@ export function ChangePassword() {
     register,
     handleSubmit,
     formState: { errors },
-    setValue
+    setValue,
   } = useForm<Form>();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
   useEffect(() => {
     if (codeurl) {
-      getPasswordCode(codeurl)
+      getPasswordCode(codeurl);
     }
     async function getPasswordCode(codeurl: string) {
       try {
@@ -49,7 +49,7 @@ export function ChangePassword() {
         }
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } catch (err: any) {
-        setCodeurl("")
+        setCodeurl("");
         setError("Não foi possível recuperar o código, verifique seu email.");
         setLoading(false);
       }
@@ -177,7 +177,12 @@ export function ChangePassword() {
             />
           </div>
           <Link link={Routes.SignIn} text="Voltar para Entrar" />
-          <LoadingButton type="submit" text="Alterar Senha" loading={loading} />
+          <LoadingButton
+            styles="bg-primary-600 hover:bg-primary-700 text-white font-bold py-2 rounded shadow-lg hover:shadow-xl transition duration-200"
+            type="submit"
+            text="Alterar Senha"
+            loading={loading}
+          />
         </form>
       </section>
     </main>

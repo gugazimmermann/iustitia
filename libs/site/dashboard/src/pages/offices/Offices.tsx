@@ -17,6 +17,7 @@ interface OfficesProps {
 }
 
 export function Offices({ setOffices: CallOutOffices }: OfficesProps) {
+  const [loading, setLoading] = useState(false);
   const [offices, setOffices] = useState([] as IOffice[]);
   const [selectedOffice, setSelectedOffice] = useState({} as IOffice);
   const [list, setList] = useState(true);
@@ -84,29 +85,38 @@ export function Offices({ setOffices: CallOutOffices }: OfficesProps) {
   }
 
   async function handleCreateOffice(data: IOffice) {
+    setLoading(true);
     try {
       await createOffice(data);
       showList();
+      setLoading(false);
     } catch (err) {
+      setLoading(false);
       console.log(err);
     }
   }
 
   async function handleUpateOffice(data: IOffice) {
+    setLoading(true);
     try {
       await updateOffice(data);
       showList();
+      setLoading(false);
     } catch (err) {
+      setLoading(false);
       console.log(err);
     }
   }
 
   async function handleDeleteOffice() {
     if (selectedOffice.id) {
+      setLoading(true);
       try {
-        const deleted = await deleteOffice(selectedOffice.id);
+        await deleteOffice(selectedOffice.id);
         await getOffices();
+        setLoading(false);
       } catch (err) {
+        setLoading(false);
         console.log(err);
       }
     }
@@ -130,9 +140,9 @@ export function Offices({ setOffices: CallOutOffices }: OfficesProps) {
           setConfirm={setConfirm}
         />
       )}
-      {create && <Form createOffice={handleCreateOffice} />}
+      {create && <Form loading={loading} createOffice={handleCreateOffice} />}
       {update && (
-        <Form office={selectedOffice} updateOffice={handleUpateOffice} />
+        <Form loading={loading} office={selectedOffice} updateOffice={handleUpateOffice} />
       )}
       {confirm && (
         <ConfirmationModal

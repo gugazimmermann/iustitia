@@ -1,15 +1,16 @@
 import "./LoadingButton.css";
 
 export interface LoadingButtonProps {
+  styles: string;
   type: "button" | "submit" | "reset" | undefined;
   text: string;
   loading: boolean;
 }
 
-export function LoadingButton({ type, text, loading }: LoadingButtonProps) {
+export function LoadingButton({ styles, type, text, loading }: LoadingButtonProps) {
   return (
     <button
-      className="bg-primary-600 hover:bg-primary-700 text-white font-bold py-2 rounded shadow-lg hover:shadow-xl transition duration-200"
+      className={styles}
       type={type}
       disabled={loading}
     >

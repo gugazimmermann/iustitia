@@ -3,7 +3,7 @@ import { useHistory } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { SiteRoutes as Routes } from "@iustitia/react-routes";
 import { AlertError, LoadingButton } from "@iustitia/site/shared-components";
-import {validateEmail} from "@iustitia/site/shared-utils";
+import { validateEmail } from "@iustitia/site/shared-utils";
 import { Title, Link } from "../..";
 import { forgotpassword } from "../../services/auth";
 
@@ -51,7 +51,7 @@ export function ForgotPassword() {
         title="Esqueceu a Senha?"
         subtitle="Digite seu email e receba o link de recuperação"
       />
-      {error && (<AlertError text={error} />)}
+      {error && <AlertError text={error} />}
       <section className="mt-5">
         <form className="flex flex-col" onSubmit={handleSubmit(onSubmit)}>
           <div className="mb-6 rounded">
@@ -72,7 +72,12 @@ export function ForgotPassword() {
             />
           </div>
           <Link link={Routes.SignIn} text="Voltar para Entrar" />
-          <LoadingButton type="submit" text="Enviar Código" loading={loading} />
+          <LoadingButton
+            styles="bg-primary-600 hover:bg-primary-700 text-white font-bold py-2 rounded shadow-lg hover:shadow-xl transition duration-200"
+            type="submit"
+            text="Enviar Código"
+            loading={loading}
+          />
         </form>
       </section>
     </main>

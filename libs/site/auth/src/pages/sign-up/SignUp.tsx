@@ -94,9 +94,7 @@ export function SignUp() {
               {...register("name", { required: true })}
               className={
                 `bg-gray-200 rounded w-full text-gray-700 focus:outline-none border-b-4 border-gray-300 transition duration-500 px-3 pb-3 ` +
-                (errors.name
-                  ? `border-red-600 `
-                  : `focus:border-primary-600`)
+                (errors.name ? `border-red-600 ` : `focus:border-primary-600`)
               }
             />
           </div>
@@ -162,7 +160,12 @@ export function SignUp() {
               </div>
             </RouterLink>
           </div>
-          <LoadingButton type="submit" text="Cadastrar" loading={loading} />
+          <LoadingButton
+            styles="bg-primary-600 hover:bg-primary-700 text-white font-bold py-2 rounded shadow-lg hover:shadow-xl transition duration-200"
+            type="submit"
+            text="Cadastrar"
+            loading={loading}
+          />
         </form>
       </section>
     </main>
