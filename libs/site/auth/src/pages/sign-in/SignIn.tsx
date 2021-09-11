@@ -3,8 +3,8 @@ import { useLocation, useHistory } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { SiteRoutes as Routes } from "@iustitia/react-routes";
 import {
-  AlertError,
-  AlertSuccess,
+  Alert,
+  ALERT_TYPES,
   LoadingButton,
 } from "@iustitia/site/shared-components";
 import { validateEmail } from "@iustitia/site/shared-utils";
@@ -71,9 +71,9 @@ export function SignIn() {
     <>
       <main className="bg-white max-w-lg mx-auto p-8 md:p-12 my-10 rounded-lg shadow-2xl">
         <Title title="Entre em seu escritório" />
-        {changepassword && <AlertSuccess text="Senha alterada com sucesso!" />}
-        {cadastro && <AlertSuccess text="Cadastro realizado com sucesso!" />}
-        {error && <AlertError text={error} />}
+        {changepassword && <Alert type={ALERT_TYPES.SUCCESS} message="Senha alterada com sucesso!" />}
+        {cadastro && <Alert type={ALERT_TYPES.SUCCESS} message="Cadastro realizado com sucesso!" />}
+        {error && <Alert type={ALERT_TYPES.ERROR} message={error} />}
         <section className="mt-5">
           <form className="flex flex-col" onSubmit={handleSubmit(onSubmit)}>
             <div className="mb-6 rounded">

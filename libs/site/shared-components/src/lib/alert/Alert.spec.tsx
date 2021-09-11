@@ -1,10 +1,10 @@
 import { render } from "@testing-library/react";
 
-import AlertSuccess from "./AlertSuccess";
+import Alert from "./Alert";
 
-describe("AlertSuccess", () => {
+describe("Alert", () => {
   it("should render successfully", () => {
-    const { baseElement } = render(<AlertSuccess />);
+    const { baseElement } = render(<Alert />);
     expect(baseElement).toBeTruthy();
   });
 });

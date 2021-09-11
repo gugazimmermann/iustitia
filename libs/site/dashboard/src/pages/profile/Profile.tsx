@@ -12,7 +12,7 @@ import Header from "../../components/dashboard/header/Header";
 import { UploadCloudIcon } from "../../icons";
 import { IProfile } from "../../interfaces";
 import { updateProfile } from "../../services/profile";
-import { LoadingButton } from "@iustitia/site/shared-components";
+import { LoadingButton, Alert, ALERT_TYPES } from "@iustitia/site/shared-components";
 
 interface ProfileProps {
   profile?: IProfile;
@@ -57,6 +57,7 @@ export function Profile({ profile, setProfile }: ProfileProps) {
     resolver: yupResolver(schema),
     defaultValues,
   });
+  const [showSuccess, setShowSuccess] = useState(false);
   const [loading, setLoading] = useState(false);
   const avatarRegister = register("avatar");
   const [selectedFile, setSelectedFile] = useState<File>();
@@ -144,6 +145,7 @@ export function Profile({ profile, setProfile }: ProfileProps) {
       const profileData: IProfile = await updateProfile(formData);
       if (profileData && setProfile) {
         setProfile(profileData);
+        setShowSuccess(true)
         setLoading(false);
       }
     } catch (err) {
@@ -158,6 +160,7 @@ export function Profile({ profile, setProfile }: ProfileProps) {
       <div className="overflow-x-auto">
         <div className="flex items-center justify-center overflow-hidden p-2">
           <div className="w-full">
+            {showSuccess && <Alert type={ALERT_TYPES.SUCCESS} message="Perfil Alerado com Sucesso!" closeFunction={setShowSuccess} /> }
             <div className="bg-white shadow-sm rounded">
               <form
                 onSubmit={handleSubmit(onSubmit)}

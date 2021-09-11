@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Link as RouterLink, useParams, useHistory } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { SiteRoutes as Routes } from "@iustitia/react-routes";
-import { AlertError, LoadingButton } from "@iustitia/site/shared-components";
+import { Alert, ALERT_TYPES, LoadingButton } from "@iustitia/site/shared-components";
 import { validateEmail } from "@iustitia/site/shared-utils";
 import { Title } from "../..";
 import { signup } from "../../services/auth";
@@ -78,7 +78,7 @@ export function SignUp() {
         subtitle="Faça seu cadastro no plano"
         plan={plan}
       />
-      {error && <AlertError text={error} />}
+      {error && <Alert type={ALERT_TYPES.ERROR} message={error} />}
       <section className="mt-5">
         <form className="flex flex-col" onSubmit={handleSubmit(onSubmit)}>
           <div className="mb-6 rounded">
