@@ -10,6 +10,10 @@ Site: https://www.loom.com/share/71feda196cd94c9799944a9af960205c?sharedAppSourc
 
 More about the project and tests: https://www.loom.com/share/a7c21da1a6ae406db9517390f2753da1?sharedAppSource=personal_library
 
+https://trello.com/b/xuDwLdHG/iustitia-app
+
+---
+
 This project was generated using [Nx](https://nx.dev).
 
 API USING EXPRESS

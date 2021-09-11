@@ -1,6 +1,6 @@
 import { IconProps } from ".";
 
-export function CalloutWarningIcon({ styles }: IconProps) {
+export function WarningIcon({ styles }: IconProps) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -21,4 +21,4 @@ export function CalloutWarningIcon({ styles }: IconProps) {
   );
 }
 
-export default CalloutWarningIcon;
+export default WarningIcon;

@@ -1,10 +1,15 @@
+function getLocalTenantId() {
+  const user = JSON.parse(localStorage.getItem("user") as string);
+  return user?.tenant;
+}
+
 function getLocalRefreshToken() {
   const user = JSON.parse(localStorage.getItem("user") as string);
   return user?.refreshToken;
 }
 
 function getLocalAccessToken() {
-  const user = JSON.parse(localStorage.getItem("user") as string );
+  const user = JSON.parse(localStorage.getItem("user") as string);
   return user?.accessToken;
 }
 
@@ -18,7 +23,7 @@ function getUser() {
   return JSON.parse(localStorage.getItem("user") as string);
 }
 
-function setUser(user: { accessToken: string, refreshToken: string }) {
+function setUser(user: { accessToken: string, refreshToken: string, tenant: string }) {
   localStorage.setItem("user", JSON.stringify(user));
 }
 
@@ -27,6 +32,7 @@ function removeUser() {
 }
 
 const TokenService = {
+  getLocalTenantId,
   getLocalRefreshToken,
   getLocalAccessToken,
   updateLocalAccessToken,

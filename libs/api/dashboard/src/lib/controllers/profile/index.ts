@@ -15,7 +15,7 @@ export async function updateProfile(req, res) {
     !body.phone ||
     !body.zip
   ) {
-    return res.status(401).send({ message: "Dados inválidos!" });
+    return res.status(400).send({ message: "Dados inválidos!" });
   }
   body.userId = req.userId
   try {

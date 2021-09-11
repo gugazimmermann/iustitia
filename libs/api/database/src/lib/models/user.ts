@@ -4,9 +4,10 @@ export interface UserAttributes {
   id: string;
   email: string;
   password: string;
+  tenant: string;
 }
 
-export type UserCreationAttributes = Optional<UserAttributes, 'id'>
+export type UserCreationAttributes = Optional<UserAttributes, 'id' | 'tenant'>
 
 export interface UserInstance
   extends Model<UserAttributes, UserCreationAttributes>,
@@ -26,7 +27,8 @@ export default function user(sequelize: Sequelize) {
       primaryKey: true,
     },
     email: { type: DataTypes.TEXT, allowNull: false },
-    password: { type: DataTypes.TEXT, allowNull: false }
+    password: { type: DataTypes.TEXT, allowNull: false },
+    tenant: { type: DataTypes.UUID, allowNull: true }
   });
 
   return User;

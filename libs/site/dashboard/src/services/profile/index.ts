@@ -3,7 +3,7 @@ import { errorHandler } from "@iustitia/site/shared-utils";
 
 export async function updateProfile(profile: FormData) {
   try {
-    const { data } = await api.post("/api/profile", profile);
+    const { data } = await api.put("/api/profile", profile);
     return data
   } catch (err) {
     return errorHandler(err)

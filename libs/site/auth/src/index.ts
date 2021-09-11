@@ -10,4 +10,5 @@ export * from "./pages/change-password/ChangePassword";
 export * from "./pages/layout/Layout";
 export { default as api } from "./services/api";
 export { getUser, logout } from "./services/auth";
+export { default as TokenService } from "./services/token";
 export * from "./services/user";

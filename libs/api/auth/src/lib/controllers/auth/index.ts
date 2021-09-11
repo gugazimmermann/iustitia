@@ -25,7 +25,7 @@ function verifyExpiration(token) {
 
 export async function signup(req, res) {
   if (!req.body?.name || !req.body?.password || !req.body?.email || !validateEmail(req.body.email)) {
-    return res.status(401).send({ message: "Dados inválidos!" });
+    return res.status(400).send({ message: "Dados inválidos!" });
   }
   try {
     const userData = {
@@ -33,6 +33,7 @@ export async function signup(req, res) {
       password: bcrypt.hashSync(req.body.password, 8),
     };
     const user = await database.User.create(userData);
+    await user.update({ tenant: user.id });
     await database.Profile.create({
       name: req.body.name,
       email: userData.email,
@@ -46,7 +47,7 @@ export async function signup(req, res) {
 
 export async function signin(req, res) {
   if (!req.body?.password || !req.body?.email || !validateEmail(req.body.email)) {
-    return res.status(401).send({ message: "Dados inválidos!" });
+    return res.status(400).send({ message: "Dados inválidos!" });
   }
   try {
     const user = await database.User.findOne({ where: { email: req.body.email } });
@@ -58,13 +59,13 @@ export async function signin(req, res) {
       user.password
     );
     if (!passwordIsValid) {
-      return res.status(401).send({ message: "Email ou senha inválidos!" });
+      return res.status(404).send({ message: "Email ou senha inválidos!" });
     }
     const accessToken = jwt.sign({ id: user.id }, config.jwtSecret, {
       expiresIn: config.jwtExpiration,
     });
     const refreshToken = await createToken(user);
-    return res.status(200).send({ accessToken, refreshToken });
+    return res.status(200).send({ accessToken, refreshToken, tenant: user.tenant });
   } catch (err) {
     return res.status(500).send({ message: err.message });
   }

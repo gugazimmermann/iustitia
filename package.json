@@ -1,7 +1,7 @@
 {
   "name": "iustitia",
   "description": "Iustitia - App pra Advogados",
-  "version": "0.8.12",
+  "version": "0.8.13",
   "license": "MIT",
   "engines": {
     "node": ">=14"

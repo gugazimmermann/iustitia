@@ -6,13 +6,13 @@ import {
   useEffect,
   useState,
 } from "react";
-import { getProfile } from "../../services";
+import { getProfile } from "../../services/profile";
 import { Menu } from "../..";
 import Nav from "../../components/nav/Nav";
-import Callout, {
-  CALLOUTTYPES,
-} from "../../components/dashboard/callout/Callout";
-import { IProfile } from "../../interfaces";
+import Callout from "../../components/dashboard/callout/Callout";
+import { IOffice, IProfile } from "../../interfaces";
+import { WARNINGTYPES } from "@iustitia/site/shared-utils";
+import { getAll as getOffices } from "../../services/office";
 
 interface LayoutProps {
   children: ReactNode;
@@ -23,6 +23,7 @@ export function Layout({ children }: LayoutProps) {
   const [navOpen, setNavOpen] = useState(false);
   const [notificationOpen, setNotificationOpen] = useState(false);
   const [profile, setProfile] = useState({} as IProfile);
+  const [offices, setOffices] = useState({} as IOffice[]);
 
   useEffect(() => {
     const { innerWidth: width } = window;
@@ -33,6 +34,15 @@ export function Layout({ children }: LayoutProps) {
       try {
         const data: IProfile = await getProfile();
         setProfile(data);
+      } catch (err) {
+        console.log(err);
+      }
+    }
+    seeOffices();
+    async function seeOffices() {
+      try {
+        const data: IOffice[] = await getOffices();
+        setOffices(data);
       } catch (err) {
         console.log(err);
       }
@@ -53,28 +63,28 @@ export function Layout({ children }: LayoutProps) {
           profile={profile}
         />
 
-       <main className="w-full lg:max-w-screen-lg h-full bg-gray-50 flex flex-col self-center">
-
+        <main className="w-full lg:max-w-screen-lg h-full bg-gray-50 flex flex-col self-center">
           {!profile.zip && (
             <Callout
-              type={CALLOUTTYPES.WARNING}
+              type={WARNINGTYPES.WARNING}
               title="Seu cadastro está"
               emphasis="Incompleto"
               content="Acesse seu Perfil clicando em suas iniciais no canto superior direito."
             />
           )}
 
-
-          <Callout
-            type={CALLOUTTYPES.WARNING}
-            title="Nenhum Escritório Cadastrado"
-            content="Por favor, acesse seu perfil e complete os items destacados."
-          />
+          {!offices.length && (
+            <Callout
+              type={WARNINGTYPES.WARNING}
+              title="Nenhum Escritório Cadastrado"
+              content="Por favor, acesse seu perfil e complete os items destacados."
+            />
+          )}
 
           {profile.email &&
             Children.map(children, (child) => {
               if (isValidElement(child)) {
-                return cloneElement(child, { profile, setProfile });
+                return cloneElement(child, { profile, setProfile, setOffices });
               }
               return child;
             })}

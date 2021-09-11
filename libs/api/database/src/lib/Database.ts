@@ -4,6 +4,7 @@ import user, { UserInstance } from "./models/user";
 import refreshToken, { RefreshTokenInstance } from "./models/refreshToken";
 import forgotPassword, { ForgotPasswordInstance } from "./models/forgotPassword";
 import profile, { ProfileInstance } from "./models/profile";
+import office, { OfficeInstance } from "./models/office";
 
 const sequelize = new Sequelize(config.DB, config.USER, config.PASSWORD, {
   host: config.HOST,
@@ -16,6 +17,7 @@ export interface IDatabase {
   RefreshToken: ModelCtor<RefreshTokenInstance>;
   ForgotPassword: ModelCtor<ForgotPasswordInstance>;
   Profile: ModelCtor<ProfileInstance>;
+  Office: ModelCtor<OfficeInstance>;
 }
 
 const database: IDatabase = {
@@ -23,7 +25,8 @@ const database: IDatabase = {
   User: user(sequelize),
   RefreshToken: refreshToken(sequelize),
   ForgotPassword: forgotPassword(sequelize),
-  Profile: profile(sequelize)
+  Profile: profile(sequelize),
+  Office: office(sequelize)
 };
 
 // database.Sequelize.sync();
