@@ -24,6 +24,7 @@ export interface OfficeInstance
   OfficeAttributes {
   createdAt?: Date;
   updatedAt?: Date;
+  deletedAt?: Date;
   user?: UserInstance
 }
 
@@ -49,6 +50,9 @@ export default function office(sequelize: Sequelize) {
     state: { type: DataTypes.TEXT, allowNull: false },
     tenantId: { type: DataTypes.UUID, allowNull: false },
     userId: { type: DataTypes.UUID, allowNull: false },
+  }, {
+    paranoid: true,
+    timestamps: true,
   });
 
   return Office;
