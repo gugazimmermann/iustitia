@@ -38,6 +38,7 @@ export function Layout({ children }: LayoutProps) {
         console.log(err);
       }
     }
+
     seeOffices();
     async function seeOffices() {
       try {
@@ -67,7 +68,7 @@ export function Layout({ children }: LayoutProps) {
           {!profile.zip && (
             <Callout
               type={WARNINGTYPES.WARNING}
-              title="Seu cadastro está"
+              title="Seu Perfil está"
               emphasis="Incompleto"
               content="Acesse seu Perfil clicando em suas iniciais no canto superior direito."
             />
@@ -77,7 +78,7 @@ export function Layout({ children }: LayoutProps) {
             <Callout
               type={WARNINGTYPES.WARNING}
               title="Nenhum Escritório Cadastrado"
-              content="Por favor, acesse seu perfil e complete os items destacados."
+              content={`Acesse Escritórios clicando em ${profile.avatar ? `sua foto` : `suas iniciais`} no canto superior direito.`}
             />
           )}
 

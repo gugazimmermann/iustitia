@@ -1,6 +1,7 @@
 import { database } from '@iustitia/api/database';
 import { validateEmail } from '@iustitia/site/shared-utils';
 import * as AWS from 'aws-sdk';
+const s3 = new AWS.S3();
 
 export async function updateProfile(req, res) {
   const { body } = req;
@@ -21,26 +22,22 @@ export async function updateProfile(req, res) {
   try {
     const profile = await database.Profile.findOne({ where: { userId: req.userId } });
     profile.update(body)
+    console.log("profile.update", body)
     if (req.file) {
       const fileName = `${req.userId.split("-").join("")}.${req.file.originalname.split('.').pop()}`
+      console.log("fileName", fileName)
       AWS.config.update({
         accessKeyId: process.env.NX_ACCESS_KEY_ID,
         secretAccessKey: process.env.NX_SECRET_ACCESS_KEY,
         region: "us-east-1"
       })
-      const s3 = new AWS.S3();
       const params = {
         Bucket: 'iustitia-io-avatars',
         Key: fileName,
         Body: req.file.buffer
       };
-      s3.putObject(params, async (err, data) => {
-        if (err) {
-          console.error(err);
-        } else {
-          profile.update({ avatar: fileName });
-        }
-      });
+      await s3.upload(params).promise();
+      profile.update({ avatar: fileName });
     } else {
       profile.update({ avatar: null });
     }
