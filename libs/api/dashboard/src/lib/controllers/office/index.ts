@@ -13,7 +13,7 @@ export async function getAllOffices(req, res) {
   }
   try {
     const offices = await database.Office.findAll({ where: { tenantId } });
-    return res.send(offices);
+    return res.status(200).send(offices);
   } catch (err) {
     return res.status(500).send({ message: err.message });
   }
@@ -38,7 +38,7 @@ export async function createOffice(req, res) {
   body.userId = req.userId
   try {
     const office = await database.Office.create(body);
-    return res.send({
+    return res.status(201).send({
       name: office.name,
       email: office.email,
       phone: office.phone,
@@ -78,7 +78,7 @@ export async function updateOffice(req, res) {
       return res.status(404).send({ message: "Nenhum escritório encontrado!" });
     }
     office.update(body)
-    return res.send({
+    return res.status(200).send({
       name: office.name,
       email: office.email,
       phone: office.phone,

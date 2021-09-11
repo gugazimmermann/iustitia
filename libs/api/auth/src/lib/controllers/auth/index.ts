@@ -39,7 +39,7 @@ export async function signup(req, res) {
       email: userData.email,
       userId: user.id
     })
-    return res.send({ message: "Usuário cadastrado com sucesso!" });
+    return res.status(201).send({ message: "Usuário cadastrado com sucesso!" });
   } catch (err) {
     return res.status(500).send({ message: err.message });
   }
@@ -73,7 +73,7 @@ export async function signin(req, res) {
 
 export async function forgotPassword(req, res) {
   if (!req.body.email || !validateEmail(req.body.email)) {
-    return res.status(403).json({ message: "Email é necessário!" });
+    return res.status(400).json({ message: "Email é necessário!" });
   }
   try {
     const user = await database.User.findOne({ where: { email: req.body.email } });
@@ -107,7 +107,7 @@ export async function forgotPassword(req, res) {
 
 export async function forgotPasswordCode(req, res) {
   if (!req.body.urlcode) {
-    return res.status(403).json({ message: "Código é necessário!" });
+    return res.status(400).json({ message: "Código é necessário!" });
   }
   try {
     const forgotPassword = await database.ForgotPassword.findOne({ where: { codeurl: req.body.urlcode } });
@@ -122,7 +122,7 @@ export async function forgotPasswordCode(req, res) {
 
 export async function changePassword(req, res) {
   if (!req.body.code || !req.body.password) {
-    return res.status(403).json({ message: "Código e Senha são necessários!" });
+    return res.status(400).json({ message: "Código e Senha são necessários!" });
   }
   try {
     const forgotPassword = await database.ForgotPassword.findOne({ where: { code: req.body.code } });
@@ -138,7 +138,7 @@ export async function changePassword(req, res) {
       }
       user.update({ password: bcrypt.hashSync(req.body.password, 8), })
       database.ForgotPassword.destroy({ where: { id: forgotPassword.id } })
-      return res.send({ message: "Password changed successfully!" });
+      return res.status(200).send({ message: "Password changed successfully!" });
     } else {
       return res.status(401).json({ message: "Código expirado!" });
     }
@@ -149,14 +149,14 @@ export async function changePassword(req, res) {
 
 export async function refreshToken(req, res) {
   if (!req.body.refreshToken) {
-    return res.status(403).json({ message: "Refresh Token é necessário!" });
+    return res.status(400).json({ message: "Refresh Token é necessário!" });
   }
   try {
     const refreshToken = await database.RefreshToken.findOne({
       where: { token: req.body.refreshToken },
     });
     if (!refreshToken) {
-      return res.status(403).json({ message: "Refresh token não encontrado!" });
+      return res.status(404).json({ message: "Refresh token não encontrado!" });
     }
     if (verifyExpiration(refreshToken)) {
       database.RefreshToken.destroy({ where: { id: refreshToken.id } });

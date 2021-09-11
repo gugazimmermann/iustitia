@@ -59,7 +59,7 @@ export async function updateProfile(req, res) {
       await s3.upload(params).promise();
       profile.update({ avatar: fileName });
     }
-    return res.send({
+    return res.status(200).send({
       avatar: profile.avatar,
       name: profile.name,
       email: profile.email,
