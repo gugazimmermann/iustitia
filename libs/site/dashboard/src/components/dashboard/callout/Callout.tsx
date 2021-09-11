@@ -1,8 +1,8 @@
-import { warningTypes, WARNINGTYPES } from "@iustitia/site/shared-utils";
+import { warningTypes, WARNING_TYPES } from "@iustitia/site/shared-utils";
 import { WarningIcon } from "../../../icons";
 
 export interface CalloutProps {
-  type?: WARNINGTYPES;
+  type?: WARNING_TYPES;
   title: string;
   emphasis?: string;
   content?: string;
@@ -14,7 +14,7 @@ export function Callout({
   emphasis,
   content,
 }: CalloutProps) {
-  const { text, bg, border } = warningTypes(type ? type : WARNINGTYPES.NONE)
+  const { text, bg, border } = warningTypes(type ? type : WARNING_TYPES.NONE)
 
   return (
     <div className="m-2 relative flex flex-wrap sm:flex-no-wrap justify-between bg-white rounded p-2 space-x-0 sm:space-x-2 shadow-md">

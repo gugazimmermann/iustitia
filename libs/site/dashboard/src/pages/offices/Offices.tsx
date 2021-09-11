@@ -1,4 +1,5 @@
-import { WARNINGTYPES } from "@iustitia/site/shared-utils";
+import { Alert, ALERT_TYPES } from "@iustitia/site/shared-components";
+import { WARNING_TYPES } from "@iustitia/site/shared-utils";
 import { useState, useEffect } from "react";
 import ConfirmationModal from "../../components/dashboard/confirmation-modal/ConfirmationModal";
 import Header from "../../components/dashboard/header/Header";
@@ -17,6 +18,9 @@ interface OfficesProps {
 }
 
 export function Offices({ setOffices: CallOutOffices }: OfficesProps) {
+  const [showSuccess, setShowSuccess] = useState(false);
+  const [showEdit, setShowEdit] = useState(false);
+  const [showDelete, setShowDelete] = useState(false);
   const [loading, setLoading] = useState(false);
   const [offices, setOffices] = useState([] as IOffice[]);
   const [selectedOffice, setSelectedOffice] = useState({} as IOffice);
@@ -31,7 +35,7 @@ export function Offices({ setOffices: CallOutOffices }: OfficesProps) {
     setList(true);
     setUpdade(false);
     setCreate(false);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   async function showList() {
@@ -88,6 +92,9 @@ export function Offices({ setOffices: CallOutOffices }: OfficesProps) {
     setLoading(true);
     try {
       await createOffice(data);
+      setShowSuccess(true);
+      setShowEdit(false);
+      setShowDelete(false);
       showList();
       setLoading(false);
     } catch (err) {
@@ -100,6 +107,9 @@ export function Offices({ setOffices: CallOutOffices }: OfficesProps) {
     setLoading(true);
     try {
       await updateOffice(data);
+      setShowSuccess(false);
+      setShowEdit(true);
+      setShowDelete(false);
       showList();
       setLoading(false);
     } catch (err) {
@@ -113,6 +123,9 @@ export function Offices({ setOffices: CallOutOffices }: OfficesProps) {
       setLoading(true);
       try {
         await deleteOffice(selectedOffice.id);
+        setShowSuccess(false);
+        setShowEdit(false);
+        setShowDelete(true);
         await getOffices();
         setLoading(false);
       } catch (err) {
@@ -130,29 +143,64 @@ export function Offices({ setOffices: CallOutOffices }: OfficesProps) {
         button={createButton}
         back={back}
       />
-      {list && (
-        <List
-          offices={offices}
-          setBack={setBack}
-          setSelectedOffice={setSelectedOffice}
-          setUpdade={setUpdade}
-          setList={setList}
-          setConfirm={setConfirm}
-        />
-      )}
-      {create && <Form loading={loading} createOffice={handleCreateOffice} />}
-      {update && (
-        <Form loading={loading} office={selectedOffice} updateOffice={handleUpateOffice} />
-      )}
-      {confirm && (
-        <ConfirmationModal
-          setConfirm={setConfirm}
-          type={WARNINGTYPES.ERROR}
-          title={`Excluir Escritório: ${selectedOffice.name}?`}
-          content={`Você tem certeza que quer excluir o escritório ${selectedOffice.name}? Todos os dados desse escritório serão perdidos. Essa ação não poderá ser desfeita.`}
-          action={handleDeleteOffice}
-        />
-      )}
+      <div className="overflow-x-auto">
+        <div className="flex items-center justify-center overflow-hidden p-2">
+          <div className="w-full">
+            <div className="bg-white shadow-sm rounded">
+              {showSuccess && (
+                <Alert
+                  type={ALERT_TYPES.SUCCESS}
+                  message="Escritório cadastrado com Sucesso!"
+                  closeFunction={setShowSuccess}
+                />
+              )}
+              {showEdit && (
+                <Alert
+                  type={ALERT_TYPES.INFO}
+                  message="Escritório alterado com Sucesso!"
+                  closeFunction={setShowEdit}
+                />
+              )}
+              {showDelete && (
+                <Alert
+                  type={ALERT_TYPES.WARNING}
+                  message="Escritório removido com Sucesso!"
+                  closeFunction={setShowDelete}
+                />
+              )}
+              {list && (
+                <List
+                  offices={offices}
+                  setBack={setBack}
+                  setSelectedOffice={setSelectedOffice}
+                  setUpdade={setUpdade}
+                  setList={setList}
+                  setConfirm={setConfirm}
+                />
+              )}
+              {create && (
+                <Form loading={loading} createOffice={handleCreateOffice} />
+              )}
+              {update && (
+                <Form
+                  loading={loading}
+                  office={selectedOffice}
+                  updateOffice={handleUpateOffice}
+                />
+              )}
+              {confirm && (
+                <ConfirmationModal
+                  setConfirm={setConfirm}
+                  type={WARNING_TYPES.ERROR}
+                  title={`Excluir Escritório: ${selectedOffice.name}?`}
+                  content={`Você tem certeza que quer excluir o escritório ${selectedOffice.name}? Todos os dados desse escritório serão perdidos. Essa ação não poderá ser desfeita.`}
+                  action={handleDeleteOffice}
+                />
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
     </>
   );
 }

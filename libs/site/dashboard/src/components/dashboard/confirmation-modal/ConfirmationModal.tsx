@@ -1,9 +1,9 @@
-import { warningTypes, WARNINGTYPES } from "@iustitia/site/shared-utils";
+import { warningTypes, WARNING_TYPES } from "@iustitia/site/shared-utils";
 import { WarningIcon } from "../../../icons";
 
 export interface ConfirmationModalProps {
   setConfirm(confirm: boolean): void;
-  type?: WARNINGTYPES;
+  type?: WARNING_TYPES;
   title: string;
   content: string;
   action(): void;
@@ -16,7 +16,7 @@ export function ConfirmationModal({
   content,
   action,
 }: ConfirmationModalProps) {
-  const { text, bg } = warningTypes(type ? type : WARNINGTYPES.NONE);
+  const { text, bg } = warningTypes(type ? type : WARNING_TYPES.NONE);
   return (
     <div className="fixed z-50 inset-0 overflow-y-auto">
       <div className="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">

@@ -11,7 +11,7 @@ import { Menu } from "../..";
 import Nav from "../../components/nav/Nav";
 import Callout from "../../components/dashboard/callout/Callout";
 import { IOffice, IProfile } from "../../interfaces";
-import { WARNINGTYPES } from "@iustitia/site/shared-utils";
+import { WARNING_TYPES } from "@iustitia/site/shared-utils";
 import { getAll as getOffices } from "../../services/office";
 
 interface LayoutProps {
@@ -67,7 +67,7 @@ export function Layout({ children }: LayoutProps) {
         <main className="w-full lg:max-w-screen-lg h-full bg-gray-50 flex flex-col self-center">
           {!profile.zip && (
             <Callout
-              type={WARNINGTYPES.WARNING}
+              type={WARNING_TYPES.WARNING}
               title="Seu Perfil está"
               emphasis="Incompleto"
               content="Acesse seu Perfil clicando em suas iniciais no canto superior direito."
@@ -76,7 +76,7 @@ export function Layout({ children }: LayoutProps) {
 
           {!offices.length && (
             <Callout
-              type={WARNINGTYPES.WARNING}
+              type={WARNING_TYPES.WARNING}
               title="Nenhum Escritório Cadastrado"
               content={`Acesse Escritórios clicando em ${profile.avatar ? `sua foto` : `suas iniciais`} no canto superior direito.`}
             />
