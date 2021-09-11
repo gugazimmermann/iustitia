@@ -38,8 +38,6 @@ export async function updateProfile(req, res) {
       };
       await s3.upload(params).promise();
       profile.update({ avatar: fileName });
-    } else {
-      profile.update({ avatar: null });
     }
     return res.send({
       avatar: profile.avatar,

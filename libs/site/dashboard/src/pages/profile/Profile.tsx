@@ -137,7 +137,9 @@ export function Profile({ profile, setProfile }: ProfileProps) {
       if (key !== "avatar") {
         formData.append(key, value as string);
       } else {
-        formData.append("avatar", data.avatar[0]);
+        if (data.avatar.length) {
+          formData.append("avatar", data.avatar[0]);
+        }
       }
     });
 
