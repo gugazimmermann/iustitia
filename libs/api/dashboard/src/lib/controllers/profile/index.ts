@@ -22,10 +22,10 @@ export async function updateProfile(req, res) {
   try {
     const profile = await database.Profile.findOne({ where: { userId: req.userId } });
     profile.update(body)
-    console.log("profile.update", body)
     if (req.file) {
-      const fileName = `${req.userId.split("-").join("")}.${req.file.originalname.split('.').pop()}`
-      console.log("fileName", fileName)
+      const d = new Date();
+      const now = `${d.getHours()}${d.getMinutes()}${d.getSeconds()}${d.getMilliseconds()}`
+      const fileName = `${req.userId.split("-").join("")}${now}.${req.file.originalname.split('.').pop()}`
       AWS.config.update({
         accessKeyId: process.env.NX_ACCESS_KEY_ID,
         secretAccessKey: process.env.NX_SECRET_ACCESS_KEY,
