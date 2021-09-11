@@ -28,6 +28,6 @@ const data = {
 describe("Dashboard", () => {
   test("/api/profile should response the POST method", async () => {
     const response = await request(app).post("/api/profile").send({ data });
-    expect(response.statusCode).toBe(403);
+    expect(response.statusCode).toBe(404);
   });
 });
