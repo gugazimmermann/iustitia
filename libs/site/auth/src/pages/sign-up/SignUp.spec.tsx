@@ -1,10 +1,34 @@
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
-import routeData, { MemoryRouter } from "react-router";
+import { MemoryRouter } from "react-router";
 import { AxiosResponse } from "axios";
 import * as auth from "../../services/auth";
+import * as subscription from "../../services/subscription";
 import SignUp from "./SignUp";
 
 describe("SignUp", () => {
+  const plansArr = [
+    {
+      id: "2998538b-fa1f-499e-b9b4-00e6de319ac0",
+      reason: "Plan 1",
+      transactionAmount: "0",
+      currencyId: "BRL",
+    },
+    {
+      id: "826f83d7-dd8b-4d0b-b3d5-8a14742dced8",
+      reason: "Plan 2",
+      transactionAmount: "10",
+      currencyId: "BRL",
+    },
+  ];
+
+  const plans = jest
+    .spyOn(subscription, "getPlans")
+    .mockReturnValue(Promise.resolve(plansArr));
+
+  const signupSpy = jest
+    .spyOn(auth, "signup")
+    .mockReturnValue(Promise.resolve({} as AxiosResponse));
+
   it("should render successfully", () => {
     const { baseElement } = render(
       <MemoryRouter>
@@ -34,15 +58,19 @@ describe("SignUp", () => {
       true
     );
     const email = screen.getByLabelText("Email");
-    expect(nome.className.split(" ").includes("focus:border-primary-600")).toBe(
-      true
-    );
+    expect(
+      email.className.split(" ").includes("focus:border-primary-600")
+    ).toBe(true);
     const password = screen.getByLabelText("Senha");
-    expect(nome.className.split(" ").includes("focus:border-primary-600")).toBe(
-      true
-    );
+    expect(
+      password.className.split(" ").includes("focus:border-primary-600")
+    ).toBe(true);
     const repeatPassword = screen.getByLabelText("Repita a Senha");
-    expect(nome.className.split(" ").includes("focus:border-primary-600")).toBe(
+    expect(
+      repeatPassword.className.split(" ").includes("focus:border-primary-600")
+    ).toBe(true);
+    const plan = screen.getByLabelText("Plano de Assinatura");
+    expect(plan.className.split(" ").includes("focus:border-primary-600")).toBe(
       true
     );
     const button = screen.getByText("Cadastrar");
@@ -53,48 +81,10 @@ describe("SignUp", () => {
     expect(repeatPassword.className.split(" ").includes("border-red-600")).toBe(
       true
     );
-  });
-
-  it("should param be Gratuito", async () => {
-    const useParamsSpy = jest
-      .spyOn(routeData, "useParams")
-      .mockReturnValue({ planParam: "gratuito" });
-    const { getByText } = render(
-      <MemoryRouter>
-        <SignUp />
-      </MemoryRouter>
-    );
-    expect(getByText("Gratuito")).toBeTruthy();
-  });
-
-  it("should param be Básico", async () => {
-    const useParamsSpy = jest
-      .spyOn(routeData, "useParams")
-      .mockReturnValue({ planParam: "basico" });
-    const { getByText } = render(
-      <MemoryRouter>
-        <SignUp />
-      </MemoryRouter>
-    );
-    expect(getByText("Básico")).toBeTruthy();
-  });
-
-  it("should param be Profissional", async () => {
-    const useParamsSpy = jest
-      .spyOn(routeData, "useParams")
-      .mockReturnValue({ planParam: "profissional" });
-    const { getByText } = render(
-      <MemoryRouter>
-        <SignUp />
-      </MemoryRouter>
-    );
-    expect(getByText("Profissional")).toBeTruthy();
+    expect(plan.className.split(" ").includes("border-red-600")).toBe(true);
   });
 
   it("should not submit when email are invalid", async () => {
-    const signupSpy = jest
-      .spyOn(auth, "signup")
-      .mockReturnValue(Promise.resolve({} as AxiosResponse));
     const { container, getByText } = render(
       <MemoryRouter>
         <SignUp />
@@ -103,30 +93,20 @@ describe("SignUp", () => {
     const username = container.querySelector('input[id="username"]') as Element;
     const email = container.querySelector('input[id="email"]') as Element;
     const password = container.querySelector('input[id="password"]') as Element;
-    const repeatPassword = container.querySelector(
-      'input[id="repeatPassword"]'
-    ) as Element;
-    await waitFor(() =>
-      fireEvent.input(username, { target: { value: "Test" } })
-    );
+    const repeatPassword = container.querySelector('input[id="repeatPassword"]') as Element;
+    const plan = container.querySelector('select[id="plan"]') as Element;
+    await waitFor(() => fireEvent.input(username, { target: { value: "Test" } }));
     await waitFor(() => fireEvent.input(email, { target: { value: "teste" } }));
-    await waitFor(() =>
-      fireEvent.input(password, { target: { value: "123" } })
-    );
-    await waitFor(() =>
-      fireEvent.input(repeatPassword, { target: { value: "123" } })
-    );
+    await waitFor(() => fireEvent.input(password, { target: { value: "123" } }));
+    await waitFor(() => fireEvent.input(repeatPassword, { target: { value: "123" } }));
+    await waitFor(() => fireEvent.change(plan, { target: { value: "826f83d7-dd8b-4d0b-b3d5-8a14742dced8" } }));
     const button = getByText("Cadastrar");
     await waitFor(() => fireEvent.click(button));
     await waitFor(() => expect(signupSpy).toBeCalledTimes(0));
     await waitFor(() => expect(getByText("Email inválido!")).toBeTruthy());
-    signupSpy.mockRestore();
   });
 
   it("should not submit when password are not equal", async () => {
-    const signupSpy = jest
-      .spyOn(auth, "signup")
-      .mockReturnValue(Promise.resolve({} as AxiosResponse));
     const { container, getByText } = render(
       <MemoryRouter>
         <SignUp />
@@ -135,34 +115,22 @@ describe("SignUp", () => {
     const username = container.querySelector('input[id="username"]') as Element;
     const email = container.querySelector('input[id="email"]') as Element;
     const password = container.querySelector('input[id="password"]') as Element;
-    const repeatPassword = container.querySelector(
-      'input[id="repeatPassword"]'
-    ) as Element;
-    await waitFor(() =>
-      fireEvent.input(username, { target: { value: "Test" } })
-    );
-    await waitFor(() =>
-      fireEvent.input(email, { target: { value: "teste@teste.com" } })
-    );
-    await waitFor(() =>
-      fireEvent.input(password, { target: { value: "123" } })
-    );
-    await waitFor(() =>
-      fireEvent.input(repeatPassword, { target: { value: "456" } })
-    );
+    const repeatPassword = container.querySelector('input[id="repeatPassword"]') as Element;
+    const plan = container.querySelector('select[id="plan"]') as Element;
+    await waitFor(() => fireEvent.input(username, { target: { value: "Test" } }));
+    await waitFor(() => fireEvent.input(email, { target: { value: "teste@teste.com" } }));
+    await waitFor(() => fireEvent.input(password, { target: { value: "123" } }));
+    await waitFor(() => fireEvent.input(repeatPassword, { target: { value: "456" } }));
+    await waitFor(() => fireEvent.change(plan, { target: { value: "826f83d7-dd8b-4d0b-b3d5-8a14742dced8" } }));
     const button = getByText("Cadastrar");
     await waitFor(() => fireEvent.click(button));
     await waitFor(() => expect(signupSpy).toBeCalledTimes(0));
     await waitFor(() =>
       expect(getByText("Senhas são diferentes!")).toBeTruthy()
     );
-    signupSpy.mockRestore();
   });
 
   it("should submit", async () => {
-    const signupSpy = jest
-      .spyOn(auth, "signup")
-      .mockReturnValue(Promise.resolve({} as AxiosResponse));
     const { container, getByText } = render(
       <MemoryRouter>
         <SignUp />
@@ -171,21 +139,13 @@ describe("SignUp", () => {
     const username = container.querySelector('input[id="username"]') as Element;
     const email = container.querySelector('input[id="email"]') as Element;
     const password = container.querySelector('input[id="password"]') as Element;
-    const repeatPassword = container.querySelector(
-      'input[id="repeatPassword"]'
-    ) as Element;
-    await waitFor(() =>
-      fireEvent.input(username, { target: { value: "Test" } })
-    );
-    await waitFor(() =>
-      fireEvent.input(email, { target: { value: "teste@teste.com" } })
-    );
-    await waitFor(() =>
-      fireEvent.input(password, { target: { value: "123" } })
-    );
-    await waitFor(() =>
-      fireEvent.input(repeatPassword, { target: { value: "123" } })
-    );
+    const repeatPassword = container.querySelector('input[id="repeatPassword"]') as Element;
+    const plan = container.querySelector('select[id="plan"]') as Element;
+    await waitFor(() => fireEvent.input(username, { target: { value: "Test" } }));
+    await waitFor(() => fireEvent.input(email, { target: { value: "teste@teste.com" } }));
+    await waitFor(() => fireEvent.input(password, { target: { value: "123" } }));
+    await waitFor(() => fireEvent.input(repeatPassword, { target: { value: "123" } }));
+    await waitFor(() => fireEvent.change(plan, { target: { value: "826f83d7-dd8b-4d0b-b3d5-8a14742dced8" } }));
     const button = getByText("Cadastrar");
     await waitFor(() => fireEvent.click(button));
     await waitFor(() => {
@@ -195,8 +155,8 @@ describe("SignUp", () => {
         email: "teste@teste.com",
         password: "123",
         repeatPassword: "123",
+        plan: "826f83d7-dd8b-4d0b-b3d5-8a14742dced8"
       });
     });
-    signupSpy.mockRestore();
   });
 });
