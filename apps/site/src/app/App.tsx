@@ -6,8 +6,15 @@ import {
   Layout as AuthLayout,
   SignIn,
   SignUp,
+  Subscription,
 } from "@iustitia/site/auth";
-import { Layout, DashboardOffices, NotFound, Profile, Offices } from "@iustitia/site/dashboard";
+import {
+  Layout,
+  DashboardOffices,
+  NotFound,
+  Profile,
+  Offices,
+} from "@iustitia/site/dashboard";
 import ProtectedRoute from "./routes/protected-route/ProtectedRoute";
 import PublicRoute from "./routes/public-route/PublicRoute";
 
@@ -34,9 +41,19 @@ export const App = () => {
           <ChangePassword />
         </AuthLayout>
       </PublicRoute>
-      <PublicRoute exact path={`${Routes.SignUp}/:planParam?`}>
+      <PublicRoute exact path={`${Routes.SignUp}`}>
         <AuthLayout>
           <SignUp />
+        </AuthLayout>
+      </PublicRoute>
+      <PublicRoute exact path={`${Routes.Subscription}`}>
+        <AuthLayout>
+          <Subscription />
+        </AuthLayout>
+      </PublicRoute>
+      <PublicRoute exact path={`${Routes.SubscriptionConfirmation}`}>
+        <AuthLayout>
+          <Subscription />
         </AuthLayout>
       </PublicRoute>
       <ProtectedRoute exact path={Routes.Dashboard}>

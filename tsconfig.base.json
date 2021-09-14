@@ -19,6 +19,7 @@
       "@iustitia/api/dashboard": ["libs/api/dashboard/src/index.ts"],
       "@iustitia/api/database": ["libs/api/database/src/index.ts"],
       "@iustitia/api/email": ["libs/api/email/src/index.ts"],
+      "@iustitia/api/mercadopago": ["libs/api/mercadopago/src/index.ts"],
       "@iustitia/api/public": ["libs/api/public/src/index.ts"],
       "@iustitia/landing-page/components": [
         "libs/landing-page/components/src/index.ts"

@@ -1,9 +1,11 @@
 import checkDuplicateEmail from "./middleware/checkDuplicateEmail";
-import { signin, signup, forgotPassword, forgotPasswordCode, changePassword, refreshToken, userInfo } from "./controllers";
+import { signin, signup, subscription, forgotPassword, forgotPasswordCode, changePassword, refreshToken, userInfo, getAllPlans } from "./controllers";
 import verifyToken from "./middleware/verifyToken";
 
 export default function Auth(app) {
   app.post("/auth/signup", [checkDuplicateEmail], signup);
+
+  app.post("/auth/subscription", subscription);
 
   app.post("/auth/signin", signin);
 
@@ -14,6 +16,8 @@ export default function Auth(app) {
   app.post("/auth/changepassword", changePassword);
 
   app.post("/auth/refreshtoken", refreshToken);
+
+  app.get("/auth/plans", getAllPlans);
 
   app.get("/auth/me", [verifyToken], userInfo);
 }

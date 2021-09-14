@@ -135,6 +135,27 @@
         }
       }
     },
+    "api-mercadopago": {
+      "root": "libs/api/mercadopago",
+      "sourceRoot": "libs/api/mercadopago/src",
+      "projectType": "library",
+      "targets": {
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["libs/api/mercadopago/**/*.ts"]
+          }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/api/mercadopago"],
+          "options": {
+            "jestConfig": "libs/api/mercadopago/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
     "api-public": {
       "root": "libs/api/public",
       "sourceRoot": "libs/api/public/src",

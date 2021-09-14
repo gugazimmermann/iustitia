@@ -1,5 +1,4 @@
-import { NotificationIcon } from "../../../icons";
-import CloseIcon from "../../../icons/CloseIcon";
+import { NotificationIcon, CloseIcon } from "@iustitia/site/shared-components";
 
 export interface NavNotificationProps {
   setNotificationOpen(notificationOpen: boolean): void;

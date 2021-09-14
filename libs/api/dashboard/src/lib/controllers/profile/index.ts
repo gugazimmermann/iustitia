@@ -83,6 +83,7 @@ export async function getProfile(req, res) {
     if (!profile) {
       return res.status(404).send({ message: "Perfil não encontrado!" });
     }
+    const subscription = await database.Subscription.findOne({ where: { userId: req.userId } })
     return res.status(200).send({
       avatar: profile.avatar,
       name: profile.name,
@@ -94,7 +95,13 @@ export async function getProfile(req, res) {
       complement: profile.complement,
       neighborhood: profile.neighborhood,
       city: profile.city,
-      state: profile.state
+      state: profile.state,
+      subscription: {
+        planId: subscription.planId,
+        reason: subscription.reason,
+        frequency: subscription.frequency,
+        createdAt: subscription.createdAt,
+      }
     });
   } catch (err) {
     return res.status(500).send({ message: err.message });

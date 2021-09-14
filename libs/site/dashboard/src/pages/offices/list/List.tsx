@@ -1,4 +1,4 @@
-import { EyeIcon, PenIcon, TrashIcon } from "../../../icons";
+import { EyeIcon, PenIcon, TrashIcon } from "@iustitia/site/shared-components";
 import { IOffice } from "../../../interfaces";
 
 export interface ListProps {

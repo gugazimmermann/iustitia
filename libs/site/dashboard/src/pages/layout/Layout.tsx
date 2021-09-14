@@ -6,6 +6,8 @@ import {
   useEffect,
   useState,
 } from "react";
+import { DateTime } from "luxon";
+import { Alert, ALERT_TYPES } from "@iustitia/site/shared-components";
 import { getProfile } from "../../services/profile";
 import { Menu } from "../..";
 import Nav from "../../components/nav/Nav";
@@ -50,6 +52,12 @@ export function Layout({ children }: LayoutProps) {
     }
   }, []);
 
+  function subscriptionEndDate(createdAt: string, frequency: number) {
+    const subsCreatedAt = DateTime.fromISO(createdAt).plus({ days: frequency });
+    const finish = subsCreatedAt.diff(DateTime.now(), ["days"]);
+    return Math.ceil(finish.toObject().days as number);
+  }
+
   return (
     <div className="flex h-screen antialiased text-gray-900 bg-gray-100">
       <Menu setMenuOpen={setMenuOpen} menuOpen={menuOpen} />
@@ -65,6 +73,26 @@ export function Layout({ children }: LayoutProps) {
         />
 
         <main className="w-full lg:max-w-screen-lg h-full bg-gray-50 flex flex-col self-center">
+          {profile.subscription &&
+            profile.subscription.planId ===
+              "269a27f2-6006-445d-af03-b9c524556c9a" && (
+              <Alert
+                type={
+                  subscriptionEndDate(
+                    profile.subscription.createdAt,
+                    profile.subscription.frequency
+                  ) > 3
+                    ? ALERT_TYPES.NONE
+                    : ALERT_TYPES.WARNING
+                }
+                message={`${
+                  profile.subscription.reason
+                } termina em ${subscriptionEndDate(
+                  profile.subscription.createdAt,
+                  profile.subscription.frequency
+                )} dias.`}
+              />
+            )}
           {!profile.zip && (
             <Callout
               type={WARNING_TYPES.WARNING}
@@ -78,14 +106,21 @@ export function Layout({ children }: LayoutProps) {
             <Callout
               type={WARNING_TYPES.WARNING}
               title="Nenhum Escritório Cadastrado"
-              content={`Acesse Escritórios clicando em ${profile.avatar ? `sua foto` : `suas iniciais`} no canto superior direito.`}
+              content={`Acesse Escritórios clicando em ${
+                profile.avatar ? `sua foto` : `suas iniciais`
+              } no canto superior direito.`}
             />
           )}
 
           {profile.email &&
             Children.map(children, (child) => {
               if (isValidElement(child)) {
-                return cloneElement(child, { profile, setProfile, offices, setOffices });
+                return cloneElement(child, {
+                  profile,
+                  setProfile,
+                  offices,
+                  setOffices,
+                });
               }
               return child;
             })}

@@ -1,4 +1,4 @@
-import { MenuIcon } from "../../../icons";
+import { MenuIcon } from "@iustitia/site/shared-components";
 
 export interface NavMenuButtonProps {
   setMenuOpen(menuOpen: boolean): void;

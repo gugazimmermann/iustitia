@@ -4,7 +4,7 @@ import {
   GraphUpIcon,
   MoneyIcon,
   PeopleIcon,
-} from "../../../icons";
+} from "@iustitia/site/shared-components";
 
 export enum INFOCARDSICONS {
   MONEY = "money",

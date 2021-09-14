@@ -10,6 +10,14 @@ export async function signup({ name, email, password }: { name: string, email: s
   }
 };
 
+export async function subscription({ email, plan }: { email: string, plan: string }) {
+  try {
+    return await api.post("/auth/subscription", { email, plan })
+  } catch (err) {
+    return errorHandler(err)
+  }
+};
+
 export async function signin({ email, password }: { email: string, password: string }) {
   try {
     const { data } = await api.post("/auth/signin", { email, password })

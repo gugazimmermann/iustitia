@@ -10,7 +10,15 @@ export interface IProfile {
   neighborhood: string;
   city: string;
   state: string;
+  subscription?: ISubscription
 };
+
+export interface ISubscription {
+  planId: string;
+  reason: string;
+  frequency: number;
+  createdAt: string;
+}
 
 export interface IOffice {
   id?: string;

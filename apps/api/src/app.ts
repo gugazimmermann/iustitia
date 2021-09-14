@@ -5,6 +5,7 @@ import { database } from "@iustitia/api/database";
 import { authRoutes } from "@iustitia/api/auth";
 import { publicRoutes } from "@iustitia/api/public";
 import { dashboardRoutes } from "@iustitia/api/dashboard";
+import { mercadopagoRoutes } from "@iustitia/api/mercadopago";
 
 const app = express();
 app.use(morgan("dev"));
@@ -25,6 +26,7 @@ app.use((req, res, next) => {
 
 publicRoutes(app);
 authRoutes(app);
+mercadopagoRoutes(app);
 dashboardRoutes(app);
 
 app.use((req, res) => res.status(404).send("Not Found!"));

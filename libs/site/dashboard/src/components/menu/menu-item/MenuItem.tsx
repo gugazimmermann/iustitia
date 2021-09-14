@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { MenuLink } from "..";
-import { DashboardIcon, DocumentIcon, MenuArrowIcon } from "../../../icons";
+import { DashboardIcon, DocumentIcon, MenuArrowIcon } from "@iustitia/site/shared-components";
 
 export enum MENUICONS {
   DASHBOARD = "dashboard",

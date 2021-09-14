@@ -6,6 +6,7 @@ export interface IconProps {
 export * from './ButtonMobileIcon'
 export * from './WarningIcon'
 export * from './CaseIcon'
+export * from './CloseIcon'
 export * from "./DashboardIcon"
 export * from "./DocumentIcon"
 export * from "./EyeIcon"
@@ -17,6 +18,8 @@ export * from './MoneyIcon'
 export * from "./NotificationIcon"
 export * from "./PenIcon"
 export * from "./PeopleIcon"
+export * from "./PlanBasic"
+export * from "./PlanProfessional"
 export * from "./SearchIcon"
 export * from "./SettingsIcon"
 export * from "./TrashIcon"

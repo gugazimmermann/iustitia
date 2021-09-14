@@ -1,4 +1,4 @@
-import { NotificationIcon, SearchIcon, SettingsIcon } from "../../../icons";
+import { NotificationIcon, SearchIcon, SettingsIcon } from "@iustitia/site/shared-components";
 
 export enum NAVICONS {
   NOTIFICATION = "notification",

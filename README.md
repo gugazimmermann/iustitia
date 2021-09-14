@@ -35,3 +35,7 @@ yarn stop:db - stop Database
 docker volume prune - delete the Database
 
 yarn nx run-many --all --target=test --codeCoverage
+
+npx sequelize-cli db:migrate
+
+npx sequelize-cli db:seed:all

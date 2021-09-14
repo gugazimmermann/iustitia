@@ -1,7 +1,7 @@
 {
   "name": "iustitia",
   "description": "Iustitia - App pra Advogados",
-  "version": "0.8.22",
+  "version": "0.9.0",
   "license": "MIT",
   "engines": {
     "node": ">=14"
@@ -28,6 +28,7 @@
     "start:landing-page": "nx serve landing-page --port=4200",
     "start:site": "nx serve site --port=4201",
     "start:api": "nx serve api",
+    "start:backend": "yarn start:db && yarn  start:api",
     "build:landing-page": "nx build landing-page",
     "build:site": "nx build site",
     "test:landing-page": "nx test landing-page",
@@ -48,6 +49,7 @@
     "body-parser": "^1.19.0",
     "core-js": "^3.6.5",
     "cors": "^2.8.5",
+    "dotenv": "^10.0.0",
     "express": "^4.17.1",
     "jsonwebtoken": "^8.5.1",
     "luxon": "^2.0.2",

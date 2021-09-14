@@ -8,10 +8,6 @@ export enum LandingPageRoutes {
   Privacity = "/privacidade",
   AboutUs = "/sobre-nos",
   Contact = "/contato",
-  SignIn = "/entrar",
-  SignUp = "/cadastro",
-  ForgotPassword = "/esqueceu-senha",
-  ChangePassword = "/nova-senha",
 }
 
 
@@ -20,6 +16,8 @@ export enum SiteRoutes {
   ForgotPassword = "/esqueceu-senha",
   ChangePassword = "/mudar-senha",
   SignUp = "/cadastrar",
+  Subscription = "/assinatura",
+  SubscriptionConfirmation = "/confirmacao-assinatura",
   Dashboard = "/dashboard",
   Profile = "/perfil",
   Offices = "/escritorios"

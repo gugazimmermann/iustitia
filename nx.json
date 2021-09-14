@@ -42,6 +42,9 @@
     "api-email": {
       "tags": []
     },
+    "api-mercadopago": {
+      "tags": []
+    },
     "api-public": {
       "tags": []
     },

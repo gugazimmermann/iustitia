@@ -9,10 +9,9 @@ import {
   validateEmail,
 } from "@iustitia/site/shared-utils";
 import Header from "../../components/dashboard/header/Header";
-import { UploadCloudIcon } from "../../icons";
 import { IProfile } from "../../interfaces";
 import { updateProfile } from "../../services/profile";
-import { LoadingButton, Alert, ALERT_TYPES } from "@iustitia/site/shared-components";
+import { LoadingButton, Alert, ALERT_TYPES, UploadCloudIcon } from "@iustitia/site/shared-components";
 
 interface ProfileProps {
   profile?: IProfile;
