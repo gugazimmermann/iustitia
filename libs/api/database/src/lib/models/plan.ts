@@ -16,7 +16,7 @@ export interface PlanAttributes {
 
 export type PlanCreationAttributes = Optional<PlanAttributes, 'id'>
 
-export interface PlasnInstance
+export interface PlansInstance
   extends Model<PlanAttributes, PlanCreationAttributes>,
   PlanAttributes {
   createdAt?: Date;
@@ -25,7 +25,7 @@ export interface PlasnInstance
 }
 
 export default function plan(sequelize: Sequelize) {
-  const Plans = sequelize.define<PlasnInstance>('plans', {
+  const Plans = sequelize.define<PlansInstance>('plans', {
     id: {
       type: DataTypes.UUID,
       defaultValue: DataTypes.UUIDV4,

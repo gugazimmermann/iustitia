@@ -1,6 +1,6 @@
 export function BasicFeatures() {
   return (
-    <div className="flex justify-around">
+    <div className="md:flex justify-around">
       <ul className="space-y-2">
         <li className="flex items-center">
           <div className="mr-2">

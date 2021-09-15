@@ -3,10 +3,18 @@ import * as bcrypt from "bcryptjs";
 import { v4 as uuidv4 } from 'uuid';
 import { DateTime } from "luxon";
 import { SiteRoutes as Routes } from '@iustitia/react-routes';
+import * as mercadopago from 'mercadopago';
 import { database } from '@iustitia/api/database';
 import { sendForgotPasswordEmail } from '@iustitia/api/email';
 import { validateEmail } from "@iustitia/site/shared-utils";
-import config from "../../config"
+import config from "../../config";
+
+const ACCESS_TOKEN =
+  process.env.NX_STAGE === "dev"
+    ? process.env.NX_MERCADOPAGO_ACCESS_TOKEN_TEST
+    : process.env.NX_MERCADOPAGO_ACCESS_TOKEN;
+
+mercadopago.configure({access_token: ACCESS_TOKEN });
 
 async function createToken(user) {
   const expiredAt = new Date();
@@ -24,10 +32,14 @@ function verifyExpiration(token) {
 };
 
 export async function signup(req, res) {
-  if (!req.body?.name || !req.body?.password || !req.body?.email || !validateEmail(req.body.email)) {
+  if (!req.body?.name || !req.body?.password || !req.body?.email || !validateEmail(req.body.email) || !req.body?.planId) {
     return res.status(400).send({ message: "Dados inválidos!" });
   }
   try {
+    const userPlan = await database.Plan.findByPk(req.body.planId);
+    if (userPlan.transactionAmount !== 0 && !req.body?.cardInfo) {
+      return res.status(400).send({ message: "Dados inválidos!" });
+    }
     const userData = { email: req.body.email, password: bcrypt.hashSync(req.body.password, 8) };
     const user = await database.User.create(userData);
     await user.update({ tenant: user.id });
@@ -36,19 +48,6 @@ export async function signup(req, res) {
       email: userData.email,
       userId: user.id
     });
-    return res.status(201).send({ message: "Usuário cadastrado com sucesso!" });
-  } catch (err) {
-    return res.status(500).send({ message: err.message });
-  }
-}
-
-export async function subscription(req, res) {
-  if (!req.body?.email || !validateEmail(req.body.email) || !req.body?.plan) {
-    return res.status(400).send({ message: "Dados inválidos!" });
-  }
-  try {
-    const user = await database.User.findOne({ where: { email: req.body.email }});
-    const userPlan = await database.Plan.findByPk(req.body.plan);
     await database.Subscription.create({
       userId: user.id,
       planId: userPlan.id,
@@ -56,25 +55,35 @@ export async function subscription(req, res) {
       frequency: userPlan.frequency,
       frequencyType: userPlan.frequencyType,
       transactionAmount: userPlan.transactionAmount,
-      status: true
+      status: true,
     });
-    // TODO WITH REAL PAYMENT
     if (userPlan.transactionAmount !== 0) {
-      await database.Creditcard.create({
-        userId: user.id,
-        name: "Visa",
-        lastFourDigits: 5682,
-        expirationMonth: 11,
-        expirationYear: 2020
-      });
+      const { cardInfo } = req.body;
+
+      // const preapproval = await mercadopago.preapproval.create({
+      //   "preapproval_plan_id": userPlan.preapprovalPlanId,
+      //   "card_token_id": cardInfo.id,
+      //   "payer_email": user.email
+      // });
+      // console.log(preapproval)
+
       await database.Payment.create({
         userId: user.id,
-        paidDate: new Date(),
         transactionAmount: userPlan.transactionAmount,
-        status: "approved"
+        status: "Paid",
+        paidDate: new Date()
+      });
+      await database.Creditcard.create({
+        userId: user.id,
+        name: cardInfo.name,
+        firstSixDigits: cardInfo.firstSixDigits,
+        lastFourDigits: cardInfo.lastFourDigits,
+        expirationMonth: cardInfo.expirationMonth,
+        expirationYear: cardInfo.expirationYear,
+        status: true,
       });
     }
-    return res.status(201).send({ message: "Assinatura criada com sucesso!" });
+    return res.status(201).send({ message: "Usuário cadastrado com sucesso!" });
   } catch (err) {
     return res.status(500).send({ message: err.message });
   }
@@ -85,7 +94,7 @@ export async function signin(req, res) {
     return res.status(400).send({ message: "Dados inválidos!" });
   }
   try {
-    const user = await database.User.findOne({ where: { email: req.body.email }});
+    const user = await database.User.findOne({ where: { email: req.body.email } });
     if (!user) {
       return res.status(404).send({ message: "Email ou senha inválidos!" });
     }

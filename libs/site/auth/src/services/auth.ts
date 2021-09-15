@@ -2,17 +2,26 @@ import { errorHandler } from "@iustitia/site/shared-utils";
 import api from "./api";
 import TokenService from "./token";
 
-export async function signup({ name, email, password }: { name: string, email: string, password: string }) {
-  try {
-    return await api.post("/auth/signup", { name, email, password })
-  } catch (err) {
-    return errorHandler(err)
-  }
-};
+export interface CardInfoInterface {
+  id: string;
+  name: string;
+  expirationMonth: number;
+  expirationYear: number;
+  firstSixDigits: string;
+  lastFourDigits: string;
+}
 
-export async function subscription({ email, plan }: { email: string, plan: string }) {
+export interface SignUpInterface {
+  name: string;
+  email: string;
+  password: string;
+  planId: string;
+  cardInfo?: CardInfoInterface
+}
+
+export async function signup({ name, email, password, planId, cardInfo }: SignUpInterface) {
   try {
-    return await api.post("/auth/subscription", { email, plan })
+    return await api.post("/auth/signup", { name, email, password, planId, cardInfo })
   } catch (err) {
     return errorHandler(err)
   }

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Link as RouterLink, useHistory } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { SiteRoutes as Routes } from "@iustitia/react-routes";
@@ -9,51 +9,26 @@ import {
 } from "@iustitia/site/shared-components";
 import { validateEmail } from "@iustitia/site/shared-utils";
 import { Title } from "../..";
-import { signup } from "../../services/auth";
-import { getPlans } from "../../services/subscription";
 
-type Form = {
+export type SignUpForm = {
   name: string;
   email: string;
   password: string;
   repeatPassword: string;
-  plan: string;
 };
-
-interface IPlan {
-  id: string;
-  reason: string;
-  transactionAmount: number;
-  currencyId: string;
-}
 
 // TODO: send a welcome email
 export function SignUp() {
   const history = useHistory();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const [plans, setPlans] = useState<IPlan[]>([]);
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<Form>();
+  } = useForm<SignUpForm>();
 
-  useEffect(() => {
-    async function Plans() {
-      try {
-        const data = await getPlans();
-        setPlans(data);
-      } catch (err) {
-        console.log(err);
-      }
-    }
-
-    Plans();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  const onSubmit = async (form: Form) => {
+  const onSubmit = async (form: SignUpForm) => {
     setLoading(true);
     setError("");
     if (!validateEmail(form.email)) {
@@ -66,20 +41,9 @@ export function SignUp() {
       setLoading(false);
       return;
     }
-    const userPlan = plans.filter((p) => p.id === form.plan)[0];
-    if (!userPlan) {
-      setError("Plano não encontrado!");
-      setLoading(false);
-      return;
-    }
     try {
-      await signup(form);
       setLoading(false);
-      if (userPlan.transactionAmount === 0) {
-        history.push(Routes.SignIn, { email: form.email });
-      } else {
-        history.push(Routes.Subscription, { email: form.email, planId: form.plan });
-      }
+      history.push(Routes.Plan, { form });
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       setError(err.message as string);
@@ -165,35 +129,6 @@ export function SignUp() {
               }
             />
           </div>
-          <div className="mb-6 rounded">
-            <label
-              className="block text-gray-700 text-sm font-bold mb-2 ml-3"
-              htmlFor="plan"
-            >
-              Plano de Assinatura
-            </label>
-            <select
-              id="plan"
-              {...register("plan", { required: true })}
-              className={
-                `bg-gray-200 rounded w-full text-gray-700 focus:outline-none border-b-4 border-gray-300 transition duration-500 px-3 pb-3 ` +
-                (errors.plan ? `border-red-600 ` : `focus:border-primary-600`)
-              }
-            >
-              <option value=""></option>
-              {plans &&
-                plans.length &&
-                plans.map((p, i) => (
-                  <option key={i} value={p.id}>
-                    {p.reason} -{" "}
-                    {p.transactionAmount.toLocaleString("pt-br", {
-                      style: "currency",
-                      currency: p.currencyId,
-                    })}
-                  </option>
-                ))}
-            </select>
-          </div>
           <div className="flex justify-end">
             <RouterLink to="/entrar">
               <div className="text-sm text-primary-600 hover:text-primary-700 hover:underline mb-6">
@@ -204,11 +139,14 @@ export function SignUp() {
           <LoadingButton
             styles="bg-primary-600 hover:bg-primary-700 text-white font-bold py-2 rounded shadow-lg hover:shadow-xl transition duration-200"
             type="submit"
-            text="Cadastrar"
+            text="Avançar"
             loading={loading}
           />
         </form>
       </section>
+      {process.env.NX_STAGE === "dev" && (
+        <div className="mt-6 text-gray-400">MercadoPago Email: test_user_82166921@testuser.com</div>
+      )}
     </main>
   );
 }

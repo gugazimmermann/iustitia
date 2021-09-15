@@ -1,6 +1,6 @@
 import { IconProps } from ".";
 
-export function PlanBasic({ styles }: IconProps) {
+export function PlanBasicIcon({ styles }: IconProps) {
   return (
     <svg
     className={ styles }
@@ -22,4 +22,4 @@ export function PlanBasic({ styles }: IconProps) {
   );
 }
 
-export default PlanBasic;
+export default PlanBasicIcon;

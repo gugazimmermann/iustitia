@@ -6,6 +6,7 @@ import {
   Layout as AuthLayout,
   SignIn,
   SignUp,
+  Plan,
   Subscription,
 } from "@iustitia/site/auth";
 import {
@@ -46,12 +47,12 @@ export const App = () => {
           <SignUp />
         </AuthLayout>
       </PublicRoute>
-      <PublicRoute exact path={`${Routes.Subscription}`}>
+      <PublicRoute exact path={`${Routes.Plan}`}>
         <AuthLayout>
-          <Subscription />
+          <Plan />
         </AuthLayout>
       </PublicRoute>
-      <PublicRoute exact path={`${Routes.SubscriptionConfirmation}`}>
+      <PublicRoute exact path={`${Routes.Subscription}`}>
         <AuthLayout>
           <Subscription />
         </AuthLayout>

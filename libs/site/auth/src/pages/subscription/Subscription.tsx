@@ -1,10 +1,20 @@
 import { useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
-import { Alert, ALERT_TYPES, PlanBasic, PlanProfessional } from "@iustitia/site/shared-components";
-import { getPlans } from "../../services/subscription";
+import { useHistory, useLocation, Redirect } from "react-router-dom";
+import { useForm } from "react-hook-form";
+import { SiteRoutes as Routes } from "@iustitia/react-routes";
+import {
+  Alert,
+  ALERT_TYPES,
+  LoadingButton,
+} from "@iustitia/site/shared-components";
 import { MercadoPago } from "./protocols";
-import { BasicFeatures, ProfessionalFeatures } from "./features";
+import { PlanInterface, SignUpForm } from "../..";
+import { signup } from "../../services/auth";
 
+const PUBLIC_KEY =
+  process.env.NX_STAGE === "dev"
+    ? process.env.NX_MERCADOPAGO_PUBLIC_KEY_TEST
+    : process.env.NX_MERCADOPAGO_PUBLIC_KEY;
 interface Constructable<T> {
   new (key: string, options?: { locale: string }): T;
 }
@@ -15,135 +25,351 @@ declare global {
   }
 }
 
-interface State {
-  email: string;
-  planId: string;
-}
+type SubscriptionForm = {
+  name: string;
+  cardNumber: string;
+  cardExpiration: string;
+  securityCode: string;
+  documentType: string;
+  document: string;
+};
 
-interface IPlan {
+interface IdentificationInterface {
   id: string;
-  reason: string;
-  transactionAmount: number;
-  currencyId: string;
+  name: string;
+  type: string;
+  min_length: number;
+  max_length: number;
 }
 
-const PUBLIC_KEY =
-  process.env.NX_STAGE === "dev"
-    ? process.env.NX_MERCADOPAGO_PUBLIC_KEY_TEST
-    : process.env.NX_MERCADOPAGO_PUBLIC_KEY;
+interface CreateCardTokenInterface {
+  cardNumber: string;
+  cardholderName: string;
+  cardExpirationMonth: string;
+  cardExpirationYear: string;
+  securityCode: string;
+  identificationType: string;
+  identificationNumber: string;
+}
+
+interface CardTokenInterface {
+  card_number_length: number;
+  cardholder: {
+    identification: {
+      number: string;
+      type: string;
+    };
+    name: string;
+  };
+  date_created: string;
+  date_due: string;
+  date_last_updated: string;
+  expiration_month: number;
+  expiration_year: number;
+  first_six_digits: string;
+  id: string;
+  last_four_digits: string;
+  live_mode: boolean;
+  luhn_validatio: boolean;
+  public_key: string;
+  require_esc: boolean;
+  security_code_length: number;
+}
+
+interface State {
+  form: SignUpForm;
+  plan: PlanInterface;
+}
 
 export function Subscription() {
+  const history = useHistory();
   const location = useLocation();
-  const { email, planId } = location.state as State;
-  const [plans, setPlans] = useState<IPlan[]>();
-  const [plan, setPlan] = useState<IPlan>();
+  const state = location?.state as State;
+  const form = state?.form;
+  const plan = state?.plan;
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<SubscriptionForm>();
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [mercadoPago, setMercadoPago] = useState<MercadoPago>();
+  const [identificationTypes, setIdentificationTypes] =
+    useState<IdentificationInterface[]>();
+  const [cardImg, setCardImg] = useState("");
 
   useEffect(() => {
-    async function seePlan() {
-      try {
-        const data: IPlan[] = await getPlans();
-        setPlans(data);
-        const userPlan = data.filter((p) => p.id === planId)[0];
-        setPlan(userPlan);
-        if (userPlan) {
-          const mp = new window.MercadoPago(PUBLIC_KEY as string, {
-            locale: "pt-BR",
-          });
-          mp.checkout({
-            tokenizer: {
-              totalAmount: userPlan.transactionAmount,
-              backUrl: `${process.env.NX_APP_SITE}/confirmacao-assinatura`,
-              summary: {
-                productLabel: userPlan.reason,
-                product: userPlan.transactionAmount
-              },
-              installments: {
-                minInstallments: 1,
-                maxInstallments: 1,
-            },
-            },
-            render: {
-              container: ".tokenizer-container",
-              type: "wallet",
-              label: "Assinar",
-            },
-          });
+    async function getIdentificationTypes(mp: MercadoPago) {
+      const res = await mp.getIdentificationTypes();
+      setIdentificationTypes(res);
+    }
+    const mp = new window.MercadoPago(PUBLIC_KEY as string, {
+      locale: "pt-BR",
+    });
+    setMercadoPago(mp);
+    getIdentificationTypes(mp);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  async function getCardThumbnail(card: string) {
+    if (card && mercadoPago) {
+      const bin = card.replace(/\D/g, "").substring(0, 6);
+      if (bin && bin.length === 6) {
+        const paymentMethods = await mercadoPago.getPaymentMethods({ bin });
+        if (paymentMethods.results.length > 0) {
+          setCardImg(paymentMethods.results[0].thumbnail);
+        } else {
+          setCardImg("");
         }
+      }
+    }
+  }
+
+  async function getCardToken(data: CreateCardTokenInterface) {
+    if (mercadoPago) {
+      try {
+        return await mercadoPago.createCardToken({
+          cardNumber: data.cardNumber,
+          cardholderName: data.cardholderName,
+          cardExpirationMonth: data.cardExpirationMonth,
+          cardExpirationYear: data.cardExpirationYear,
+          securityCode: data.securityCode,
+          identificationType: data.identificationType,
+          identificationNumber: data.identificationNumber,
+        });
       } catch (err) {
         console.log(err);
       }
     }
-    seePlan();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }
 
-  return (
-    <main className="bg-white max-w-lg mx-auto p-8 md:p-12 my-10 rounded-lg shadow-2xl">
-      {error && <Alert type={ALERT_TYPES.ERROR} message={error} />}
-      <section>
-        <div className="max-w-xl mb-4 md:mb-6 md:mx-auto sm:text-center lg:max-w-2xl ">
-          <h2 className="max-w-lg mb-2 font-sans text-3xl font-bold leading-none tracking-tight text-gray-700 sm:text-4xl md:mx-auto">
-            Assinatura
-          </h2>
-        </div>
-        <div className="grid max-w-md lg:max-w-screen-md sm:mx-auto">
-          <div className="flex flex-col justify-between p-5 bg-white border rounded shadow-sm">
-            <div className="mb-6">
-              <div className="flex flex-col md:flex-row items-center justify-between pb-6 mb-6 border-b">
-                <div>
-                  <p className="text-sm font-bold tracking-wider uppercase">
-                    {plan?.reason}
-                  </p>
-                  <p className="text-3xl font-extrabold text-primary-700">
-                    {plan?.transactionAmount.toLocaleString("pt-br", {
-                      style: "currency",
-                      currency: plan?.currencyId,
-                    })}{" "}
-                    /{" "}
-                    <span className="text-xl">
-                      {plan?.reason.toLowerCase().includes("mensal")
-                        ? `mês`
-                        : plan?.reason.toLowerCase().includes("semestral")
-                        ? `semestre`
-                        : `ano`}
-                    </span>
-                  </p>
-                </div>
-                <div className="mt-4 md:mt-0 flex items-center justify-center w-24 h-24 rounded-full bg-primary-100">
-                  {plan?.reason.toLowerCase().includes("profissional") ? (
-                    <PlanProfessional styles="w-12 h-12 text-primary-700" />
-                  ) : (
-                    <PlanBasic styles="w-12 h-12 text-primary-700" />
-                  )}
-                </div>
-              </div>
-              <div>
-                <div className="w-full text-center">
-                  <p className="mb-2 font-bold tracking-wide">
-                    Características
-                  </p>
-                </div>
-                {plan?.reason.toLowerCase().includes("profissional") ? (
-                  <ProfessionalFeatures />
-                ) : (
-                  <BasicFeatures />
-                )}
-              </div>
-            </div>
-            <div>
-              <div className="flex flex-col items-center justify-center text-center">
-                <div className="tokenizer-container"></div>
-                <p className="mt-4 text-sm text-gray-600">
-                  O plano pode ser alterado posteriormente para Profissional.
-                </p>
-              </div>
-            </div>
+  const onSubmit = async (data: SubscriptionForm) => {
+    setLoading(true);
+    setError("");
+    try {
+      const token: CardTokenInterface = await getCardToken({
+        cardNumber: data.cardNumber.replace(/\D/g, ""),
+        cardholderName: data.name,
+        cardExpirationMonth: data.cardExpiration.split("/")[0],
+        cardExpirationYear: `20${data.cardExpiration.split("/")[1]}`,
+        securityCode: data.securityCode,
+        identificationType: data.documentType,
+        identificationNumber: data.document,
+      });
+      await signup({
+        name: form.name,
+        email: form.email,
+        password: form.password,
+        planId: plan.id,
+        cardInfo: {
+          id: token.id,
+          name: token.cardholder.name,
+          expirationMonth: token.expiration_month,
+          expirationYear: token.expiration_year,
+          firstSixDigits: token.first_six_digits,
+          lastFourDigits: token.last_four_digits,
+        }
+      });
+      setLoading(false);
+      history.push(Routes.SignIn, { email: form.email });
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (err: any) {
+      setError(err.message as string);
+      setLoading(false);
+    }
+  };
+
+  if (form === undefined || plan === undefined) {
+    return <Redirect to={Routes.SignUp} />;
+  } else {
+    return (
+      <main className="bg-white max-w-lg mx-auto p-8 md:p-12 my-10 rounded-lg shadow-2xl">
+        {error && <Alert type={ALERT_TYPES.ERROR} message={error} />}
+        <section>
+          <div className="mb-4 md:mb-6 md:mx-auto text-center">
+            <h1 className="mb-2 text-2xl font-bold text-gray-700">
+              Pagamento da Assinatura
+            </h1>
           </div>
-        </div>
-      </section>
-    </main>
-  );
+          <div className="flex flex-col md:flex-row items-center justify-between mb-4">
+            <p className="text-base font-bold uppercase text-center">
+              {plan?.reason}
+            </p>
+            <p className="text-xl font-bold text-primary-700">
+              {plan?.transactionAmount.toLocaleString("pt-br", {
+                style: "currency",
+                currency: plan?.currencyId,
+              })}{" "}
+              /{" "}
+              <span className="text-xl">
+                {plan?.reason.toLowerCase().includes("mensal")
+                  ? `mês`
+                  : plan?.reason.toLowerCase().includes("semestral")
+                  ? `semestre`
+                  : `ano`}
+              </span>
+            </p>
+          </div>
+          <form
+            id="form-checkout"
+            className="flex flex-col"
+            onSubmit={handleSubmit(onSubmit)}
+          >
+            <div className="mb-2 rounded">
+              <label
+                className="block text-gray-700 text-sm font-bold"
+                htmlFor="name"
+              >
+                Titular do cartão
+              </label>
+              <input
+                type="text"
+                id="name"
+                {...register("name", { required: true })}
+                className={
+                  `bg-gray-200 rounded w-full text-gray-700 focus:outline-none border-b-4 border-gray-300 transition duration-500 px-1 pb-1 ` +
+                  (errors.name ? `border-red-600 ` : `focus:border-primary-600`)
+                }
+              />
+            </div>
+            <div className="flex items-center justify-center space-x-4 mb-2 rounded">
+              <div className="flex-1">
+                <label
+                  className="block text-gray-700 text-sm font-bold"
+                  htmlFor="cardNumber"
+                >
+                  Número do Cartão
+                </label>
+                <input
+                  type="text"
+                  id="number"
+                  {...register("cardNumber", { required: true })}
+                  onBlur={(e) => getCardThumbnail(e.target.value)}
+                  className={
+                    `bg-gray-200 rounded w-full text-gray-700 focus:outline-none border-b-4 border-gray-300 transition duration-500 px-1 pb-1 ` +
+                    (errors.cardNumber
+                      ? `border-red-600 `
+                      : `focus:border-primary-600`)
+                  }
+                />
+              </div>
+              <div className="flex-0">
+                {cardImg !== "" && <img src={cardImg} alt="card banner" />}
+              </div>
+            </div>
+            <div className="mb-2 rounded">
+              <div className="flex space-x-6">
+                <div>
+                  <label
+                    className="block text-gray-700 text-sm font-bold"
+                    htmlFor="cardExpiration"
+                  >
+                    Vencimento
+                  </label>
+                  <input
+                    type="text"
+                    id="cardExpiration"
+                    {...register("cardExpiration", { required: true })}
+                    className={
+                      `bg-gray-200 rounded w-full text-gray-700 focus:outline-none border-b-4 border-gray-300 transition duration-500 px-1 pb-1 ` +
+                      (errors.cardExpiration
+                        ? `border-red-600 `
+                        : `focus:border-primary-600`)
+                    }
+                  />
+                </div>
+                <div>
+                  <label
+                    className="block text-gray-700 text-sm font-bold"
+                    htmlFor="securityCode"
+                  >
+                    <span className="inline-flex md:hidden">
+                      Cód. de Segurança
+                    </span>
+                    <span className="hidden md:inline-flex">
+                      Código de Segurança
+                    </span>
+                  </label>
+                  <input
+                    type="text"
+                    id="securityCode"
+                    {...register("securityCode", { required: true })}
+                    className={
+                      `bg-gray-200 rounded w-full text-gray-700 focus:outline-none border-b-4 border-gray-300 transition duration-500 px-1 pb-1 ` +
+                      (errors.securityCode
+                        ? `border-red-600 `
+                        : `focus:border-primary-600`)
+                    }
+                  />
+                </div>
+              </div>
+            </div>
+            <div className="mb-2 rounded">
+              <div className="flex space-x-6">
+                <div className="flex-0">
+                  <label
+                    className="block text-gray-700 text-sm font-bold"
+                    htmlFor="documentType"
+                  >
+                    <span className="inline-flex md:hidden">Documento</span>
+                    <span className="hidden md:inline-flex">
+                      Tipo de Documento
+                    </span>
+                  </label>
+                  <select
+                    id="documentType"
+                    {...register("documentType", { required: true })}
+                    className="bg-gray-200 rounded w-full text-gray-700 focus:outline-none border-b-4 border-gray-300 transition duration-500 px-1 pb-1 focus:border-primary-600"
+                  >
+                    {identificationTypes &&
+                      identificationTypes.length > 0 &&
+                      identificationTypes.map((type, i) => (
+                        <option key={i} value={type.id}>
+                          {type.name}
+                        </option>
+                      ))}
+                  </select>
+                </div>
+                <div className="flex-1">
+                  <label
+                    className="block text-gray-700 text-sm font-bold"
+                    htmlFor="document"
+                  >
+                    Número do Documento
+                  </label>
+                  <input
+                    type="text"
+                    id="document"
+                    {...register("document", { required: true })}
+                    className={
+                      `bg-gray-200 rounded w-full text-gray-700 focus:outline-none border-b-4 border-gray-300 transition duration-500 px-1 pb-1 ` +
+                      (errors.document
+                        ? `border-red-600 `
+                        : `focus:border-primary-600`)
+                    }
+                  />
+                </div>
+              </div>
+            </div>
+            <LoadingButton
+              styles="bg-primary-600 hover:bg-primary-700 text-white font-bold py-2 rounded shadow-lg hover:shadow-xl transition duration-200"
+              type="submit"
+              text="Avançar"
+              loading={loading}
+            />
+          </form>
+        </section>
+        {process.env.NX_STAGE === "dev" && (
+          <div className="mt-6 text-gray-400">
+            Titular: APRO<br />
+            Mastercard | 5031 4332 1540 6351 | 11/25 | 123<br />
+            Visa | 4235 6477 2802 5682 | 11/25 | 123
+          </div>
+        )}
+      </main>
+    );
+  }
 }
 
 export default Subscription;

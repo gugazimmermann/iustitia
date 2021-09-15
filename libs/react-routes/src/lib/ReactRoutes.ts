@@ -16,8 +16,8 @@ export enum SiteRoutes {
   ForgotPassword = "/esqueceu-senha",
   ChangePassword = "/mudar-senha",
   SignUp = "/cadastrar",
-  Subscription = "/assinatura",
-  SubscriptionConfirmation = "/confirmacao-assinatura",
+  Plan = "/planos",
+  Subscription = "/assinar",
   Dashboard = "/dashboard",
   Profile = "/perfil",
   Offices = "/escritorios"

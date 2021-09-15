@@ -5,9 +5,11 @@ export interface CreditcardAttributes {
   id: string;
   userId: string;
   name: string;
-  lastFourDigits: number;
-  expirationMonth: number;
-  expirationYear: number;
+  firstSixDigits: string;
+  lastFourDigits: string;
+  expirationMonth: string;
+  expirationYear: string;
+  status: boolean;
 }
 
 export type CreditcardCreationAttributes = Optional<CreditcardAttributes, 'id'>
@@ -32,9 +34,11 @@ export default function creditcard(sequelize: Sequelize) {
     },
     userId: { type: DataTypes.UUID, allowNull: false },
     name: { type: DataTypes.TEXT, allowNull: false },
-    lastFourDigits: { type: DataTypes.INTEGER, allowNull: false },
-    expirationMonth: { type: DataTypes.INTEGER, allowNull: false },
-    expirationYear: { type: DataTypes.INTEGER, allowNull: false },
+    firstSixDigits: { type: DataTypes.TEXT, allowNull: false },
+    lastFourDigits: { type: DataTypes.TEXT, allowNull: false },
+    expirationMonth: { type: DataTypes.TEXT, allowNull: false },
+    expirationYear: { type: DataTypes.TEXT, allowNull: false },
+    status: { type: DataTypes.BOOLEAN, allowNull: false },
   }, {
     paranoid: true,
     timestamps: true,

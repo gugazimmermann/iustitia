@@ -5,7 +5,7 @@ import refreshToken, { RefreshTokenInstance } from "./models/refreshToken";
 import forgotPassword, { ForgotPasswordInstance } from "./models/forgotPassword";
 import profile, { ProfileInstance } from "./models/profile";
 import office, { OfficeInstance } from "./models/office";
-import plan, { PlasnInstance } from "./models/plan";
+import plan, { PlansInstance } from "./models/plan";
 import subscription, { SubscriptionInstance } from "./models/subscription";
 import payment, { PaymentInstance } from "./models/payments";
 import creditcard, { CreditcardInstance } from "./models/creditcard";
@@ -22,7 +22,7 @@ export interface IDatabase {
   ForgotPassword: ModelCtor<ForgotPasswordInstance>;
   Profile: ModelCtor<ProfileInstance>;
   Office: ModelCtor<OfficeInstance>;
-  Plan: ModelCtor<PlasnInstance>;
+  Plan: ModelCtor<PlansInstance>;
   Subscription: ModelCtor<SubscriptionInstance>;
   Payment: ModelCtor<PaymentInstance>;
   Creditcard: ModelCtor<CreditcardInstance>;
