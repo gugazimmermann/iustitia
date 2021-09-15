@@ -10,10 +10,10 @@ export interface IProfile {
   neighborhood: string;
   city: string;
   state: string;
-  subscription?: ISubscription
+  subscription?: IProfileSubscription
 };
 
-export interface ISubscription {
+export interface IProfileSubscription {
   planId: string;
   reason: string;
   frequency: number;
@@ -36,4 +36,44 @@ export interface IOffice {
   tenantId?: string;
   updatedAt?: string;
   createdAt?: string;
+  deletedAt?: string;
 };
+
+export interface ISubscription {
+  id?: string;
+  userId?: string;
+  planId: string;
+  reason: string;
+  frequency: number;
+  frequencyType: string;
+  transactionAmount: number;
+  status: boolean;
+  updatedAt?: string;
+  createdAt?: string;
+  deletedAt?: string;
+}
+
+export interface IPayment {
+  id?: string;
+  userId?: string;
+  transactionAmount: number;
+  status: string;
+  paidDate: string;
+  updatedAt?: string;
+  createdAt?: string;
+  deletedAt?: string;
+}
+
+export interface ICreditCard {
+  id?: string;
+  userId?: string;
+  name: string;
+  firstSixDigits: string;
+  lastFourDigits: string;
+  expirationMonth: string;
+  expirationYear: string;
+  status: boolean;
+  updatedAt?: string;
+  createdAt?: string;
+  deletedAt?: string;
+}

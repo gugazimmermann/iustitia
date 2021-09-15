@@ -68,16 +68,22 @@ export function NavAvatar({ profile }: NavAvatarProps) {
         }`}
       >
         <Link
+          to={SiteRoutes.Offices}
+          className="cursor-pointer w-full block px-4 py-2 text-sm text-gray-700 transition-colors hover:bg-gray-100"
+        >
+          Escritórios
+        </Link>
+        <Link
           to={SiteRoutes.Profile}
           className="cursor-pointer w-full block px-4 py-2 text-sm text-gray-700 transition-colors hover:bg-gray-100"
         >
           Seu Perfil
         </Link>
         <Link
-          to={SiteRoutes.Offices}
+          to={SiteRoutes.Subscriptions}
           className="cursor-pointer w-full block px-4 py-2 text-sm text-gray-700 transition-colors hover:bg-gray-100"
         >
-          Escritórios
+          Assinatura
         </Link>
         <div
           onClick={() => handleLogout()}

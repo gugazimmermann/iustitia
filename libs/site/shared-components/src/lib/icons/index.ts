@@ -7,6 +7,7 @@ export * from './ButtonMobileIcon'
 export * from './WarningIcon'
 export * from './CaseIcon'
 export * from './CloseIcon'
+export * from './CreditCardIcon'
 export * from "./DashboardIcon"
 export * from "./DocumentIcon"
 export * from "./EyeIcon"

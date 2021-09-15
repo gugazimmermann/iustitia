@@ -20,5 +20,6 @@ export enum SiteRoutes {
   Subscription = "/assinar",
   Dashboard = "/dashboard",
   Profile = "/perfil",
-  Offices = "/escritorios"
+  Offices = "/escritorios",
+  Subscriptions = "/assinaturas",
 }

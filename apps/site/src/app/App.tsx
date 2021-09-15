@@ -15,6 +15,7 @@ import {
   NotFound,
   Profile,
   Offices,
+  Subscriptions
 } from "@iustitia/site/dashboard";
 import ProtectedRoute from "./routes/protected-route/ProtectedRoute";
 import PublicRoute from "./routes/public-route/PublicRoute";
@@ -70,6 +71,11 @@ export const App = () => {
       <ProtectedRoute exact path={Routes.Offices}>
         <Layout>
           <Offices />
+        </Layout>
+      </ProtectedRoute>
+      <ProtectedRoute exact path={Routes.Subscriptions}>
+        <Layout>
+          <Subscriptions />
         </Layout>
       </ProtectedRoute>
       <Route path="*">
