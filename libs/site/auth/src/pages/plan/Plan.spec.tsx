@@ -10,8 +10,7 @@ describe("Plan", () => {
       search: "",
       hash: "",
       state: {
-        email: "",
-        planId: "",
+        form: "",
       },
     };
     const useLocationSpy = jest.spyOn(routeData, "useLocation").mockReturnValue(mockLocation);
@@ -25,20 +24,19 @@ describe("Plan", () => {
     useLocationSpy.mockRestore();
   });
 
-  it('should have Assinatura as the title', () => {
+  it('should have Selecione seu Plano as the title', () => {
     const mockLocation = {
       pathname: "/",
       key: "",
       search: "",
       hash: "",
       state: {
-        email: "",
-        planId: "",
+        form: "",
       },
     };
     const useLocationSpy = jest.spyOn(routeData, "useLocation").mockReturnValue(mockLocation);
     const { getByText } = render(<MemoryRouter><Plan /></MemoryRouter>);
-    expect(getByText('Assinatura')).toBeTruthy();
+    expect(getByText('Selecione seu Plano')).toBeTruthy();
     expect(useLocationSpy).toHaveBeenCalled();
     useLocationSpy.mockRestore();
   });

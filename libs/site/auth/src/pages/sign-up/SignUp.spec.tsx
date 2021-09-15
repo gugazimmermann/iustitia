@@ -69,11 +69,7 @@ describe("SignUp", () => {
     expect(
       repeatPassword.className.split(" ").includes("focus:border-primary-600")
     ).toBe(true);
-    const plan = screen.getByLabelText("Plano de Assinatura");
-    expect(plan.className.split(" ").includes("focus:border-primary-600")).toBe(
-      true
-    );
-    const button = screen.getByText("Cadastrar");
+    const button = screen.getByText("Avançar");
     await waitFor(() => fireEvent.click(button));
     expect(nome.className.split(" ").includes("border-red-600")).toBe(true);
     expect(email.className.split(" ").includes("border-red-600")).toBe(true);
@@ -81,7 +77,6 @@ describe("SignUp", () => {
     expect(repeatPassword.className.split(" ").includes("border-red-600")).toBe(
       true
     );
-    expect(plan.className.split(" ").includes("border-red-600")).toBe(true);
   });
 
   it("should not submit when email are invalid", async () => {
@@ -94,13 +89,11 @@ describe("SignUp", () => {
     const email = container.querySelector('input[id="email"]') as Element;
     const password = container.querySelector('input[id="password"]') as Element;
     const repeatPassword = container.querySelector('input[id="repeatPassword"]') as Element;
-    const plan = container.querySelector('select[id="plan"]') as Element;
     await waitFor(() => fireEvent.input(username, { target: { value: "Test" } }));
     await waitFor(() => fireEvent.input(email, { target: { value: "teste" } }));
     await waitFor(() => fireEvent.input(password, { target: { value: "123" } }));
     await waitFor(() => fireEvent.input(repeatPassword, { target: { value: "123" } }));
-    await waitFor(() => fireEvent.change(plan, { target: { value: "826f83d7-dd8b-4d0b-b3d5-8a14742dced8" } }));
-    const button = getByText("Cadastrar");
+    const button = getByText("Avançar");
     await waitFor(() => fireEvent.click(button));
     await waitFor(() => expect(signupSpy).toBeCalledTimes(0));
     await waitFor(() => expect(getByText("Email inválido!")).toBeTruthy());
@@ -116,13 +109,11 @@ describe("SignUp", () => {
     const email = container.querySelector('input[id="email"]') as Element;
     const password = container.querySelector('input[id="password"]') as Element;
     const repeatPassword = container.querySelector('input[id="repeatPassword"]') as Element;
-    const plan = container.querySelector('select[id="plan"]') as Element;
     await waitFor(() => fireEvent.input(username, { target: { value: "Test" } }));
     await waitFor(() => fireEvent.input(email, { target: { value: "teste@teste.com" } }));
     await waitFor(() => fireEvent.input(password, { target: { value: "123" } }));
     await waitFor(() => fireEvent.input(repeatPassword, { target: { value: "456" } }));
-    await waitFor(() => fireEvent.change(plan, { target: { value: "826f83d7-dd8b-4d0b-b3d5-8a14742dced8" } }));
-    const button = getByText("Cadastrar");
+    const button = getByText("Avançar");
     await waitFor(() => fireEvent.click(button));
     await waitFor(() => expect(signupSpy).toBeCalledTimes(0));
     await waitFor(() =>
@@ -140,13 +131,11 @@ describe("SignUp", () => {
     const email = container.querySelector('input[id="email"]') as Element;
     const password = container.querySelector('input[id="password"]') as Element;
     const repeatPassword = container.querySelector('input[id="repeatPassword"]') as Element;
-    const plan = container.querySelector('select[id="plan"]') as Element;
     await waitFor(() => fireEvent.input(username, { target: { value: "Test" } }));
     await waitFor(() => fireEvent.input(email, { target: { value: "teste@teste.com" } }));
     await waitFor(() => fireEvent.input(password, { target: { value: "123" } }));
     await waitFor(() => fireEvent.input(repeatPassword, { target: { value: "123" } }));
-    await waitFor(() => fireEvent.change(plan, { target: { value: "826f83d7-dd8b-4d0b-b3d5-8a14742dced8" } }));
-    const button = getByText("Cadastrar");
+    const button = getByText("Avançar");
     await waitFor(() => fireEvent.click(button));
     await waitFor(() => {
       expect(signupSpy).toBeCalled();
@@ -155,7 +144,6 @@ describe("SignUp", () => {
         email: "teste@teste.com",
         password: "123",
         repeatPassword: "123",
-        plan: "826f83d7-dd8b-4d0b-b3d5-8a14742dced8"
       });
     });
   });
