@@ -1,4 +1,6 @@
 import { useState, useEffect } from "react";
+import { useHistory, useParams } from "react-router-dom";
+import { SiteRoutes as Routes } from "@iustitia/react-routes";
 import Header from "../../../components/dashboard/header/Header";
 import InfoCard, {
   INFOCARDSICONS,
@@ -10,16 +12,26 @@ interface DashboardOfficesProps {
   offices?: IOffice[];
 }
 
+interface useParamsProps {
+  id: string;
+}
+
 export function DashboardOffices({ offices }: DashboardOfficesProps) {
-  const [officeId, setOfficeId] = useState("");
+  const history = useHistory();
+  const { id } = useParams<useParamsProps>();
   const [selectedOffice, setSelectedOffice] = useState({} as IOffice);
+
   const selectOffices = () => {
     return (
       <select
         id="offices"
         className={`rounded-md focus:ring-0 focus:ring-opacity-75 text-gray-900 focus:ring-primary-500 border-gray-300`}
         onChange={(e) => {
-          setOfficeId(e.target.value);
+          if (e.target.value) {
+            history.push(`${Routes.DashboardEscritorios}/${e.target.value}`);
+          } else {
+            history.push(Routes.Dashboard);
+          }
         }}
       >
         {offices && offices.length > 1 ? (
@@ -40,17 +52,19 @@ export function DashboardOffices({ offices }: DashboardOfficesProps) {
   };
 
   useEffect(() => {
-    if (officeId) {
-      getOffice(officeId)
+    if (id) {
+      getOffice(id);
+    } else {
+      setSelectedOffice({} as IOffice)
     }
-  }, [officeId]);
+  }, [id]);
 
   async function getOffice(id: string) {
     try {
       const office = await getOne(id);
-      setSelectedOffice(office)
-    } catch(err) {
-      console.log(err)
+      setSelectedOffice(office);
+    } catch (err) {
+      console.log(err);
     }
   }
 
@@ -58,7 +72,11 @@ export function DashboardOffices({ offices }: DashboardOfficesProps) {
     <>
       <Header
         before={["Dashboards"]}
-        main={selectedOffice.name ? `Escritório: ${selectedOffice.name}` : `Escritórios`}
+        main={
+          selectedOffice.name
+            ? `Escritório: ${selectedOffice.name}`
+            : `Escritórios`
+        }
         select={selectOffices}
         hide={true}
       />

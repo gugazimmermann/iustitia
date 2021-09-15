@@ -1,35 +1,14 @@
 import { useState } from "react";
-import { MenuLink } from "..";
-import { DashboardIcon, DocumentIcon, MenuArrowIcon } from "@iustitia/site/shared-components";
+import { MenuArrowIcon } from "@iustitia/site/shared-components";
+import { MenuItemInterface, MenuLink } from "..";
 
-export enum MENUICONS {
-  DASHBOARD = "dashboard",
-  DOCUMENT = "document",
+interface MenuItemProps {
+  item: MenuItemInterface;
 }
 
-export interface MenuItemProps {
-  item: string;
-  icon: MENUICONS;
-  subitems: string[];
-}
-
-export function MenuItem({ item, icon, subitems }: MenuItemProps) {
+export function MenuItem({ item }: MenuItemProps) {
+  const {icon, name, subItems} = item;
   const [active, setActive] = useState(false);
-
-  function getIcon(icon: string) {
-    const IconStyle="w-5 h-5"
-    switch (icon) {
-      case MENUICONS.DASHBOARD: {
-        return <DashboardIcon styles={IconStyle} />;
-      }
-      case MENUICONS.DOCUMENT: {
-        return <DocumentIcon styles={IconStyle} />;
-      }
-      default: {
-        return <DashboardIcon styles={IconStyle} />;
-      }
-    }
-  }
 
   return (
     <>
@@ -41,8 +20,8 @@ export function MenuItem({ item, icon, subitems }: MenuItemProps) {
             : `text-gray-900 hover:bg-primary-100`
         }`}
       >
-        {getIcon(icon)}
-        <span className="ml-2 text-sm">{item}</span>
+        {icon}
+        <span className="ml-2 text-sm">{name}</span>
         <span className="ml-auto">
           <MenuArrowIcon
             styles="w-4 h-4 transition-transform transform"
@@ -51,7 +30,7 @@ export function MenuItem({ item, icon, subitems }: MenuItemProps) {
         </span>
       </div>
       <div className={`px-7 ${!active && `hidden`}`}>
-        {subitems.map((subitem, i) => (
+        {subItems.map((subitem, i) => (
           <MenuLink key={i} subitem={subitem} />
         ))}
       </div>

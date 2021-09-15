@@ -70,12 +70,21 @@
     "site-auth": {
       "tags": []
     },
+    "site-calendar": {
+      "tags": []
+    },
+    "site-contacts": {
+      "tags": []
+    },
     "site-dashboard": {
       "tags": []
     },
     "site-e2e": {
       "tags": [],
       "implicitDependencies": ["site"]
+    },
+    "site-schedule": {
+      "tags": []
     },
     "site-shared-components": {
       "tags": []

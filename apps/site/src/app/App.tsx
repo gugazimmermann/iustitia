@@ -15,10 +15,13 @@ import {
   NotFound,
   Profile,
   Offices,
-  Subscriptions
+  Subscriptions,
 } from "@iustitia/site/dashboard";
 import ProtectedRoute from "./routes/protected-route/ProtectedRoute";
 import PublicRoute from "./routes/public-route/PublicRoute";
+import { Contacts } from "@iustitia/site/contacts";
+import { Schedule } from "@iustitia/site/schedule";
+import { Calendar } from "@iustitia/site/calendar";
 
 export const App = () => {
   return (
@@ -63,6 +66,21 @@ export const App = () => {
           <DashboardOffices />
         </Layout>
       </ProtectedRoute>
+      <ProtectedRoute exact path={`${Routes.DashboardEscritorios}/:id?`}>
+        <Layout>
+          <DashboardOffices />
+        </Layout>
+      </ProtectedRoute>
+      <ProtectedRoute exact path={Routes.DashboardProcessos}>
+        <Layout>
+          <DashboardOffices />
+        </Layout>
+      </ProtectedRoute>
+      <ProtectedRoute exact path={`${Routes.DashboardProcessos}/:id?`}>
+        <Layout>
+          <DashboardOffices />
+        </Layout>
+      </ProtectedRoute>
       <ProtectedRoute exact path={Routes.Profile}>
         <Layout>
           <Profile />
@@ -76,6 +94,21 @@ export const App = () => {
       <ProtectedRoute exact path={Routes.Subscriptions}>
         <Layout>
           <Subscriptions />
+        </Layout>
+      </ProtectedRoute>
+      <ProtectedRoute exact path={Routes.Contacts}>
+        <Layout>
+          <Contacts />
+        </Layout>
+      </ProtectedRoute>
+      <ProtectedRoute exact path={Routes.Schedule}>
+        <Layout>
+          <Schedule />
+        </Layout>
+      </ProtectedRoute>
+      <ProtectedRoute exact path={Routes.Calendar}>
+        <Layout>
+          <Calendar />
         </Layout>
       </ProtectedRoute>
       <Route path="*">

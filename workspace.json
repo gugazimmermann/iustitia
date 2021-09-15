@@ -439,6 +439,48 @@
         }
       }
     },
+    "site-calendar": {
+      "root": "libs/site/calendar",
+      "sourceRoot": "libs/site/calendar/src",
+      "projectType": "library",
+      "targets": {
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["libs/site/calendar/**/*.{ts,tsx,js,jsx}"]
+          }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/site/calendar"],
+          "options": {
+            "jestConfig": "libs/site/calendar/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "site-contacts": {
+      "root": "libs/site/contacts",
+      "sourceRoot": "libs/site/contacts/src",
+      "projectType": "library",
+      "targets": {
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["libs/site/contacts/**/*.{ts,tsx,js,jsx}"]
+          }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/site/contacts"],
+          "options": {
+            "jestConfig": "libs/site/contacts/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
     "site-dashboard": {
       "root": "libs/site/dashboard",
       "sourceRoot": "libs/site/dashboard/src",
@@ -481,6 +523,27 @@
           "executor": "@nrwl/linter:eslint",
           "options": {
             "lintFilePatterns": ["apps/site-e2e/**/*.{js,ts}"]
+          }
+        }
+      }
+    },
+    "site-schedule": {
+      "root": "libs/site/schedule",
+      "sourceRoot": "libs/site/schedule/src",
+      "projectType": "library",
+      "targets": {
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["libs/site/schedule/**/*.{ts,tsx,js,jsx}"]
+          }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/site/schedule"],
+          "options": {
+            "jestConfig": "libs/site/schedule/jest.config.js",
+            "passWithNoTests": true
           }
         }
       }

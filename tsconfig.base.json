@@ -27,7 +27,10 @@
       "@iustitia/landing-page/pages": ["libs/landing-page/pages/src/index.ts"],
       "@iustitia/react-routes": ["libs/react-routes/src/index.ts"],
       "@iustitia/site/auth": ["libs/site/auth/src/index.ts"],
+      "@iustitia/site/calendar": ["libs/site/calendar/src/index.ts"],
+      "@iustitia/site/contacts": ["libs/site/contacts/src/index.ts"],
       "@iustitia/site/dashboard": ["libs/site/dashboard/src/index.ts"],
+      "@iustitia/site/schedule": ["libs/site/schedule/src/index.ts"],
       "@iustitia/site/shared-components": [
         "libs/site/shared-components/src/index.ts"
       ],

@@ -19,7 +19,12 @@ export enum SiteRoutes {
   Plan = "/planos",
   Subscription = "/assinar",
   Dashboard = "/dashboard",
+  DashboardEscritorios = "/dashboard/escritorios",
+  DashboardProcessos = "/dashboard/processos",
   Profile = "/perfil",
   Offices = "/escritorios",
   Subscriptions = "/assinaturas",
+  Contacts = "/contatos",
+  Schedule = "/agenda",
+  Calendar = "/calendario",
 }
