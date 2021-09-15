@@ -1,12 +1,6 @@
 import { useEffect, useRef } from "react";
-import {
-  NavAvatar,
-  NAVICONS,
-  NavItem,
-  NavMenuButton,
-  NavMobileButton,
-} from "../..";
-import { IProfile } from "../../interfaces";
+import { NavAvatar, NAVICONS, NavItem, NavMenuButton, NavMobileButton } from ".";
+import { IProfile } from "../../../../../dashboard/src/interfaces";
 import NavNotification from "./nav-notification/NavNotification";
 
 export interface NavProps {

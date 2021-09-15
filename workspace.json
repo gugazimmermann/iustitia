@@ -527,6 +527,27 @@
         }
       }
     },
+    "site-layout": {
+      "root": "libs/site/layout",
+      "sourceRoot": "libs/site/layout/src",
+      "projectType": "library",
+      "targets": {
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["libs/site/layout/**/*.{ts,tsx,js,jsx}"]
+          }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/site/layout"],
+          "options": {
+            "jestConfig": "libs/site/layout/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
     "site-schedule": {
       "root": "libs/site/schedule",
       "sourceRoot": "libs/site/schedule/src",

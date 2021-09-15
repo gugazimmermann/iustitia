@@ -1,4 +1,4 @@
-import { Alert, ALERT_TYPES } from "@iustitia/site/shared-components";
+import { Alert } from "@iustitia/site/shared-components";
 import { WARNING_TYPES } from "@iustitia/site/shared-utils";
 import { useState, useEffect } from "react";
 import ConfirmationModal from "../../components/dashboard/confirmation-modal/ConfirmationModal";
@@ -149,21 +149,21 @@ export function Offices({ setOffices: CallOutOffices }: OfficesProps) {
             <div className="bg-white shadow-sm rounded">
               {showSuccess && (
                 <Alert
-                  type={ALERT_TYPES.SUCCESS}
+                  type={WARNING_TYPES.SUCCESS}
                   message="Escritório cadastrado com Sucesso!"
                   closeFunction={setShowSuccess}
                 />
               )}
               {showEdit && (
                 <Alert
-                  type={ALERT_TYPES.INFO}
+                  type={WARNING_TYPES.INFO}
                   message="Escritório alterado com Sucesso!"
                   closeFunction={setShowEdit}
                 />
               )}
               {showDelete && (
                 <Alert
-                  type={ALERT_TYPES.WARNING}
+                  type={WARNING_TYPES.WARNING}
                   message="Escritório removido com Sucesso!"
                   closeFunction={setShowDelete}
                 />

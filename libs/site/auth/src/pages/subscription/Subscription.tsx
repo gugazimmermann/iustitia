@@ -2,14 +2,11 @@ import { useEffect, useState } from "react";
 import { useHistory, useLocation, Redirect } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { SiteRoutes as Routes } from "@iustitia/react-routes";
-import {
-  Alert,
-  ALERT_TYPES,
-  LoadingButton,
-} from "@iustitia/site/shared-components";
+import { Alert, LoadingButton } from "@iustitia/site/shared-components";
 import { MercadoPago } from "./protocols";
 import { PlanInterface, SignUpForm } from "../..";
 import { signup } from "../../services/auth";
+import { WARNING_TYPES } from "@iustitia/site/shared-utils";
 
 const PUBLIC_KEY =
   process.env.NX_STAGE === "dev"
@@ -185,7 +182,7 @@ export function Subscription() {
   } else {
     return (
       <main className="bg-white max-w-lg mx-auto p-8 md:p-12 my-10 rounded-lg shadow-2xl">
-        {error && <Alert type={ALERT_TYPES.ERROR} message={error} />}
+        {error && <Alert type={WARNING_TYPES.ERROR} message={error} />}
         <section>
           <div className="mb-4 md:mb-6 md:mx-auto text-center">
             <h1 className="mb-2 text-2xl font-bold text-gray-700">

@@ -9,16 +9,16 @@ import {
   Plan,
   Subscription,
 } from "@iustitia/site/auth";
+import ProtectedRoute from "./routes/protected-route/ProtectedRoute";
+import PublicRoute from "./routes/public-route/PublicRoute";
+import { Layout } from "@iustitia/site/layout";
 import {
-  Layout,
   DashboardOffices,
   NotFound,
   Profile,
   Offices,
   Subscriptions,
 } from "@iustitia/site/dashboard";
-import ProtectedRoute from "./routes/protected-route/ProtectedRoute";
-import PublicRoute from "./routes/public-route/PublicRoute";
 import { Contacts } from "@iustitia/site/contacts";
 import { Schedule } from "@iustitia/site/schedule";
 import { Calendar } from "@iustitia/site/calendar";

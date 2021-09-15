@@ -7,11 +7,12 @@ import {
   getAddressFromCEP,
   getUserInitials,
   validateEmail,
+  WARNING_TYPES,
 } from "@iustitia/site/shared-utils";
 import Header from "../../components/dashboard/header/Header";
 import { IProfile } from "../../interfaces";
 import { updateProfile } from "../../services/profile";
-import { LoadingButton, Alert, ALERT_TYPES, UploadCloudIcon } from "@iustitia/site/shared-components";
+import { LoadingButton, Alert, UploadCloudIcon } from "@iustitia/site/shared-components";
 
 interface ProfileProps {
   profile?: IProfile;
@@ -161,7 +162,7 @@ export function Profile({ profile, setProfile }: ProfileProps) {
       <div className="overflow-x-auto">
         <div className="flex items-center justify-center overflow-hidden p-2">
           <div className="w-full">
-            {showSuccess && <Alert type={ALERT_TYPES.SUCCESS} message="Perfil Alerado com Sucesso!" closeFunction={setShowSuccess} /> }
+            {showSuccess && <Alert type={WARNING_TYPES.SUCCESS} message="Perfil Alerado com Sucesso!" closeFunction={setShowSuccess} /> }
             <div className="bg-white shadow-sm rounded">
               <form
                 onSubmit={handleSubmit(onSubmit)}

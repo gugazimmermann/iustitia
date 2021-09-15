@@ -7,14 +7,10 @@ import {
   useState,
 } from "react";
 import { DateTime } from "luxon";
-import { Alert, ALERT_TYPES } from "@iustitia/site/shared-components";
-import { getProfile } from "../../services/profile";
-import { Menu } from "../..";
-import Nav from "../../components/nav/Nav";
-import Callout from "../../components/dashboard/callout/Callout";
-import { IOffice, IProfile } from "../../interfaces";
+import { Alert, Callout } from "@iustitia/site/shared-components";
 import { WARNING_TYPES } from "@iustitia/site/shared-utils";
-import { getAll as getOffices } from "../../services/office";
+import { getOffices, getProfile, IOffice, IProfile } from "@iustitia/site/dashboard";
+import { Nav, Menu } from "./components";
 
 interface LayoutProps {
   children: ReactNode;
@@ -82,8 +78,8 @@ export function Layout({ children }: LayoutProps) {
                     profile.subscription.createdAt,
                     profile.subscription.frequency
                   ) > 3
-                    ? ALERT_TYPES.NONE
-                    : ALERT_TYPES.WARNING
+                    ? WARNING_TYPES.NONE
+                    : WARNING_TYPES.WARNING
                 }
                 message={`${
                   profile.subscription.reason

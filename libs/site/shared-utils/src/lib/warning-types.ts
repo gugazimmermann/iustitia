@@ -1,13 +1,16 @@
 export enum WARNING_TYPES {
-  WARNING = "warning",
+  SUCCESS = "success",
   ERROR = "error",
+  WARNING = "warning",
   INFO = "info",
-  NONE=""
+  NONE = "",
 }
 
 export function warningTypes(type: WARNING_TYPES) {
   const text = !type
     ? `text-primary-500`
+    : type === WARNING_TYPES.SUCCESS
+    ? `text-green-500`
     : type === WARNING_TYPES.WARNING
       ? `text-secondary-500`
       : type === WARNING_TYPES.ERROR
@@ -16,6 +19,8 @@ export function warningTypes(type: WARNING_TYPES) {
 
   const bg = !type
     ? `bg-primary-500`
+    : type === WARNING_TYPES.SUCCESS
+    ? `bg-green-500`
     : type === WARNING_TYPES.WARNING
       ? `bg-secondary-500`
       : type === WARNING_TYPES.ERROR
@@ -24,6 +29,8 @@ export function warningTypes(type: WARNING_TYPES) {
 
   const border = !type
     ? `border-primary-500`
+    : type === WARNING_TYPES.SUCCESS
+    ? `border-green-500`
     : type === WARNING_TYPES.WARNING
       ? `border-secondary-500`
       : type === WARNING_TYPES.ERROR

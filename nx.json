@@ -83,6 +83,9 @@
       "tags": [],
       "implicitDependencies": ["site"]
     },
+    "site-layout": {
+      "tags": []
+    },
     "site-schedule": {
       "tags": []
     },

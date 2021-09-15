@@ -1,12 +1,7 @@
-export enum ALERT_TYPES {
-  SUCCESS = "success",
-  ERROR = "error",
-  WARNING = "warning",
-  INFO = "info",
-  NONE = "",
-}
+import { WARNING_TYPES } from "@iustitia/site/shared-utils";
+
 export interface AlertSuccessProps {
-  type?: ALERT_TYPES;
+  type?: WARNING_TYPES;
   message: string;
   closeFunction?(close: boolean): void;
 }
@@ -14,33 +9,33 @@ export interface AlertSuccessProps {
 export function Alert({ type, message, closeFunction }: AlertSuccessProps) {
   const text = !type
     ? `text-primary-700`
-    : type === ALERT_TYPES.SUCCESS
+    : type === WARNING_TYPES.SUCCESS
     ? `text-green-700`
-    : type === ALERT_TYPES.WARNING
+    : type === WARNING_TYPES.WARNING
     ? `text-secondary-700`
-    : type === ALERT_TYPES.ERROR
+    : type === WARNING_TYPES.ERROR
     ? `text-red-700`
-    : `text-blue-700`; // ALERT_TYPES.INFO
+    : `text-blue-700`; // WARNING_TYPES.INFO
 
   const bg = !type
     ? `bg-primary-100`
-    : type === ALERT_TYPES.SUCCESS
+    : type === WARNING_TYPES.SUCCESS
     ? `bg-green-100`
-    : type === ALERT_TYPES.WARNING
+    : type === WARNING_TYPES.WARNING
     ? `bg-secondary-100`
-    : type === ALERT_TYPES.ERROR
+    : type === WARNING_TYPES.ERROR
     ? `bg-red-100`
-    : `bg-blue-100`; // ALERT_TYPES.INFO
+    : `bg-blue-100`; // WARNING_TYPES.INFO
 
   const border = !type
     ? `border-primary-500`
-    : type === ALERT_TYPES.SUCCESS
+    : type === WARNING_TYPES.SUCCESS
     ? `border-green-500`
-    : type === ALERT_TYPES.WARNING
+    : type === WARNING_TYPES.WARNING
     ? `border-secondary-500`
-    : type === ALERT_TYPES.ERROR
+    : type === WARNING_TYPES.ERROR
     ? `border-red-500`
-    : `border-blue-500`; // ALERT_TYPES.INFO
+    : `border-blue-500`; // WARNING_TYPES.INFO
   return (
     <div
       className={`relative border-t-4 rounded-b p-2 mb-2 shadow-md ${bg} ${border} ${text}`}

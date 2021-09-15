@@ -1,5 +1,5 @@
 import { DateTime } from "luxon";
-import { Alert, ALERT_TYPES } from "@iustitia/site/shared-components";
+import { Alert } from "@iustitia/site/shared-components";
 import { WARNING_TYPES } from "@iustitia/site/shared-utils";
 import { useState, useEffect } from "react";
 import ConfirmationModal from "../../components/dashboard/confirmation-modal/ConfirmationModal";

@@ -1,6 +1,6 @@
 import { render } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
-import { IProfile } from "../../../interfaces";
+import { IProfile } from "../../../../../../dashboard/src/interfaces";
 
 import NavAvatar from "./NavAvatar";
 

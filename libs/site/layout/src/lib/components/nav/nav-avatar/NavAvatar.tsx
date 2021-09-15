@@ -3,7 +3,7 @@ import { Link, useHistory } from "react-router-dom";
 import { SiteRoutes as Routes, SiteRoutes } from "@iustitia/react-routes";
 import { logout } from "@iustitia/site/auth";
 import { getUserInitials } from "@iustitia/site/shared-utils";
-import { IProfile } from "../../../interfaces";
+import { IProfile } from "../../../../../../dashboard/src/interfaces";
 
 export interface NavAvatarProps {
   profile: IProfile;

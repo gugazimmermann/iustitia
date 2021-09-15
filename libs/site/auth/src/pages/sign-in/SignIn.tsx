@@ -2,12 +2,8 @@ import { useEffect, useState } from "react";
 import { useLocation, useHistory } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { SiteRoutes as Routes } from "@iustitia/react-routes";
-import {
-  Alert,
-  ALERT_TYPES,
-  LoadingButton,
-} from "@iustitia/site/shared-components";
-import { validateEmail } from "@iustitia/site/shared-utils";
+import { Alert, LoadingButton } from "@iustitia/site/shared-components";
+import { validateEmail, WARNING_TYPES } from "@iustitia/site/shared-utils";
 import { Title, Link, SignupLink } from "../..";
 import { signin } from "../../services/auth";
 
@@ -71,9 +67,9 @@ export function SignIn() {
     <>
       <main className="bg-white max-w-lg mx-auto p-8 md:p-12 my-10 rounded-lg shadow-2xl">
         <Title title="Entre em seu escritório" />
-        {changepassword && <Alert type={ALERT_TYPES.SUCCESS} message="Senha alterada com sucesso!" />}
-        {cadastro && <Alert type={ALERT_TYPES.SUCCESS} message="Cadastro realizado com sucesso!" />}
-        {error && <Alert type={ALERT_TYPES.ERROR} message={error} />}
+        {changepassword && <Alert type={WARNING_TYPES.SUCCESS} message="Senha alterada com sucesso!" />}
+        {cadastro && <Alert type={WARNING_TYPES.SUCCESS} message="Cadastro realizado com sucesso!" />}
+        {error && <Alert type={WARNING_TYPES.ERROR} message={error} />}
         <section className="mt-5">
           <form className="flex flex-col" onSubmit={handleSubmit(onSubmit)}>
             <div className="mb-6 rounded">

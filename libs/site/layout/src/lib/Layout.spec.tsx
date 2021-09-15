@@ -1,10 +1,10 @@
 import { render } from "@testing-library/react";
 
-import Callout from "./Callout";
+import Layout from "./Layout";
 
-describe("Callout", () => {
+describe("Layout", () => {
   it("should render successfully", () => {
-    const { baseElement } = render(<Callout />);
+    const { baseElement } = render(<Layout />);
     expect(baseElement).toBeTruthy();
   });
 });

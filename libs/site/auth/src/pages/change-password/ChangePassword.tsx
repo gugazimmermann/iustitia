@@ -2,9 +2,10 @@ import { useEffect, useState } from "react";
 import { useHistory, useLocation, useParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { SiteRoutes as Routes } from "@iustitia/react-routes";
-import { Alert, ALERT_TYPES, LoadingButton } from "@iustitia/site/shared-components";
+import { Alert, LoadingButton } from "@iustitia/site/shared-components";
 import { Title, Link } from "../..";
 import { changepassword, getforgotpasswordcode } from "../../services/auth";
+import { WARNING_TYPES } from "@iustitia/site/shared-utils";
 
 interface State {
   email: string;
@@ -117,7 +118,7 @@ export function ChangePassword() {
     <main className="bg-white max-w-lg mx-auto p-8 md:p-12 my-10 rounded-lg shadow-2xl">
       <Title title="Mudar Senha" />
       {state?.email && showInfo(state)}
-      {error && <Alert type={ALERT_TYPES.ERROR} message={error} />}
+      {error && <Alert type={WARNING_TYPES.ERROR} message={error} />}
       <section className="mt-5">
         <form className="flex flex-col" onSubmit={handleSubmit(onSubmit)}>
           <div className="mb-6 rounded">
