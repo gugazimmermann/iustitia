@@ -33,6 +33,9 @@
     "api-auth": {
       "tags": []
     },
+    "api-contacts": {
+      "tags": []
+    },
     "api-dashboard": {
       "tags": []
     },

@@ -2,10 +2,11 @@ import * as express from "express";
 import * as morgan from 'morgan';
 import * as cors from "cors";
 import { database } from "@iustitia/api/database";
-import { authRoutes } from "@iustitia/api/auth";
 import { publicRoutes } from "@iustitia/api/public";
-import { dashboardRoutes } from "@iustitia/api/dashboard";
+import { authRoutes } from "@iustitia/api/auth";
 import { mercadopagoRoutes } from "@iustitia/api/mercadopago";
+import { dashboardRoutes } from "@iustitia/api/dashboard";
+import { contactsRoutes } from "@iustitia/api/contacts";
 
 const app = express();
 app.use(morgan("dev"));
@@ -28,6 +29,7 @@ publicRoutes(app);
 authRoutes(app);
 mercadopagoRoutes(app);
 dashboardRoutes(app);
+contactsRoutes(app);
 
 app.use((req, res) => res.status(404).send("Not Found!"));
 app.use((err, req, res, next) => {

@@ -16,6 +16,7 @@
     "baseUrl": ".",
     "paths": {
       "@iustitia/api/auth": ["libs/api/auth/src/index.ts"],
+      "@iustitia/api/contacts": ["libs/api/contacts/src/index.ts"],
       "@iustitia/api/dashboard": ["libs/api/dashboard/src/index.ts"],
       "@iustitia/api/database": ["libs/api/database/src/index.ts"],
       "@iustitia/api/email": ["libs/api/email/src/index.ts"],

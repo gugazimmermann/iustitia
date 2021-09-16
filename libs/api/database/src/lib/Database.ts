@@ -9,6 +9,7 @@ import plan, { PlansInstance } from "./models/plan";
 import subscription, { SubscriptionInstance } from "./models/subscription";
 import payment, { PaymentInstance } from "./models/payments";
 import creditcard, { CreditcardInstance } from "./models/creditcard";
+import contact, { ContactInstance } from "./models/contact";
 
 const sequelize = new Sequelize(config.DB, config.USER, config.PASSWORD, {
   host: config.HOST,
@@ -26,6 +27,7 @@ export interface IDatabase {
   Subscription: ModelCtor<SubscriptionInstance>;
   Payment: ModelCtor<PaymentInstance>;
   Creditcard: ModelCtor<CreditcardInstance>;
+  Contact: ModelCtor<ContactInstance>;
 }
 
 const database: IDatabase = {
@@ -38,7 +40,8 @@ const database: IDatabase = {
   Plan: plan(sequelize),
   Subscription: subscription(sequelize),
   Payment: payment(sequelize),
-  Creditcard: creditcard(sequelize)
+  Creditcard: creditcard(sequelize),
+  Contact: contact(sequelize)
 };
 
 // database.Sequelize.sync();
@@ -57,5 +60,8 @@ database.User.hasMany(database.Payment, { foreignKey: "userId", sourceKey: "id" 
 
 database.Payment.belongsTo(database.User, { foreignKey: "userId", targetKey: "id" });
 database.User.hasOne(database.Payment, { foreignKey: "userId", sourceKey: "id" });
+
+database.Contact.belongsTo(database.User, { foreignKey: "userId", targetKey: "id" });
+database.User.hasMany(database.Contact, { foreignKey: "userId", sourceKey: "id" });
 
 export default database;
