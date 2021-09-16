@@ -3,10 +3,10 @@ import { useHistory, useLocation, Redirect } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { SiteRoutes as Routes } from "@iustitia/react-routes";
 import { Alert, LoadingButton } from "@iustitia/site/shared-components";
+import { WARNING_TYPES } from "@iustitia/site/shared-utils";
+import { signup } from "../../services/auth";
 import { MercadoPago } from "./protocols";
 import { PlanInterface, SignUpForm } from "../..";
-import { signup } from "../../services/auth";
-import { WARNING_TYPES } from "@iustitia/site/shared-utils";
 
 const PUBLIC_KEY =
   process.env.NX_STAGE === "dev"

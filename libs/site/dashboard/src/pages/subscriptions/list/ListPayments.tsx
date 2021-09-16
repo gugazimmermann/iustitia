@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import { DateTime } from "luxon";
 import { IPayment } from "../../../interfaces";
 

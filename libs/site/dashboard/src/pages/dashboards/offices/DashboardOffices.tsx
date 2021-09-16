@@ -1,12 +1,9 @@
 import { useState, useEffect } from "react";
 import { useHistory, useParams } from "react-router-dom";
 import { SiteRoutes as Routes } from "@iustitia/react-routes";
-import Header from "../../../components/dashboard/header/Header";
-import InfoCard, {
-  INFOCARDSICONS,
-} from "../../../components/dashboard/info-card/InfoCard";
-import { IOffice } from "../../../interfaces";
+import { Header, InfoCard, INFOCARDSICONS } from "@iustitia/site/shared-components";
 import { getOne } from "../../../services/office";
+import { IOffice } from "../../../interfaces";
 
 interface DashboardOfficesProps {
   offices?: IOffice[];

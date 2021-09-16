@@ -1,8 +1,7 @@
-import { SiteRoutes } from "@iustitia/react-routes";
 import { Link } from "react-router-dom";
+import { SiteRoutes } from "@iustitia/react-routes";
 
 export function NotFound() {
-
   return (
     <main className="flex items-center justify-center h-screen bg-gray-100">
       <div className="p-4 space-y-4">

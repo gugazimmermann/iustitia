@@ -3,9 +3,9 @@ import { useHistory, useLocation, useParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { SiteRoutes as Routes } from "@iustitia/react-routes";
 import { Alert, LoadingButton } from "@iustitia/site/shared-components";
+import { WARNING_TYPES } from "@iustitia/site/shared-utils";
 import { Title, Link } from "../..";
 import { changepassword, getforgotpasswordcode } from "../../services/auth";
-import { WARNING_TYPES } from "@iustitia/site/shared-utils";
 
 interface State {
   email: string;

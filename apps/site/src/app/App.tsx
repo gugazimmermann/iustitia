@@ -1,5 +1,7 @@
 import { Route, Switch } from "react-router-dom";
 import { SiteRoutes as Routes } from "@iustitia/react-routes";
+import ProtectedRoute from "./routes/protected-route/ProtectedRoute";
+import PublicRoute from "./routes/public-route/PublicRoute";
 import {
   ChangePassword,
   ForgotPassword,
@@ -9,8 +11,6 @@ import {
   Plan,
   Subscription,
 } from "@iustitia/site/auth";
-import ProtectedRoute from "./routes/protected-route/ProtectedRoute";
-import PublicRoute from "./routes/public-route/PublicRoute";
 import { Layout } from "@iustitia/site/layout";
 import {
   DashboardOffices,

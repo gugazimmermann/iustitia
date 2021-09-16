@@ -1,4 +1,4 @@
-import Breadcrumb from "../breadcrumb/Breadcrumb";
+import { Breadcrumb } from "../..";
 
 export interface HeaderProps {
   before: string[];

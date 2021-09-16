@@ -1,8 +1,6 @@
-import { Alert } from "@iustitia/site/shared-components";
-import { WARNING_TYPES } from "@iustitia/site/shared-utils";
 import { useState, useEffect } from "react";
-import ConfirmationModal from "../../components/dashboard/confirmation-modal/ConfirmationModal";
-import Header from "../../components/dashboard/header/Header";
+import { Alert, ConfirmationModal, Header } from "@iustitia/site/shared-components";
+import { WARNING_TYPES } from "@iustitia/site/shared-utils";
 import { IOffice } from "../../interfaces";
 import {
   getAll,

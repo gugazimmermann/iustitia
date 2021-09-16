@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
 import { MenuArrowIcon } from "@iustitia/site/shared-components";
 import { MenuItemInterface, MenuLink } from "..";
 
@@ -7,8 +8,14 @@ interface MenuItemProps {
 }
 
 export function MenuItem({ item }: MenuItemProps) {
-  const {icon, name, subItems} = item;
+  const location = useLocation();
+  const { icon, name, subItems } = item;
   const [active, setActive] = useState(false);
+
+  useEffect(() => {
+    const activePath = subItems.find((s) => s.link === location.pathname);
+    if (activePath) setActive(true);
+  }, [location, subItems]);
 
   return (
     <>

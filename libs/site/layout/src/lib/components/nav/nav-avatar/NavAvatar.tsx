@@ -3,7 +3,7 @@ import { Link, useHistory } from "react-router-dom";
 import { SiteRoutes as Routes, SiteRoutes } from "@iustitia/react-routes";
 import { logout } from "@iustitia/site/auth";
 import { getUserInitials } from "@iustitia/site/shared-utils";
-import { IProfile } from "../../../../../../dashboard/src/interfaces";
+import { IProfile } from "@iustitia/site/dashboard";
 
 export interface NavAvatarProps {
   profile: IProfile;
@@ -44,17 +44,17 @@ export function NavAvatar({ profile }: NavAvatarProps) {
       );
     }
     return (
-      <button
-        onClick={() => setOpen(!open)}
-        className="transition-opacity duration-200 rounded-full"
-      >
-        <span className="sr-only">Perfil Menu</span>
-        <img
-          className="w-10 h-10 rounded-full"
-          src={`${process.env.NX_AVATAR_URL}${profile.avatar}`}
-          alt={profile.name}
-        />
-      </button>
+        <button
+          onClick={() => setOpen(!open)}
+          className="transition-opacity duration-200 rounded-full"
+        >
+          <span className="sr-only">Perfil Menu</span>
+          <img
+            className="w-10 h-10 rounded-full"
+            src={`${process.env.NX_AVATAR_URL}${profile.avatar}`}
+            alt={profile.name}
+          />
+        </button>
     );
   }
 

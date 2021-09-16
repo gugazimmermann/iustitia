@@ -4,8 +4,8 @@ import { useForm } from "react-hook-form";
 import { SiteRoutes as Routes } from "@iustitia/react-routes";
 import { Alert, LoadingButton } from "@iustitia/site/shared-components";
 import { validateEmail, WARNING_TYPES } from "@iustitia/site/shared-utils";
-import { Title, Link, SignupLink } from "../..";
 import { signin } from "../../services/auth";
+import { Title, Link, SignupLink } from "../..";
 
 type Form = {
   email: string;

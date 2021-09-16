@@ -1,5 +1,3 @@
-import "./Details.module.css";
-
 /* eslint-disable-next-line */
 export interface DetailsProps {}
 

@@ -6,9 +6,9 @@ import {
   PlanProfessionalIcon,
 } from "@iustitia/site/shared-components";
 import { getPlans } from "../../services/subscription";
+import { signup } from "../../services/auth";
 import { BasicFeatures, ProfessionalFeatures } from "./features";
 import { SignUpForm } from "../..";
-import { signup } from "../../services/auth";
 
 export interface PlanInterface {
   id: string;

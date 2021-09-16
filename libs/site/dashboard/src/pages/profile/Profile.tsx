@@ -3,16 +3,15 @@ import { useForm, Controller } from "react-hook-form";
 import NumberFormat from "react-number-format";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
+import { LoadingButton, Alert, UploadCloudIcon, Header } from "@iustitia/site/shared-components";
 import {
   getAddressFromCEP,
   getUserInitials,
   validateEmail,
   WARNING_TYPES,
 } from "@iustitia/site/shared-utils";
-import Header from "../../components/dashboard/header/Header";
-import { IProfile } from "../../interfaces";
 import { updateProfile } from "../../services/profile";
-import { LoadingButton, Alert, UploadCloudIcon } from "@iustitia/site/shared-components";
+import { IProfile } from "../../interfaces";
 
 interface ProfileProps {
   profile?: IProfile;

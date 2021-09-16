@@ -4,8 +4,8 @@ import NumberFormat from "react-number-format";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { getAddressFromCEP, validateEmail } from "@iustitia/site/shared-utils";
-import { IOffice } from "../../../interfaces";
 import { LoadingButton } from "@iustitia/site/shared-components";
+import { IOffice } from "../../../interfaces";
 
 export interface FormProps {
   loading: boolean;

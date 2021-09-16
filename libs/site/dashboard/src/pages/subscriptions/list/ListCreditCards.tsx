@@ -1,29 +1,15 @@
 import {
   CloseIcon,
   CreditCardIcon,
-  EyeIcon,
-  PenIcon,
   TrashIcon,
 } from "@iustitia/site/shared-components";
 import { ICreditCard } from "../../../interfaces";
 
 export interface ListCreditCardsProps {
   creditCards: ICreditCard[];
-  setSelectedCreditCard(creditCard: ICreditCard): void;
-  setBack(back: boolean): void;
-  setUpdade(updade: boolean): void;
-  setList(list: boolean): void;
-  setConfirm(confirm: boolean): void;
 }
 
-export function ListCreditCards({
-  creditCards,
-  setSelectedCreditCard,
-  setBack,
-  setUpdade,
-  setList,
-  setConfirm,
-}: ListCreditCardsProps) {
+export function ListCreditCards({ creditCards }: ListCreditCardsProps) {
   function translateStatus(status: boolean) {
     switch (status) {
       case true:
@@ -93,10 +79,6 @@ export function ListCreditCards({
                       )}
                     </div>
                     <div
-                      onClick={() => {
-                        setSelectedCreditCard(creditCard);
-                        setConfirm(true);
-                      }}
                       className="w-5 mr-3 transform hover:text-purple-500 hover:scale-110"
                     >
                       <TrashIcon styles={"cursor-pointer"} />
