@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { AttachmentIcon } from "@iustitia/site/shared-components";
+import { AttachmentIcon } from "../..";
 
 export type AttachmentType = {
   date: string;

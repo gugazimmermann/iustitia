@@ -1,5 +1,5 @@
-import { WarningIcon } from "@iustitia/site/shared-components";
 import { warningTypes, WARNING_TYPES } from "@iustitia/site/shared-utils";
+import { WarningIcon } from "../..";
 
 export interface ConfirmationModalProps {
   setConfirm(confirm: boolean): void;

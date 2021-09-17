@@ -1,10 +1,4 @@
-import {
-  CaseIcon,
-  GraphDownIcon,
-  GraphUpIcon,
-  MoneyIcon,
-  PeopleIcon,
-} from "@iustitia/site/shared-components";
+import { CaseIcon, GraphDownIcon, GraphUpIcon, MoneyIcon, PeopleIcon } from "../..";
 
 export enum INFOCARDSICONS {
   MONEY = "money",
