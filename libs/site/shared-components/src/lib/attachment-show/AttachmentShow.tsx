@@ -1,17 +1,17 @@
 import { Link } from "react-router-dom";
 import { AttachmentIcon } from "../..";
 
-export type AttachmentType = {
+type AttachmentType = {
   date: string;
   name: string;
   link: string;
 };
 
-export interface ShowAttachmentProps {
+export interface AttachmentShowProps {
   attachment: AttachmentType;
 }
 
-export function ShowAttachment({ attachment }: ShowAttachmentProps) {
+export function AttachmentShow({ attachment }: AttachmentShowProps) {
   return (
     <Link
       to={attachment.link}
@@ -28,4 +28,4 @@ export function ShowAttachment({ attachment }: ShowAttachmentProps) {
   );
 }
 
-export default ShowAttachment;
+export default AttachmentShow;

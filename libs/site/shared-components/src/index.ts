@@ -6,4 +6,5 @@ export * from "./lib/header/Header";
 export * from "./lib/icons";
 export * from "./lib/info-card/InfoCard";
 export * from "./lib/loading-button/LoadingButton";
-export * from "./lib/show-attachment/ShowAttachment";
+export * from "./lib/attachment-show/AttachmentShow";
+export * from "./lib/attachment-modal/AttachmentModal";

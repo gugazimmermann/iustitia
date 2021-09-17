@@ -1,8 +1,8 @@
 import { render } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
-import ShowAttachment from "./ShowAttachment";
+import AttachmentModal from "./AttachmentModal";
 
-describe("ShowAttachment", () => {
+describe("AttachmentModal", () => {
   it("should render successfully", () => {
     const att = {
       date: "01/01/2021 00:00",
@@ -11,7 +11,7 @@ describe("ShowAttachment", () => {
     };
     const { baseElement } = render(
       <MemoryRouter>
-        <ShowAttachment attachment={att} />
+        <AttachmentModal attachment={att} />
       </MemoryRouter>
     );
     expect(baseElement).toBeTruthy();
