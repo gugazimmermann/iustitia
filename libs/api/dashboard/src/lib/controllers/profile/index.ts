@@ -32,7 +32,7 @@ export async function updateProfile(req, res) {
     if (req.file) {
       if (profile.avatar) {
         const currentObject = {
-          Bucket: process.env.NX_AVATAR_BUCKET,
+          Bucket: process.env.NX_BUCKET_AVATAR,
           Key: profile.avatar
         }
         const currentAvatar = await s3.headObject(currentObject).promise().then(() => true,
@@ -52,7 +52,7 @@ export async function updateProfile(req, res) {
       const now = `${d.getHours()}${d.getMinutes()}${d.getSeconds()}${d.getMilliseconds()}`
       const fileName = `${req.userId.split("-").join("")}${now}.jpeg`
       const params = {
-        Bucket: process.env.NX_AVATAR_BUCKET,
+        Bucket: process.env.NX_BUCKET_AVATAR,
         Key: fileName,
         Body: avatarFile
       };

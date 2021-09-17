@@ -101,6 +101,11 @@ export const App = () => {
           <Contacts />
         </Layout>
       </ProtectedRoute>
+      <ProtectedRoute exact path={`${Routes.Contacts}/:id?`}>
+        <Layout>
+          <Contacts />
+        </Layout>
+      </ProtectedRoute>
       <ProtectedRoute exact path={Routes.Schedule}>
         <Layout>
           <Schedule />

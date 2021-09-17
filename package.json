@@ -1,7 +1,7 @@
 {
   "name": "iustitia",
   "description": "Iustitia - App pra Advogados",
-  "version": "0.10.3",
+  "version": "0.10.4",
   "license": "MIT",
   "engines": {
     "node": ">=14"
@@ -66,6 +66,7 @@
     "react-number-format": "^4.7.3",
     "react-router-dom": "5.2.0",
     "react-table": "^7.7.0",
+    "react-textarea-autosize": "^8.3.3",
     "regenerator-runtime": "0.13.7",
     "sequelize": "^6.6.5",
     "sharp": "^0.29.1",

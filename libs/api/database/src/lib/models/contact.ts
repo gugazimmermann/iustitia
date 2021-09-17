@@ -16,6 +16,7 @@ export interface ContactAttributes {
   neighborhood: string;
   city: string;
   state: string;
+  description: string;
   tenantId: string;
   userId: string;
 }
@@ -33,7 +34,8 @@ export type ContactCreationAttributes = Optional<ContactAttributes,
   'complement' |
   'neighborhood' |
   'city' |
-  'state'
+  'state' |
+  'description'
 >
 
 export interface ContactInstance
@@ -68,6 +70,7 @@ export default function contact(sequelize: Sequelize) {
     neighborhood: { type: DataTypes.TEXT, allowNull: true },
     city: { type: DataTypes.TEXT, allowNull: true },
     state: { type: DataTypes.TEXT, allowNull: true },
+    description: { type: DataTypes.TEXT, allowNull: true },
     tenantId: { type: DataTypes.UUID, allowNull: true },
     userId: { type: DataTypes.UUID, allowNull: false },
   }, {

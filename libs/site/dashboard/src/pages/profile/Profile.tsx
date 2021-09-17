@@ -66,7 +66,7 @@ export function Profile({ profile, setProfile }: ProfileProps) {
   useEffect(() => {
     if (!selectedFile) {
       if (profile?.avatar) {
-        setPreview(`${process.env.NX_AVATAR_URL}${profile?.avatar}`);
+        setPreview(`${process.env.NX_BUCKET_AVATAR_URL}${profile?.avatar}`);
       }
       return;
     }
