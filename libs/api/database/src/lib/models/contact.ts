@@ -13,7 +13,7 @@ export interface ContactAttributes {
   neighborhood: string;
   city: string;
   state: string;
-  description: string;
+  comments: string;
   officeId: string;
   tenantId: string;
 }
@@ -30,7 +30,7 @@ export type ContactCreationAttributes = Optional<ContactAttributes,
   'neighborhood' |
   'city' |
   'state' |
-  'description' |
+  'comments' |
   'officeId'
 >
 
@@ -63,7 +63,7 @@ export default function contact(sequelize: Sequelize) {
     neighborhood: { type: DataTypes.TEXT, allowNull: true },
     city: { type: DataTypes.TEXT, allowNull: true },
     state: { type: DataTypes.TEXT, allowNull: true },
-    description: { type: DataTypes.TEXT, allowNull: true },
+    comments: { type: DataTypes.TEXT, allowNull: true },
     officeId: { type: DataTypes.UUID, allowNull: true },
     tenantId: { type: DataTypes.UUID, allowNull: true },
   }, {

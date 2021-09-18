@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { DateTime } from "luxon";
 import { getUserInitials, WARNING_TYPES } from "@iustitia/site/shared-utils";
 import {
@@ -6,21 +6,14 @@ import {
   AttachmentFile,
   AttachmentShow,
   AttachmentUploadModal,
+  ConfirmationModal,
 } from "@iustitia/site/shared-components";
-import { ModuleInterface } from "../Contacts";
+import { AttachmentInterface, ModuleInterface } from "../Contacts";
 import * as Services from "../services";
 
 export interface DetailsProps {
   data: ModuleInterface;
 }
-
-const AttachmentList = [
-  {
-    date: DateTime.now().toFormat("dd/MM/yyyy HH:mm"),
-    name: "Contrato de Compra e Venda",
-    link: "",
-  },
-];
 
 type noteType = {
   date: string;
@@ -52,8 +45,30 @@ const notesList: noteType[] = [
 export function Details({ data }: DetailsProps) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [attList, setAttList] = useState<AttachmentInterface[]>();
   const [showAttModal, setShowAttModal] = useState(false);
   const [attUploadProgress, setAttUploadProgress] = useState<number>();
+  const [selectedAttchment, setSelectedAttchment] =
+    useState<AttachmentInterface>();
+  const [confirm, setConfirm] = useState(false);
+
+  useEffect(() => {
+    if (data.id) {
+      getAllAttachments(data.id);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [data]);
+
+  async function getAllAttachments(id: string) {
+    try {
+      const att = await Services.getAllAttachments(id);
+      setAttList(att as AttachmentInterface[]);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (err: any) {
+      setError(err.message as string);
+      console.log(err);
+    }
+  }
 
   function formatAddress() {
     return data.address || data.number || data.complement ? (
@@ -92,12 +107,30 @@ export function Details({ data }: DetailsProps) {
       for (const file of files) {
         formData.append("attachments", file, file.name);
       }
-      formData.append("contactId", data?.id as string);
+      formData.append("id", data?.id as string);
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const res = await Services.attachmentsUpload(formData, (event: any) => {
+      const res = await Services.createAttachments(formData, (event: any) => {
         setAttUploadProgress(Math.round((100 * event.loaded) / event.total));
       });
-      console.log(res);
+      getAllAttachments(data?.id as string);
+      setLoading(false);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (err: any) {
+      setLoading(false);
+      setError(err.message as string);
+      console.log(err);
+    }
+  }
+
+  useEffect(() => {
+    if (selectedAttchment?.id) setConfirm(true);
+  }, [selectedAttchment]);
+
+  async function deleteOneAttachment() {
+    setLoading(true);
+    try {
+      await Services.deleteOneAttachment(selectedAttchment?.id as string);
+      getAllAttachments(data?.id as string);
       setLoading(false);
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
@@ -117,8 +150,8 @@ export function Details({ data }: DetailsProps) {
         />
       )}
       <div className="mb-6 grid grid-cols-12 items-center justify-center">
-        <div className="col-span-full flex w-full space-x-4 items-center justify-start p-4 border-b">
-          <div>
+        <div className="col-span-full flex w-full space-x-4 items-center justify-start py-4 md:p-4 border-b">
+          <div className="min-w-min">
             {data.avatar ? (
               <img
                 className="w-16 h-16 rounded-full"
@@ -130,6 +163,9 @@ export function Details({ data }: DetailsProps) {
                 {data.name ? getUserInitials(data.name) : "I"}
               </span>
             )}
+          </div>
+          <div>
+            <h2 className="text-base md:text-2xl font-bold">{data.name}</h2>
           </div>
         </div>
         <div className="col-span-full">
@@ -154,9 +190,9 @@ export function Details({ data }: DetailsProps) {
             {formatAddress()}
           </div>
           <div className="md:grid md:grid-cols-12 hover:bg-gray-50 md:space-y-0 space-y-1 p-4 border-b">
-            <p className="col-span-3 font-bold">Descrição</p>
+            <p className="col-span-3 font-bold">Observações</p>
             <p className="col-span-9 whitespace-pre-line text-sm">
-              {data.description}
+              {data.comments}
             </p>
           </div>
           <div className="md:grid md:grid-cols-12 hover:bg-gray-50 md:space-y-0 space-y-1 p-4 border-b">
@@ -164,8 +200,9 @@ export function Details({ data }: DetailsProps) {
             <div className="col-span-9">
               <div className="text-right mb-6">
                 <button
-                disabled={loading}
-                className="px-4 py-2 text-sm text-white rounded-md bg-primary-500 hover:bg-primary-900 focus:ring-primary-500">
+                  disabled={loading}
+                  className="px-4 py-2 text-sm text-white rounded-md bg-primary-500 hover:bg-primary-900 focus:ring-primary-500"
+                >
                   Adcionar Nota
                 </button>
               </div>
@@ -214,9 +251,15 @@ export function Details({ data }: DetailsProps) {
                   </div>
                 </div>
               )}
-              {AttachmentList.map((attachment, i) => (
-                <AttachmentShow key={i} attachment={attachment} />
-              ))}
+              {attList &&
+                attList.map((att, i) => (
+                  <AttachmentShow
+                    key={i}
+                    attachment={att}
+                    loading={loading}
+                    selectAttchment={setSelectedAttchment}
+                  />
+                ))}
             </div>
           </div>
         </div>
@@ -227,6 +270,15 @@ export function Details({ data }: DetailsProps) {
           maxNumberFiles={4}
           setShowModal={setShowAttModal}
           action={receiveAttFromModal}
+        />
+      )}
+      {confirm && (
+        <ConfirmationModal
+          setConfirm={setConfirm}
+          type={WARNING_TYPES.ERROR}
+          title={`Excluir ${selectedAttchment?.name}?`}
+          content={`Você tem certeza que quer excluir o ${selectedAttchment?.name}? Essa ação não poderá ser desfeita}.`}
+          action={deleteOneAttachment}
         />
       )}
     </>

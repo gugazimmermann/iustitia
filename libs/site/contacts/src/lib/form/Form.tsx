@@ -38,7 +38,7 @@ export function Form({ loading, data, create, update }: FormProps) {
     neighborhood: data?.neighborhood || "",
     city: data?.city || "",
     state: data?.state || "",
-    description: data?.description || "",
+    comments: data?.comments || "",
   };
   const {
     control,
@@ -375,13 +375,13 @@ export function Form({ loading, data, create, update }: FormProps) {
             </select>
           </div>
           <div className="col-span-full sm:col-span-12">
-            <label htmlFor="description" className="text-sm">
+            <label htmlFor="comments" className="text-sm">
               Descrição
             </label>
             <TextareaAutosize
-              {...register("description")}
+              {...register("comments")}
               minRows={3}
-              id="description"
+              id="comments"
               className={`w-full rounded-md focus:ring-0 focus:ring-opacity-75 text-gray-900 ${
                 errors.neighborhood
                   ? `focus:ring-red-500 border-red-500`

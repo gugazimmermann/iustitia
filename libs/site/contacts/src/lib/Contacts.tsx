@@ -33,8 +33,15 @@ export interface ModuleInterface {
   neighborhood?: string;
   city?: string;
   state?: string;
-  description?: string;
+  comments?: string;
   tenantId?: string;
+}
+
+export interface AttachmentInterface {
+  id: string;
+  date: string;
+  name: string;
+  link: string;
 }
 
 interface useParamsProps {
@@ -91,7 +98,7 @@ export function Contacts() {
       setSelected(data);
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
-      setError(err.message as string);
+      history.push(ModuleName.route);
       console.log(err);
     }
   }
@@ -253,7 +260,7 @@ export function Contacts() {
                   setConfirm={setConfirm}
                   type={WARNING_TYPES.ERROR}
                   title={`Excluir ${ModuleName.singular}: ${selected.name}?`}
-                  content={`Você tem certeza que quer excluir o ${ModuleName.singular} ${selected.name}? Todos os dados desse ${ModuleName.singular} serão perdidos. Essa ação não poderá ser ${ModuleName.singular}.`}
+                  content={`Você tem certeza que quer excluir o ${ModuleName.singular} ${selected.name}? Todos os dados desse ${ModuleName.singular} serão perdidos. Essa ação não poderá ser desfeita.`}
                   action={handleDelete}
                 />
               )}

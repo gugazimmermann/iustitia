@@ -57,7 +57,7 @@ export function Nav({
           <NavItem item="Search" icon={NAVICONS.SEARCH} alert={false} />
           <NavItem item="Settings" icon={NAVICONS.SETTINGS} alert={false} />
         </div>
-        <div className="pt-2 pr-4">
+        <div className="pt-2">
           <NavAvatar profile={profile} />
         </div>
       </>
@@ -66,7 +66,7 @@ export function Nav({
 
   return (
     <header className="relative flex-shrink-0 bg-white z-40">
-      <div className="flex items-center justify-between border-b h-14">
+      <div className="px-4 flex items-center justify-between border-b h-14">
         <NavMenuButton setMenuOpen={setMenuOpen} menuOpen={menuOpen} />
 
         <NavMobileButton setNavOpen={setNavOpen} navOpen={navOpen} />

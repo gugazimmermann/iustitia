@@ -4,6 +4,7 @@ export interface ContactAttachmentsAttributes {
   id: string;
   name: string;
   link: string;
+  ownerId: string;
 }
 
 export type ContactAttachmentsCreationAttributes = Optional<ContactAttachmentsAttributes, 'id'>
@@ -28,6 +29,7 @@ export default function contactAttachments(sequelize: Sequelize) {
     },
     name: { type: DataTypes.TEXT, allowNull: false },
     link: { type: DataTypes.TEXT, allowNull: false },
+    ownerId: { type: DataTypes.UUID, allowNull: false },
   });
 
   return ContactAttachments;

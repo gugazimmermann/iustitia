@@ -28,7 +28,7 @@ export function List({
     if (data.city || data.state) {
       let res = data.city && data.city;
       res = data.city && data.state && res + " | ";
-      res = data.state && data.state;
+      res = data.state && res + data.state;
       return res;
     }
     return null;
@@ -41,9 +41,9 @@ export function List({
           <tr className="bg-primary-500 text-white uppercase leading-normal">
             <th className="w-12"></th>
             <th className="py-2 px-2 text-sm text-left">Nome</th>
-            <th className="py-2 px-2 text-sm text-center">Telefone</th>
-            <th className="py-2 px-2 text-sm text-center">E-Mail</th>
-            <th className="py-2 px-2 text-sm text-center">Cidade / UF</th>
+            <th className="py-2 px-2 text-sm text-left">Telefone</th>
+            <th className="py-2 px-2 text-sm text-left">E-Mail</th>
+            <th className="py-2 px-2 text-sm text-left">Cidade / UF</th>
             <th className="py-2 px-2"></th>
           </tr>
         </thead>
