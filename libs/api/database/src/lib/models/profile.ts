@@ -1,5 +1,4 @@
 import { Sequelize, DataTypes, Optional, Model } from "sequelize";
-import { UserInstance } from "./user";
 
 export interface ProfileAttributes {
   id: string;
@@ -24,7 +23,7 @@ export interface ProfileInstance
   ProfileAttributes {
   createdAt?: Date;
   updatedAt?: Date;
-  user?: UserInstance
+  deletedAt?: Date;
 }
 
 export default function profile(sequelize: Sequelize) {
@@ -49,6 +48,9 @@ export default function profile(sequelize: Sequelize) {
     city: { type: DataTypes.TEXT, allowNull: true },
     state: { type: DataTypes.TEXT, allowNull: true },
     userId: { type: DataTypes.UUID, allowNull: false },
+  }, {
+    paranoid: true,
+    timestamps: true,
   });
 
   return Profile;

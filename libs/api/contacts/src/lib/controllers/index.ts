@@ -15,8 +15,6 @@ interface ContactInterface {
   id?: string;
   avatar?: string;
   name: string;
-  company?: string;
-  position?: string;
   email?: string;
   phone?: string;
   zip?: string;
@@ -35,8 +33,6 @@ function dataToResult(data: ContactInstance): ContactInterface {
     id: data.id,
     avatar: data.avatar,
     name: data.name,
-    company: data.company,
-    position: data.position,
     email: data.email,
     phone: data.phone,
     zip: data.zip,
@@ -159,6 +155,23 @@ export async function deleteOne(req, res) {
     if (data.avatar) await deleteExistingAvatar(data.avatar)
     await moduleDB.destroy({ where: { id: id } });
     return res.status(200).send({ message: "Registro deletado!" });
+  } catch (err) {
+    return res.status(500).send({ message: err.message });
+  }
+}
+
+export async function createAttachments(req, res) {
+  const { body } = req;
+  if (!body.contactId) return res.status(400).send({ message: "Dados inválidos!" });
+  try {
+    const user = await database.User.findOne({ where: { id: req.userId } });
+    if (req.files && req.files.length > 0) {
+      for (const file of req.files) {
+        const fileName = `${user.tenant}/contacts/${body.contactId.split("-").join("")}/${file.fileName}`
+        console.log(fileName)
+      }
+    }
+    return res.status(2000).send({ message: "ok" });
   } catch (err) {
     return res.status(500).send({ message: err.message });
   }

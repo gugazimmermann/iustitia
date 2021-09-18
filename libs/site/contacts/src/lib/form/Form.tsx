@@ -29,8 +29,6 @@ const schema = yup.object().shape({
 export function Form({ loading, data, create, update }: FormProps) {
   const defaultValues: ModuleInterface = {
     name: data?.name || "",
-    company: data?.company || "",
-    position: data?.position || "",
     email: data?.email || "",
     phone: data?.phone || "",
     zip: data?.zip || "",
@@ -162,7 +160,7 @@ export function Form({ loading, data, create, update }: FormProps) {
     <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col mx-auto">
       <fieldset className="grid grid-cols-1 gap-4 p-4">
         <div className="grid grid-cols-12 gap-4 col-span-full lg:col-span-3">
-          <div className="col-span-full sm:col-span-6">
+          <div className="col-span-full sm:col-span-5">
             <label htmlFor="name" className="text-sm">
               Nome *
             </label>
@@ -178,39 +176,7 @@ export function Form({ loading, data, create, update }: FormProps) {
               }`}
             />
           </div>
-          <div className="col-span-full sm:col-span-3">
-            <label htmlFor="name" className="text-sm">
-              Empresa
-            </label>
-            <input
-              {...register("company")}
-              id="company"
-              type="text"
-              placeholder="Empresa"
-              className={`w-full rounded-md focus:ring-0 focus:ring-opacity-75 text-gray-900 ${
-                errors.name
-                  ? `focus:ring-red-500 border-red-500`
-                  : `focus:ring-primary-500 border-gray-300`
-              }`}
-            />
-          </div>
-          <div className="col-span-full sm:col-span-3">
-            <label htmlFor="name" className="text-sm">
-              Cargo
-            </label>
-            <input
-              {...register("position")}
-              id="position"
-              type="text"
-              placeholder="Cargo"
-              className={`w-full rounded-md focus:ring-0 focus:ring-opacity-75 text-gray-900 ${
-                errors.name
-                  ? `focus:ring-red-500 border-red-500`
-                  : `focus:ring-primary-500 border-gray-300`
-              }`}
-            />
-          </div>
-          <div className="col-span-full sm:col-span-6">
+          <div className="col-span-full sm:col-span-4">
             <label htmlFor="name" className="text-sm">
               Email
             </label>
@@ -226,7 +192,7 @@ export function Form({ loading, data, create, update }: FormProps) {
               }`}
             />
           </div>
-          <div className="col-span-full sm:col-span-6">
+          <div className="col-span-full sm:col-span-3">
             <label htmlFor="name" className="text-sm">
               Telefone
             </label>

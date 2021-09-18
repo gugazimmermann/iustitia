@@ -1,18 +1,20 @@
 import { useState } from "react";
 import { DateTime } from "luxon";
-import { getUserInitials } from "@iustitia/site/shared-utils";
+import { getUserInitials, WARNING_TYPES } from "@iustitia/site/shared-utils";
 import {
-  AttachmentType,
+  Alert,
+  AttachmentFile,
   AttachmentShow,
-  AttachmentModal,
+  AttachmentUploadModal,
 } from "@iustitia/site/shared-components";
 import { ModuleInterface } from "../Contacts";
+import * as Services from "../services";
 
 export interface DetailsProps {
   data: ModuleInterface;
 }
 
-const AttachmentList: AttachmentType[] = [
+const AttachmentList = [
   {
     date: DateTime.now().toFormat("dd/MM/yyyy HH:mm"),
     name: "Contrato de Compra e Venda",
@@ -48,16 +50,10 @@ const notesList: noteType[] = [
 ];
 
 export function Details({ data }: DetailsProps) {
-  const [showAttachmentModal, setShowAttachmentModal] = useState(false);
-  function formatCompanyPosition() {
-    return data.company || data.position ? (
-      <p className="text-base text-gray-900">
-        {data.position && `${data.position}`}
-        {data.company && data.position && ` | `}
-        {data.company && `${data.company}`}
-      </p>
-    ) : null;
-  }
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [showAttModal, setShowAttModal] = useState(false);
+  const [attUploadProgress, setAttUploadProgress] = useState<number>();
 
   function formatAddress() {
     return data.address || data.number || data.complement ? (
@@ -82,14 +78,45 @@ export function Details({ data }: DetailsProps) {
     ) : null;
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  async function Attachment(files: any[]) {
-    console.log(files);
+  async function receiveAttFromModal(files: AttachmentFile[]) {
+    if (files.length > 0) {
+      setAttUploadProgress(0);
+      uploadAttachmentsFromModal(files);
+    }
+  }
+
+  async function uploadAttachmentsFromModal(files: AttachmentFile[]) {
+    setLoading(true);
+    try {
+      const formData = new FormData();
+      for (const file of files) {
+        formData.append("attachments", file, file.name);
+      }
+      formData.append("contactId", data?.id as string);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const res = await Services.attachmentsUpload(formData, (event: any) => {
+        setAttUploadProgress(Math.round((100 * event.loaded) / event.total));
+      });
+      console.log(res);
+      setLoading(false);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (err: any) {
+      setLoading(false);
+      setError(err.message as string);
+      console.log(err);
+    }
   }
 
   return (
     <>
-      <div className="grid grid-cols-12 items-center justify-center">
+      {error && <Alert type={WARNING_TYPES.ERROR} message={error} />}
+      {attUploadProgress && attUploadProgress < 100 && (
+        <Alert
+          type={WARNING_TYPES.WARNING}
+          message="Enviando arquivos, aguarde..."
+        />
+      )}
+      <div className="mb-6 grid grid-cols-12 items-center justify-center">
         <div className="col-span-full flex w-full space-x-4 items-center justify-start p-4 border-b">
           <div>
             {data.avatar ? (
@@ -103,10 +130,6 @@ export function Details({ data }: DetailsProps) {
                 {data.name ? getUserInitials(data.name) : "I"}
               </span>
             )}
-          </div>
-          <div>
-            <h2 className="text-2xl ">{data.name}</h2>
-            {formatCompanyPosition()}
           </div>
         </div>
         <div className="col-span-full">
@@ -140,7 +163,9 @@ export function Details({ data }: DetailsProps) {
             <p className="col-span-3 font-bold">Notas</p>
             <div className="col-span-9">
               <div className="text-right mb-6">
-                <button className="px-4 py-2 text-sm text-white rounded-md bg-primary-500 hover:bg-primary-900 focus:ring-primary-500">
+                <button
+                disabled={loading}
+                className="px-4 py-2 text-sm text-white rounded-md bg-primary-500 hover:bg-primary-900 focus:ring-primary-500">
                   Adcionar Nota
                 </button>
               </div>
@@ -161,12 +186,34 @@ export function Details({ data }: DetailsProps) {
           <div className="md:grid md:grid-cols-12 hover:bg-gray-50 md:space-y-0 space-y-1 p-4">
             <p className="col-span-3 font-bold">Anexos</p>
             <div className="col-span-9 space-y-2 text-right">
-              <button
-                onClick={() => setShowAttachmentModal(!showAttachmentModal)}
-                className="px-4 py-2 text-sm text-white rounded-md bg-primary-500 hover:bg-primary-900 focus:ring-primary-500"
-              >
-                Adcionar Anexo
-              </button>
+              {!attUploadProgress || attUploadProgress === 100 ? (
+                <button
+                  disabled={loading}
+                  onClick={() => setShowAttModal(!showAttModal)}
+                  className="px-4 py-2 text-sm text-white rounded-md bg-primary-500 hover:bg-primary-900 focus:ring-primary-500"
+                >
+                  Adcionar Anexo
+                </button>
+              ) : (
+                <h2 className="text-base font-bold mb-4">
+                  Enviando arquivos, aguarde...
+                </h2>
+              )}
+              {attUploadProgress && attUploadProgress < 100 && (
+                <div className="w-full elative">
+                  <div className="flex items-center justify-end">
+                    <span className="text-xs font-semibold inline-block text-primary-500">
+                      {attUploadProgress}%
+                    </span>
+                  </div>
+                  <div className="overflow-hidden h-2 mb-4 text-xs flex rounded bg-primary-200">
+                    <div
+                      style={{ width: `${attUploadProgress}%` }}
+                      className="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-primary-500"
+                    ></div>
+                  </div>
+                </div>
+              )}
               {AttachmentList.map((attachment, i) => (
                 <AttachmentShow key={i} attachment={attachment} />
               ))}
@@ -174,11 +221,12 @@ export function Details({ data }: DetailsProps) {
           </div>
         </div>
       </div>
-      {showAttachmentModal && (
-        <AttachmentModal
+      {showAttModal && (
+        <AttachmentUploadModal
           maxSize={1024 * 1024 * 20} // 20 Mb
-          setShowAttachmentModal={setShowAttachmentModal}
-          action={Attachment}
+          maxNumberFiles={4}
+          setShowModal={setShowAttModal}
+          action={receiveAttFromModal}
         />
       )}
     </>

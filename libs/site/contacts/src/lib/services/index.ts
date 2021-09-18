@@ -48,3 +48,15 @@ export async function deleteOne(id: string): Promise<{ message: string } | Error
     return errorHandler(err)
   }
 };
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export async function attachmentsUpload(formData: FormData, onUploadProgress: any) {
+  try {
+    return api.post(`/api/${ModuleName.module}/attachments`, formData, {
+      headers: { "Content-Type": "multipart/form-data" },
+      onUploadProgress,
+    });
+  } catch (err) {
+    return errorHandler(err)
+  }
+}

@@ -14,7 +14,7 @@ const ACCESS_TOKEN =
     ? process.env.NX_MERCADOPAGO_ACCESS_TOKEN_TEST
     : process.env.NX_MERCADOPAGO_ACCESS_TOKEN;
 
-mercadopago.configure({access_token: ACCESS_TOKEN });
+mercadopago.configure({ access_token: ACCESS_TOKEN });
 
 async function createToken(user) {
   const expiredAt = new Date();
@@ -48,15 +48,16 @@ export async function signup(req, res) {
       email: userData.email,
       userId: user.id
     });
-    await database.Subscription.create({
-      userId: user.id,
-      planId: userPlan.id,
+    const subscription = await database.Subscription.create({
       reason: userPlan.reason,
       frequency: userPlan.frequency,
       frequencyType: userPlan.frequencyType,
       transactionAmount: userPlan.transactionAmount,
       status: true,
+      planId: userPlan.id,
+      userId: user.id,
     });
+
     if (userPlan.transactionAmount !== 0) {
       const { cardInfo } = req.body;
 
@@ -66,22 +67,25 @@ export async function signup(req, res) {
       //   "payer_email": user.email
       // });
       // console.log(preapproval)
-
-      await database.Payment.create({
-        userId: user.id,
-        transactionAmount: userPlan.transactionAmount,
-        status: "Paid",
-        paidDate: new Date()
-      });
-      await database.Creditcard.create({
-        userId: user.id,
+      const creditcard = await database.Creditcard.create({
         name: cardInfo.name,
         firstSixDigits: cardInfo.firstSixDigits,
         lastFourDigits: cardInfo.lastFourDigits,
         expirationMonth: cardInfo.expirationMonth,
         expirationYear: cardInfo.expirationYear,
         status: true,
+        userId: user.id,
       });
+
+      await database.Payment.create({
+        transactionAmount: userPlan.transactionAmount,
+        status: "Paid",
+        paidDate: new Date(),
+        subscriptionId: subscription.id,
+        creditcardId: creditcard.id,
+        userId: user.id,
+      });
+
     }
     return res.status(201).send({ message: "Usuário cadastrado com sucesso!" });
   } catch (err) {
@@ -94,7 +98,10 @@ export async function signin(req, res) {
     return res.status(400).send({ message: "Dados inválidos!" });
   }
   try {
-    const user = await database.User.findOne({ where: { email: req.body.email } });
+    const user = await database.User.findOne({
+      where: { email: req.body.email },
+      include: "subscription"
+    });
     if (!user) {
       return res.status(404).send({ message: "Email ou senha inválidos!" });
     }
@@ -105,8 +112,7 @@ export async function signin(req, res) {
     if (!passwordIsValid) {
       return res.status(404).send({ message: "Email ou senha inválidos!" });
     }
-    const subscription = await database.Subscription.findOne({ where: { userId: user.id } });
-    if (!subscription) {
+    if (!user.subscription || !user.subscription.status) {
       return res.status(404).send({ message: "Assinatura não encontrada!" });
     }
     const accessToken = jwt.sign({ id: user.id }, config.jwtSecret, {

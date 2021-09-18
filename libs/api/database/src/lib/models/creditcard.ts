@@ -1,15 +1,14 @@
 import { Sequelize, DataTypes, Optional, Model } from "sequelize";
-import { UserInstance } from "./user";
 
 export interface CreditcardAttributes {
   id: string;
-  userId: string;
   name: string;
   firstSixDigits: string;
   lastFourDigits: string;
   expirationMonth: string;
   expirationYear: string;
   status: boolean;
+  userId: string;
 }
 
 export type CreditcardCreationAttributes = Optional<CreditcardAttributes, 'id'>
@@ -19,7 +18,7 @@ export interface CreditcardInstance
   CreditcardAttributes {
   createdAt?: Date;
   updatedAt?: Date;
-  user?: UserInstance
+  deletedAt?: Date;
 }
 
 export default function creditcard(sequelize: Sequelize) {
@@ -32,13 +31,13 @@ export default function creditcard(sequelize: Sequelize) {
       unique: true,
       primaryKey: true,
     },
-    userId: { type: DataTypes.UUID, allowNull: false },
     name: { type: DataTypes.TEXT, allowNull: false },
     firstSixDigits: { type: DataTypes.TEXT, allowNull: false },
     lastFourDigits: { type: DataTypes.TEXT, allowNull: false },
     expirationMonth: { type: DataTypes.TEXT, allowNull: false },
     expirationYear: { type: DataTypes.TEXT, allowNull: false },
     status: { type: DataTypes.BOOLEAN, allowNull: false },
+    userId: { type: DataTypes.UUID, allowNull: false },
   }, {
     paranoid: true,
     timestamps: true,

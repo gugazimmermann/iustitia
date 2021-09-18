@@ -19,11 +19,11 @@ export function AttachmentShow({ attachment }: AttachmentShowProps) {
       download
       className="p-2 border border-primary-500 text-primary-500 flex items-center rounded-md justify-between space-x-2"
     >
-      <div className="truncate">
-        <AttachmentIcon styles="w-5 h-5 inline mr-2" stroke={2} />
+      <div className="truncate text-sm">
+        <AttachmentIcon styles="w-4 h-4 inline mr-2" stroke={2} />
         {attachment.name}
       </div>
-      <p className="text-base">{attachment.date} hs</p>
+      <p className="text-sm">{attachment.date} hs</p>
     </Link>
   );
 }

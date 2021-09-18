@@ -1,5 +1,9 @@
 import { useState, useEffect } from "react";
-import { Alert, ConfirmationModal, Header } from "@iustitia/site/shared-components";
+import {
+  Alert,
+  ConfirmationModal,
+  Header,
+} from "@iustitia/site/shared-components";
 import { WARNING_TYPES } from "@iustitia/site/shared-utils";
 import { IOffice } from "../../interfaces";
 import {
@@ -20,6 +24,7 @@ export function Offices({ setOffices: CallOutOffices }: OfficesProps) {
   const [showEdit, setShowEdit] = useState(false);
   const [showDelete, setShowDelete] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
   const [offices, setOffices] = useState([] as IOffice[]);
   const [selectedOffice, setSelectedOffice] = useState({} as IOffice);
   const [list, setList] = useState(true);
@@ -27,6 +32,13 @@ export function Offices({ setOffices: CallOutOffices }: OfficesProps) {
   const [update, setUpdade] = useState(false);
   const [back, setBack] = useState(false);
   const [confirm, setConfirm] = useState(false);
+
+  useEffect(() => {
+    if (showSuccess) setTimeout(() => setShowSuccess(false), 3000);
+    if (showEdit) setTimeout(() => setShowEdit(false), 3000);
+    if (showDelete) setTimeout(() => setShowDelete(false), 3000);
+    if (error) setTimeout(() => setError(""), 3000);
+  }, [showSuccess, showEdit, showDelete, error]);
 
   useEffect(() => {
     getOffices();
@@ -81,7 +93,10 @@ export function Offices({ setOffices: CallOutOffices }: OfficesProps) {
       });
       setOffices(offices as IOffice[]);
       if (CallOutOffices) CallOutOffices(offices as IOffice[]);
-    } catch (err) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (err: any) {
+      setLoading(false);
+      setError(err.message as string);
       console.log(err);
     }
   }
@@ -95,8 +110,10 @@ export function Offices({ setOffices: CallOutOffices }: OfficesProps) {
       setShowDelete(false);
       showList();
       setLoading(false);
-    } catch (err) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (err: any) {
       setLoading(false);
+      setError(err.message as string);
       console.log(err);
     }
   }
@@ -110,8 +127,10 @@ export function Offices({ setOffices: CallOutOffices }: OfficesProps) {
       setShowDelete(false);
       showList();
       setLoading(false);
-    } catch (err) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (err: any) {
       setLoading(false);
+      setError(err.message as string);
       console.log(err);
     }
   }
@@ -126,8 +145,10 @@ export function Offices({ setOffices: CallOutOffices }: OfficesProps) {
         setShowDelete(true);
         await getOffices();
         setLoading(false);
-      } catch (err) {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      } catch (err: any) {
         setLoading(false);
+        setError(err.message as string);
         console.log(err);
       }
     }
@@ -145,11 +166,12 @@ export function Offices({ setOffices: CallOutOffices }: OfficesProps) {
         <div className="flex items-center justify-center overflow-hidden p-2">
           <div className="w-full">
             <div className="bg-white shadow-sm rounded">
+              {error && <Alert type={WARNING_TYPES.ERROR} message={error} />}
               {showSuccess && (
                 <Alert
                   type={WARNING_TYPES.SUCCESS}
                   message="Escritório cadastrado com Sucesso!"
-                  closeFunction={setShowSuccess}
+                  closeFunction={setShowEdit}
                 />
               )}
               {showEdit && (

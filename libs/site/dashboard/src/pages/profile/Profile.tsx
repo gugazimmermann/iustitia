@@ -3,7 +3,12 @@ import { useForm, Controller } from "react-hook-form";
 import NumberFormat from "react-number-format";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { LoadingButton, Alert, UploadCloudIcon, Header } from "@iustitia/site/shared-components";
+import {
+  LoadingButton,
+  Alert,
+  UploadCloudIcon,
+  Header,
+} from "@iustitia/site/shared-components";
 import {
   getAddressFromCEP,
   getUserInitials,
@@ -58,10 +63,16 @@ export function Profile({ profile, setProfile }: ProfileProps) {
   });
   const [showSuccess, setShowSuccess] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [errorMsg, setErrorMsg] = useState("");
   const avatarRegister = register("avatar");
   const [selectedFile, setSelectedFile] = useState<File>();
   const [preview, setPreview] = useState<string | undefined>("");
   const [validZip, setValidZip] = useState(!!defaultValues.zip);
+
+  useEffect(() => {
+    if (showSuccess) setTimeout(() => setShowSuccess(false), 3000);
+    if (errorMsg) setTimeout(() => setErrorMsg(""), 3000);
+  }, [showSuccess, errorMsg]);
 
   useEffect(() => {
     if (!selectedFile) {
@@ -109,7 +120,10 @@ export function Profile({ profile, setProfile }: ProfileProps) {
         setValue("city", data.cidade);
         clearErrors("city");
       }
-    } catch (err) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (err: any) {
+      setErrorMsg(err.message as string);
+      console.log(err);
       setValidZip(false);
       setError("zip", { type: "manual" });
       setValue("address", "");
@@ -146,11 +160,13 @@ export function Profile({ profile, setProfile }: ProfileProps) {
       const profileData: IProfile = await updateProfile(formData);
       if (profileData && setProfile) {
         setProfile(profileData);
-        setShowSuccess(true)
+        setShowSuccess(true);
         setLoading(false);
       }
-    } catch (err) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (err: any) {
       setLoading(false);
+      setErrorMsg(err.message as string);
       console.log(err);
     }
   }
@@ -161,7 +177,16 @@ export function Profile({ profile, setProfile }: ProfileProps) {
       <div className="overflow-x-auto">
         <div className="flex items-center justify-center overflow-hidden p-2">
           <div className="w-full">
-            {showSuccess && <Alert type={WARNING_TYPES.SUCCESS} message="Perfil Alerado com Sucesso!" closeFunction={setShowSuccess} /> }
+            {errorMsg && (
+              <Alert type={WARNING_TYPES.ERROR} message={errorMsg} />
+            )}
+            {showSuccess && (
+              <Alert
+                type={WARNING_TYPES.SUCCESS}
+                message="Perfil Alerado com Sucesso!"
+                closeFunction={setShowSuccess}
+              />
+            )}
             <div className="bg-white shadow-sm rounded">
               <form
                 onSubmit={handleSubmit(onSubmit)}

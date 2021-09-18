@@ -24,6 +24,16 @@ export function List({
 }: ListProps) {
   const history = useHistory();
 
+  function formatAddress(data: ModuleInterface) {
+    if (data.city || data.state) {
+      let res = data.city && data.city;
+      res = data.city && data.state && res + " | ";
+      res = data.state && data.state;
+      return res;
+    }
+    return null;
+  }
+
   return (
     <div className=" overflow-x-auto">
       <table className="w-full table">
@@ -31,10 +41,9 @@ export function List({
           <tr className="bg-primary-500 text-white uppercase leading-normal">
             <th className="w-12"></th>
             <th className="py-2 px-2 text-sm text-left">Nome</th>
-            <th className="py-2 px-2 text-sm text-left">Empresa</th>
-            <th className="py-2 px-2 text-sm text-center">Cargo</th>
             <th className="py-2 px-2 text-sm text-center">Telefone</th>
             <th className="py-2 px-2 text-sm text-center">E-Mail</th>
+            <th className="py-2 px-2 text-sm text-center">Cidade / UF</th>
             <th className="py-2 px-2"></th>
           </tr>
         </thead>
@@ -62,22 +71,19 @@ export function List({
                   <span className="font-medium">{data.name}</span>
                 </td>
                 <td className="py-3 px-3 text-left">
-                  <span>{data.company}</span>
-                </td>
-                <td className="py-3 px-3 text-left">
-                  <span>{data.position}</span>
-                </td>
-                <td className="py-3 px-3 text-left">
                   <span>{data.phone}</span>
                 </td>
                 <td className="py-3 px-3 text-left">
-                  {data.email ? (
+                {data.email ? (
                     <a href={`mailto:${data.email}`} className="underline">
                       {data.email}
                     </a>
                   ) : (
                     <span>{data.email}</span>
                   )}
+                </td>
+                <td className="py-3 px-3 text-left">
+                  <span>{formatAddress(data)}</span>
                 </td>
                 <td className="py-3 px-3">
                   <div className="flex items-end justify-end">

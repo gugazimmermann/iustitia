@@ -24,8 +24,6 @@ export interface ModuleInterface {
   id?: string;
   avatar?: string;
   name?: string;
-  company?: string;
-  position?: string;
   email?: string;
   phone?: string;
   zip?: string;
@@ -60,6 +58,14 @@ export function Contacts() {
   const [confirm, setConfirm] = useState(false);
   const [dataList, setDataList] = useState([] as ModuleInterface[]);
   const [selected, setSelected] = useState({} as ModuleInterface);
+
+  useEffect(() => {
+    if (showSuccessAlert) setTimeout(() => setShowSuccessAlert(false), 3000);
+    if (showEditAlert) setTimeout(() => setShowEditAlert(false), 3000);
+    if (showDeleteAlert) setTimeout(() => setShowDeleteAlert(false), 3000);
+    if (error) setTimeout(() => setError(""), 3000);
+
+  }, [showSuccessAlert, showEditAlert, showDeleteAlert, error]);
 
   useEffect(() => {
     if (id) {

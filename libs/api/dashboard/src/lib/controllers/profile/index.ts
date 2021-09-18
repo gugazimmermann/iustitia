@@ -79,28 +79,31 @@ export async function updateProfile(req, res) {
 
 export async function getProfile(req, res) {
   try {
-    const profile = await database.Profile.findOne({ where: { userId: req.userId } });
-    if (!profile) {
+    const user = await database.User.findOne({
+      where: { id: req.userId },
+      include: ["subscription", "profile"],
+
+    });
+    if (!user || !user.profile || !user.subscription) {
       return res.status(404).send({ message: "Perfil não encontrado!" });
     }
-    const subscription = await database.Subscription.findOne({ where: { userId: req.userId } })
     return res.status(200).send({
-      avatar: profile.avatar,
-      name: profile.name,
-      email: profile.email,
-      phone: profile.phone,
-      zip: profile.zip,
-      address: profile.address,
-      number: profile.number,
-      complement: profile.complement,
-      neighborhood: profile.neighborhood,
-      city: profile.city,
-      state: profile.state,
+      avatar: user.profile.avatar,
+      name: user.profile.name,
+      email: user.profile.email,
+      phone: user.profile.phone,
+      zip: user.profile.zip,
+      address: user.profile.address,
+      number: user.profile.number,
+      complement: user.profile.complement,
+      neighborhood: user.profile.neighborhood,
+      city: user.profile.city,
+      state: user.profile.state,
       subscription: {
-        planId: subscription.planId,
-        reason: subscription.reason,
-        frequency: subscription.frequency,
-        createdAt: subscription.createdAt,
+        planId: user.subscription.planId,
+        reason: user.subscription.reason,
+        frequency: user.subscription.frequency,
+        createdAt: user.subscription.createdAt,
       }
     });
   } catch (err) {

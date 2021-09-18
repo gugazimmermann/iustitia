@@ -1,6 +1,6 @@
 import * as multer from 'multer';
 import { verifyToken } from '@iustitia/api/auth'
-import { getOne, getAll, create, update, deleteOne } from './controllers';
+import { getOne, getAll, create, update, deleteOne, createAttachments } from './controllers';
 
 const moduleName = "contacts";
 
@@ -11,4 +11,5 @@ export default function Contacts(app) {
   app.post(`/api/${moduleName}`, upload.single('avatar'), [verifyToken], create);
   app.put(`/api/${moduleName}`, upload.single('avatar'), [verifyToken], update);
   app.delete(`/api/${moduleName}/:id`, [verifyToken], deleteOne);
+  app.post(`/api/${moduleName}/attachments`, upload.array('attachments'), [verifyToken], createAttachments);
 }

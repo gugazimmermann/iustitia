@@ -7,4 +7,5 @@ export * from "./lib/icons";
 export * from "./lib/info-card/InfoCard";
 export * from "./lib/loading-button/LoadingButton";
 export * from "./lib/attachment-show/AttachmentShow";
-export * from "./lib/attachment-modal/AttachmentModal";
+export * from "./lib/attachment-upload-modal/AttachmentUploadModal";
+export { AttachmentUploadDetails } from "./lib/attachment-upload-modal/AttachmentUploadDetails";

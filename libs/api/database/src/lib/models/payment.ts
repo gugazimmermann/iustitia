@@ -1,12 +1,13 @@
 import { Sequelize, DataTypes, Optional, Model } from "sequelize";
-import { UserInstance } from "./user";
 
 export interface PaymentAttributes {
   id: string;
-  userId: string;
   transactionAmount: number;
   status: string;
   paidDate: Date;
+  subscriptionId: string;
+  creditcardId: string;
+  userId: string;
 }
 
 export type PaymentCreationAttributes = Optional<PaymentAttributes, 'id'>
@@ -16,7 +17,7 @@ export interface PaymentInstance
   PaymentAttributes {
   createdAt?: Date;
   updatedAt?: Date;
-  user?: UserInstance
+  deletedAt?: Date;
 }
 
 export default function payment(sequelize: Sequelize) {
@@ -29,10 +30,12 @@ export default function payment(sequelize: Sequelize) {
       unique: true,
       primaryKey: true,
     },
-    userId: { type: DataTypes.UUID, allowNull: false },
     transactionAmount: { type: DataTypes.DOUBLE, allowNull: false },
     status: { type: DataTypes.TEXT, allowNull: false },
     paidDate: { type: DataTypes.DATE, allowNull: false },
+    subscriptionId: { type: DataTypes.UUID, allowNull: false },
+    creditcardId: { type: DataTypes.UUID, allowNull: false },
+    userId: { type: DataTypes.UUID, allowNull: false },
   }, {
     paranoid: true,
     timestamps: true,

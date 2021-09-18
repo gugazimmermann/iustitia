@@ -1,4 +1,6 @@
 import { Sequelize, DataTypes, Optional, Model } from "sequelize";
+import { ProfileInstance } from "./profile";
+import { SubscriptionInstance } from "./subscription";
 
 export interface UserAttributes {
   id: string;
@@ -14,6 +16,9 @@ export interface UserInstance
   UserAttributes {
   createdAt?: Date;
   updatedAt?: Date;
+  deletedAt?: Date;
+  profile?: ProfileInstance;
+  subscription?: SubscriptionInstance;
 }
 
 export default function user(sequelize: Sequelize) {
@@ -29,6 +34,9 @@ export default function user(sequelize: Sequelize) {
     email: { type: DataTypes.TEXT, allowNull: false },
     password: { type: DataTypes.TEXT, allowNull: false },
     tenant: { type: DataTypes.UUID, allowNull: true }
+  }, {
+    paranoid: true,
+    timestamps: true,
   });
 
   return User;

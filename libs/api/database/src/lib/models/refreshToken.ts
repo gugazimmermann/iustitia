@@ -1,5 +1,4 @@
 import { Sequelize, DataTypes, Optional, Model } from "sequelize";
-import { UserInstance } from "./user";
 
 export interface RefreshTokenAttributes {
   id: number;
@@ -15,7 +14,6 @@ export interface RefreshTokenInstance
   RefreshTokenAttributes {
   createdAt?: Date;
   updatedAt?: Date;
-  user?: UserInstance
 }
 
 export default function refreshToken(sequelize: Sequelize) {

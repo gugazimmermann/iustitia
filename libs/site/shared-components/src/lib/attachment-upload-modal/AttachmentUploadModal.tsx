@@ -1,14 +1,7 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useCallback, useEffect, useState } from "react";
 import { useDropzone } from "react-dropzone";
 import { formatBytes } from "@iustitia/site/shared-utils";
-import audio from "../../assets/files-types/audio.png";
-import video from "../../assets/files-types/video.png";
-import doc from "../../assets/files-types/doc.png";
-import spreadsheet from "../../assets/files-types/spreadsheet.png";
-import presentation from "../../assets/files-types/presentation.png";
-import zip from "../../assets/files-types/zip.png";
-import pdf from "../../assets/files-types/pdf.png";
+import { AttachmentUploadDetails } from "./AttachmentUploadDetails";
 
 const acceptedTypes = [
   "audio/*",
@@ -30,26 +23,27 @@ const acceptedTypes = [
   "application/vnd.oasis.opendocument.text",
 ];
 
-export type AttachmentType = {
-  date: string;
-  name: string;
-  link: string;
-};
-
-export interface AttachmentModalProps {
-  maxSize: number;
-  setShowAttachmentModal(showAttachmentModal: boolean): void;
-  action(files: any[]): void;
+export interface AttachmentFile extends File {
+  preview: string;
+  path: string;
 }
 
-export function AttachmentModal({
-  maxSize,
-  setShowAttachmentModal,
-  action,
-}: AttachmentModalProps) {
-  const [files, setFiles] = useState<any[]>([]);
+export interface AttachmentUploadModalProps {
+  maxSize: number;
+  maxNumberFiles: number;
+  setShowModal(modal: boolean): void;
+  action(files: AttachmentFile[]): void;
+}
 
-  const sizeValidator = (file: any) => {
+export function AttachmentUploadModal({
+  maxSize,
+  maxNumberFiles,
+  setShowModal,
+  action,
+}: AttachmentUploadModalProps) {
+  const [files, setFiles] = useState<AttachmentFile[]>([]);
+
+  function sizeValidator(file: File) {
     if (file.size > maxSize) {
       return {
         code: "file-too-big",
@@ -59,11 +53,11 @@ export function AttachmentModal({
       };
     }
     return null;
-  };
+  }
 
   const onDrop = useCallback((acceptedFiles) => {
     setFiles(
-      acceptedFiles.map((file: any) =>
+      acceptedFiles.map((file: File) =>
         Object.assign(file, {
           preview: URL.createObjectURL(file),
         })
@@ -79,65 +73,9 @@ export function AttachmentModal({
     isDragReject,
   } = useDropzone({
     accept: acceptedTypes.join(", "),
-    maxFiles: 4,
+    maxFiles: maxNumberFiles,
     onDrop,
     validator: sizeValidator,
-  });
-
-  const filesList = files.map((file, i) => {
-    const imgPreview = (src: string, path: string, size: number, i: number) => {
-      return (
-        <div
-          key={i}
-          className="space-x-4 flex flex-row items-center justify-start"
-        >
-          <img src={src} alt={src} width={32} />
-          <span className="overflow-hidden truncate">{path}</span>
-          <span className="w-20 text-right">{formatBytes(size)}</span>
-        </div>
-      );
-    };
-
-    if (file.type.split("/")[0] === "image") {
-      return imgPreview(file.preview, file.path, file.size, i);
-    } else if (file.type.split("/")[0] === "audio") {
-      return imgPreview(audio, file.path, file.size, i);
-    } else if (file.type.split("/")[0] === "video") {
-      return imgPreview(video, file.path, file.size, i);
-    } else if (
-      file.type === "application/json" ||
-      file.type === "text/plain" ||
-      file.type === "application/msword" ||
-      file.type ===
-        "application/vnd.openxmlformats-officedocument.wordprocessingml.document" ||
-      file.type === "application/vnd.oasis.opendocument.text"
-    ) {
-      return imgPreview(doc, file.path, file.size, i);
-    } else if (
-      file.type === "application/vnd.oasis.opendocument.spreadsheet" ||
-      file.type === "application/vnd.ms-excel" ||
-      file.type ===
-        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-    ) {
-      return imgPreview(spreadsheet, file.path, file.size, i);
-    } else if (
-      file.type === "application/vnd.ms-powerpoint" ||
-      file.type ===
-        "application/vnd.openxmlformats-officedocument.presentationml.presentation" ||
-      file.type === "application/vnd.oasis.opendocument.presentation"
-    ) {
-      return imgPreview(presentation, file.path, file.size, i);
-    } else if (
-      file.type === "application/vnd.rar" ||
-      file.type === "application/zip"
-    ) {
-      return imgPreview(zip, file.path, file.size, i);
-    } else if (file.type === "application/pdf") {
-      return imgPreview(pdf, file.path, file.size, i);
-    } else {
-      // eslint-disable-next-line react/jsx-no-useless-fragment
-      return <div key={i}></div>;
-    }
   });
 
   useEffect(
@@ -175,7 +113,9 @@ export function AttachmentModal({
                 )}
               </div>
               {files.length > 0 ? (
-                <div className="m-4 space-y-2">{filesList}</div>
+                <div className="mt-4 space-y-2">
+                  {files.map((f, i) => AttachmentUploadDetails(f, i))}
+                </div>
               ) : (
                 <div className="flex flex-col justify-center items-center mt-4">
                   <img
@@ -195,7 +135,7 @@ export function AttachmentModal({
               type="button"
               onClick={() => {
                 action(files);
-                setShowAttachmentModal(false);
+                setShowModal(false);
               }}
               disabled={files.length === 0}
               className={`w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 text-white text-base font-medium sm:ml-3 sm:w-auto sm:text-sm bg-primary-500`}
@@ -205,7 +145,7 @@ export function AttachmentModal({
             <button
               type="button"
               onClick={() => {
-                setShowAttachmentModal(false);
+                setShowModal(false);
               }}
               className="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm"
             >
@@ -218,4 +158,4 @@ export function AttachmentModal({
   );
 }
 
-export default AttachmentModal;
+export default AttachmentUploadModal;

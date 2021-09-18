@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { DateTime } from "luxon";
-import { Header } from "@iustitia/site/shared-components";
+import { Alert, Header } from "@iustitia/site/shared-components";
 import {
   getSubscription,
   getPayments,
@@ -13,13 +13,19 @@ import {
   IPayment,
   ISubscription,
 } from "../../interfaces";
+import { WARNING_TYPES } from "@iustitia/site/shared-utils";
 
 export function Subscriptions() {
+  const [error, setError] = useState("");
   const [subscription, setSubscription] = useState({} as ISubscription);
   const [payments, setPayments] = useState([] as IPayment[]);
   const [creditCards, setCreditCards] = useState([] as ICreditCard[]);
   const [list, setList] = useState(true);
   const [back, setBack] = useState(false);
+
+  useEffect(() => {
+    if (error) setTimeout(() => setError(""), 3000);
+  }, [error]);
 
   useEffect(() => {
     populateData();
@@ -99,7 +105,9 @@ export function Subscriptions() {
         return c;
       });
       setCreditCards(dataCreditCards);
-    } catch (err) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (err: any) {
+      setError(err.message as string);
       console.log(err);
     }
   }
@@ -112,6 +120,7 @@ export function Subscriptions() {
         button={createButton}
         back={back}
       />
+      {error && <Alert type={WARNING_TYPES.ERROR} message={error} />}
       <div className="overflow-x-auto">
         <div className="flex items-center justify-center overflow-hidden p-2">
           <div className="w-full">

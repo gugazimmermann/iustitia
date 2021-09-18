@@ -1,5 +1,4 @@
 import { Sequelize, DataTypes, Optional, Model } from "sequelize";
-import { UserInstance } from "./user";
 
 export interface OfficeAttributes {
   id: string;
@@ -14,7 +13,6 @@ export interface OfficeAttributes {
   city: string;
   state: string;
   tenantId: string;
-  userId: string;
 }
 
 export type OfficeCreationAttributes = Optional<OfficeAttributes, 'id' | 'phone' | 'email' | 'number' | 'complement'>
@@ -25,7 +23,6 @@ export interface OfficeInstance
   createdAt?: Date;
   updatedAt?: Date;
   deletedAt?: Date;
-  user?: UserInstance
 }
 
 export default function office(sequelize: Sequelize) {
@@ -49,7 +46,6 @@ export default function office(sequelize: Sequelize) {
     city: { type: DataTypes.TEXT, allowNull: false },
     state: { type: DataTypes.TEXT, allowNull: false },
     tenantId: { type: DataTypes.UUID, allowNull: false },
-    userId: { type: DataTypes.UUID, allowNull: false },
   }, {
     paranoid: true,
     timestamps: true,

@@ -1,12 +1,9 @@
 import { Sequelize, DataTypes, Optional, Model } from "sequelize";
-import { UserInstance } from "./user";
 
 export interface ContactAttributes {
   id: string;
   avatar: string;
   name: string;
-  company: string;
-  position: string;
   email: string;
   phone: string;
   zip: string;
@@ -17,15 +14,13 @@ export interface ContactAttributes {
   city: string;
   state: string;
   description: string;
+  officeId: string;
   tenantId: string;
-  userId: string;
 }
 
 export type ContactCreationAttributes = Optional<ContactAttributes,
   'id' |
   'avatar' |
-  'company' |
-  'position' |
   'email' |
   'phone' |
   'zip' |
@@ -35,7 +30,8 @@ export type ContactCreationAttributes = Optional<ContactAttributes,
   'neighborhood' |
   'city' |
   'state' |
-  'description'
+  'description' |
+  'officeId'
 >
 
 export interface ContactInstance
@@ -44,7 +40,6 @@ export interface ContactInstance
   createdAt?: Date;
   updatedAt?: Date;
   deletedAt?: Date;
-  user?: UserInstance
 }
 
 export default function contact(sequelize: Sequelize) {
@@ -59,8 +54,6 @@ export default function contact(sequelize: Sequelize) {
     },
     avatar: { type: DataTypes.TEXT, allowNull: true },
     name: { type: DataTypes.TEXT, allowNull: false },
-    company: { type: DataTypes.TEXT, allowNull: true },
-    position: { type: DataTypes.TEXT, allowNull: true },
     phone: { type: DataTypes.TEXT, allowNull: true },
     email: { type: DataTypes.TEXT, allowNull: true },
     zip: { type: DataTypes.TEXT, allowNull: true },
@@ -71,8 +64,8 @@ export default function contact(sequelize: Sequelize) {
     city: { type: DataTypes.TEXT, allowNull: true },
     state: { type: DataTypes.TEXT, allowNull: true },
     description: { type: DataTypes.TEXT, allowNull: true },
+    officeId: { type: DataTypes.UUID, allowNull: true },
     tenantId: { type: DataTypes.UUID, allowNull: true },
-    userId: { type: DataTypes.UUID, allowNull: false },
   }, {
     paranoid: true,
     timestamps: true,

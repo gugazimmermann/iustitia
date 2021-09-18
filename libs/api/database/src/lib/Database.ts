@@ -7,9 +7,10 @@ import profile, { ProfileInstance } from "./models/profile";
 import office, { OfficeInstance } from "./models/office";
 import plan, { PlansInstance } from "./models/plan";
 import subscription, { SubscriptionInstance } from "./models/subscription";
-import payment, { PaymentInstance } from "./models/payments";
+import payment, { PaymentInstance } from "./models/payment";
 import creditcard, { CreditcardInstance } from "./models/creditcard";
 import contact, { ContactInstance } from "./models/contact";
+import contactAttachments, { ContactAttachmentsInstance } from "./models/contactAttachment";
 
 const sequelize = new Sequelize(config.DB, config.USER, config.PASSWORD, {
   host: config.HOST,
@@ -28,6 +29,7 @@ export interface IDatabase {
   Payment: ModelCtor<PaymentInstance>;
   Creditcard: ModelCtor<CreditcardInstance>;
   Contact: ModelCtor<ContactInstance>;
+  ContactAttachments: ModelCtor<ContactAttachmentsInstance>;
 }
 
 const database: IDatabase = {
@@ -41,27 +43,28 @@ const database: IDatabase = {
   Subscription: subscription(sequelize),
   Payment: payment(sequelize),
   Creditcard: creditcard(sequelize),
-  Contact: contact(sequelize)
+  Contact: contact(sequelize),
+  ContactAttachments: contactAttachments(sequelize)
 };
 
 // database.Sequelize.sync();
 
-database.RefreshToken.belongsTo(database.User, { foreignKey: "userId", targetKey: "id" });
-database.User.hasMany(database.RefreshToken, { foreignKey: "userId", sourceKey: "id" });
+database.User.hasOne(database.RefreshToken);
 
-database.Profile.belongsTo(database.User, { foreignKey: "userId", targetKey: "id" });
-database.User.hasOne(database.Profile, { foreignKey: "userId", sourceKey: "id" });
+database.Plan.hasMany(database.Subscription);
+database.Subscription.hasMany(database.Payment);
+database.User.hasOne(database.Subscription);
+database.User.hasMany(database.Creditcard);
+database.Creditcard.hasMany(database.Payment);
+database.User.hasMany(database.Payment);
 
-database.Subscription.belongsTo(database.User, { foreignKey: "userId", targetKey: "id" });
-database.User.hasOne(database.Subscription, { foreignKey: "userId", sourceKey: "id" });
+database.User.hasOne(database.Profile);
 
-database.Payment.belongsTo(database.User, { foreignKey: "userId", targetKey: "id" });
-database.User.hasMany(database.Payment, { foreignKey: "userId", sourceKey: "id" });
+database.User.belongsToMany(database.Office, { through: { model: "user_office", paranoid: true } });
+database.Office.belongsToMany(database.User, { through: { model: "user_office", paranoid: true } });
 
-database.Payment.belongsTo(database.User, { foreignKey: "userId", targetKey: "id" });
-database.User.hasOne(database.Payment, { foreignKey: "userId", sourceKey: "id" });
-
-database.Contact.belongsTo(database.User, { foreignKey: "userId", targetKey: "id" });
-database.User.hasMany(database.Contact, { foreignKey: "userId", sourceKey: "id" });
+database.User.hasMany(database.Contact);
+database.Office.hasMany(database.Contact);
+database.Contact.hasMany(database.ContactAttachments);
 
 export default database;

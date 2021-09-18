@@ -69,8 +69,8 @@ export function ListCreditCards({ creditCards }: ListCreditCardsProps) {
                 <td className="py-3 px-3 text-center whitespace-nowrap">
                   {translateStatus(creditCard.status)}
                 </td>
-                <td className="py-3 px-3 text-center">
-                  <div className="flex item-center justify-center">
+                <td className="py-3 px-3 text-right">
+                  <div className="flex item-center justify-end">
                     <div className="w-5 mr-3 transform hover:text-purple-500 hover:scale-110">
                       {creditCard.status ? (
                         <CloseIcon styles={"cursor-pointer"} />
