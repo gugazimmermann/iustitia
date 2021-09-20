@@ -4,6 +4,7 @@ import {
   Alert,
   ConfirmationModal,
   Header,
+  SearchIcon,
 } from "@iustitia/site/shared-components";
 import { WARNING_TYPES } from "@iustitia/site/shared-utils";
 import * as Services from "./services";
@@ -78,9 +79,11 @@ export function Contacts() {
   const [back, setBack] = useState(false);
   const [confirm, setConfirm] = useState(false);
   const [dataList, setDataList] = useState([] as ModuleInterface[]);
+  const [showDataList, setShowDataList] = useState([] as ModuleInterface[]);
   const [selected, setSelected] = useState({} as ModuleInterface);
   const [offices, setOffices] = useState<IOffice[]>();
   const [selectedType, setSelectedType] = useState<string>("Personal");
+  const [searchParam, setSearchParam] = useState<string>();
 
   useEffect(() => {
     if (showSuccessAlert) setTimeout(() => setShowSuccessAlert(false), 3000);
@@ -121,7 +124,7 @@ export function Contacts() {
       }
     }
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id, pathname]);
 
   useEffect(() => {
@@ -157,6 +160,39 @@ export function Contacts() {
     setShowUpdade(false);
     setShowCreate(false);
     setBack(false);
+  }
+
+  const createSearch = () => {
+    return (
+      <div className="relative">
+        <span className="absolute inset-y-0 left-0 flex items-center pl-2">
+          <SearchIcon styles="h-6 h-6 text-gray-500" />
+        </span>
+        <input
+          type="search"
+          name="search"
+          className="py-2 pl-10 rounded-md text-sm focus:ring-0 focus:ring-opacity-75 text-gray-900 focus:ring-primary-500 border-gray-300"
+          placeholder="Procurar..."
+          autoComplete="off"
+          onChange={(e) => setSearchParam(e.target.value)}
+        />
+      </div>
+    );
+  };
+
+  useEffect(() => {
+    const data = dataList.slice(0);
+    if (searchParam) {
+      handleSearch(data, searchParam);
+    } else {
+      setShowDataList(data);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchParam]);
+
+  function handleSearch(data: ModuleInterface[], param: string) {
+    const res = data.filter((d) => d.name?.includes(param));
+    setShowDataList(res);
   }
 
   const createSelect = () => {
@@ -209,8 +245,10 @@ export function Contacts() {
       let data: ModuleInterface[] = [];
       if (selectedType === "All") data = allData;
       if (selectedType === "Personal") data = allData.filter((d) => d.userId);
-      if (selectedType !== "All" && selectedType !== "Personal") data = allData.filter((d) => d.officeId === selectedType);
+      if (selectedType !== "All" && selectedType !== "Personal")
+        data = allData.filter((d) => d.officeId === selectedType);
       setDataList(data);
+      setShowDataList(data);
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       setError(err.message as string);
@@ -283,6 +321,7 @@ export function Contacts() {
         before={ModuleName.parents}
         main={ModuleName.plural}
         select={showList ? createSelect : undefined}
+        search={createSearch}
         button={createButton}
         back={back}
       />
@@ -314,13 +353,21 @@ export function Contacts() {
               )}
               {showList && (
                 <List
-                  dataList={dataList}
+                  dataList={showDataList}
                   setSelected={setSelected}
                   setConfirm={setConfirm}
                 />
               )}
-              {showDetails && <Details data={selected} offices={offices} edit={handleEdit} />}
-              {showCreate && <Form loading={loading} offices={offices} create={handleCreate} />}
+              {showDetails && (
+                <Details data={selected} offices={offices} edit={handleEdit} />
+              )}
+              {showCreate && (
+                <Form
+                  loading={loading}
+                  offices={offices}
+                  create={handleCreate}
+                />
+              )}
               {showUpdate && (
                 <Form
                   loading={loading}
