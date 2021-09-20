@@ -62,6 +62,7 @@ interface useParamsProps {
 export function Contacts() {
   const history = useHistory();
   const location = useLocation();
+  const { pathname } = useLocation();
   const { id } = useParams<useParamsProps>();
   const [showSuccessAlert, setShowSuccessAlert] = useState(false);
   const [showEditAlert, setShowEditAlert] = useState(false);
@@ -82,27 +83,41 @@ export function Contacts() {
     if (showEditAlert) setTimeout(() => setShowEditAlert(false), 3000);
     if (showDeleteAlert) setTimeout(() => setShowDeleteAlert(false), 3000);
     if (error) setTimeout(() => setError(""), 3000);
-
   }, [showSuccessAlert, showEditAlert, showDeleteAlert, error]);
 
   useEffect(() => {
-    if (id) {
-      getSelected(id);
+    if (pathname.includes("add")) {
       setBack(true);
       setShowList(false);
-      setShowDetails(true);
-      setShowUpdade(false);
-      setShowCreate(false);
-    } else {
-      getDataList();
-      setBack(false);
-      setShowList(true);
       setShowDetails(false);
       setShowUpdade(false);
+      setShowCreate(true);
+    } else if (pathname.includes("edit")) {
+      getSelected(id)
+      setBack(true);
+      setShowList(false);
+      setShowDetails(false);
+      setShowUpdade(true);
       setShowCreate(false);
+    } else {
+      if (id) {
+        getSelected(id)
+        setBack(true);
+        setShowList(false);
+        setShowDetails(true);
+        setShowUpdade(false);
+        setShowCreate(false);
+      } else {
+        getDataList();
+        setBack(false);
+        setShowList(true);
+        setShowDetails(false);
+        setShowUpdade(false);
+        setShowCreate(false);
+      }
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [id]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [id, pathname]);
 
   async function getSelected(id: string) {
     try {
@@ -135,11 +150,7 @@ export function Contacts() {
               reloadList();
             }
           } else {
-            setShowList(false);
-            setShowDetails(false);
-            setShowUpdade(false);
-            setShowCreate(true);
-            setBack(true);
+            history.push(`${ModuleName.route}/add`);
           }
         }}
         className={`px-4 py-2 text-sm text-white rounded-md ${
@@ -148,7 +159,7 @@ export function Contacts() {
             : `bg-secondary-500 hover:bg-secondary-700 `
         }`}
       >
-        {back ? "Voltar" : `Adicionar ${ModuleName.singular}`}
+        {back ? "Listagem" : `Adicionar ${ModuleName.singular}`}
       </button>
     );
   };
@@ -162,6 +173,10 @@ export function Contacts() {
       setError(err.message as string);
       console.log(err);
     }
+  }
+
+  function handleEdit() {
+    history.push(`${ModuleName.route}/edit/${selected?.id}`);
   }
 
   async function handleCreate(data: FormData) {
@@ -189,6 +204,7 @@ export function Contacts() {
       setShowEditAlert(true);
       setShowDeleteAlert(false);
       reloadList();
+      history.push(ModuleName.route);
       setLoading(false);
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
@@ -254,15 +270,11 @@ export function Contacts() {
               {showList && (
                 <List
                   dataList={dataList}
-                  setBack={setBack}
                   setSelected={setSelected}
-                  setShowList={setShowList}
-                  setShowDetails={setShowDetails}
-                  setShowUpdade={setShowUpdade}
                   setConfirm={setConfirm}
                 />
               )}
-              {showDetails && <Details data={selected} />}
+              {showDetails && <Details edit={handleEdit} data={selected} />}
               {showCreate && <Form loading={loading} create={handleCreate} />}
               {showUpdate && (
                 <Form loading={loading} data={selected} update={handleUpate} />

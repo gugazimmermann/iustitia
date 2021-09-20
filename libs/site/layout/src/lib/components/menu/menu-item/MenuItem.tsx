@@ -8,14 +8,16 @@ interface MenuItemProps {
 }
 
 export function MenuItem({ item }: MenuItemProps) {
-  const location = useLocation();
+  const { pathname } = useLocation();
   const { icon, name, subItems } = item;
   const [active, setActive] = useState(false);
 
   useEffect(() => {
-    const activePath = subItems.find((s) => s.link === location.pathname);
+    const activePath = subItems.find(
+      (s) => s.link.split("/")[1] === pathname.split("/")[1]
+    );
     if (activePath) setActive(true);
-  }, [location, subItems]);
+  }, [pathname, subItems]);
 
   return (
     <>

@@ -20,9 +20,10 @@ import * as ServicesNotes from "../services/notes";
 
 export interface DetailsProps {
   data: ModuleInterface;
+  edit(): void;
 }
 
-export function Details({ data }: DetailsProps) {
+export function Details({ data, edit }: DetailsProps) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -187,8 +188,8 @@ export function Details({ data }: DetailsProps) {
         />
       )}
       <div className="mb-6 grid grid-cols-12 items-center justify-center">
-        <div className="col-span-full flex w-full space-x-4 items-center justify-start py-4 md:p-4 border-b">
-          <div className="min-w-min">
+        <div className="col-span-full flex w-full items-center justify-start pl-4 md:p-4 border-b">
+          <div className="w-20">
             {data.avatar ? (
               <img
                 className="w-16 h-16 rounded-full"
@@ -201,45 +202,70 @@ export function Details({ data }: DetailsProps) {
               </span>
             )}
           </div>
-          <div>
-            <h2 className="text-base md:text-2xl font-bold">{data.name}</h2>
+          <div className="w-full">
+            <div className="flex items-center justify-between">
+              <h2 className=" text-base md:text-2xl font-bold">
+                {data.name}
+              </h2>
+              <button
+                disabled={loading}
+                onClick={() => edit()}
+                className="px-2 py-1 text-xs text-white rounded-md bg-primary-500 hover:bg-primary-900 focus:ring-primary-500"
+              >
+                Editar
+              </button>
+            </div>
           </div>
         </div>
         <div className="col-span-full">
-          <div className="md:grid md:grid-cols-12 hover:bg-gray-50 md:space-y-0 space-y-1 p-4 border-b">
-            <p className="col-span-3 font-bold">Telefone</p>
-            <p className="col-span-9">{data.phone}</p>
-          </div>
-          <div className="md:grid md:grid-cols-12 hover:bg-gray-50 md:space-y-0 space-y-1 p-4 border-b">
-            <p className="col-span-3 font-bold">E-Mail</p>
-            <p className="col-span-9">
-              {data.email ? (
-                <a href={`mailto:${data.email}`} className="underline">
-                  {data.email}
-                </a>
-              ) : (
-                <span>{data.email}</span>
-              )}
-            </p>
-          </div>
-          <div className="md:grid md:grid-cols-12 hover:bg-gray-50 md:space-y-0 space-y-1 p-4 border-b">
-            <p className="col-span-3 font-bold">Endereço</p>
-            <FormatAddress
-              address={data.address}
-              number={data.number}
-              complement={data.complement}
-              neighborhood={data.neighborhood}
-              city={data.city}
-              state={data.state}
-              zip={data.zip}
-            />
-          </div>
-          <div className="md:grid md:grid-cols-12 hover:bg-gray-50 md:space-y-0 space-y-1 p-4 border-b">
-            <p className="col-span-3 font-bold">Observações</p>
-            <p className="col-span-9 whitespace-pre-line text-sm">
-              {data.comments}
-            </p>
-          </div>
+          {data.phone && (
+            <div className="md:grid md:grid-cols-12 hover:bg-gray-50 md:space-y-0 space-y-1 p-4 border-b">
+              <p className="col-span-3 font-bold">Telefone</p>
+              <p className="col-span-9">{data.phone}</p>
+            </div>
+          )}
+          {data.email && (
+            <div className="md:grid md:grid-cols-12 hover:bg-gray-50 md:space-y-0 space-y-1 p-4 border-b">
+              <p className="col-span-3 font-bold">E-Mail</p>
+              <p className="col-span-9">
+                {data.email ? (
+                  <a href={`mailto:${data.email}`} className="underline">
+                    {data.email}
+                  </a>
+                ) : (
+                  <span>{data.email}</span>
+                )}
+              </p>
+            </div>
+          )}
+          {(data.address ||
+            data.number ||
+            data.complement ||
+            data.neighborhood ||
+            data.city ||
+            data.state ||
+            data.zip) && (
+            <div className="md:grid md:grid-cols-12 hover:bg-gray-50 md:space-y-0 space-y-1 p-4 border-b">
+              <p className="col-span-3 font-bold">Endereço</p>
+              <FormatAddress
+                address={data.address}
+                number={data.number}
+                complement={data.complement}
+                neighborhood={data.neighborhood}
+                city={data.city}
+                state={data.state}
+                zip={data.zip}
+              />
+            </div>
+          )}
+          {data.comments && (
+            <div className="md:grid md:grid-cols-12 hover:bg-gray-50 md:space-y-0 space-y-1 p-4 border-b">
+              <p className="col-span-3 font-bold">Observações</p>
+              <p className="col-span-9 whitespace-pre-line text-sm">
+                {data.comments}
+              </p>
+            </div>
+          )}
           <div className="md:grid md:grid-cols-12 hover:bg-gray-50 md:space-y-0 space-y-1 p-4 border-b">
             <p className="col-span-3 font-bold">Notas</p>
             <div className="col-span-9">
@@ -280,23 +306,21 @@ export function Details({ data }: DetailsProps) {
                   Enviando arquivos, aguarde...
                 </h2>
               )}
-              {attUploadProgress &&
-                attUploadProgress >= 0 &&
-                attUploadProgress < 100 && (
-                  <div className="w-full elative">
-                    <div className="flex items-center justify-end">
-                      <span className="text-xs font-semibold inline-block text-primary-500">
-                        {attUploadProgress}%
-                      </span>
-                    </div>
-                    <div className="overflow-hidden h-2 mb-4 text-xs flex rounded bg-primary-200">
-                      <div
-                        style={{ width: `${attUploadProgress}%` }}
-                        className="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-primary-500"
-                      ></div>
-                    </div>
+              {attUploadProgress && attUploadProgress < 100 && (
+                <div className="w-full elative">
+                  <div className="flex items-center justify-end">
+                    <span className="text-xs font-semibold inline-block text-primary-500">
+                      {attUploadProgress}%
+                    </span>
                   </div>
-                )}
+                  <div className="overflow-hidden h-2 mb-4 text-xs flex rounded bg-primary-200">
+                    <div
+                      style={{ width: `${attUploadProgress}%` }}
+                      className="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-primary-500"
+                    ></div>
+                  </div>
+                </div>
+              )}
               {attList &&
                 attList.map((att, i) => (
                   <AttachmentShow

@@ -60,6 +60,20 @@ export function Form({ loading, data, create, update }: FormProps) {
   const [validZip, setValidZip] = useState(!!defaultValues.zip);
 
   useEffect(() => {
+    setValue("name", data?.name);
+    setValue("email", data?.email);
+    setValue("phone", data?.phone);
+    setValue("zip", data?.zip);
+    setValue("address", data?.address);
+    setValue("number", data?.number);
+    setValue("complement", data?.complement);
+    setValue("neighborhood", data?.neighborhood);
+    setValue("city", data?.city);
+    setValue("state", data?.state);
+    setValue("comments", data?.comments);
+  }, [data, setValue])
+
+  useEffect(() => {
     const name = watch((value) => {
       if (!preview && value.name) setPreviewName(value.name);
     });

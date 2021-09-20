@@ -5,21 +5,13 @@ import { ModuleInterface, ModuleName } from "../Contacts";
 
 export interface ListProps {
   dataList: ModuleInterface[];
-  setBack(back: boolean): void;
   setSelected(delected: ModuleInterface): void;
-  setShowList(showList: boolean): void;
-  setShowDetails(showDetails: boolean): void;
-  setShowUpdade(showUpdade: boolean): void;
   setConfirm(confirm: boolean): void;
 }
 
 export function List({
   dataList,
-  setBack,
   setSelected,
-  setShowList,
-  setShowDetails,
-  setShowUpdade,
   setConfirm,
 }: ListProps) {
   const history = useHistory();
@@ -74,7 +66,7 @@ export function List({
                   <span>{data.phone}</span>
                 </td>
                 <td className="py-3 px-3 text-left">
-                {data.email ? (
+                  {data.email ? (
                     <a href={`mailto:${data.email}`} className="underline">
                       {data.email}
                     </a>
@@ -98,12 +90,9 @@ export function List({
                       </div>
                     </div>
                     <div
-                      onClick={() => {
-                        setSelected(data);
-                        setBack(true);
-                        setShowList(false);
-                        setShowUpdade(true);
-                      }}
+                      onClick={() =>
+                        history.push(`${ModuleName.route}/edit/${data.id}`)
+                      }
                       className="w-5 mr-3 transform hover:text-purple-500 hover:scale-110"
                     >
                       <PenIcon styles={"cursor-pointer"} />

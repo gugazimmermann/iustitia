@@ -15,7 +15,13 @@ export function FormatAddress({
   state: string | undefined;
   zip: string | undefined;
 }) {
-  return address || number || complement ? (
+  return address ||
+    number ||
+    complement ||
+    neighborhood ||
+    city ||
+    state ||
+    zip ? (
     <div className="col-span-9">
       <p>
         {address && `${address}`}
