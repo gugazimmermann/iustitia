@@ -1,11 +1,7 @@
 import * as AWS from 'aws-sdk';
 import { DateTime } from "luxon";
-import { database, ContactAttachmentsInstance } from '@iustitia/api/database';
 import { moduleName } from '../Contacts';
-import { deleteFromBucket } from '.';
-
-const moduleAttachmentsDB = database.ContactAttachments;
-type ModuleAttachmentsInstance = ContactAttachmentsInstance;
+import { deleteFromBucket, moduleAttachmentsDB, ModuleAttachmentsInstance, userDB } from '.';
 
 interface AttachmentsInterface {
   id?: string;
@@ -52,7 +48,7 @@ export async function getAllAttachments(req, res) {
   const { tenantId, ownerId } = req.params;
   if (!tenantId || !ownerId) return res.status(400).send({ message: "Dados inválidos!" });
   try {
-    const user = await database.User.findOne({ where: { id: req.userId } });
+    const user = await userDB.findOne({ where: { id: req.userId } });
     if (user.tenant !== tenantId) return res.status(401).send({ message: "Sem permissão!" });
     const data = await moduleAttachmentsDB.findAll({ where: { ownerId }, order: [['createdAt', 'DESC']] });
     const resultData = [] as AttachmentsInterface[];
@@ -67,7 +63,7 @@ export async function createAttachments(req, res) {
   const { body } = req;
   if (!body.ownerId) return res.status(400).send({ message: "Dados inválidos!" });
   try {
-    const user = await database.User.findOne({ where: { id: req.userId } });
+    const user = await userDB.findOne({ where: { id: req.userId } });
     if (req.files && req.files.length > 0) {
       for (const file of req.files) {
         const fileName = attchmentName(user.tenant, body.ownerId, file.originalname);
@@ -91,7 +87,7 @@ export async function deleteOneAttachment(req, res) {
   try {
     const data = await moduleAttachmentsDB.findByPk(id);
     if (!data) return res.status(404).send({ message: "Nenhum registro encontrado!" });
-    await deleteFromBucket(data.link)
+    await deleteFromBucket(data.link, process.env.NX_BUCKET_FILES)
     await moduleAttachmentsDB.destroy({ where: { id: id } });
     return res.status(200).send({ message: "Anexo deletado!" });
   } catch (err) {

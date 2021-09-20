@@ -1,8 +1,5 @@
 import { DateTime } from "luxon";
-import { database, ContactNotesInstance } from '@iustitia/api/database';
-
-const moduleNotesDB = database.ContactNotes;
-type ModuleNotesInstance = ContactNotesInstance;
+import { moduleNotesDB, ModuleNotesInstance, userDB } from ".";
 
 interface NotesInterface {
   id?: string;
@@ -25,7 +22,7 @@ export async function getAllNotes(req, res) {
   const { tenantId, ownerId } = req.params;
   if (!tenantId || !ownerId) return res.status(400).send({ message: "Dados inválidos!" });
   try {
-    const user = await database.User.findOne({ where: { id: req.userId } });
+    const user = await userDB.findOne({ where: { id: req.userId } });
     if (user.tenant !== tenantId) return res.status(401).send({ message: "Sem permissão!" });
     const data = await moduleNotesDB.findAll({ where: { ownerId }, order: [['createdAt', 'DESC']] });
     const resultData = [] as NotesInterface[];
@@ -50,7 +47,6 @@ export async function createNote(req, res) {
     return res.status(500).send({ message: err.message });
   }
 }
-
 
 export async function updateNote(req, res) {
   const { body } = req;

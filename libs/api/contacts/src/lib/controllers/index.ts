@@ -1,7 +1,7 @@
 import * as AWS from 'aws-sdk';
 import * as sharp from 'sharp';
 import { validateEmail } from '@iustitia/site/shared-utils';
-import { database, ContactInstance } from '@iustitia/api/database';
+import { database, ContactInstance, ContactNotesInstance, ContactAttachmentsInstance } from '@iustitia/api/database';
 import { moduleName } from '../Contacts';
 
 const S3 = new AWS.S3();
@@ -11,8 +11,13 @@ AWS.config.update({
   region: "us-east-1"
 });
 
+export const userDB = database.User;
 const moduleDB = database.Contact;
 type ModuleInstance = ContactInstance;
+export const moduleNotesDB = database.ContactNotes;
+export type ModuleNotesInstance = ContactNotesInstance;
+export const moduleAttachmentsDB = database.ContactAttachments;
+export type ModuleAttachmentsInstance = ContactAttachmentsInstance;
 
 interface ModuleInterface {
   id?: string;
@@ -72,17 +77,17 @@ async function sendAvatar(file: any, fileName: string) {
   return res;
 }
 
-export async function deleteFromBucket(fileName: string) {
-  const currentObject = {
-    Bucket: process.env.NX_BUCKET_AVATAR,
+export async function deleteFromBucket(fileName: string, bucket: string) {
+  const params = {
+    Bucket: bucket,
     Key: fileName
   }
-  const currentAvatar = await S3.headObject(currentObject).promise().then(() => true, err => {
+  const currentObject = await S3.headObject(params).promise().then(() => true, err => {
     if (err.code === 'NotFound') return false;
     throw err;
   });
-  if (currentAvatar) {
-    await S3.deleteObject(currentObject).promise();
+  if (currentObject) {
+    await S3.deleteObject(params).promise();
   }
 }
 
@@ -90,7 +95,7 @@ export async function getOne(req, res) {
   const { tenantId, id } = req.params;
   if (!tenantId || !id) return res.status(400).send({ message: "Dados inválidos!" });
   try {
-    const user = await database.User.findOne({ where: { id: req.userId } });
+    const user = await userDB.findOne({ where: { id: req.userId } });
     if (user.tenant !== tenantId) return res.status(401).send({ message: "Sem permissão!" });
     const data = await moduleDB.findByPk(id);
     return res.status(200).send(dataToResult(data));
@@ -103,7 +108,7 @@ export async function getAll(req, res) {
   const { tenantId } = req.params;
   if (!tenantId) return res.status(400).send({ message: "Dados inválidos!" });
   try {
-    const user = await database.User.findOne({ where: { id: req.userId } });
+    const user = await userDB.findOne({ where: { id: req.userId } });
     if (user.tenant !== tenantId) return res.status(401).send({ message: "Sem permissão!" });
     const data = await moduleDB.findAll({ where: { tenantId } });
     const resultData = [] as ModuleInterface[];
@@ -154,7 +159,7 @@ export async function update(req, res) {
     if (!data) return res.status(404).send({ message: "Nenhum registro encontrado!" });
     data.update(body);
     if (req.file) {
-      if (data.avatar) await deleteFromBucket(data.avatar)
+      if (data.avatar) await deleteFromBucket(data.avatar, process.env.NX_BUCKET_AVATAR)
       const fileName = avatarName(data.id, data.tenantId);
       await sendAvatar(req.file, fileName);
       data.update({ avatar: fileName });
@@ -171,9 +176,17 @@ export async function deleteOne(req, res) {
   try {
     const data = await moduleDB.findByPk(id);
     if (!data) return res.status(404).send({ message: "Nenhum registro encontrado!" });
-    const user = await database.User.findOne({ where: { id: req.userId } });
+    const user = await userDB.findOne({ where: { id: req.userId } });
     if (user.tenant !== data.tenantId) return res.status(401).send({ message: "Sem permissão!" });
-    if (data.avatar) await deleteFromBucket(data.avatar)
+    if (data.avatar) await deleteFromBucket(data.avatar, process.env.NX_BUCKET_AVATAR)
+    await moduleNotesDB.destroy({ where: { ownerId: id } });
+    const attachments = await moduleAttachmentsDB.findAll({ where: { ownerId: id } });
+    if (attachments) {
+      for (const attachment of attachments) {
+        await deleteFromBucket(attachment.link, process.env.NX_BUCKET_FILES)
+        await moduleAttachmentsDB.destroy({ where: { id: attachment.id } });
+      }
+    }
     await moduleDB.destroy({ where: { id: id } });
     return res.status(200).send({ message: "Registro deletado!" });
   } catch (err) {

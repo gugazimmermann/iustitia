@@ -30,7 +30,7 @@ const schema = yup.object().shape({
 
 export function Form({ loading, data, offices, create, update }: FormProps) {
   const defaultValues: ModuleInterface = {
-    type: "All",
+    type: "Personal",
     name: data?.name || "",
     email: data?.email || "",
     phone: data?.phone || "",
@@ -63,20 +63,22 @@ export function Form({ loading, data, offices, create, update }: FormProps) {
   const [validZip, setValidZip] = useState(!!defaultValues.zip);
 
   useEffect(() => {
-    setValue("name", data?.name);
-    setValue("email", data?.email);
-    setValue("phone", data?.phone);
-    setValue("zip", data?.zip);
-    setValue("address", data?.address);
-    setValue("number", data?.number);
-    setValue("complement", data?.complement);
-    setValue("neighborhood", data?.neighborhood);
-    setValue("city", data?.city);
-    setValue("state", data?.state);
-    setValue("comments", data?.comments);
-    if (data?.userId) setValue("type", "Personal");
-    if (data?.officeId) setValue("type", data.officeId);
-    if (!data?.userId && !data?.officeId) setValue("type", "All")
+    if (data?.name) {
+      setValue("name", data?.name);
+      setValue("email", data?.email);
+      setValue("phone", data?.phone);
+      setValue("zip", data?.zip);
+      setValue("address", data?.address);
+      setValue("number", data?.number);
+      setValue("complement", data?.complement);
+      setValue("neighborhood", data?.neighborhood);
+      setValue("city", data?.city);
+      setValue("state", data?.state);
+      setValue("comments", data?.comments);
+      if (data?.userId) setValue("type", "Personal");
+      if (data?.officeId) setValue("type", data.officeId);
+      if (!data?.userId && !data?.officeId) setValue("type", "All")
+    }
   }, [data, setValue]);
 
   useEffect(() => {
