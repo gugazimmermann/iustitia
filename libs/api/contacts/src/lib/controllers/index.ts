@@ -135,8 +135,20 @@ export async function create(req, res) {
 
 export async function update(req, res) {
   const { body } = req;
-  if (!body.id || !body.name) return res.status(400).send({ message: "Dados inválidos!" });
+  if (!body.id || !body.type || !body.name) return res.status(400).send({ message: "Dados inválidos!" });
   if (body.email && !validateEmail(body.email)) return res.status(400).send({ message: "Dados inválidos!" });
+  if (body.type === "All") {
+    body.userId = null;
+    body.officeId = null;
+  }
+  if (body.type === "Personal") {
+    body.userId = req.userId;
+    body.officeId = null;
+  }
+  if (body.type !== "All" && body.type !== "Personal") {
+    body.userId = null;
+    body.officeId = body.type;
+  }
   try {
     const data = await moduleDB.findByPk(body.id);
     if (!data) return res.status(404).send({ message: "Nenhum registro encontrado!" });

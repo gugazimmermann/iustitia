@@ -74,6 +74,9 @@ export function Form({ loading, data, offices, create, update }: FormProps) {
     setValue("city", data?.city);
     setValue("state", data?.state);
     setValue("comments", data?.comments);
+    if (data?.userId) setValue("type", "Personal");
+    if (data?.officeId) setValue("type", data.officeId);
+    if (!data?.userId && !data?.officeId) setValue("type", "All")
   }, [data, setValue]);
 
   useEffect(() => {
