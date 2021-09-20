@@ -28,12 +28,17 @@ interface ModuleInterface {
   city?: string;
   state?: string;
   comments?: string;
+  type?: string;
+  userId?: string;
+  officeId?: string;
   tenantId?: string;
 }
 
 function dataToResult(data: ModuleInstance): ModuleInterface {
   return {
     id: data.id,
+    userId: data.userId,
+    officeId: data.officeId,
     avatar: data.avatar,
     name: data.name,
     email: data.email,
@@ -111,9 +116,10 @@ export async function getAll(req, res) {
 
 export async function create(req, res) {
   const { body } = req;
-  if (!body.name || !body.tenantId) return res.status(400).send({ message: "Dados inválidos!" });
+  if (!body.type || !body.name || !body.tenantId) return res.status(400).send({ message: "Dados inválidos!" });
   if (body.email && !validateEmail(body.email)) return res.status(400).send({ message: "Dados inválidos!" });
-  body.userId = req.userId
+  if (body.type === "Personal") body.userId = req.userId;
+  if (body.type !== "All" && body.type !== "Personal") body.officeId = body.type;
   try {
     const data = await moduleDB.create(body);
     if (req.file) {

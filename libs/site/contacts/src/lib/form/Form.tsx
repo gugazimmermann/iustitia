@@ -13,11 +13,13 @@ import {
   LoadingButton,
   UploadCloudIcon,
 } from "@iustitia/site/shared-components";
+import { getOffices, IOffice } from "@iustitia/site/dashboard";
 import { ModuleInterface, ModuleName } from "../Contacts";
 
 export interface FormProps {
   loading: boolean;
   data?: ModuleInterface;
+  offices?: IOffice[];
   create?(data: FormData): void;
   update?(data: FormData): void;
 }
@@ -26,8 +28,9 @@ const schema = yup.object().shape({
   name: yup.string().required(),
 });
 
-export function Form({ loading, data, create, update }: FormProps) {
+export function Form({ loading, data, offices, create, update }: FormProps) {
   const defaultValues: ModuleInterface = {
+    type: "All",
     name: data?.name || "",
     email: data?.email || "",
     phone: data?.phone || "",
@@ -71,7 +74,7 @@ export function Form({ loading, data, create, update }: FormProps) {
     setValue("city", data?.city);
     setValue("state", data?.state);
     setValue("comments", data?.comments);
-  }, [data, setValue])
+  }, [data, setValue]);
 
   useEffect(() => {
     const name = watch((value) => {
@@ -148,7 +151,7 @@ export function Form({ loading, data, create, update }: FormProps) {
     const formData = new FormData();
     Object.entries(dataFromForm).forEach(([key, value]) => {
       if (key !== "avatar") {
-        formData.append(key, value as string);
+        if (value) formData.append(key, value as string);
       } else {
         if (dataFromForm?.avatar?.length) {
           formData.append("avatar", dataFromForm.avatar[0]);
@@ -174,6 +177,30 @@ export function Form({ loading, data, create, update }: FormProps) {
     <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col mx-auto">
       <fieldset className="grid grid-cols-1 gap-4 p-4">
         <div className="grid grid-cols-12 gap-4 col-span-full lg:col-span-3">
+          <div className="col-span-full sm:col-span-6">
+            <label htmlFor="type" className="text-sm">
+              Tipo
+            </label>
+            <select
+              {...register("type")}
+              id="type"
+              className={`w-full rounded-md focus:ring-0 focus:ring-opacity-75 text-gray-900 ${
+                errors.state
+                  ? `focus:ring-red-500 border-red-500`
+                  : `focus:ring-primary-500 border-gray-300`
+              }`}
+            >
+              <option value={"All"}>Geral</option>
+              <option value={"Personal"}>Pessoal</option>
+              {offices &&
+                offices.map((o, i) => (
+                  <option key={i} value={o.id}>
+                    {o.name}
+                  </option>
+                ))}
+            </select>
+          </div>
+          <div className="col-span-full sm:col-span-6"></div>
           <div className="col-span-full sm:col-span-5">
             <label htmlFor="name" className="text-sm">
               Nome *

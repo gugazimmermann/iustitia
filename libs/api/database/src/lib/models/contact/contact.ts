@@ -14,6 +14,7 @@ export interface ContactAttributes {
   city: string;
   state: string;
   comments: string;
+  userId: string;
   officeId: string;
   tenantId: string;
 }
@@ -64,6 +65,7 @@ export default function contact(sequelize: Sequelize) {
     city: { type: DataTypes.TEXT, allowNull: true },
     state: { type: DataTypes.TEXT, allowNull: true },
     comments: { type: DataTypes.TEXT, allowNull: true },
+    userId: { type: DataTypes.UUID, allowNull: true },
     officeId: { type: DataTypes.UUID, allowNull: true },
     tenantId: { type: DataTypes.UUID, allowNull: true },
   }, {

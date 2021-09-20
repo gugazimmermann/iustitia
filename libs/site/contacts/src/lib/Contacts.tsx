@@ -11,6 +11,7 @@ import Form from "./form/Form";
 import List from "./list/List";
 import Details from "./details/Details";
 import { SiteRoutes as Routes } from "@iustitia/react-routes";
+import { getOffices, IOffice } from "@iustitia/site/dashboard";
 
 export const ModuleName = {
   module: "contacts",
@@ -37,6 +38,7 @@ export interface ModuleInterface {
   tenantId?: string;
   userId?: string;
   officeId?: string;
+  type?: string;
 }
 
 export interface AttachmentInterface {
@@ -77,6 +79,8 @@ export function Contacts() {
   const [confirm, setConfirm] = useState(false);
   const [dataList, setDataList] = useState([] as ModuleInterface[]);
   const [selected, setSelected] = useState({} as ModuleInterface);
+  const [offices, setOffices] = useState<IOffice[]>();
+  const [selectedType, setSelectedType] = useState<string>("Personal");
 
   useEffect(() => {
     if (showSuccessAlert) setTimeout(() => setShowSuccessAlert(false), 3000);
@@ -86,6 +90,7 @@ export function Contacts() {
   }, [showSuccessAlert, showEditAlert, showDeleteAlert, error]);
 
   useEffect(() => {
+    seeOffices();
     if (pathname.includes("add")) {
       setBack(true);
       setShowList(false);
@@ -93,7 +98,7 @@ export function Contacts() {
       setShowUpdade(false);
       setShowCreate(true);
     } else if (pathname.includes("edit")) {
-      getSelected(id)
+      getSelected(id);
       setBack(true);
       setShowList(false);
       setShowDetails(false);
@@ -101,14 +106,13 @@ export function Contacts() {
       setShowCreate(false);
     } else {
       if (id) {
-        getSelected(id)
+        getSelected(id);
         setBack(true);
         setShowList(false);
         setShowDetails(true);
         setShowUpdade(false);
         setShowCreate(false);
       } else {
-        getDataList();
         setBack(false);
         setShowList(true);
         setShowDetails(false);
@@ -116,8 +120,24 @@ export function Contacts() {
         setShowCreate(false);
       }
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id, pathname]);
+
+  useEffect(() => {
+    getDataList(selectedType);
+  }, [selectedType]);
+
+  async function seeOffices() {
+    try {
+      const offices: IOffice[] = await getOffices();
+      if (offices.length) setOffices(offices);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (err: any) {
+      history.push(ModuleName.route);
+      console.log(err);
+    }
+  }
 
   async function getSelected(id: string) {
     try {
@@ -131,13 +151,32 @@ export function Contacts() {
   }
 
   async function reloadList() {
-    await getDataList();
+    await getDataList(selectedType);
     setShowList(true);
     setShowDetails(false);
     setShowUpdade(false);
     setShowCreate(false);
     setBack(false);
   }
+
+  const createSelect = () => {
+    return (
+      <select
+        defaultValue={selectedType}
+        className="rounded-md text-sm focus:ring-0 focus:ring-opacity-75 text-gray-900 focus:ring-primary-500 border-gray-300"
+        onChange={(e) => setSelectedType(e.target.value)}
+      >
+        <option value={"All"}>Geral</option>
+        <option value={"Personal"}>Pessoal</option>
+        {offices &&
+          offices.map((o, i) => (
+            <option key={i} value={o.id}>
+              {o.name}
+            </option>
+          ))}
+      </select>
+    );
+  };
 
   const createButton = (state: boolean) => {
     return (
@@ -164,10 +203,14 @@ export function Contacts() {
     );
   };
 
-  async function getDataList() {
+  async function getDataList(selectedType: string) {
     try {
-      const data = await Services.getAll();
-      setDataList(data as ModuleInterface[]);
+      const allData = (await Services.getAll()) as ModuleInterface[];
+      let data: ModuleInterface[] = [];
+      if (selectedType === "All") data = allData;
+      if (selectedType === "Personal") data = allData.filter((d) => d.userId);
+      if (selectedType !== "All" && selectedType !== "Personal") data = allData.filter((d) => d.officeId === selectedType);
+      setDataList(data);
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       setError(err.message as string);
@@ -187,6 +230,7 @@ export function Contacts() {
       setShowEditAlert(false);
       setShowDeleteAlert(false);
       reloadList();
+      history.push(ModuleName.route);
       setLoading(false);
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
@@ -238,6 +282,7 @@ export function Contacts() {
       <Header
         before={ModuleName.parents}
         main={ModuleName.plural}
+        select={showList ? createSelect : undefined}
         button={createButton}
         back={back}
       />
@@ -275,9 +320,14 @@ export function Contacts() {
                 />
               )}
               {showDetails && <Details edit={handleEdit} data={selected} />}
-              {showCreate && <Form loading={loading} create={handleCreate} />}
+              {showCreate && <Form loading={loading} offices={offices} create={handleCreate} />}
               {showUpdate && (
-                <Form loading={loading} data={selected} update={handleUpate} />
+                <Form
+                  loading={loading}
+                  data={selected}
+                  offices={offices}
+                  update={handleUpate}
+                />
               )}
               {confirm && (
                 <ConfirmationModal
