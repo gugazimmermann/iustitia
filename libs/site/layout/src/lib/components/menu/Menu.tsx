@@ -39,12 +39,12 @@ export function Menu({ setMenuOpen, menuOpen }: MenuProps) {
       icon: <ScheduleIcon styles="w-5 h-5" />,
       subItems: [
         {
-          name: "Agenda",
-          link: `${Routes.Schedule}`,
-        },
-        {
           name: "Contatos",
           link: `${Routes.Contacts}`,
+        },
+        {
+          name: "Agenda",
+          link: `${Routes.Schedule}`,
         },
         {
           name: "Calendário",

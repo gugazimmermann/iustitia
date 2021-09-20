@@ -319,7 +319,7 @@ export function Contacts() {
                   setConfirm={setConfirm}
                 />
               )}
-              {showDetails && <Details edit={handleEdit} data={selected} />}
+              {showDetails && <Details data={selected} offices={offices} edit={handleEdit} />}
               {showCreate && <Form loading={loading} offices={offices} create={handleCreate} />}
               {showUpdate && (
                 <Form

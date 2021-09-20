@@ -17,13 +17,15 @@ import {
 } from "../Contacts";
 import * as ServicesAttachments from "../services/attachments";
 import * as ServicesNotes from "../services/notes";
+import { IOffice } from "@iustitia/site/dashboard";
 
 export interface DetailsProps {
   data: ModuleInterface;
+  offices?: IOffice[];
   edit(): void;
 }
 
-export function Details({ data, edit }: DetailsProps) {
+export function Details({ data, offices, edit }: DetailsProps) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -204,9 +206,7 @@ export function Details({ data, edit }: DetailsProps) {
           </div>
           <div className="w-full">
             <div className="flex flex-col md:flex-row items-center justify-between">
-              <h2 className=" text-base md:text-2xl font-bold">
-                {data.name}
-              </h2>
+              <h2 className=" text-base md:text-2xl font-bold">{data.name}</h2>
               <button
                 disabled={loading}
                 onClick={() => edit()}
@@ -218,6 +218,14 @@ export function Details({ data, edit }: DetailsProps) {
           </div>
         </div>
         <div className="col-span-full">
+          <div className="md:grid md:grid-cols-12 hover:bg-gray-50 md:space-y-0 space-y-1 p-4 border-b">
+            <p className="col-span-3 font-bold">Contato de</p>
+            <p className="col-span-9">
+            {data.userId && `Pessoal`}
+            {data.officeId && offices?.find(o => o.id === data.officeId)?.name}
+            {!data.userId && !data.officeId && `Geral`}
+            </p>
+          </div>
           {data.phone && (
             <div className="md:grid md:grid-cols-12 hover:bg-gray-50 md:space-y-0 space-y-1 p-4 border-b">
               <p className="col-span-3 font-bold">Telefone</p>
