@@ -12,6 +12,7 @@ export interface PlanAttributes {
   frequencyType: string;
   transactionAmount: number;
   currencyId: string;
+  type: string;
 }
 
 export type PlanCreationAttributes = Optional<PlanAttributes, 'id'>
@@ -44,6 +45,7 @@ export default function plan(sequelize: Sequelize) {
     frequencyType: { type: DataTypes.TEXT, allowNull: false },
     transactionAmount: { type: DataTypes.DOUBLE, allowNull: false },
     currencyId: { type: DataTypes.TEXT, allowNull: false },
+    type: { type: DataTypes.TEXT, allowNull: false },
   }, {
     paranoid: true,
     timestamps: true,

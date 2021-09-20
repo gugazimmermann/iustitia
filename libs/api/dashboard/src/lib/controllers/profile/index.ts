@@ -82,7 +82,6 @@ export async function getProfile(req, res) {
     const user = await database.User.findOne({
       where: { id: req.userId },
       include: ["subscription", "profile"],
-
     });
     if (!user || !user.profile || !user.subscription) {
       return res.status(404).send({ message: "Perfil não encontrado!" });

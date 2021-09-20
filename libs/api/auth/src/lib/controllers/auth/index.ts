@@ -54,6 +54,7 @@ export async function signup(req, res) {
       frequencyType: userPlan.frequencyType,
       transactionAmount: userPlan.transactionAmount,
       status: true,
+      type: userPlan.type,
       planId: userPlan.id,
       userId: user.id,
     });

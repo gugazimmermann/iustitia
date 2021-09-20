@@ -53,6 +53,14 @@ export async function createOffice(req, res) {
   }
   body.userId = req.userId
   try {
+    const user = await database.User.findOne({
+      where: { id: req.userId },
+      include: ["subscription"],
+    });
+    const offices = await database.Office.findAll({where: { tenantId: user.tenant },});
+    if (user.subscription.type === "basic" && offices.length > 0) {
+      return res.status(401).send({ message: "Plano Básico permite somente um escritório!" });
+    }
     const office = await database.Office.create(body);
     return res.status(201).send({
       name: office.name,

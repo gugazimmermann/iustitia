@@ -7,6 +7,7 @@ export interface SubscriptionAttributes {
   frequencyType: string;
   transactionAmount: number;
   status: boolean;
+  type: string;
   planId: string;
   userId: string;
 }
@@ -35,6 +36,7 @@ export default function subscription(sequelize: Sequelize) {
     frequency: { type: DataTypes.INTEGER, allowNull: false },
     frequencyType: { type: DataTypes.TEXT, allowNull: false },
     transactionAmount: { type: DataTypes.DOUBLE, allowNull: false },
+    type: { type: DataTypes.TEXT, allowNull: false },
     status: { type: DataTypes.BOOLEAN, allowNull: false },
     planId: { type: DataTypes.UUID, allowNull: false },
     userId: { type: DataTypes.UUID, allowNull: false },

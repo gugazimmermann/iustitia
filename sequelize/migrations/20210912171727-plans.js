@@ -23,6 +23,7 @@ module.exports = {
         frequencyType: { type: Sequelize.TEXT, allowNull: false },
         transactionAmount: { type: Sequelize.DOUBLE, allowNull: false },
         currencyId: { type: Sequelize.TEXT, allowNull: false },
+        type: { type: Sequelize.TEXT, allowNull: false },
       },
       {
         paranoid: true,

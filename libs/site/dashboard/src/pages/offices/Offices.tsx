@@ -5,7 +5,7 @@ import {
   Header,
 } from "@iustitia/site/shared-components";
 import { WARNING_TYPES } from "@iustitia/site/shared-utils";
-import { IOffice } from "../../interfaces";
+import { IOffice, IProfile } from "../../interfaces";
 import {
   getAll,
   createOffice,
@@ -16,10 +16,11 @@ import Form from "./form/Form";
 import List from "./list/List";
 
 interface OfficesProps {
+  profile?: IProfile;
   setOffices?(offices: IOffice[]): void;
 }
 
-export function Offices({ setOffices: CallOutOffices }: OfficesProps) {
+export function Offices({ profile, setOffices: CallOutOffices }: OfficesProps) {
   const [showSuccess, setShowSuccess] = useState(false);
   const [showEdit, setShowEdit] = useState(false);
   const [showDelete, setShowDelete] = useState(false);
@@ -57,6 +58,7 @@ export function Offices({ setOffices: CallOutOffices }: OfficesProps) {
   }
 
   const createButton = (state: boolean) => {
+    if (profile?.subscription?.type === "basic" && offices.length > 0) return <div></div>;
     return (
       <button
         onClick={() => {

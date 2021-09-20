@@ -17,6 +17,7 @@ export interface IProfileSubscription {
   planId: string;
   reason: string;
   frequency: number;
+  type: string;
   createdAt: string;
 }
 
