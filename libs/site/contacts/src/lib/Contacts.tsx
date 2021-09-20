@@ -84,6 +84,7 @@ export function Contacts() {
   const [offices, setOffices] = useState<IOffice[]>();
   const [selectedType, setSelectedType] = useState<string>("Personal");
   const [searchParam, setSearchParam] = useState<string>();
+  const [sort, setSort] = useState("ASC");
 
   useEffect(() => {
     if (showSuccessAlert) setTimeout(() => setShowSuccessAlert(false), 3000);
@@ -129,6 +130,7 @@ export function Contacts() {
 
   useEffect(() => {
     getDataList(selectedType);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedType]);
 
   async function seeOffices() {
@@ -160,6 +162,26 @@ export function Contacts() {
     setShowUpdade(false);
     setShowCreate(false);
     setBack(false);
+  }
+
+  useEffect(() => {
+    handleSort();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [sort]);
+
+  function handleSort(data?: ModuleInterface[]) {
+    const sortData = data ? data : dataList.slice(0);
+    if (sortData) {
+      if (sort === "ASC")
+        sortData.sort((a, b) =>
+          (a.name as string).localeCompare(b.name as string)
+        );
+      if (sort === "DESC")
+        sortData.sort((a, b) =>
+          (b.name as string).localeCompare(a.name as string)
+        );
+    }
+    setShowDataList(sortData);
   }
 
   const createSearch = () => {
@@ -248,7 +270,7 @@ export function Contacts() {
       if (selectedType !== "All" && selectedType !== "Personal")
         data = allData.filter((d) => d.officeId === selectedType);
       setDataList(data);
-      setShowDataList(data);
+      handleSort(data);
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       setError(err.message as string);
@@ -354,6 +376,8 @@ export function Contacts() {
               {showList && (
                 <List
                   dataList={showDataList}
+                  sort={sort}
+                  setSort={setSort}
                   setSelected={setSelected}
                   setConfirm={setConfirm}
                 />

@@ -1,16 +1,26 @@
 import { useHistory } from "react-router-dom";
-import { EyeIcon, PenIcon, TrashIcon } from "@iustitia/site/shared-components";
+import {
+  ArrowDownIcon,
+  ArrowUpIcon,
+  EyeIcon,
+  PenIcon,
+  TrashIcon,
+} from "@iustitia/site/shared-components";
 import { getUserInitials } from "@iustitia/site/shared-utils";
 import { ModuleInterface, ModuleName } from "../Contacts";
 
 export interface ListProps {
   dataList: ModuleInterface[];
+  sort: string;
+  setSort(order: "ASC" | "DESC"): void;
   setSelected(delected: ModuleInterface): void;
   setConfirm(confirm: boolean): void;
 }
 
 export function List({
   dataList,
+  sort,
+  setSort,
   setSelected,
   setConfirm,
 }: ListProps) {
@@ -32,7 +42,19 @@ export function List({
         <thead>
           <tr className="bg-primary-500 text-white uppercase leading-normal">
             <th className="w-12"></th>
-            <th className="py-2 px-2 text-sm text-left">Nome</th>
+            <th className="py-2 px-2 text-sm text-left">
+              Nome
+              {sort === "ASC" && (
+                <button onClick={() => setSort("DESC")}>
+                  <ArrowDownIcon styles="h-4 w-4 inline" stroke={2} />
+                </button>
+              )}
+              {sort === "DESC" && (
+                <button onClick={() => setSort("ASC")}>
+                  <ArrowUpIcon styles="h-4 w-4 inline" stroke={2} />
+                </button>
+              )}
+            </th>
             <th className="py-2 px-2 text-sm text-left">Telefone</th>
             <th className="py-2 px-2 text-sm text-left">E-Mail</th>
             <th className="py-2 px-2 text-sm text-left">Cidade / UF</th>

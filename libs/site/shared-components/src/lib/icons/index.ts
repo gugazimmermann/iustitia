@@ -3,6 +3,8 @@ export interface IconProps {
   stroke?: number;
 }
 
+export * from "./ArrowDownIcon"
+export * from "./ArrowUpIcon"
 export * from './AttachmentIcon'
 export * from './AudioIcon'
 export * from './ButtonMobileIcon'
