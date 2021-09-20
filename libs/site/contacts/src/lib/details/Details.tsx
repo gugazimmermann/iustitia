@@ -188,7 +188,7 @@ export function Details({ data, edit }: DetailsProps) {
         />
       )}
       <div className="mb-6 grid grid-cols-12 items-center justify-center">
-        <div className="col-span-full flex w-full items-center justify-start pl-4 md:p-4 border-b">
+        <div className="col-span-full flex flex-col md:flex-row w-full items-center justify-start py-4 md:p-4 border-b">
           <div className="w-20">
             {data.avatar ? (
               <img
@@ -203,7 +203,7 @@ export function Details({ data, edit }: DetailsProps) {
             )}
           </div>
           <div className="w-full">
-            <div className="flex items-center justify-between">
+            <div className="flex flex-col md:flex-row items-center justify-between">
               <h2 className=" text-base md:text-2xl font-bold">
                 {data.name}
               </h2>
