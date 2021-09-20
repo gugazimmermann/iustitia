@@ -39,6 +39,10 @@ export function Menu({ setMenuOpen, menuOpen }: MenuProps) {
       icon: <ScheduleIcon styles="w-5 h-5" />,
       subItems: [
         {
+          name: "Empresas",
+          link: `${Routes.Companies}`,
+        },
+        {
           name: "Contatos",
           link: `${Routes.Contacts}`,
         },

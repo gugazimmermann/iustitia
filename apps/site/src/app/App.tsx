@@ -19,6 +19,7 @@ import {
   Offices,
   Subscriptions,
 } from "@iustitia/site/dashboard";
+import { Companies } from "@iustitia/site/companies";
 import { Contacts } from "@iustitia/site/contacts";
 import { Schedule } from "@iustitia/site/schedule";
 import { Calendar } from "@iustitia/site/calendar";
@@ -96,6 +97,28 @@ export const App = () => {
           <Subscriptions />
         </Layout>
       </ProtectedRoute>
+
+      <ProtectedRoute exact path={Routes.Companies}>
+        <Layout>
+          <Companies />
+        </Layout>
+      </ProtectedRoute>
+      <ProtectedRoute exact path={`${Routes.Companies}/add`}>
+        <Layout>
+          <Companies />
+        </Layout>
+      </ProtectedRoute>
+      <ProtectedRoute exact path={`${Routes.Companies}/edit/:id?`}>
+        <Layout>
+          <Companies />
+        </Layout>
+      </ProtectedRoute>
+      <ProtectedRoute exact path={`${Routes.Companies}/:id?`}>
+        <Layout>
+          <Companies />
+        </Layout>
+      </ProtectedRoute>
+
       <ProtectedRoute exact path={Routes.Contacts}>
         <Layout>
           <Contacts />
@@ -116,6 +139,7 @@ export const App = () => {
           <Contacts />
         </Layout>
       </ProtectedRoute>
+
       <ProtectedRoute exact path={Routes.Schedule}>
         <Layout>
           <Schedule />

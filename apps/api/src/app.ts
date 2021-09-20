@@ -6,6 +6,7 @@ import { publicRoutes } from "@iustitia/api/public";
 import { authRoutes } from "@iustitia/api/auth";
 import { mercadopagoRoutes } from "@iustitia/api/mercadopago";
 import { dashboardRoutes } from "@iustitia/api/dashboard";
+import { companiesRoutes } from "@iustitia/api/companies";
 import { contactsRoutes } from "@iustitia/api/contacts";
 
 const app = express();
@@ -29,6 +30,7 @@ publicRoutes(app);
 authRoutes(app);
 mercadopagoRoutes(app);
 dashboardRoutes(app);
+companiesRoutes(app);
 contactsRoutes(app);
 
 app.use((req, res) => res.status(404).send("Not Found!"));

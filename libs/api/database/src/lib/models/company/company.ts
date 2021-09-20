@@ -1,9 +1,9 @@
 import { Sequelize, DataTypes, Optional, Model } from "sequelize";
-import { CompanyInstance } from "../company/company";
-export interface ContactAttributes {
+
+export interface CompanyAttributes {
   id: string;
-  avatar: string;
   name: string;
+  site: string;
   email: string;
   phone: string;
   zip: string;
@@ -14,16 +14,12 @@ export interface ContactAttributes {
   city: string;
   state: string;
   comments: string;
-  position: string;
-  companyId: string;
-  userId: string;
-  officeId: string;
   tenantId: string;
 }
 
-export type ContactCreationAttributes = Optional<ContactAttributes,
+export type CompanyCreationAttributes = Optional<CompanyAttributes,
   'id' |
-  'avatar' |
+  'site' |
   'email' |
   'phone' |
   'zip' |
@@ -33,24 +29,24 @@ export type ContactCreationAttributes = Optional<ContactAttributes,
   'neighborhood' |
   'city' |
   'state' |
-  'comments' |
-  'position' |
-  'companyId' |
-  'userId' |
-  'officeId'
+  'comments'
 >
 
-export interface ContactInstance
-  extends Model<ContactAttributes, ContactCreationAttributes>,
-  ContactAttributes {
+export interface CompanyInstance
+  extends Model<CompanyAttributes, CompanyCreationAttributes>,
+  CompanyAttributes {
   createdAt?: Date;
   updatedAt?: Date;
   deletedAt?: Date;
-  company?: CompanyInstance;
+  contacts?: {
+    id: string;
+    name: string;
+    position: string;
+  }[];
 }
 
-export default function contact(sequelize: Sequelize) {
-  const Contact = sequelize.define<ContactInstance>('contacts', {
+export default function company(sequelize: Sequelize) {
+  const Company = sequelize.define<CompanyInstance>('companies', {
     id: {
       type: DataTypes.UUID,
       defaultValue: DataTypes.UUIDV4,
@@ -59,10 +55,10 @@ export default function contact(sequelize: Sequelize) {
       unique: true,
       primaryKey: true,
     },
-    avatar: { type: DataTypes.TEXT, allowNull: true },
     name: { type: DataTypes.TEXT, allowNull: false },
-    phone: { type: DataTypes.TEXT, allowNull: true },
+    site: { type: DataTypes.TEXT, allowNull: true },
     email: { type: DataTypes.TEXT, allowNull: true },
+    phone: { type: DataTypes.TEXT, allowNull: true },
     zip: { type: DataTypes.TEXT, allowNull: true },
     address: { type: DataTypes.TEXT, allowNull: true },
     number: { type: DataTypes.TEXT, allowNull: true },
@@ -71,17 +67,11 @@ export default function contact(sequelize: Sequelize) {
     city: { type: DataTypes.TEXT, allowNull: true },
     state: { type: DataTypes.TEXT, allowNull: true },
     comments: { type: DataTypes.TEXT, allowNull: true },
-    position: { type: DataTypes.TEXT, allowNull: true },
-    companyId: { type: DataTypes.UUID, allowNull: true },
-    userId: { type: DataTypes.UUID, allowNull: true },
-    officeId: { type: DataTypes.UUID, allowNull: true },
     tenantId: { type: DataTypes.UUID, allowNull: true },
   }, {
     paranoid: true,
     timestamps: true,
   });
 
-  return Contact;
+  return Company;
 }
-
-

@@ -18,6 +18,8 @@ import {
 import * as ServicesAttachments from "../services/attachments";
 import * as ServicesNotes from "../services/notes";
 import { IOffice } from "@iustitia/site/dashboard";
+import { Link } from "react-router-dom";
+import { SiteRoutes } from "@iustitia/react-routes";
 
 export interface DetailsProps {
   data: ModuleInterface;
@@ -221,9 +223,10 @@ export function Details({ data, offices, edit }: DetailsProps) {
           <div className="md:grid md:grid-cols-12 hover:bg-gray-50 md:space-y-0 space-y-1 p-4 border-b">
             <p className="col-span-3 font-bold">Contato de</p>
             <p className="col-span-9">
-            {data.userId && `Pessoal`}
-            {data.officeId && offices?.find(o => o.id === data.officeId)?.name}
-            {!data.userId && !data.officeId && `Geral`}
+              {data.userId && `Pessoal`}
+              {data.officeId &&
+                offices?.find((o) => o.id === data.officeId)?.name}
+              {!data.userId && !data.officeId && `Geral`}
             </p>
           </div>
           {data.phone && (
@@ -264,6 +267,20 @@ export function Details({ data, offices, edit }: DetailsProps) {
                 state={data.state}
                 zip={data.zip}
               />
+            </div>
+          )}
+          {(data.companyId || data.position) && (
+            <div className="md:grid md:grid-cols-12 hover:bg-gray-50 md:space-y-0 space-y-1 p-4 border-b">
+              <p className="col-span-3 font-bold">Empresa</p>
+              <p className="col-span-9">
+                {data.position} {data.position && data.company && `em`}{" "}
+                <Link
+                  to={`${SiteRoutes.Companies}/${data.companyId}`}
+                  className="underline"
+                >
+                  {data.company}
+                </Link>
+              </p>
             </div>
           )}
           {data.comments && (

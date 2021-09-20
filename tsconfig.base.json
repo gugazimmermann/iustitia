@@ -16,6 +16,7 @@
     "baseUrl": ".",
     "paths": {
       "@iustitia/api/auth": ["libs/api/auth/src/index.ts"],
+      "@iustitia/api/companies": ["libs/api/companies/src/index.ts"],
       "@iustitia/api/contacts": ["libs/api/contacts/src/index.ts"],
       "@iustitia/api/dashboard": ["libs/api/dashboard/src/index.ts"],
       "@iustitia/api/database": ["libs/api/database/src/index.ts"],
@@ -29,6 +30,7 @@
       "@iustitia/react-routes": ["libs/react-routes/src/index.ts"],
       "@iustitia/site/auth": ["libs/site/auth/src/index.ts"],
       "@iustitia/site/calendar": ["libs/site/calendar/src/index.ts"],
+      "@iustitia/site/companies": ["libs/site/companies/src/index.ts"],
       "@iustitia/site/contacts": ["libs/site/contacts/src/index.ts"],
       "@iustitia/site/dashboard": ["libs/site/dashboard/src/index.ts"],
       "@iustitia/site/layout": ["libs/site/layout/src/index.ts"],

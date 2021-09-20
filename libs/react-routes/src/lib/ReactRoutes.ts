@@ -24,6 +24,7 @@ export enum SiteRoutes {
   Profile = "/perfil",
   Offices = "/escritorios",
   Subscriptions = "/assinaturas",
+  Companies = "/empresas",
   Contacts = "/contatos",
   Schedule = "/agenda",
   Calendar = "/calendario",

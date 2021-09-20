@@ -7,26 +7,24 @@ import {
   SearchIcon,
 } from "@iustitia/site/shared-components";
 import { WARNING_TYPES } from "@iustitia/site/shared-utils";
+import { SiteRoutes as Routes } from "@iustitia/react-routes";
 import * as Services from "./services";
 import Form from "./form/Form";
 import List from "./list/List";
 import Details from "./details/Details";
-import { SiteRoutes as Routes } from "@iustitia/react-routes";
-import { getOffices, IOffice } from "@iustitia/site/dashboard";
-import { getCompanies, ModuleInterface as ICompany } from "@iustitia/site/companies";
 
 export const ModuleName = {
-  module: "contacts",
+  module: "companies",
   parents: ["Agenda"],
-  singular: "Contato",
-  plural: "Contatos",
-  route: Routes.Contacts,
+  singular: "Empresa",
+  plural: "Empresas",
+  route: Routes.Companies,
 };
 
 export interface ModuleInterface {
   id?: string;
-  avatar?: string;
   name?: string;
+  site?: string;
   email?: string;
   phone?: string;
   zip?: string;
@@ -38,35 +36,18 @@ export interface ModuleInterface {
   state?: string;
   comments?: string;
   tenantId?: string;
-  userId?: string;
-  officeId?: string;
-  type?: string;
-  position?: string;
-  companyId?: string;
-  company?: string;
-}
-
-export interface AttachmentInterface {
-  id: string;
-  date: string;
-  name: string;
-  link: string;
-}
-
-export interface NoteInterface {
-  id?: string;
-  date: string;
-  title: string;
-  content: string;
-  tenantId?: string;
-  ownerId: string;
+  contacts?: {
+    id: string;
+    name: string;
+    position: string;
+  }[]
 }
 
 interface useParamsProps {
   id: string;
 }
 
-export function Contacts() {
+export function Companies() {
   const history = useHistory();
   const location = useLocation();
   const { pathname } = useLocation();
@@ -85,9 +66,6 @@ export function Contacts() {
   const [dataList, setDataList] = useState([] as ModuleInterface[]);
   const [showDataList, setShowDataList] = useState([] as ModuleInterface[]);
   const [selected, setSelected] = useState({} as ModuleInterface);
-  const [offices, setOffices] = useState<IOffice[]>();
-  const [companies, setCompanies] = useState<ICompany[]>();
-  const [selectedType, setSelectedType] = useState<string>("Personal");
   const [searchParam, setSearchParam] = useState<string>();
   const [sort, setSort] = useState("ASC");
 
@@ -99,8 +77,6 @@ export function Contacts() {
   }, [showSuccessAlert, showEditAlert, showDeleteAlert, error]);
 
   useEffect(() => {
-    seeOffices();
-    seeCompanies();
     if (pathname.includes("add")) {
       setBack(true);
       setShowList(false);
@@ -123,6 +99,7 @@ export function Contacts() {
         setShowUpdade(false);
         setShowCreate(false);
       } else {
+        getDataList();
         setBack(false);
         setShowList(true);
         setShowDetails(false);
@@ -133,33 +110,6 @@ export function Contacts() {
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id, pathname]);
-
-  useEffect(() => {
-    getDataList(selectedType);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedType]);
-
-  async function seeOffices() {
-    try {
-      const offices: IOffice[] = await getOffices();
-      if (offices.length) setOffices(offices);
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } catch (err: any) {
-      setError(err.message as string);
-      console.log(err);
-    }
-  }
-
-  async function seeCompanies() {
-    try {
-      const companies = await getCompanies();
-      if ((companies as ICompany[]).length) setCompanies(companies as ICompany[]);
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } catch (err: any) {
-      setError(err.message as string);
-      console.log(err);
-    }
-  }
 
   async function getSelected(id: string) {
     try {
@@ -174,7 +124,7 @@ export function Contacts() {
   }
 
   async function reloadList() {
-    await getDataList(selectedType);
+    await getDataList();
     setShowList(true);
     setShowDetails(false);
     setShowUpdade(false);
@@ -231,28 +181,9 @@ export function Contacts() {
   }, [searchParam]);
 
   function handleSearch(data: ModuleInterface[], param: string) {
-    const res = data.filter((d) => d.name?.includes(param));
+    const res = data.filter((d) => d.name?.toLocaleLowerCase().includes(param.toLocaleLowerCase()));
     setShowDataList(res);
   }
-
-  const createSelect = () => {
-    return (
-      <select
-        defaultValue={selectedType}
-        className="rounded-md text-sm focus:ring-0 focus:ring-opacity-75 text-gray-900 focus:ring-primary-500 border-gray-300"
-        onChange={(e) => setSelectedType(e.target.value)}
-      >
-        <option value={"All"}>Geral</option>
-        <option value={"Personal"}>Pessoal</option>
-        {offices &&
-          offices.map((o, i) => (
-            <option key={i} value={o.id}>
-              {o.name}
-            </option>
-          ))}
-      </select>
-    );
-  };
 
   const createButton = (state: boolean) => {
     return (
@@ -279,14 +210,9 @@ export function Contacts() {
     );
   };
 
-  async function getDataList(selectedType: string) {
+  async function getDataList() {
     try {
-      const allData = (await Services.getAll()) as ModuleInterface[];
-      let data: ModuleInterface[] = [];
-      if (selectedType === "All") data = allData;
-      if (selectedType === "Personal") data = allData.filter((d) => d.userId);
-      if (selectedType !== "All" && selectedType !== "Personal")
-        data = allData.filter((d) => d.officeId === selectedType);
+      const data = (await Services.getAll()) as ModuleInterface[];
       setDataList(data);
       handleSort(data);
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -300,7 +226,7 @@ export function Contacts() {
     history.push(`${ModuleName.route}/edit/${selected?.id}`);
   }
 
-  async function handleCreate(data: FormData) {
+  async function handleCreate(data: ModuleInterface) {
     setLoading(true);
     try {
       await Services.create(data);
@@ -318,7 +244,7 @@ export function Contacts() {
     }
   }
 
-  async function handleUpate(data: FormData) {
+  async function handleUpate(data: ModuleInterface) {
     setLoading(true);
     try {
       await Services.update(data);
@@ -360,8 +286,7 @@ export function Contacts() {
       <Header
         before={ModuleName.parents}
         main={ModuleName.plural}
-        select={showList ? createSelect : undefined}
-        search={createSearch}
+        search={showList ? createSearch : undefined}
         button={createButton}
         back={back}
       />
@@ -373,21 +298,21 @@ export function Contacts() {
               {showSuccessAlert && (
                 <Alert
                   type={WARNING_TYPES.SUCCESS}
-                  message={`${ModuleName.singular} cadastrado com Sucesso!`}
+                  message={`${ModuleName.singular} cadastrada com Sucesso!`}
                   closeFunction={setShowSuccessAlert}
                 />
               )}
               {showEditAlert && (
                 <Alert
                   type={WARNING_TYPES.INFO}
-                  message={`${ModuleName.singular} alterado com Sucesso!`}
+                  message={`${ModuleName.singular} alterada com Sucesso!`}
                   closeFunction={setShowEditAlert}
                 />
               )}
               {showDeleteAlert && (
                 <Alert
                   type={WARNING_TYPES.WARNING}
-                  message={`${ModuleName.singular} removido com Sucesso!`}
+                  message={`${ModuleName.singular} removida com Sucesso!`}
                   closeFunction={setShowDeleteAlert}
                 />
               )}
@@ -401,13 +326,11 @@ export function Contacts() {
                 />
               )}
               {showDetails && (
-                <Details data={selected} offices={offices} edit={handleEdit} />
+                <Details data={selected} edit={handleEdit} />
               )}
               {showCreate && (
                 <Form
                   loading={loading}
-                  offices={offices}
-                  companies={companies}
                   create={handleCreate}
                 />
               )}
@@ -415,8 +338,6 @@ export function Contacts() {
                 <Form
                   loading={loading}
                   data={selected}
-                  offices={offices}
-                  companies={companies}
                   update={handleUpate}
                 />
               )}
@@ -425,7 +346,7 @@ export function Contacts() {
                   setConfirm={setConfirm}
                   type={WARNING_TYPES.ERROR}
                   title={`Excluir ${ModuleName.singular}: ${selected.name}?`}
-                  content={`Você tem certeza que quer excluir o ${ModuleName.singular} ${selected.name}? Todos os dados desse ${ModuleName.singular} serão perdidos. Essa ação não poderá ser desfeita.`}
+                  content={`Você tem certeza que quer excluir a ${ModuleName.singular} ${selected.name}? Todos os dados dessa ${ModuleName.singular} serão perdidos. Essa ação não poderá ser desfeita.`}
                   action={handleDelete}
                 />
               )}
@@ -437,4 +358,4 @@ export function Contacts() {
   );
 }
 
-export default Contacts;
+export default Companies;

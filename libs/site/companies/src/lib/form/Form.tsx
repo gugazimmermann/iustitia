@@ -1,39 +1,28 @@
-import { ChangeEvent, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import NumberFormat from "react-number-format";
 import TextareaAutosize from "react-textarea-autosize";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
-import {
-  getAddressFromCEP,
-  getUserInitials,
-  validateEmail,
-} from "@iustitia/site/shared-utils";
-import {
-  LoadingButton,
-  UploadCloudIcon,
-} from "@iustitia/site/shared-components";
-import { IOffice } from "@iustitia/site/dashboard";
-import { ModuleInterface, ModuleName } from "../Contacts";
-import { ModuleInterface as ICompany } from "@iustitia/site/companies";
+import { formatSite, getAddressFromCEP, validateEmail } from "@iustitia/site/shared-utils";
+import { LoadingButton } from "@iustitia/site/shared-components";
+import { ModuleInterface, ModuleName } from "../..";
 
 export interface FormProps {
   loading: boolean;
   data?: ModuleInterface;
-  offices?: IOffice[];
-  companies?: ICompany[];
-  create?(data: FormData): void;
-  update?(data: FormData): void;
+  create?(data: ModuleInterface): void;
+  update?(data: ModuleInterface): void;
 }
 
 const schema = yup.object().shape({
   name: yup.string().required(),
 });
 
-export function Form({ loading, data, offices, companies, create, update }: FormProps) {
+export function Form({ loading, data, create, update }: FormProps) {
   const defaultValues: ModuleInterface = {
-    type: "Personal",
     name: data?.name || "",
+    site: data?.site || "",
     email: data?.email || "",
     phone: data?.phone || "",
     zip: data?.zip || "",
@@ -43,8 +32,6 @@ export function Form({ loading, data, offices, companies, create, update }: Form
     neighborhood: data?.neighborhood || "",
     city: data?.city || "",
     state: data?.state || "",
-    position: data?.position || "",
-    companyId: data?.companyId || "",
     comments: data?.comments || "",
   };
   const {
@@ -52,7 +39,6 @@ export function Form({ loading, data, offices, companies, create, update }: Form
     register,
     handleSubmit,
     setValue,
-    watch,
     setError,
     clearErrors,
     formState: { errors },
@@ -60,15 +46,12 @@ export function Form({ loading, data, offices, companies, create, update }: Form
     resolver: yupResolver(schema),
     defaultValues,
   });
-  const avatarRegister = register("avatar");
-  const [selectedFile, setSelectedFile] = useState<File>();
-  const [previewName, setPreviewName] = useState(defaultValues.name);
-  const [preview, setPreview] = useState<string | undefined>("");
   const [validZip, setValidZip] = useState(!!defaultValues.zip);
 
   useEffect(() => {
     if (data?.name) {
       setValue("name", data?.name);
+      setValue("site", data?.site);
       setValue("email", data?.email);
       setValue("phone", data?.phone);
       setValue("zip", data?.zip);
@@ -78,33 +61,9 @@ export function Form({ loading, data, offices, companies, create, update }: Form
       setValue("neighborhood", data?.neighborhood);
       setValue("city", data?.city);
       setValue("state", data?.state);
-      setValue("position", data?.position);
-      setValue("companyId", data?.companyId);
       setValue("comments", data?.comments);
-      if (data?.userId) setValue("type", "Personal");
-      if (data?.officeId) setValue("type", data.officeId);
-      if (!data?.userId && !data?.officeId) setValue("type", "All")
     }
   }, [data, setValue]);
-
-  useEffect(() => {
-    const name = watch((value) => {
-      if (!preview && value.name) setPreviewName(value.name);
-    });
-    return () => name.unsubscribe();
-  }, [preview, watch]);
-
-  useEffect(() => {
-    if (!selectedFile) {
-      if (data?.avatar) {
-        setPreview(`${process.env.NX_BUCKET_AVATAR_URL}${data?.avatar}`);
-      }
-      return;
-    }
-    const objectUrl = URL.createObjectURL(selectedFile);
-    setPreview(objectUrl);
-    return () => URL.revokeObjectURL(objectUrl);
-  }, [data?.avatar, selectedFile]);
 
   async function fetchCEP(zip: string) {
     try {
@@ -131,44 +90,16 @@ export function Form({ loading, data, offices, companies, create, update }: Form
     }
   }
 
-  const onSelectFile = (e: ChangeEvent<HTMLInputElement>) => {
-    if (!e.target.files || e.target.files.length === 0) {
-      setSelectedFile(undefined);
-      return;
-    }
-    const file = e.target.files[0];
-    const allowedExtension = ["image/jpeg", "image/jpg", "image/png"];
-    if (!allowedExtension.includes(file.type)) {
-      setError("avatar", { message: "Somente arquivo JPG ou PNG" });
-      return;
-    }
-    if (file.size > 1000000) {
-      setError("avatar", { message: "Arquivo deve ter até 1 mega" });
-      return;
-    }
-    clearErrors("avatar");
-    setSelectedFile(file);
-  };
-
-  async function onSubmit(dataFromForm: ModuleInterface) {
-    if (dataFromForm.zip && !validZip) {
+  async function onSubmit(formData: ModuleInterface) {
+    if (formData.zip && !validZip) {
       setError("zip", { type: "manual" });
       return;
     }
-    if (dataFromForm.email && !validateEmail(dataFromForm.email)) {
+    if (formData.email && !validateEmail(formData.email)) {
       setError("email", { type: "manual" });
       return;
     }
-    const formData = new FormData();
-    Object.entries(dataFromForm).forEach(([key, value]) => {
-      if (key !== "avatar") {
-        formData.append(key, value as string);
-      } else {
-        if (dataFromForm?.avatar?.length) {
-          formData.append("avatar", dataFromForm.avatar[0]);
-        }
-      }
-    });
+    if (formData.site) formData.site = formatSite(formData.site);
     if (create) {
       create(formData);
       return;
@@ -178,7 +109,7 @@ export function Form({ loading, data, offices, companies, create, update }: Form
         console.error("ID not found!");
         return;
       }
-      formData.append("id", data.id as string);
+      formData.id = data.id as string;
       update(formData);
       return;
     }
@@ -189,30 +120,6 @@ export function Form({ loading, data, offices, companies, create, update }: Form
       <fieldset className="grid grid-cols-1 gap-4 p-4">
         <div className="grid grid-cols-12 gap-4 col-span-full lg:col-span-3">
           <div className="col-span-full sm:col-span-6">
-            <label htmlFor="type" className="text-sm">
-              Tipo
-            </label>
-            <select
-              {...register("type")}
-              id="type"
-              className={`w-full rounded-md focus:ring-0 focus:ring-opacity-75 text-gray-900 ${
-                errors.state
-                  ? `focus:ring-red-500 border-red-500`
-                  : `focus:ring-primary-500 border-gray-300`
-              }`}
-            >
-              <option value={"All"}>Geral</option>
-              <option value={"Personal"}>Pessoal</option>
-              {offices &&
-                offices.map((o, i) => (
-                  <option key={i} value={o.id}>
-                    {o.name}
-                  </option>
-                ))}
-            </select>
-          </div>
-          <div className="col-span-full sm:col-span-6"></div>
-          <div className="col-span-full sm:col-span-5">
             <label htmlFor="name" className="text-sm">
               Nome *
             </label>
@@ -228,7 +135,23 @@ export function Form({ loading, data, offices, companies, create, update }: Form
               }`}
             />
           </div>
-          <div className="col-span-full sm:col-span-4">
+          <div className="col-span-full sm:col-span-6">
+            <label htmlFor="site" className="text-sm">
+              Site
+            </label>
+            <input
+              {...register("site")}
+              id="site"
+              type="text"
+              placeholder="Site"
+              className={`w-full rounded-md focus:ring-0 focus:ring-opacity-75 text-gray-900 ${
+                errors.site
+                  ? `focus:ring-red-500 border-red-500`
+                  : `focus:ring-primary-500 border-gray-300`
+              }`}
+            />
+          </div>
+          <div className="col-span-full sm:col-span-6">
             <label htmlFor="email" className="text-sm">
               Email
             </label>
@@ -244,7 +167,7 @@ export function Form({ loading, data, offices, companies, create, update }: Form
               }`}
             />
           </div>
-          <div className="col-span-full sm:col-span-3">
+          <div className="col-span-full sm:col-span-6">
             <label htmlFor="phone" className="text-sm">
               Telefone
             </label>
@@ -426,44 +349,6 @@ export function Form({ loading, data, offices, companies, create, update }: Form
               <option value={"TO"}>TO</option>
             </select>
           </div>
-          <div className="col-span-full sm:col-span-6">
-            <label htmlFor="companyId" className="text-sm">
-              Empresa
-            </label>
-            <select
-              {...register("companyId")}
-              id="company"
-              className={`w-full rounded-md focus:ring-0 focus:ring-opacity-75 text-gray-900 ${
-                errors.companyId
-                  ? `focus:ring-red-500 border-red-500`
-                  : `focus:ring-primary-500 border-gray-300`
-              }`}
-            >
-              <option value={""}></option>
-               {companies &&
-                companies.map((c, i) => (
-                  <option key={i} value={c.id}>
-                    {c.name}
-                  </option>
-                ))}
-            </select>
-          </div>
-          <div className="col-span-full sm:col-span-6">
-            <label htmlFor="position" className="text-sm">
-              Cargo
-            </label>
-            <input
-              {...register("position")}
-              id="position"
-              type="text"
-              placeholder="Cargo"
-              className={`w-full rounded-md focus:ring-0 focus:ring-opacity-75 text-gray-900 ${
-                errors.position
-                  ? `focus:ring-red-500 border-red-500`
-                  : `focus:ring-primary-500 border-gray-300`
-              }`}
-            />
-          </div>
           <div className="col-span-full sm:col-span-12">
             <label htmlFor="comments" className="text-sm">
               Observações
@@ -478,42 +363,6 @@ export function Form({ loading, data, offices, companies, create, update }: Form
                   : `focus:ring-primary-500 border-gray-300`
               }`}
             />
-          </div>
-          <div className="col-span-full flex flex-col items-center md:items-end">
-            <label
-              htmlFor="avatar"
-              className="w-52 flex flex-col items-center px-1 py-2 bg-white rounded-md shadow-sm tracking-wide uppercase border border-blue cursor-pointer hover:bg-primary-300 hover:text-white text-primary-500 ease-linear transition-all duration-150"
-            >
-              <div className="flex items-center space-x-4">
-                {preview ? (
-                  <img
-                    src={preview}
-                    alt="Avatar"
-                    className="w-12 h-12 rounded-full"
-                  />
-                ) : (
-                  <div className="w-11 h-11 rounded-full flex justify-center items-center text-center font-bold text-2xl text-primary-500 bg-primary-50 hover:text-primary-900 hover:bg-primary-100 focus:outline-none focus:bg-primary-100 focus:ring-primary-900">
-                    {previewName ? getUserInitials(previewName) : "I"}
-                  </div>
-                )}
-                <UploadCloudIcon styles="w-8 h-8" />
-                <span className="mt-2 text-base leading-normal">Foto</span>
-                <input
-                  {...avatarRegister}
-                  id="avatar"
-                  type="file"
-                  className="hidden"
-                  accept="image/*"
-                  onChange={(e) => {
-                    onSelectFile(e);
-                    avatarRegister.onChange(e);
-                  }}
-                />
-              </div>
-            </label>
-            {errors.avatar && (
-              <p className="text-red-500 text-sm">{errors.avatar.message}</p>
-            )}
           </div>
           <div className="col-span-full flex justify-center">
             <LoadingButton

@@ -72,6 +72,27 @@
         }
       }
     },
+    "api-companies": {
+      "root": "libs/api/companies",
+      "sourceRoot": "libs/api/companies/src",
+      "projectType": "library",
+      "targets": {
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["libs/api/companies/**/*.ts"]
+          }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/api/companies"],
+          "options": {
+            "jestConfig": "libs/api/companies/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
     "api-contacts": {
       "root": "libs/api/contacts",
       "sourceRoot": "libs/api/contacts/src",
@@ -476,6 +497,27 @@
           "outputs": ["coverage/libs/site/calendar"],
           "options": {
             "jestConfig": "libs/site/calendar/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "site-companies": {
+      "root": "libs/site/companies",
+      "sourceRoot": "libs/site/companies/src",
+      "projectType": "library",
+      "targets": {
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["libs/site/companies/**/*.{ts,tsx,js,jsx}"]
+          }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/site/companies"],
+          "options": {
+            "jestConfig": "libs/site/companies/jest.config.js",
             "passWithNoTests": true
           }
         }

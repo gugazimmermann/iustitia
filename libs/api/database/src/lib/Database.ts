@@ -9,6 +9,7 @@ import plan, { PlansInstance } from "./models/plan";
 import subscription, { SubscriptionInstance } from "./models/subscription";
 import payment, { PaymentInstance } from "./models/payment";
 import creditcard, { CreditcardInstance } from "./models/creditcard";
+import company, { CompanyInstance } from "./models/company/company";
 import contact, { ContactInstance } from "./models/contact/contact";
 import contactAttachments, { ContactAttachmentsInstance } from "./models/contact/contact-attachment";
 import contactNotes, { ContactNotesInstance } from "./models/contact/contact-notes";
@@ -29,6 +30,7 @@ export interface IDatabase {
   Subscription: ModelCtor<SubscriptionInstance>;
   Payment: ModelCtor<PaymentInstance>;
   Creditcard: ModelCtor<CreditcardInstance>;
+  Company: ModelCtor<CompanyInstance>;
   Contact: ModelCtor<ContactInstance>;
   ContactAttachments: ModelCtor<ContactAttachmentsInstance>;
   ContactNotes: ModelCtor<ContactNotesInstance>;
@@ -45,6 +47,7 @@ const database: IDatabase = {
   Subscription: subscription(sequelize),
   Payment: payment(sequelize),
   Creditcard: creditcard(sequelize),
+  Company: company(sequelize),
   Contact: contact(sequelize),
   ContactAttachments: contactAttachments(sequelize),
   ContactNotes: contactNotes(sequelize)
@@ -68,6 +71,7 @@ database.Office.belongsToMany(database.User, { through: { model: "user_office", 
 
 database.User.hasMany(database.Contact);
 database.Office.hasMany(database.Contact);
+database.Contact.belongsTo(database.Company);
 database.Contact.hasMany(database.ContactAttachments);
 database.Contact.hasMany(database.ContactNotes);
 

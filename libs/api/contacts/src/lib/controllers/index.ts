@@ -32,6 +32,9 @@ interface ModuleInterface {
   neighborhood?: string;
   city?: string;
   state?: string;
+  position?: string;
+  companyId?: string;
+  company?: string;
   comments?: string;
   type?: string;
   userId?: string;
@@ -55,6 +58,9 @@ function dataToResult(data: ModuleInstance): ModuleInterface {
     neighborhood: data.neighborhood,
     city: data.city,
     state: data.state,
+    position: data.position,
+    companyId: data.companyId,
+    company: data.company?.name,
     comments: data.comments,
   }
 }
@@ -97,7 +103,10 @@ export async function getOne(req, res) {
   try {
     const user = await userDB.findOne({ where: { id: req.userId } });
     if (user.tenant !== tenantId) return res.status(401).send({ message: "Sem permissão!" });
-    const data = await moduleDB.findByPk(id);
+    const data = await moduleDB.findOne({
+      where: { id },
+      include: ["company"]
+    });
     return res.status(200).send(dataToResult(data));
   } catch (err) {
     return res.status(500).send({ message: err.message });
@@ -126,6 +135,7 @@ export async function create(req, res) {
   if (body.type === "Personal") body.userId = req.userId;
   if (body.type !== "All" && body.type !== "Personal") body.officeId = body.type;
   try {
+    for (const key in body) if (body[key] === "") body[key] = null;
     const data = await moduleDB.create(body);
     if (req.file) {
       const fileName = avatarName(data.id, data.tenantId);
@@ -157,6 +167,7 @@ export async function update(req, res) {
   try {
     const data = await moduleDB.findByPk(body.id);
     if (!data) return res.status(404).send({ message: "Nenhum registro encontrado!" });
+    for (const key in body) if (body[key] === "") body[key] = null;
     data.update(body);
     if (req.file) {
       if (data.avatar) await deleteFromBucket(data.avatar, process.env.NX_BUCKET_AVATAR)
