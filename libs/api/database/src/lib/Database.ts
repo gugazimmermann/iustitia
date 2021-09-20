@@ -9,8 +9,9 @@ import plan, { PlansInstance } from "./models/plan";
 import subscription, { SubscriptionInstance } from "./models/subscription";
 import payment, { PaymentInstance } from "./models/payment";
 import creditcard, { CreditcardInstance } from "./models/creditcard";
-import contact, { ContactInstance } from "./models/contact";
-import contactAttachments, { ContactAttachmentsInstance } from "./models/contactAttachment";
+import contact, { ContactInstance } from "./models/contact/contact";
+import contactAttachments, { ContactAttachmentsInstance } from "./models/contact/contact-attachment";
+import contactNotes, { ContactNotesInstance } from "./models/contact/contact-notes";
 
 const sequelize = new Sequelize(config.DB, config.USER, config.PASSWORD, {
   host: config.HOST,
@@ -30,6 +31,7 @@ export interface IDatabase {
   Creditcard: ModelCtor<CreditcardInstance>;
   Contact: ModelCtor<ContactInstance>;
   ContactAttachments: ModelCtor<ContactAttachmentsInstance>;
+  ContactNotes: ModelCtor<ContactNotesInstance>;
 }
 
 const database: IDatabase = {
@@ -44,7 +46,8 @@ const database: IDatabase = {
   Payment: payment(sequelize),
   Creditcard: creditcard(sequelize),
   Contact: contact(sequelize),
-  ContactAttachments: contactAttachments(sequelize)
+  ContactAttachments: contactAttachments(sequelize),
+  ContactNotes: contactNotes(sequelize)
 };
 
 // database.Sequelize.sync();
@@ -66,5 +69,6 @@ database.Office.belongsToMany(database.User, { through: { model: "user_office", 
 database.User.hasMany(database.Contact);
 database.Office.hasMany(database.Contact);
 database.Contact.hasMany(database.ContactAttachments);
+database.Contact.hasMany(database.ContactNotes);
 
 export default database;

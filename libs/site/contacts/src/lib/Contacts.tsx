@@ -35,6 +35,8 @@ export interface ModuleInterface {
   state?: string;
   comments?: string;
   tenantId?: string;
+  userId?: string;
+  officeId?: string;
 }
 
 export interface AttachmentInterface {
@@ -42,6 +44,15 @@ export interface AttachmentInterface {
   date: string;
   name: string;
   link: string;
+}
+
+export interface NoteInterface {
+  id?: string;
+  date: string;
+  title: string;
+  content: string;
+  tenantId?: string;
+  ownerId: string;
 }
 
 interface useParamsProps {
@@ -90,6 +101,7 @@ export function Contacts() {
       setShowUpdade(false);
       setShowCreate(false);
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
 
   async function getSelected(id: string) {

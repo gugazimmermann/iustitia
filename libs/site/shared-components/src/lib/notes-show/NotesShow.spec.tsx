@@ -1,27 +1,26 @@
 import { render } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
-import AttachmentShow from "./AttachmentShow";
+import NotesShow from "./NotesShow";
 
-interface AttachmentInterface {
+interface NoteInterface {
   id: string;
   date: string;
-  name: string;
-  link: string;
+  title: string;
+  content: string;
 }
-
-describe("AttachmentShow", () => {
+describe("NotesShow", () => {
   it("should render successfully", () => {
     // eslint-disable-next-line @typescript-eslint/no-empty-function
-    const selectAttchment = (attachment: AttachmentInterface) => {}
-    const att = {
+    const setSelectedNote = (selectedNote: NoteInterface) => {}
+    const note = {
       id: "AAA",
       date: "01/01/2021 00:00",
-      name: "BBB",
-      link: "http://CCC.com",
+      title: "BBB",
+      content: "CCC",
     };
     const { baseElement } = render(
       <MemoryRouter>
-        <AttachmentShow attachment={att}  loading={false} selectAttchment={selectAttchment} />
+        <NotesShow note={note} loading={false} setSelectedNote={setSelectedNote} />
       </MemoryRouter>
     );
     expect(baseElement).toBeTruthy();

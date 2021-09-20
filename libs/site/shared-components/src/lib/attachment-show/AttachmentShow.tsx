@@ -7,7 +7,7 @@ interface AttachmentInterface {
   name: string;
   link: string;
 }
-export interface AttachmentShowProps {
+interface AttachmentShowProps {
   attachment: AttachmentInterface;
   loading: boolean;
   selectAttchment(attachment: AttachmentInterface): void;
@@ -21,7 +21,7 @@ export function AttachmentShow({
   return (
     <div className="p-2 border border-primary-500 text-primary-500 flex items-center rounded-md justify-between">
       <a
-        href={process.env.NX_BUCKET_AVATAR_URL + attachment.link}
+        href={process.env.NX_BUCKET_FILES_URL + attachment.link}
         download
         className="truncate text-sm"
       >

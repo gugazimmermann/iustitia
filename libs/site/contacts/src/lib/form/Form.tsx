@@ -1,7 +1,7 @@
 import { ChangeEvent, useEffect, useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import NumberFormat from "react-number-format";
-import TextareaAutosize from 'react-textarea-autosize';
+import TextareaAutosize from "react-textarea-autosize";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import {
@@ -60,10 +60,10 @@ export function Form({ loading, data, create, update }: FormProps) {
   const [validZip, setValidZip] = useState(!!defaultValues.zip);
 
   useEffect(() => {
-    const subscription = watch((value) => {
+    const name = watch((value) => {
       if (!preview && value.name) setPreviewName(value.name);
     });
-    return () => subscription.unsubscribe();
+    return () => name.unsubscribe();
   }, [preview, watch]);
 
   useEffect(() => {
@@ -376,7 +376,7 @@ export function Form({ loading, data, create, update }: FormProps) {
           </div>
           <div className="col-span-full sm:col-span-12">
             <label htmlFor="comments" className="text-sm">
-              Descrição
+              Observações
             </label>
             <TextareaAutosize
               {...register("comments")}
