@@ -1,10 +1,9 @@
 import { useEffect, useState } from "react";
 import { DateTime } from "luxon";
-import { CalendarDayInterface, PeriodType } from "../../Calendar";
 import { ArraySlice, Weekdays } from "../../utils";
+import { CalendarDayInterface, PeriodType } from "../../Calendar";
+import { CalendarDay, CalendarWeekTitle } from "../../..";
 import styles from "../../Calendar.module.css";
-import CalendarWeekTitle from "../week-title/CalendarWeekTitle";
-import { CalendarDay } from "../../..";
 
 export interface CalendarScreenProps {
   period: PeriodType;

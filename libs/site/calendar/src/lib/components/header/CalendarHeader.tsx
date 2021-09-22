@@ -1,6 +1,6 @@
+import { DateTime } from "luxon";
 import { MenuArrowIcon } from "@iustitia/site/shared-components";
 import { firstUppercase } from "@iustitia/site/shared-utils";
-import { DateTime } from "luxon";
 import { CalendarDayInterface, PeriodType } from "../../Calendar";
 
 export interface CalendarHeaderProps {
@@ -26,22 +26,31 @@ export function CalendarHeader({
       const firstYear = firstDay.day.toFormat("yy");
       const lastMonth = firstUppercase(lastDay.day.toFormat("MMMM"));
       const lastYear = lastDay.day.toFormat("yy");
-      const abrFirstMonth = firstUppercase(firstDay.day.toFormat("MMM")).replace(".", "");
-      const abrLastMonth = firstUppercase(lastDay.day.toFormat("MMM")).replace(".", "");
+      const abrFirstMonth = firstUppercase(
+        firstDay.day.toFormat("MMM")
+      ).replace(".", "");
+      const abrLastMonth = firstUppercase(lastDay.day.toFormat("MMM")).replace(
+        ".",
+        ""
+      );
       if (period === "month") {
-        return `${firstUppercase(dateTime.toFormat("MMMM"))} de ${dateTime.toFormat("yyyy")}`;
+        return `${firstUppercase(
+          dateTime.toFormat("MMMM")
+        )} de ${dateTime.toFormat("yyyy")}`;
       }
       if (firstMonth === lastMonth) {
         return `${firstMonth} de ${firstDay.day.toFormat("yyyy")}`;
       }
-       if (firstMonth !== lastMonth && firstYear === lastYear) {
-        return `${abrFirstMonth} - ${abrLastMonth} de ${firstDay.day.toFormat("yyyy")}`;
+      if (firstMonth !== lastMonth && firstYear === lastYear) {
+        return `${abrFirstMonth} - ${abrLastMonth} de ${firstDay.day.toFormat(
+          "yyyy"
+        )}`;
       }
-      if (firstMonth !== lastMonth && firstYear !==lastYear) {
+      if (firstMonth !== lastMonth && firstYear !== lastYear) {
         return `${abrFirstMonth} de ${firstYear} - ${abrLastMonth} de ${lastYear}`;
       }
     }
-    return ""
+    return "";
   }
 
   return (

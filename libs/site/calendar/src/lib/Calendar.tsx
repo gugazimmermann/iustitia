@@ -2,13 +2,9 @@ import { useEffect, useState } from "react";
 import { DateTime } from "luxon";
 import { Header } from "@iustitia/site/shared-components";
 import { SiteRoutes as Routes } from "@iustitia/react-routes";
-import DaysToShow from "./utils/DaysToShow";
-import {
-  CalendarHeader,
-  CalendarPeriod,
-  CalendarScreen
-} from "..";
-import styles from "./Calendar.module.css"
+import { CalendarHeader, CalendarPeriod, CalendarScreen } from "..";
+import { DaysToShow } from "./utils";
+import styles from "./Calendar.module.css";
 
 const eventos: EventsInterface[] = [
   {
@@ -163,7 +159,7 @@ export function Calendar() {
           <CalendarPeriod period={period} setPeriod={setPeriod} />
         </div>
         <div className={`${styles.mainHeight}`}>
-            <CalendarScreen period={period} dateTime={dateTime} days={days} />
+          <CalendarScreen period={period} dateTime={dateTime} days={days} />
         </div>
       </div>
     </div>
