@@ -67,8 +67,8 @@ export function Layout({ children }: LayoutProps) {
           notificationOpen={notificationOpen}
           profile={profile}
         />
-
-        <main className="w-full lg:max-w-screen-lg h-full bg-gray-50 flex flex-col self-center">
+        {/* md:max-w-screen-lg */}
+        <main className="h-full bg-gray-50">
           {profile.subscription &&
             profile.subscription.planId ===
               "269a27f2-6006-445d-af03-b9c524556c9a" && (

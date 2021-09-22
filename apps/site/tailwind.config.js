@@ -49,6 +49,9 @@ module.exports = {
         primary: indigo,
         secondary: yellow
       },
+      rotate: {
+        '270': '270deg',
+       }
     },
   },
   variants: {
