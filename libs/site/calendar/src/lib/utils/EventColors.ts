@@ -19,6 +19,7 @@ enum EVENT_COLORS {
 
 export default EVENT_COLORS
 
+// TODO: add to tailwind prod
 export function CalendarEventBackGround(color: EVENT_COLORS) {
    switch (color) {
       case EVENT_COLORS.Cinza: {

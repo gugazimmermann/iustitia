@@ -13,6 +13,7 @@ import company, { CompanyInstance } from "./models/company/company";
 import contact, { ContactInstance } from "./models/contact/contact";
 import contactAttachments, { ContactAttachmentsInstance } from "./models/contact/contact-attachment";
 import contactNotes, { ContactNotesInstance } from "./models/contact/contact-notes";
+import event, { EventInstance } from "./models/calendar/event";
 
 const sequelize = new Sequelize(config.DB, config.USER, config.PASSWORD, {
   host: config.HOST,
@@ -34,6 +35,7 @@ export interface IDatabase {
   Contact: ModelCtor<ContactInstance>;
   ContactAttachments: ModelCtor<ContactAttachmentsInstance>;
   ContactNotes: ModelCtor<ContactNotesInstance>;
+  Event: ModelCtor<EventInstance>;
 }
 
 const database: IDatabase = {
@@ -50,7 +52,8 @@ const database: IDatabase = {
   Company: company(sequelize),
   Contact: contact(sequelize),
   ContactAttachments: contactAttachments(sequelize),
-  ContactNotes: contactNotes(sequelize)
+  ContactNotes: contactNotes(sequelize),
+  Event: event(sequelize),
 };
 
 // database.Sequelize.sync();
@@ -74,5 +77,10 @@ database.Office.hasMany(database.Contact);
 database.Contact.belongsTo(database.Company);
 database.Contact.hasMany(database.ContactAttachments);
 database.Contact.hasMany(database.ContactNotes);
+
+database.User.hasMany(database.Event);
+database.Office.hasMany(database.Event);
+database.Event.belongsToMany(database.Contact, { through: { model: "event_contact", paranoid: true } });
+database.Contact.belongsToMany(database.Event, { through: { model: "event_contact", paranoid: true } });
 
 export default database;
