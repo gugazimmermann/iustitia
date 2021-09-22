@@ -3,7 +3,7 @@ import { DateTime } from "luxon";
 import { Header } from "@iustitia/site/shared-components";
 import { SiteRoutes as Routes } from "@iustitia/react-routes";
 import { CalendarHeader, CalendarPeriod, CalendarScreen } from "..";
-import { DaysToShow } from "./utils";
+import { DaysToShow, EVENT_COLORS } from "./utils";
 import styles from "./Calendar.module.css";
 
 const eventos: EventsInterface[] = [
@@ -18,7 +18,7 @@ const eventos: EventsInterface[] = [
     ).toJSDate(),
     fullDay: false,
     title: "Teste",
-    color: "green",
+    color: EVENT_COLORS.AzulClaro,
   },
   {
     dateStart: DateTime.fromFormat(
@@ -31,7 +31,7 @@ const eventos: EventsInterface[] = [
     ).toJSDate(),
     fullDay: false,
     title: "Jantar",
-    color: "orange",
+    color: EVENT_COLORS.Indigo,
   },
   {
     dateStart: DateTime.fromFormat(
@@ -44,7 +44,7 @@ const eventos: EventsInterface[] = [
     ).toJSDate(),
     fullDay: false,
     title: "Consulta Dentista",
-    color: "orange",
+    color: EVENT_COLORS.Roxo,
   },
   {
     dateStart: DateTime.fromFormat(
@@ -57,7 +57,7 @@ const eventos: EventsInterface[] = [
     ).toJSDate(),
     fullDay: true,
     title: "Fora do Escritorio",
-    color: "purple",
+    color: EVENT_COLORS.Rosa,
   },
   {
     dateStart: DateTime.fromFormat(
@@ -70,7 +70,7 @@ const eventos: EventsInterface[] = [
     ).toJSDate(),
     fullDay: true,
     title: "Reuniao Sistema",
-    color: "green",
+    color: EVENT_COLORS.Verde,
   },
 ];
 
@@ -87,7 +87,7 @@ export interface EventsInterface {
   dateEnd: Date;
   fullDay: boolean;
   title: string;
-  color: "orange" | "purple" | "green";
+  color: EVENT_COLORS;
 }
 
 export type PeriodType = "month" | "week";
