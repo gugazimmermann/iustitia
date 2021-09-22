@@ -72,6 +72,27 @@
         }
       }
     },
+    "api-calendar": {
+      "root": "libs/api/calendar",
+      "sourceRoot": "libs/api/calendar/src",
+      "projectType": "library",
+      "targets": {
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["libs/api/calendar/**/*.ts"]
+          }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/api/calendar"],
+          "options": {
+            "jestConfig": "libs/api/calendar/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
     "api-companies": {
       "root": "libs/api/companies",
       "sourceRoot": "libs/api/companies/src",

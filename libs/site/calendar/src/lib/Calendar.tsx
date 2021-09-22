@@ -6,6 +6,24 @@ import { CalendarHeader, CalendarPeriod, CalendarScreen } from "..";
 import { DaysToShow, EVENT_COLORS } from "./utils";
 import styles from "./Calendar.module.css";
 
+export const ModuleName = {
+  module: "calendar",
+  parents: ["Agenda"],
+  singular: "Calendário",
+  route: Routes.Calendar,
+};
+
+export interface ModuleInterface {
+  id?: string;
+  startDate?: Date;
+  endDate?: Date;
+  fullDay?: boolean;
+  color?: string;
+  title?: string;
+  description?: string;
+  tenantId?: string;
+}
+
 const eventos: EventsInterface[] = [
   {
     dateStart: DateTime.fromFormat(
@@ -91,13 +109,6 @@ export interface EventsInterface {
 }
 
 export type PeriodType = "month" | "week";
-
-export const ModuleName = {
-  module: "calendar",
-  parents: ["Agenda"],
-  singular: "Calendário",
-  route: Routes.Calendar,
-};
 
 export function Calendar() {
   const initial = DateTime.now();

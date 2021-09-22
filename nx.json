@@ -33,6 +33,9 @@
     "api-auth": {
       "tags": []
     },
+    "api-calendar": {
+      "tags": []
+    },
     "api-companies": {
       "tags": []
     },

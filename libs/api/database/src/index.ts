@@ -4,3 +4,4 @@ export { CompanyInstance } from "./lib/models/company/company";
 export { ContactInstance } from "./lib/models/contact/contact";
 export { ContactAttachmentsInstance } from "./lib/models/contact/contact-attachment";
 export { ContactNotesInstance } from "./lib/models/contact/contact-notes";
+export { EventInstance } from "./lib/models/calendar/event";
