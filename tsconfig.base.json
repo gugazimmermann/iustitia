@@ -36,6 +36,7 @@
       "@iustitia/site/dashboard": ["libs/site/dashboard/src/index.ts"],
       "@iustitia/site/layout": ["libs/site/layout/src/index.ts"],
       "@iustitia/site/schedule": ["libs/site/schedule/src/index.ts"],
+      "@iustitia/site/services": ["libs/site/services/src/index.ts"],
       "@iustitia/site/shared-components": [
         "libs/site/shared-components/src/index.ts"
       ],

@@ -101,6 +101,9 @@
     "site-schedule": {
       "tags": []
     },
+    "site-services": {
+      "tags": []
+    },
     "site-shared-components": {
       "tags": []
     },

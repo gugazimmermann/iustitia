@@ -2,13 +2,14 @@ import { useEffect, useState } from "react";
 import { DateTime } from "luxon";
 import { Alert, EventNewModal, Header } from "@iustitia/site/shared-components";
 import { SiteRoutes as Routes } from "@iustitia/react-routes";
-import { CalendarHeader, CalendarPeriod, CalendarScreen } from "..";
-import * as Services from "./services";
-import styles from "./Calendar.module.css";
+import { getAllContacts, ModuleInterface as ContactInterface} from "@iustitia/site/contacts";
 import {
   getDaysToShow,
   WARNING_TYPES,
 } from "@iustitia/site/shared-utils";
+import { CalendarHeader, CalendarPeriod, CalendarScreen } from "..";
+import * as Services from "./services";
+import styles from "./Calendar.module.css";
 
 export const ModuleName = {
   module: "calendar",
@@ -44,6 +45,8 @@ export function Calendar() {
   const [error, setError] = useState("");
   const [showEventModal, setEShowEventModal] = useState(false);
   const [selectedDay, setSelectedDay] = useState<DateTime>();
+  const [contacts, setContacts] = useState<ContactInterface[]>();
+
 
   useEffect(() => {
     if (error) setTimeout(() => setError(""), 3000);
@@ -53,6 +56,10 @@ export function Calendar() {
     handleChangeDays();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dateTime, period]);
+
+  useEffect(() => {
+    getContacts();
+  }, [])
 
   async function handleChangeDays() {
     const daysToShow = getDaysToShow(dateTime, period);
@@ -94,6 +101,18 @@ export function Calendar() {
     console.log(event);
   }
 
+  async function getContacts() {
+    try {
+      const data = await getAllContacts();
+      console.log(data)
+      setContacts(data as ContactInterface[]);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (err: any) {
+      setError(err.message as string);
+      console.log(err);
+    }
+  }
+
   return (
     <>
       <div className="h-full">
@@ -126,6 +145,7 @@ export function Calendar() {
           day={selectedDay}
           setShowModal={setEShowEventModal}
           action={handleNewEvent}
+          // contacts={contacts}
         />
       )}
     </>

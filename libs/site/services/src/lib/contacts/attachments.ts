@@ -1,7 +1,6 @@
-import { api, TokenService } from "@iustitia/site/auth";
+import { api, token } from "../..";
 import { errorHandler } from "@iustitia/site/shared-utils";
-import { ModuleName } from "../..";
-import { AttachmentInterface } from "../Contacts";
+import { ModuleName, AttachmentInterface } from "@iustitia/site/contacts";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function createAttachments(formData: FormData, onUploadProgress: any): Promise<{ message: string } | Error> {
@@ -17,7 +16,7 @@ export async function createAttachments(formData: FormData, onUploadProgress: an
 
 export async function getAllAttachments(ownerId: string): Promise<AttachmentInterface[] | Error> {
   try {
-    const tenantId = TokenService.getLocalTenantId();
+    const tenantId = token.getLocalTenantId();
     const { data } = await api.get(`/api/${ModuleName.module}/attachments/${tenantId}/${ownerId}`);
     return data
   } catch (err) {

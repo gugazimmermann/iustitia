@@ -653,6 +653,27 @@
         }
       }
     },
+    "site-services": {
+      "root": "libs/site/services",
+      "sourceRoot": "libs/site/services/src",
+      "projectType": "library",
+      "targets": {
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["libs/site/services/**/*.ts"]
+          }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/site/services"],
+          "options": {
+            "jestConfig": "libs/site/services/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
     "site-shared-components": {
       "root": "libs/site/shared-components",
       "sourceRoot": "libs/site/shared-components/src",

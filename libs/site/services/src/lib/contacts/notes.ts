@@ -1,10 +1,10 @@
-import { api, TokenService } from "@iustitia/site/auth";
+import { api, token } from "../..";
 import { errorHandler } from "@iustitia/site/shared-utils";
-import { NoteInterface, ModuleName } from "../..";
+import { NoteInterface, ModuleName } from "@iustitia/site/contacts";
 
 export async function getAllNotes(ownerId: string): Promise<NoteInterface[] | Error> {
   try {
-    const tenantId = TokenService.getLocalTenantId();
+    const tenantId = token.getLocalTenantId();
     const { data } = await api.get(`/api/${ModuleName.module}/notes/${tenantId}/${ownerId}`);
     return data
   } catch (err) {
@@ -14,7 +14,7 @@ export async function getAllNotes(ownerId: string): Promise<NoteInterface[] | Er
 
 export async function createNote(formData: NoteInterface): Promise<NoteInterface | Error> {
   try {
-    formData.tenantId = TokenService.getLocalTenantId();
+    formData.tenantId = token.getLocalTenantId();
     const { data } = await api.post(`/api/${ModuleName.module}/notes`, formData);
     return data
   } catch (err) {

@@ -11,7 +11,7 @@ import {
   createOffice,
   updateOffice,
   deleteOffice,
-} from "../../services/office";
+} from "../../../../services/src/lib/dashboard/office";
 import Form from "./form/Form";
 import List from "./list/List";
 

@@ -1,4 +1,4 @@
-import { api } from "@iustitia/site/auth";
+import { api } from "../..";
 import { errorHandler } from "@iustitia/site/shared-utils";
 
 export async function getPlans() {

@@ -1,10 +1,10 @@
-import { api, TokenService } from "@iustitia/site/auth";
+import { api, token } from "../..";
 import { errorHandler } from "@iustitia/site/shared-utils";
-import { IOffice } from "../../interfaces";
+import { IOffice } from "../../../../dashboard/src/interfaces";
 
 export async function getOne(officeId: string) {
   try {
-    const tenantId = TokenService.getLocalTenantId();
+    const tenantId = token.getLocalTenantId();
     const { data } = await api.get(`/api/office/${tenantId}/${officeId}`);
     return data
   } catch (err) {
@@ -14,7 +14,7 @@ export async function getOne(officeId: string) {
 
 export async function getAll() {
   try {
-    const tenantId = TokenService.getLocalTenantId();
+    const tenantId = token.getLocalTenantId();
     const { data } = await api.get(`/api/office/${tenantId}`);
     return data
   } catch (err) {
@@ -24,7 +24,7 @@ export async function getAll() {
 
 export async function createOffice(office: IOffice) {
   try {
-    office.tenantId = TokenService.getLocalTenantId();
+    office.tenantId = token.getLocalTenantId();
     const { data } = await api.post("/api/office", office);
     return data
   } catch (err) {

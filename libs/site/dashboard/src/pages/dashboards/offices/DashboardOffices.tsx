@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useHistory, useParams } from "react-router-dom";
 import { SiteRoutes as Routes } from "@iustitia/react-routes";
 import { Header, InfoCard, INFOCARDSICONS } from "@iustitia/site/shared-components";
-import { getOne } from "../../../services/office";
+import { getOne } from "../../../../../services/src/lib/dashboard/office";
 import { IOffice } from "../../../interfaces";
 
 interface DashboardOfficesProps {
