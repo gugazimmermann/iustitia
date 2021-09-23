@@ -12,3 +12,6 @@ export * from "./lib/attachment-upload-modal/AttachmentUploadModal";
 export { AttachmentUploadDetails } from "./lib/attachment-upload-modal/AttachmentUploadDetails";
 export * from "./lib/notes-show/NotesShow";
 export * from "./lib/note-new-modal/NoteNewModal";
+export * from "./lib/event-new-modal/EventNewModal";
+export * from "./lib/calendar-day-input/CalendarInput";
+export * from "./lib/color-picker/ColorPicker";

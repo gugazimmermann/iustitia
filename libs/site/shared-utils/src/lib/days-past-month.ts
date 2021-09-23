@@ -1,5 +1,5 @@
 import { DateTime } from "luxon";
-import { Weekdays } from ".";
+import { Weekdays } from "..";
 
 export default function DaysPastMonth(
   start: DateTime,

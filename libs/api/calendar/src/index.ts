@@ -1,1 +1,1 @@
-export * from "./lib/Calendar";
+export { default as calendarRoutes } from "./lib/Calendar";

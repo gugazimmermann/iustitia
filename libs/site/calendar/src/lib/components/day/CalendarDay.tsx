@@ -1,18 +1,26 @@
 import { DateTime } from "luxon";
-import { IsWeekend } from "../../utils";
 import { CalendarDayInterface } from "../../Calendar";
 import { CalendarEventSingle, CalendarEventMulti } from "../../..";
+import { IsWeekend } from "@iustitia/site/shared-utils";
 
 export interface CalendarDayProps {
   day: CalendarDayInterface;
   dateTime: DateTime;
+  setShowEventModal(eventModal: boolean): void;
+  setSelectedDay(day: DateTime): void;
 }
 
-export function CalendarDay({ day, dateTime }: CalendarDayProps) {
+export function CalendarDay({ day, dateTime, setShowEventModal, setSelectedDay }: CalendarDayProps) {
+
+  function handleOpenModal(day: DateTime) {
+    setSelectedDay(day);
+    setShowEventModal(true);
+  }
+
   function seeEvent({ day, events }: CalendarDayInterface) {
     return events.map((event, i) => {
-      const dateStart = DateTime.fromJSDate(event.dateStart);
-      const dateEnd = DateTime.fromJSDate(event.dateEnd);
+      const dateStart = DateTime.fromJSDate(event.startDate);
+      const dateEnd = DateTime.fromJSDate(event.endDate);
       if (
         dateStart.startOf("day").toISODate() ===
         dateEnd.startOf("day").toISODate()
@@ -33,9 +41,12 @@ export function CalendarDay({ day, dateTime }: CalendarDayProps) {
 
   return (
     <div
-      className={`h-full border-r border-b border-gray-300 ${
+      className={`h-full cursor-pointer hover:bg-primary-50 border-r border-b border-gray-300 ${
         IsWeekend(day.day) && `bg-gray-50`
       }`}
+      onClick={() => {
+        handleOpenModal(day.day)
+      }}
     >
       {day.day.ordinal === DateTime.now().ordinal ? (
         <span className=" ml-1 px-2 py-1 text-xs font-bold rounded-full text-white bg-primary-500">

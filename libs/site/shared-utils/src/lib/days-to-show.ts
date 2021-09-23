@@ -1,5 +1,5 @@
 import { DateTime } from "luxon";
-import { ArraySlice, DaysNextMonth, DaysPastMonth, InternvalOfDays } from ".";
+import { InternvalOfDays, DaysPastMonth, ArraySlice, DaysNextMonth } from "..";
 
 export default function getDaysToShow(
   selectedDate: DateTime,

@@ -1,20 +1,24 @@
 import { useEffect, useState } from "react";
 import { DateTime } from "luxon";
-import { ArraySlice, Weekdays } from "../../utils";
 import { CalendarDayInterface, PeriodType } from "../../Calendar";
 import { CalendarDay, CalendarWeekTitle } from "../../..";
 import styles from "../../Calendar.module.css";
+import { ArraySlice, Weekdays } from "@iustitia/site/shared-utils";
 
 export interface CalendarScreenProps {
   period: PeriodType;
   dateTime: DateTime;
   days: CalendarDayInterface[];
+  setShowEventModal(eventModal: boolean): void;
+  setSelectedDay(day: DateTime): void;
 }
 
 export function CalendarScreen({
   period,
   dateTime,
   days,
+  setShowEventModal,
+  setSelectedDay
 }: CalendarScreenProps) {
   const [weeks, setWeeks] = useState<CalendarDayInterface[][]>();
 
@@ -27,7 +31,13 @@ export function CalendarScreen({
 
   function showDays(week: CalendarDayInterface[]) {
     return week.map((d, i) => (
-      <CalendarDay key={i} day={d} dateTime={dateTime} />
+      <CalendarDay
+      key={i}
+      day={d}
+      dateTime={dateTime}
+      setShowEventModal={setShowEventModal}
+      setSelectedDay={setSelectedDay}
+       />
     ));
   }
 

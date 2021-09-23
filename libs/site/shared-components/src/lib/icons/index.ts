@@ -12,6 +12,7 @@ export * from './CalendarIcon'
 export * from './WarningIcon'
 export * from './CaseIcon'
 export * from './CloseIcon'
+export * from './ColorPaletteIcon'
 export * from './CreditCardIcon'
 export * from "./DashboardIcon"
 export * from "./DocumentIcon"

@@ -1,19 +1,19 @@
+import { SeeEventBackgroundColor } from "@iustitia/site/shared-utils";
 import { DateTime } from "luxon";
-import { EventsInterface } from "../../Calendar";
-import { CalendarEventBackGround } from "../../utils";
+import { ModuleInterface } from "../../Calendar";
 
 export interface CalendarEventSingleProps {
-  event: EventsInterface;
+  event: ModuleInterface;
 }
 
 export function CalendarEventSingle({ event }: CalendarEventSingleProps) {
   return (
     <div className="flex items-start ml-1">
       <div
-        className={`w-3 h-3 rounded ${CalendarEventBackGround(event.color)} `}
+        className={`w-3 h-3 rounded ${SeeEventBackgroundColor(event.color)} `}
       />
       <div className="ml-1 text-xs truncate">
-        {`${DateTime.fromJSDate(event.dateStart).toFormat("HH:mm")} ${
+        {`${DateTime.fromJSDate(event.startDate).toFormat("HH:mm")} ${
           event.title
         }`}
       </div>

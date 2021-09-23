@@ -9,7 +9,7 @@ export function CalendarIcon({ styles, stroke }: IconProps) {
         viewBox="0 0 24 24"
         stroke="currentColor"
         fill="none"
-        strokeWidth="2"
+        strokeWidth={stroke}
         strokeLinecap="round"
         strokeLinejoin="round"
       >

@@ -8,6 +8,7 @@ import { mercadopagoRoutes } from "@iustitia/api/mercadopago";
 import { dashboardRoutes } from "@iustitia/api/dashboard";
 import { companiesRoutes } from "@iustitia/api/companies";
 import { contactsRoutes } from "@iustitia/api/contacts";
+import { calendarRoutes } from "@iustitia/api/calendar";
 
 const app = express();
 app.use(morgan("dev"));
@@ -32,8 +33,10 @@ mercadopagoRoutes(app);
 dashboardRoutes(app);
 companiesRoutes(app);
 contactsRoutes(app);
+calendarRoutes(app);
 
 app.use((req, res) => res.status(404).send("Not Found!"));
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(500).send(err.message)

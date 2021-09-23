@@ -1,10 +1,10 @@
+import { SeeEventBackgroundColor, SeeEventTextColor } from "@iustitia/site/shared-utils";
 import { DateTime } from "luxon";
-import { EventsInterface } from "../../Calendar";
+import { ModuleInterface } from "../../Calendar";
 import styles from "../../Calendar.module.css";
-import { CalendarEventBackGround } from "../../utils";
 
 export interface CalendarEventMultiProps {
-  event: EventsInterface;
+  event: ModuleInterface;
   dateStart: DateTime;
   day: DateTime;
 }
@@ -18,18 +18,13 @@ export function CalendarEventMulti({
     <div
       className={`${
         styles.fullEvent
-      } relative px-2 py-1 pl-1 text-xs ${CalendarEventBackGround(
-        event.color
-      )} `}
+      } relative px-2 py-1 pl-1 text-xs ${SeeEventBackgroundColor(event.color)} `}
     >
       {dateStart.toFormat("dd") === day.toFormat("dd") ? (
         <span className="text-white truncate">{event.title}</span>
       ) : (
         <span
-          className={`truncate ${CalendarEventBackGround(event.color).replace(
-            "bg",
-            "text"
-          )} `}
+          className={`truncate ${SeeEventTextColor(event.color)}`}
         >
           {event.title}
         </span>
