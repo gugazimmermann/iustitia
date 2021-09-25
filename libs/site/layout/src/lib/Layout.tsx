@@ -9,10 +9,11 @@ import {
 import { DateTime } from "luxon";
 import { Alert, Callout } from "@iustitia/site/shared-components";
 import { WARNING_TYPES } from "@iustitia/site/shared-utils";
-import { ProfileServices,  OfficeServices } from "@iustitia/site/services";
+import { ProfileServices, OfficeServices } from "@iustitia/site/services";
 import { Nav, Menu } from "./components";
 
-export const { route, singular, parents, plural } = ProfileServices.ProfileModule;
+export const { route, singular, parents, plural } =
+  ProfileServices.ProfileModule;
 export type ProfileInterface = ProfileServices.ProfileInterface;
 export type OfficeInterface = OfficeServices.OfficeInterface;
 
@@ -35,6 +36,7 @@ export function Layout({ children }: LayoutProps) {
     async function whoIAm() {
       try {
         const data = (await ProfileServices.getOne()) as ProfileInterface;
+        if (data.subscription) data.subscription.basic = data.subscription?.reason.toLowerCase().includes("profissional") ? false : true;
         setProfile(data);
       } catch (err) {
         console.log(err);
@@ -74,8 +76,7 @@ export function Layout({ children }: LayoutProps) {
         {/* md:max-w-screen-lg */}
         <main className="h-full bg-gray-50">
           {profile.subscription &&
-            profile.subscription.planId ===
-              "269a27f2-6006-445d-af03-b9c524556c9a" && (
+            profile.subscription.planId === process.env.NX_FREE_PLAN && (
               <Alert
                 type={
                   subscriptionEndDate(

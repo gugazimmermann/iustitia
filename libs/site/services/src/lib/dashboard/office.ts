@@ -32,7 +32,7 @@ export interface OfficeInterface {
 type ModuleInterface = OfficeInterface;
 const RouteName = OfficeModule.module;
 
-export async function getAll() {
+export async function getAll(): Promise<OfficeInterface[] | Error> {
   try {
     const tenantId = token.getLocalTenantId();
     const { data } = await api.get(`/api/${RouteName}/${tenantId}`);
@@ -42,7 +42,7 @@ export async function getAll() {
   }
 };
 
-export async function getOne(id: string) {
+export async function getOne(id: string): Promise<OfficeInterface | Error> {
   try {
     const tenantId = token.getLocalTenantId();
     const { data } = await api.get(`/api/${RouteName}/${tenantId}/${id}`);
@@ -52,26 +52,26 @@ export async function getOne(id: string) {
   }
 };
 
-export async function create(formData: ModuleInterface) {
+export async function create(formData: ModuleInterface): Promise<OfficeInterface | Error> {
   try {
     formData.tenantId = token.getLocalTenantId();
-    const { data } = await api.post("/api/${RouteName}", formData);
+    const { data } = await api.post(`/api/${RouteName}`, formData);
     return data
   } catch (err) {
     return errorHandler(err)
   }
 };
 
-export async function update(formData: ModuleInterface) {
+export async function update(formData: ModuleInterface): Promise<OfficeInterface | Error> {
   try {
-    const { data } = await api.put("/api/${RouteName}", formData);
+    const { data } = await api.put(`/api/${RouteName}`, formData);
     return data
   } catch (err) {
     return errorHandler(err)
   }
 };
 
-export async function deleteOne(id: string) {
+export async function deleteOne(id: string): Promise<{ message: string } | Error> {
   try {
     return await api.delete(`/api/${RouteName}/${id}`);
   } catch (err) {

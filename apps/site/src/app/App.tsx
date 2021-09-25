@@ -87,11 +87,28 @@ export const App = () => {
           <Profile />
         </Layout>
       </ProtectedRoute>
+
       <ProtectedRoute exact path={Routes.Offices}>
         <Layout>
           <Offices />
         </Layout>
       </ProtectedRoute>
+      <ProtectedRoute exact path={`${Routes.Offices}/add`}>
+        <Layout>
+          <Offices />
+        </Layout>
+      </ProtectedRoute>
+      <ProtectedRoute exact path={`${Routes.Offices}/edit/:id?`}>
+        <Layout>
+          <Offices />
+        </Layout>
+      </ProtectedRoute>
+      <ProtectedRoute exact path={`${Routes.Offices}/:id?`}>
+        <Layout>
+          <Offices />
+        </Layout>
+      </ProtectedRoute>
+
       <ProtectedRoute exact path={Routes.Subscriptions}>
         <Layout>
           <Subscriptions />

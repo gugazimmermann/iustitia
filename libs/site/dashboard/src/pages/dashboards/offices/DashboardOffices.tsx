@@ -55,7 +55,7 @@ export function DashboardOffices({ offices }: DashboardOfficesProps) {
 
   async function getOffice(id: string) {
     try {
-      const office = await OfficeServices.getOne(id);
+      const office = (await OfficeServices.getOne(id)) as OfficeInterface;
       setSelectedOffice(office);
     } catch (err) {
       console.log(err);

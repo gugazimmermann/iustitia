@@ -1,143 +1,110 @@
 import { Response } from "express";
 import { UserRequest } from "@iustitia/api/auth";
-import { database } from '@iustitia/api/database';
 import { validateEmail } from '@iustitia/site/shared-utils';
+import { database, OfficeInstance } from '@iustitia/api/database';
 
-export async function getOneOffice(req: UserRequest, res: Response): Promise<Response> {
-  const { tenantId, officeId } = req.params;
-  if (!tenantId || !officeId) {
-    return res.status(400).send({ message: "Dados inválidos!" });
+export const moduleName = "office";
+
+export const userDB = database.User;
+const moduleDB = database.Office;
+type ModuleInstance = OfficeInstance;
+
+interface ModuleInterface {
+  id?: string;
+  name?: string;
+  email?: string;
+  phone?: string;
+  zip?: string;
+  address?: string;
+  number?: string;
+  complement?: string;
+  neighborhood?: string;
+  city?: string;
+  state?: string;
+  tenantId?: string;
+}
+
+function dataToResult(data: ModuleInstance): ModuleInterface {
+  return {
+    id: data.id,
+    name: data.name,
+    email: data.email,
+    phone: data.phone,
+    zip: data.zip,
+    address: data.address,
+    number: data.number,
+    complement: data.complement,
+    neighborhood: data.neighborhood,
+    city: data.city,
+    state: data.state,
   }
-  const user = await database.User.findOne({ where: { id: req.userId } });
-  if (user.tenant !== tenantId) {
-    return res.status(401).send({ message: "Sem permissão!" });
-  }
+}
+
+export async function getOne(req: UserRequest, res: Response): Promise<Response> {
+  const { tenantId, id } = req.params;
+  console.log(tenantId, id)
+  if (!tenantId || !id) return res.status(400).send({ message: "Dados inválidos!" });
   try {
-    const office = await database.Office.findByPk(officeId);
-    return res.status(200).send(office);
+    const user = await userDB.findOne({ where: { id: req.userId } });
+    if (user.tenant !== tenantId) return res.status(401).send({ message: "Sem permissão!" });
+    const data = await moduleDB.findByPk(id);
+    return res.status(200).send(dataToResult(data));
   } catch (err) {
     return res.status(500).send({ message: err.message });
   }
 }
 
-export async function getAllOffices(req: UserRequest, res: Response): Promise<Response> {
+export async function getAll(req: UserRequest, res: Response): Promise<Response> {
   const { tenantId } = req.params;
-  if (!tenantId) {
-    return res.status(400).send({ message: "Dados inválidos!" });
-  }
-  const user = await database.User.findOne({ where: { id: req.userId } });
-  if (user.tenant !== tenantId) {
-    return res.status(401).send({ message: "Sem permissão!" });
-  }
+  if (!tenantId) return res.status(400).send({ message: "Dados inválidos!" });
   try {
-    const offices = await database.Office.findAll({ where: { tenantId } });
-    return res.status(200).send(offices);
+    const user = await userDB.findOne({ where: { id: req.userId } });
+    if (user.tenant !== tenantId) return res.status(401).send({ message: "Sem permissão!" });
+    const data = await moduleDB.findAll({ where: { tenantId } });
+    const resultData = [] as ModuleInterface[];
+    if (data.length > 0) data.forEach(d => resultData.push(dataToResult(d)));
+    return res.status(200).send(resultData);
   } catch (err) {
     return res.status(500).send({ message: err.message });
   }
 }
 
-export async function createOffice(req: UserRequest, res: Response): Promise<Response> {
+export async function create(req: UserRequest, res: Response): Promise<Response> {
   const { body } = req;
-  if (
-    !body.name ||
-    !body.address ||
-    !body.neighborhood ||
-    !body.city ||
-    !body.state ||
-    !body.zip ||
-    !body.tenantId
-  ) {
-    return res.status(400).send({ message: "Dados inválidos!" });
-  }
-  if (body.email && !validateEmail(body.email)) {
-    return res.status(400).send({ message: "Dados inválidos!" });
-  }
-  body.userId = req.userId
+  if (!body.name || !body.zip || !body.address || !body.neighborhood || !body.city || !body.state || !body.tenantId) return res.status(400).send({ message: "Dados inválidos!" });
+  if (body.email && !validateEmail(body.email)) return res.status(400).send({ message: "Dados inválidos!" });
   try {
-    const user = await database.User.findOne({
-      where: { id: req.userId },
-      include: ["subscription"],
-    });
-    const offices = await database.Office.findAll({where: { tenantId: user.tenant },});
-    if (user.subscription.type === "basic" && offices.length > 0) {
-      return res.status(401).send({ message: "Plano Básico permite somente um escritório!" });
-    }
-    const office = await database.Office.create(body);
-    return res.status(201).send({
-      name: office.name,
-      email: office.email,
-      phone: office.phone,
-      zip: office.zip,
-      address: office.address,
-      number: office.number,
-      complement: office.complement,
-      neighborhood: office.neighborhood,
-      city: office.city,
-      state: office.state,
-      tenantId: office.tenantId
-    });
+    const data = await moduleDB.create(body);
+    return res.status(201).send(dataToResult(data));
   } catch (err) {
     return res.status(500).send({ message: err.message });
   }
 }
 
-export async function updateOffice(req: UserRequest, res: Response): Promise<Response> {
+export async function update(req: UserRequest, res: Response): Promise<Response> {
   const { body } = req;
-  if (
-    !body.id ||
-    !body.name ||
-    !body.address ||
-    !body.neighborhood ||
-    !body.city ||
-    !body.state ||
-    !body.zip
-  ) {
-    return res.status(400).send({ message: "Dados inválidos!" });
-  }
-  if (body.email && !validateEmail(body.email)) {
-    return res.status(400).send({ message: "Dados inválidos!" });
-  }
+  if (!body.id || !body.name || !body.zip || !body.address || !body.neighborhood || !body.city || !body.state) return res.status(400).send({ message: "Dados inválidos!" });
+  if (body.email && !validateEmail(body.email)) return res.status(400).send({ message: "Dados inválidos!" });
   try {
-    const office = await database.Office.findByPk(body.id);
-    if (!office) {
-      return res.status(404).send({ message: "Nenhum escritório encontrado!" });
-    }
-    office.update(body)
-    return res.status(200).send({
-      name: office.name,
-      email: office.email,
-      phone: office.phone,
-      zip: office.zip,
-      address: office.address,
-      number: office.number,
-      complement: office.complement,
-      neighborhood: office.neighborhood,
-      city: office.city,
-      state: office.state,
-      tenantId: office.tenantId
-    });
+    const data = await moduleDB.findByPk(body.id);
+    if (!data) return res.status(404).send({ message: "Nenhum registro encontrado!" });
+    data.update(body);
+    return res.status(200).send(dataToResult(data));
   } catch (err) {
     return res.status(500).send({ message: err.message });
   }
 }
 
-export async function deleteOffice(req: UserRequest, res: Response): Promise<Response> {
-  const { officeId } = req.params;
-  if (!officeId) {
-    return res.status(400).send({ message: "Dados inválidos!" });
-  }
-  const office = await database.Office.findByPk(officeId);
-  if (!office) {
-    return res.status(404).send({ message: "Nenhum escritório encontrado!" });
-  }
-  const user = await database.User.findOne({ where: { id: req.userId } });
-  if (user.tenant !== office.tenantId) {
-    return res.status(401).send({ message: "Sem permissão!" });
-  }
+export async function deleteOne(req: UserRequest, res: Response): Promise<Response> {
+  const { id } = req.params;
+  if (!id) return res.status(400).send({ message: "Dados inválidos!" });
   try {
-    await database.Office.destroy({ where: { id: officeId } });
-    return res.status(200).send({ message: "Escritório deletado!" });
+    const data = await moduleDB.findByPk(id);
+    if (!data) return res.status(404).send({ message: "Nenhum registro encontrado!" });
+    const user = await userDB.findOne({ where: { id: req.userId } });
+    if (user.tenant !== data.tenantId) return res.status(401).send({ message: "Sem permissão!" });
+    await moduleDB.destroy({ where: { id: id } });
+    return res.status(200).send({ message: "Registro deletado!" });
   } catch (err) {
     return res.status(500).send({ message: err.message });
   }

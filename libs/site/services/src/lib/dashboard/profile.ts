@@ -22,7 +22,7 @@ export interface ProfileInterface {
   neighborhood: string;
   city: string;
   state: string;
-  subscription?: ProfileSubscriptionInterface
+  subscription?: ProfileSubscriptionInterface;
 };
 
 export interface ProfileSubscriptionInterface {
@@ -30,6 +30,7 @@ export interface ProfileSubscriptionInterface {
   reason: string;
   frequency: number;
   type: string;
+  basic?: boolean;
   createdAt: string;
 }
 

@@ -3,49 +3,40 @@ import { useForm, Controller } from "react-hook-form";
 import NumberFormat from "react-number-format";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { getAddressFromCEP, validateEmail } from "@iustitia/site/shared-utils";
+import {getAddressFromCEP, validateEmail } from "@iustitia/site/shared-utils";
 import { LoadingButton } from "@iustitia/site/shared-components";
 import { OfficeInterface, singular } from "../../Offices";
 
 export interface FormProps {
   loading: boolean;
-  office?: OfficeInterface;
-  createOffice?(office: OfficeInterface): void;
-  updateOffice?(office: OfficeInterface): void;
+  data?: OfficeInterface;
+  create?(data: OfficeInterface): void;
+  update?(data: OfficeInterface): void;
 }
 
 const schema = yup.object().shape({
   name: yup.string().required(),
-  zip: yup.string().required().min(10).max(10),
-  address: yup.string().required(),
-  neighborhood: yup.string().required(),
-  city: yup.string().required(),
-  state: yup.string().required(),
 });
 
-export function Form({
-  loading,
-  office,
-  createOffice,
-  updateOffice,
-}: FormProps) {
+export function Form({ loading, data, create, update }: FormProps) {
   const defaultValues: OfficeInterface = {
-    name: office?.name || "",
-    email: office?.email || "",
-    phone: office?.phone || "",
-    zip: office?.zip || "",
-    address: office?.address || "",
-    number: office?.number || "",
-    complement: office?.complement || "",
-    neighborhood: office?.neighborhood || "",
-    city: office?.city || "",
-    state: office?.state || "",
+    name: data?.name || "",
+    email: data?.email || "",
+    phone: data?.phone || "",
+    zip: data?.zip || "",
+    address: data?.address || "",
+    number: data?.number || "",
+    complement: data?.complement || "",
+    neighborhood: data?.neighborhood || "",
+    city: data?.city || "",
+    state: data?.state || ""
   };
   const {
     control,
     register,
     handleSubmit,
     setValue,
+    watch,
     setError,
     clearErrors,
     formState: { errors },
@@ -53,6 +44,7 @@ export function Form({
     resolver: yupResolver(schema),
     defaultValues,
   });
+
   const [validZip, setValidZip] = useState(!!defaultValues.zip);
 
   async function fetchCEP(zip: string) {
@@ -80,34 +72,34 @@ export function Form({
     }
   }
 
-  async function onSubmit(data: OfficeInterface) {
-    if (!validZip) {
+  async function onSubmit(formData: OfficeInterface) {
+    if (!formData.zip || !validZip) {
       setError("zip", { type: "manual" });
       return;
     }
-    if (data.email && !validateEmail(data.email)) {
+    if (formData.email && !validateEmail(formData.email)) {
       setError("email", { type: "manual" });
       return;
     }
-    if (createOffice) {
-      createOffice(data);
+    if (create) {
+      create(formData);
       return;
     }
-    if (updateOffice) {
-      if (!office?.id) {
+    if (update) {
+      if (!data?.id) {
         console.error("ID not found!");
         return;
       }
-      data.id = office?.id;
-      updateOffice(data);
+      formData.id = data.id;
+      update(formData);
       return;
     }
   }
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col mx-auto">
-      <fieldset className="grid grid-cols-1 gap-4 p-4 ">
-        <div className="grid grid-cols-12 gap-4 col-span-full lg:col-span-3">
+      <fieldset className="grid grid-cols-1 gap-4 p-4">
+        <div className="grid grid-cols-12 gap-4 col-span-full lg:col-span-4">
           <div className="col-span-full sm:col-span-4">
             <label htmlFor="name" className="text-sm">
               Nome *
@@ -125,7 +117,7 @@ export function Form({
             />
           </div>
           <div className="col-span-full sm:col-span-4">
-            <label htmlFor="name" className="text-sm">
+            <label htmlFor="email" className="text-sm">
               Email
             </label>
             <input
@@ -141,7 +133,7 @@ export function Form({
             />
           </div>
           <div className="col-span-full sm:col-span-4">
-            <label htmlFor="name" className="text-sm">
+            <label htmlFor="phone" className="text-sm">
               Telefone
             </label>
             <Controller
@@ -170,8 +162,8 @@ export function Form({
             />
           </div>
           <div className="col-span-full sm:col-span-3">
-            <label htmlFor="name" className="text-sm">
-              CEP *
+            <label htmlFor="zip" className="text-sm">
+              CEP
             </label>
             <Controller
               name="zip"
@@ -200,8 +192,8 @@ export function Form({
             />
           </div>
           <div className="col-span-full sm:col-span-9">
-            <label htmlFor="name" className="text-sm">
-              Endereço *
+            <label htmlFor="address" className="text-sm">
+              Endereço
             </label>
             <input
               {...register("address")}
@@ -216,7 +208,7 @@ export function Form({
             />
           </div>
           <div className="col-span-full sm:col-span-1">
-            <label htmlFor="name" className="text-sm">
+            <label htmlFor="number" className="text-sm">
               Número
             </label>
             <input
@@ -232,7 +224,7 @@ export function Form({
             />
           </div>
           <div className="col-span-full sm:col-span-2">
-            <label htmlFor="name" className="text-sm">
+            <label htmlFor="complement" className="text-sm">
               Complemento
             </label>
             <input
@@ -248,8 +240,8 @@ export function Form({
             />
           </div>
           <div className="col-span-full sm:col-span-3">
-            <label htmlFor="name" className="text-sm">
-              Bairro *
+            <label htmlFor="neighborhood" className="text-sm">
+              Bairro
             </label>
             <input
               {...register("neighborhood")}
@@ -264,8 +256,8 @@ export function Form({
             />
           </div>
           <div className="col-span-full sm:col-span-4">
-            <label htmlFor="name" className="text-sm">
-              Cidade *
+            <label htmlFor="city" className="text-sm">
+              Cidade
             </label>
             <input
               {...register("city")}
@@ -280,8 +272,8 @@ export function Form({
             />
           </div>
           <div className="col-span-full sm:col-span-2">
-            <label htmlFor="name" className="text-sm">
-              UF *
+            <label htmlFor="state" className="text-sm">
+              UF
             </label>
             <select
               {...register("state")}
@@ -326,7 +318,11 @@ export function Form({
             <LoadingButton
               styles="w-full md:w-64 px-2 py-2 text-sm text-white rounded-md bg-primary-500 hover:bg-primary-900 focus:outline-none focus:ring focus:ring-primary-500 focus:ring-offset-1 focus:ring-offset-white"
               type="submit"
-              text={createOffice ? `Cadastrar ${singular}` : `Editar ${singular}`}
+              text={
+                create
+                  ? `Cadastrar ${singular}`
+                  : `Editar ${singular}`
+              }
               loading={loading}
             />
           </div>

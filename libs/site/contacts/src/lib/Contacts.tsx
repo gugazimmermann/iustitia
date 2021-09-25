@@ -98,7 +98,7 @@ export function Contacts() {
 
   async function seeOffices() {
     try {
-      const offices: OfficeInterface[] = await OfficeServices.getAll();
+      const offices = (await OfficeServices.getAll()) as OfficeInterface[];
       if (offices.length) setOffices(offices);
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
