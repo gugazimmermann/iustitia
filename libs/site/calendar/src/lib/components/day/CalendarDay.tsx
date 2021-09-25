@@ -1,7 +1,7 @@
 import { DateTime } from "luxon";
-import { CalendarDayInterface } from "../../Calendar";
-import { CalendarEventSingle, CalendarEventMulti } from "../../..";
 import { IsWeekend } from "@iustitia/site/shared-utils";
+import { CalendarDayInterface } from "../../Calendar";
+import { CalendarEventMulti, CalendarEventSingle } from "..";
 
 export interface CalendarDayProps {
   day: CalendarDayInterface;

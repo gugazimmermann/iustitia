@@ -1,5 +1,5 @@
 import { errorHandler } from "@iustitia/site/shared-utils";
-import api from './api'
+import api from '../api'
 
 export async function getPlans() {
   try {

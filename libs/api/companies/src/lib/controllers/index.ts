@@ -1,3 +1,5 @@
+import { Response } from "express";
+import { UserRequest } from "@iustitia/api/auth";
 import { validateEmail } from '@iustitia/site/shared-utils';
 import { database, CompanyInstance } from '@iustitia/api/database';
 
@@ -47,7 +49,7 @@ function dataToResult(data: ModuleInstance): ModuleInterface {
   }
 }
 
-export async function getOne(req, res) {
+export async function getOne(req: UserRequest, res: Response): Promise<Response> {
   const { tenantId, id } = req.params;
   if (!tenantId || !id) return res.status(400).send({ message: "Dados inválidos!" });
   try {
@@ -65,7 +67,7 @@ export async function getOne(req, res) {
   }
 }
 
-export async function getAll(req, res) {
+export async function getAll(req: UserRequest, res: Response): Promise<Response> {
   const { tenantId } = req.params;
   if (!tenantId) return res.status(400).send({ message: "Dados inválidos!" });
   try {
@@ -80,7 +82,7 @@ export async function getAll(req, res) {
   }
 }
 
-export async function create(req, res) {
+export async function create(req: UserRequest, res: Response): Promise<Response> {
   const { body } = req;
   if (!body.name || !body.tenantId) return res.status(400).send({ message: "Dados inválidos!" });
   if (body.email && !validateEmail(body.email)) return res.status(400).send({ message: "Dados inválidos!" });
@@ -92,7 +94,7 @@ export async function create(req, res) {
   }
 }
 
-export async function update(req, res) {
+export async function update(req: UserRequest, res: Response): Promise<Response> {
   const { body } = req;
   if (!body.id || !body.name) return res.status(400).send({ message: "Dados inválidos!" });
   if (body.email && !validateEmail(body.email)) return res.status(400).send({ message: "Dados inválidos!" });
@@ -106,7 +108,7 @@ export async function update(req, res) {
   }
 }
 
-export async function deleteOne(req, res) {
+export async function deleteOne(req: UserRequest, res: Response): Promise<Response> {
   const { id } = req.params;
   if (!id) return res.status(400).send({ message: "Dados inválidos!" });
   try {

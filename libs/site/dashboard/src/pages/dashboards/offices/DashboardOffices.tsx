@@ -2,21 +2,18 @@ import { useState, useEffect } from "react";
 import { useHistory, useParams } from "react-router-dom";
 import { SiteRoutes as Routes } from "@iustitia/react-routes";
 import { Header, InfoCard, INFOCARDSICONS } from "@iustitia/site/shared-components";
-import { getOne } from "../../../../../services/src/lib/dashboard/office";
-import { IOffice } from "../../../interfaces";
+import { OfficeServices } from "@iustitia/site/services";
+
+type OfficeInterface = OfficeServices.OfficeInterface;
 
 interface DashboardOfficesProps {
-  offices?: IOffice[];
-}
-
-interface useParamsProps {
-  id: string;
+  offices?: OfficeInterface[];
 }
 
 export function DashboardOffices({ offices }: DashboardOfficesProps) {
   const history = useHistory();
-  const { id } = useParams<useParamsProps>();
-  const [selectedOffice, setSelectedOffice] = useState({} as IOffice);
+  const { id } = useParams<{ id: string }>();
+  const [selectedOffice, setSelectedOffice] = useState({} as OfficeInterface);
 
   const selectOffices = () => {
     return (
@@ -52,13 +49,13 @@ export function DashboardOffices({ offices }: DashboardOfficesProps) {
     if (id) {
       getOffice(id);
     } else {
-      setSelectedOffice({} as IOffice)
+      setSelectedOffice({} as OfficeInterface)
     }
   }, [id]);
 
   async function getOffice(id: string) {
     try {
-      const office = await getOne(id);
+      const office = await OfficeServices.getOne(id);
       setSelectedOffice(office);
     } catch (err) {
       console.log(err);

@@ -5,19 +5,16 @@ import {
   Header,
 } from "@iustitia/site/shared-components";
 import { WARNING_TYPES } from "@iustitia/site/shared-utils";
-import { IOffice, IProfile } from "../../interfaces";
-import {
-  getAll,
-  createOffice,
-  updateOffice,
-  deleteOffice,
-} from "../../../../services/src/lib/dashboard/office";
-import Form from "./form/Form";
-import List from "./list/List";
+import {OfficeServices, ProfileServices } from "@iustitia/site/services";
+import { Form, List } from "./components";
+import { ProfileInterface } from "../profile/Profile";
+
+export const { route, singular, parents, plural } = OfficeServices.OfficeModule;
+export type OfficeInterface = OfficeServices.OfficeInterface;
 
 interface OfficesProps {
-  profile?: IProfile;
-  setOffices?(offices: IOffice[]): void;
+  profile?: ProfileInterface;
+  setOffices?(offices: OfficeInterface[]): void;
 }
 
 export function Offices({ profile, setOffices: CallOutOffices }: OfficesProps) {
@@ -26,8 +23,8 @@ export function Offices({ profile, setOffices: CallOutOffices }: OfficesProps) {
   const [showDelete, setShowDelete] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const [offices, setOffices] = useState([] as IOffice[]);
-  const [selectedOffice, setSelectedOffice] = useState({} as IOffice);
+  const [offices, setOffices] = useState([] as OfficeInterface[]);
+  const [selectedOffice, setSelectedOffice] = useState({} as OfficeInterface);
   const [list, setList] = useState(true);
   const [create, setCreate] = useState(false);
   const [update, setUpdade] = useState(false);
@@ -85,16 +82,16 @@ export function Offices({ profile, setOffices: CallOutOffices }: OfficesProps) {
 
   async function getOffices() {
     try {
-      const data = await getAll();
-      const offices: IOffice[] = data.map((o: IOffice) => {
+      const data = await OfficeServices.getAll();
+      const offices: OfficeInterface[] = data.map((o: OfficeInterface) => {
         delete o.userId;
         delete o.tenantId;
         delete o.updatedAt;
         delete o.createdAt;
         return o;
       });
-      setOffices(offices as IOffice[]);
-      if (CallOutOffices) CallOutOffices(offices as IOffice[]);
+      setOffices(offices as OfficeInterface[]);
+      if (CallOutOffices) CallOutOffices(offices as OfficeInterface[]);
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       setLoading(false);
@@ -103,10 +100,10 @@ export function Offices({ profile, setOffices: CallOutOffices }: OfficesProps) {
     }
   }
 
-  async function handleCreateOffice(data: IOffice) {
+  async function handleCreateOffice(data: OfficeInterface) {
     setLoading(true);
     try {
-      await createOffice(data);
+      await OfficeServices.create(data);
       setShowSuccess(true);
       setShowEdit(false);
       setShowDelete(false);
@@ -120,10 +117,10 @@ export function Offices({ profile, setOffices: CallOutOffices }: OfficesProps) {
     }
   }
 
-  async function handleUpateOffice(data: IOffice) {
+  async function handleUpateOffice(data: OfficeInterface) {
     setLoading(true);
     try {
-      await updateOffice(data);
+      await OfficeServices.update(data);
       setShowSuccess(false);
       setShowEdit(true);
       setShowDelete(false);
@@ -141,7 +138,7 @@ export function Offices({ profile, setOffices: CallOutOffices }: OfficesProps) {
     if (selectedOffice.id) {
       setLoading(true);
       try {
-        await deleteOffice(selectedOffice.id);
+        await OfficeServices.deleteOne(selectedOffice.id);
         setShowSuccess(false);
         setShowEdit(false);
         setShowDelete(true);

@@ -1,25 +1,22 @@
 import { useState, useEffect } from "react";
 import { DateTime } from "luxon";
 import { Alert, Header } from "@iustitia/site/shared-components";
-import {
-  getSubscription,
-  getPayments,
-  getCreditcards,
-} from "../../services/subscriptions";
-import ListPayments from "./list/ListPayments";
-import ListCreditCards from "./list/ListCreditCards";
-import {
-  ICreditCard,
-  IPayment,
-  ISubscription,
-} from "../../interfaces";
+import ListPayments from "./components/list/ListPayments";
+import ListCreditCards from "./components/list/ListCreditCards";
 import { WARNING_TYPES } from "@iustitia/site/shared-utils";
+import { SubscriptionServices } from "@iustitia/site/services";
+
+export const { route, singular, parents, plural } = SubscriptionServices.SubscriptionModule;
+export type SubscriptionInterface = SubscriptionServices.SubscriptionInterface;
+export type CreditCardInterface = SubscriptionServices.CreditCardInterface;
+export type PaymentInterface = SubscriptionServices.PaymentInterface;
+
 
 export function Subscriptions() {
   const [error, setError] = useState("");
-  const [subscription, setSubscription] = useState({} as ISubscription);
-  const [payments, setPayments] = useState([] as IPayment[]);
-  const [creditCards, setCreditCards] = useState([] as ICreditCard[]);
+  const [subscription, setSubscription] = useState({} as SubscriptionInterface);
+  const [payments, setPayments] = useState([] as PaymentInterface[]);
+  const [creditCards, setCreditCards] = useState([] as CreditCardInterface[]);
   const [list, setList] = useState(true);
   const [back, setBack] = useState(false);
 
@@ -63,15 +60,15 @@ export function Subscriptions() {
 
   async function populateData() {
     try {
-      const dataSubscription: ISubscription = await getSubscription();
-      delete dataSubscription.id;
-      delete dataSubscription.userId;
-      delete dataSubscription.updatedAt;
-      delete dataSubscription.createdAt;
-      delete dataSubscription.deletedAt;
-      setSubscription(dataSubscription);
+      const dataSubscription = (await SubscriptionServices.getSubscription()) as SubscriptionInterface;
+        delete dataSubscription.id;
+        delete dataSubscription.userId;
+        delete dataSubscription.updatedAt;
+        delete dataSubscription.createdAt;
+        delete dataSubscription.deletedAt;
+        setSubscription(dataSubscription);
 
-      const resPayment: IPayment[] = await getPayments();
+      const resPayment = (await SubscriptionServices.getPayments()) as PaymentInterface[];
       const dataPayment = resPayment.map((p) => {
         delete p.id;
         delete p.userId;
@@ -95,7 +92,7 @@ export function Subscriptions() {
       }
       setPayments(dataPayment);
 
-      const resCreditCards: ICreditCard[] = await getCreditcards();
+      const resCreditCards = (await SubscriptionServices.getCreditcards()) as CreditCardInterface[];
       const dataCreditCards = resCreditCards.map((c) => {
         delete c.id;
         delete c.userId;

@@ -1,3 +1,4 @@
+import { Express } from "express";
 import * as multer from 'multer';
 import { verifyToken } from '@iustitia/api/auth'
 import { getOne, getAll, create, update, deleteOne } from './controllers';
@@ -6,7 +7,7 @@ import { getAllNotes, createNote, updateNote, deleteOneNote } from './controller
 
 export const moduleName = "contacts";
 
-export default function Contacts(app) {
+export default function Contacts(app: Express) {
   const upload = multer()
   app.get(`/api/${moduleName}/:tenantId/:id`, [verifyToken], getOne);
   app.get(`/api/${moduleName}/:tenantId`, [verifyToken], getAll);

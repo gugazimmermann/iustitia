@@ -1,5 +1,5 @@
 import axios, { AxiosInstance } from "axios";
-import TokenService from "./token";
+import TokenService from "./auth/token";
 
 const API_URL = `${process.env.NX_APP_API}:${process.env.NX_API_PORT}`;
 

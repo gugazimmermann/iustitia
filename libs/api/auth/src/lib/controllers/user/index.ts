@@ -1,6 +1,8 @@
 import { database } from '@iustitia/api/database';
+import { Response } from 'express'
+import { UserRequest } from '../../middleware/verifyToken';
 
-export async function userInfo(req, res) {
+export async function userInfo(req: UserRequest, res: Response): Promise<Response> {
   try {
     const user = await database.User.findOne({ where: { id: req.userId } });
     if (!user) {

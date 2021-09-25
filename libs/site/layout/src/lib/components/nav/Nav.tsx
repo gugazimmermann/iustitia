@@ -1,4 +1,3 @@
-import { IProfile } from "@iustitia/site/dashboard";
 import { useEffect, useRef } from "react";
 import {
   NavAvatar,
@@ -7,6 +6,7 @@ import {
   NavMenuButton,
   NavMobileButton,
 } from ".";
+import { ProfileInterface } from "../../Layout";
 import NavNotification from "./nav-notification/NavNotification";
 
 export interface NavProps {
@@ -16,7 +16,7 @@ export interface NavProps {
   navOpen: boolean;
   setNotificationOpen(notificationOpen: boolean): void;
   notificationOpen: boolean;
-  profile: IProfile;
+  profile: ProfileInterface;
 }
 
 export function Nav({
@@ -43,7 +43,7 @@ export function Nav({
     };
   }, [navOpen, setNavOpen]);
 
-  function showNavItems(profile: IProfile) {
+  function showNavItems(profile: ProfileInterface) {
     return (
       <>
         <div className="pt-1 space-x-2">

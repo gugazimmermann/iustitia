@@ -4,8 +4,8 @@ import { useForm } from "react-hook-form";
 import { SiteRoutes as Routes } from "@iustitia/react-routes";
 import { Alert, LoadingButton } from "@iustitia/site/shared-components";
 import { WARNING_TYPES } from "@iustitia/site/shared-utils";
+import { AuthService } from "@iustitia/site/services";
 import { Title, Link } from "../..";
-import { changepassword, getforgotpasswordcode } from "../../services/auth";
 
 interface State {
   email: string;
@@ -43,11 +43,9 @@ export function ChangePassword() {
     }
     async function getPasswordCode(codeurl: string) {
       try {
-        const res = await getforgotpasswordcode(codeurl);
-        if ("data" in res) {
-          setLoading(false);
-          setValue("code", res.data.code);
-        }
+        const res = (await AuthService.getforgotpasswordcode(codeurl)) as { code: string};
+        setLoading(false);
+        setValue("code", res.code);
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } catch (err: any) {
         setCodeurl("");
@@ -102,11 +100,9 @@ export function ChangePassword() {
       return;
     }
     try {
-      const res = await changepassword(form.code, form.newpassword);
-      if ("data" in res) {
-        setLoading(false);
-        history.push(Routes.SignIn, { changePassword: true });
-      }
+      await AuthService.changepassword(form.code, form.newpassword);
+      setLoading(false);
+      history.push(Routes.SignIn, { changePassword: true });
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       setError(err.message as string);

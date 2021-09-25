@@ -1,3 +1,5 @@
+import { Response } from "express";
+import { UserRequest } from "@iustitia/api/auth";
 import * as AWS from 'aws-sdk';
 import { DateTime } from "luxon";
 import { moduleName } from '../Contacts';
@@ -27,14 +29,14 @@ function attchmentDataToResult(data: ModuleAttachmentsInstance): AttachmentsInte
   }
 }
 
-function attchmentName(tenant: string, ownertId: string, originalname: string) {
+function attchmentName(tenant: string, ownertId: string, originalname: string): string {
   const d = new Date();
   const now = `${d.getHours()}${d.getMinutes()}${d.getSeconds()}${d.getMilliseconds()}`
   return `${tenant}/${moduleName}/${ownertId.split("-").join("")}/${originalname}_${now}`
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-async function sendAttchment(file: any, fileName: string) {
+async function sendAttchment(file: any, fileName: string): Promise<AWS.S3.ManagedUpload.SendData> {
   const params = {
     Bucket: process.env.NX_BUCKET_FILES,
     Key: fileName,
@@ -44,7 +46,7 @@ async function sendAttchment(file: any, fileName: string) {
   return res;
 }
 
-export async function getAllAttachments(req, res) {
+export async function getAllAttachments(req: UserRequest, res: Response): Promise<Response> {
   const { tenantId, ownerId } = req.params;
   if (!tenantId || !ownerId) return res.status(400).send({ message: "Dados inválidos!" });
   try {
@@ -59,7 +61,7 @@ export async function getAllAttachments(req, res) {
   }
 }
 
-export async function createAttachments(req, res) {
+export async function createAttachments(req: UserRequest, res: Response): Promise<Response> {
   const { body } = req;
   if (!body.ownerId) return res.status(400).send({ message: "Dados inválidos!" });
   try {
@@ -81,7 +83,7 @@ export async function createAttachments(req, res) {
   }
 }
 
-export async function deleteOneAttachment(req, res) {
+export async function deleteOneAttachment(req: UserRequest, res: Response): Promise<Response> {
   const { id } = req.params;
   if (!id) return res.status(400).send({ message: "Dados inválidos!" });
   try {

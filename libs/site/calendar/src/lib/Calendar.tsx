@@ -1,37 +1,22 @@
 import { useEffect, useState } from "react";
 import { DateTime } from "luxon";
 import { Alert, EventNewModal, Header } from "@iustitia/site/shared-components";
-import { SiteRoutes as Routes } from "@iustitia/react-routes";
-import { getAllContacts, ModuleInterface as ContactInterface} from "@iustitia/site/contacts";
 import {
   getDaysToShow,
   WARNING_TYPES,
 } from "@iustitia/site/shared-utils";
-import { CalendarHeader, CalendarPeriod, CalendarScreen } from "..";
-import * as Services from "./services";
+import { CalendarHeader, CalendarPeriod, CalendarScreen } from "./components";
+import { CalendarService, ContactServices } from "@iustitia/site/services";
 import styles from "./Calendar.module.css";
 
-export const ModuleName = {
-  module: "calendar",
-  parents: ["Agenda"],
-  singular: "Calendário",
-  route: Routes.Calendar,
-};
+const { singular, parents } = ContactServices.ContactModule;
+export type CalendarInterface = CalendarService.CalendarInterface;
+type ContactInterface = ContactServices.ContactInterface;
 
-export interface ModuleInterface {
-  id: string;
-  startDate: Date;
-  endDate: Date;
-  fullDay: boolean;
-  color: string;
-  title: string;
-  description: string;
-  tenantId: string;
-}
 
 export type CalendarDayInterface = {
   day: DateTime;
-  events: ModuleInterface[];
+  events: CalendarInterface[];
 };
 
 export type PeriodType = "month" | "week";
@@ -64,7 +49,7 @@ export function Calendar() {
   async function handleChangeDays() {
     const daysToShow = getDaysToShow(dateTime, period);
     try {
-      const data = (await Services.getAll()) as ModuleInterface[];
+      const data = (await CalendarService.getAll()) as CalendarInterface[];
       const daysWithEvents = formatEvents(daysToShow, data);
       setDays(daysWithEvents);
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -74,10 +59,10 @@ export function Calendar() {
     }
   }
 
-  function formatEvents(daysToShow: DateTime[], events: ModuleInterface[]) {
+  function formatEvents(daysToShow: DateTime[], events: CalendarInterface[]) {
     const daysToReturn: CalendarDayInterface[] = [];
     daysToShow.forEach((day) => {
-      const arrayDay: ModuleInterface[] = [];
+      const arrayDay: CalendarInterface[] = [];
       const dayStart = day.startOf("day").toISODate();
       events.forEach((e) => {
         const eventStart = DateTime.fromJSDate(e.startDate)
@@ -97,13 +82,13 @@ export function Calendar() {
     return daysToReturn;
   }
 
-  function handleNewEvent(event: ModuleInterface) {
+  function handleNewEvent(event: CalendarInterface) {
     console.log(event);
   }
 
   async function getContacts() {
     try {
-      const data = await getAllContacts();
+      const data = await ContactServices.getAll();
       console.log(data)
       setContacts(data as ContactInterface[]);
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -116,7 +101,7 @@ export function Calendar() {
   return (
     <>
       <div className="h-full">
-        <Header before={ModuleName.parents} main={ModuleName.singular} />
+        <Header before={parents} main={singular} />
         <div className={`${styles.containerHeight} px-4`}>
           {error && <Alert type={WARNING_TYPES.ERROR} message={error} />}
           <div className="flex justify-between h-10">

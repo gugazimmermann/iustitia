@@ -70,6 +70,7 @@ export function SignUp() {
               }
             />
           </div>
+          {/* TODO: verify if email exists */}
           <div className="mb-6 rounded">
             <label
               className="block text-gray-700 text-sm font-bold mb-2 ml-3"

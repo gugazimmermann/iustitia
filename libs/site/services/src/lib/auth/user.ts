@@ -1,7 +1,7 @@
 import { errorHandler } from "@iustitia/site/shared-utils";
-import api from './api'
+import api from '../api'
 
-export type ICurrentUser = {
+export type UserInterface = {
   email: string;
   createdAt: string;
   updatedAt: string;

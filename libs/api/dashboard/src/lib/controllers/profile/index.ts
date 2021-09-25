@@ -1,3 +1,5 @@
+import { Response } from "express";
+import { UserRequest } from "@iustitia/api/auth";
 import * as AWS from 'aws-sdk';
 import * as sharp from 'sharp';
 import { database } from '@iustitia/api/database';
@@ -10,7 +12,7 @@ AWS.config.update({
   region: "us-east-1"
 })
 
-export async function updateProfile(req, res) {
+export async function updateProfile(req: UserRequest, res: Response): Promise<Response> {
   const { body } = req;
   if (
     !body.name ||
@@ -77,7 +79,7 @@ export async function updateProfile(req, res) {
   }
 }
 
-export async function getProfile(req, res) {
+export async function getProfile(req: UserRequest, res: Response): Promise<Response> {
   try {
     const user = await database.User.findOne({
       where: { id: req.userId },

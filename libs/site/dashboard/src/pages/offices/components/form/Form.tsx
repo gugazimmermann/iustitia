@@ -5,13 +5,13 @@ import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { getAddressFromCEP, validateEmail } from "@iustitia/site/shared-utils";
 import { LoadingButton } from "@iustitia/site/shared-components";
-import { IOffice } from "../../../interfaces";
+import { OfficeInterface, singular } from "../../Offices";
 
 export interface FormProps {
   loading: boolean;
-  office?: IOffice;
-  createOffice?(office: IOffice): void;
-  updateOffice?(office: IOffice): void;
+  office?: OfficeInterface;
+  createOffice?(office: OfficeInterface): void;
+  updateOffice?(office: OfficeInterface): void;
 }
 
 const schema = yup.object().shape({
@@ -29,7 +29,7 @@ export function Form({
   createOffice,
   updateOffice,
 }: FormProps) {
-  const defaultValues = {
+  const defaultValues: OfficeInterface = {
     name: office?.name || "",
     email: office?.email || "",
     phone: office?.phone || "",
@@ -49,7 +49,7 @@ export function Form({
     setError,
     clearErrors,
     formState: { errors },
-  } = useForm<IOffice>({
+  } = useForm<OfficeInterface>({
     resolver: yupResolver(schema),
     defaultValues,
   });
@@ -80,7 +80,7 @@ export function Form({
     }
   }
 
-  async function onSubmit(data: IOffice) {
+  async function onSubmit(data: OfficeInterface) {
     if (!validZip) {
       setError("zip", { type: "manual" });
       return;
@@ -326,7 +326,7 @@ export function Form({
             <LoadingButton
               styles="w-full md:w-64 px-2 py-2 text-sm text-white rounded-md bg-primary-500 hover:bg-primary-900 focus:outline-none focus:ring focus:ring-primary-500 focus:ring-offset-1 focus:ring-offset-white"
               type="submit"
-              text={createOffice ? `Cadastrar Escritório` : `Editar Escritório`}
+              text={createOffice ? `Cadastrar ${singular}` : `Editar ${singular}`}
               loading={loading}
             />
           </div>

@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form";
 import { SiteRoutes as Routes } from "@iustitia/react-routes";
 import { Alert, LoadingButton } from "@iustitia/site/shared-components";
 import { WARNING_TYPES } from "@iustitia/site/shared-utils";
-import { signup } from "../../services/auth";
+import { AuthService } from "@iustitia/site/services";
 import { MercadoPago } from "./protocols";
 import { PlanInterface, SignUpForm } from "../..";
 
@@ -154,11 +154,11 @@ export function Subscription() {
         identificationType: data.documentType,
         identificationNumber: data.document,
       });
-      await signup({
+      await AuthService.signup({
         name: form.name,
         email: form.email,
         password: form.password,
-        planId: plan.id,
+        planId: plan.id as string,
         cardInfo: {
           id: token.id,
           name: token.cardholder.name,
@@ -194,15 +194,15 @@ export function Subscription() {
               {plan?.reason}
             </p>
             <p className="text-xl font-bold text-primary-700">
-              {plan?.transactionAmount.toLocaleString("pt-br", {
+              {(plan?.transactionAmount as number).toLocaleString("pt-br", {
                 style: "currency",
                 currency: plan?.currencyId,
               })}{" "}
               /{" "}
               <span className="text-xl">
-                {plan?.reason.toLowerCase().includes("mensal")
+                {(plan?.reason as string).toLowerCase().includes("mensal")
                   ? `mês`
-                  : plan?.reason.toLowerCase().includes("semestral")
+                  : (plan?.reason as string).toLowerCase().includes("semestral")
                   ? `semestre`
                   : `ano`}
               </span>

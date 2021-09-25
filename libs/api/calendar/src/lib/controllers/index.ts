@@ -1,3 +1,5 @@
+import { Response } from "express";
+import { UserRequest } from "@iustitia/api/auth";
 import { database, EventInstance } from '@iustitia/api/database';
 
 export const userDB = database.User;
@@ -29,7 +31,7 @@ function dataToResult(data: ModuleInstance): ModuleInterface {
   }
 }
 
-export async function getOne(req, res) {
+export async function getOne(req: UserRequest, res: Response): Promise<Response> {
   const { tenantId, id } = req.params;
   if (!tenantId || !id) return res.status(400).send({ message: "Dados inválidos!" });
   try {
@@ -42,7 +44,7 @@ export async function getOne(req, res) {
   }
 }
 
-export async function getAll(req, res) {
+export async function getAll(req: UserRequest, res: Response): Promise<Response> {
   const { tenantId, officeId } = req.params;
   if (!tenantId) return res.status(400).send({ message: "Dados inválidos!" });
   try {
@@ -59,7 +61,7 @@ export async function getAll(req, res) {
   }
 }
 
-export async function create(req, res) {
+export async function create(req: UserRequest, res: Response): Promise<Response> {
   const { body } = req;
   if (!body.startDate || !body.endDate || !body.fullDay || !body.color || !body.title || !body.tenantId) return res.status(400).send({ message: "Dados inválidos!" });
   try {
@@ -70,7 +72,7 @@ export async function create(req, res) {
   }
 }
 
-export async function update(req, res) {
+export async function update(req: UserRequest, res: Response): Promise<Response> {
   const { body } = req;
   if (!body.id || !body.startDate || !body.endDate || !body.fullDay || !body.color || !body.title) return res.status(400).send({ message: "Dados inválidos!" });
   try {
@@ -83,7 +85,7 @@ export async function update(req, res) {
   }
 }
 
-export async function deleteOne(req, res) {
+export async function deleteOne(req: UserRequest, res: Response): Promise<Response> {
   const { id } = req.params;
   if (!id) return res.status(400).send({ message: "Dados inválidos!" });
   try {

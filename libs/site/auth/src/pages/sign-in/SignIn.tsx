@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form";
 import { SiteRoutes as Routes } from "@iustitia/react-routes";
 import { Alert, LoadingButton } from "@iustitia/site/shared-components";
 import { validateEmail, WARNING_TYPES } from "@iustitia/site/shared-utils";
-import { signin } from "../../services/auth";
+import { AuthService } from "@iustitia/site/services";
 import { Title, Link, SignupLink } from "../..";
 
 type Form = {
@@ -53,7 +53,7 @@ export function SignIn() {
       return;
     }
     try {
-      await signin(form);
+      await AuthService.signin(form);
       setLoading(false);
       history.push(Routes.Dashboard);
       // eslint-disable-next-line @typescript-eslint/no-explicit-any

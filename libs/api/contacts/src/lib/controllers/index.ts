@@ -1,3 +1,5 @@
+import { Response } from "express";
+import { UserRequest, AttachmentFileInterface } from "@iustitia/api/auth";
 import * as AWS from 'aws-sdk';
 import * as sharp from 'sharp';
 import { validateEmail } from '@iustitia/site/shared-utils';
@@ -65,14 +67,13 @@ function dataToResult(data: ModuleInstance): ModuleInterface {
   }
 }
 
-function avatarName(id: string, tenantId: string) {
+function avatarName(id: string, tenantId: string): string {
   const d = new Date();
   const now = `${d.getHours()}${d.getMinutes()}${d.getSeconds()}${d.getMilliseconds()}`
   return `${tenantId}/${moduleName}/${id.split("-").join("")}${now}.jpeg`
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-async function sendAvatar(file: any, fileName: string) {
+async function sendAvatar(file: AttachmentFileInterface, fileName: string): Promise<AWS.S3.ManagedUpload.SendData> {
   const avatarFile = await sharp(file.buffer).resize(240, 240).jpeg({ quality: 90, mozjpeg: true }).toBuffer()
   const params = {
     Bucket: process.env.NX_BUCKET_AVATAR,
@@ -83,7 +84,7 @@ async function sendAvatar(file: any, fileName: string) {
   return res;
 }
 
-export async function deleteFromBucket(fileName: string, bucket: string) {
+export async function deleteFromBucket(fileName: string, bucket: string): Promise<void> {
   const params = {
     Bucket: bucket,
     Key: fileName
@@ -97,7 +98,7 @@ export async function deleteFromBucket(fileName: string, bucket: string) {
   }
 }
 
-export async function getOne(req, res) {
+export async function getOne(req: UserRequest, res: Response): Promise<Response> {
   const { tenantId, id } = req.params;
   if (!tenantId || !id) return res.status(400).send({ message: "Dados inválidos!" });
   try {
@@ -113,7 +114,7 @@ export async function getOne(req, res) {
   }
 }
 
-export async function getAll(req, res) {
+export async function getAll(req: UserRequest, res: Response): Promise<Response> {
   const { tenantId } = req.params;
   if (!tenantId) return res.status(400).send({ message: "Dados inválidos!" });
   try {
@@ -128,7 +129,7 @@ export async function getAll(req, res) {
   }
 }
 
-export async function create(req, res) {
+export async function create(req: UserRequest, res: Response): Promise<Response> {
   const { body } = req;
   if (!body.type || !body.name || !body.tenantId) return res.status(400).send({ message: "Dados inválidos!" });
   if (body.email && !validateEmail(body.email)) return res.status(400).send({ message: "Dados inválidos!" });
@@ -148,7 +149,7 @@ export async function create(req, res) {
   }
 }
 
-export async function update(req, res) {
+export async function update(req: UserRequest, res: Response): Promise<Response> {
   const { body } = req;
   if (!body.id || !body.type || !body.name) return res.status(400).send({ message: "Dados inválidos!" });
   if (body.email && !validateEmail(body.email)) return res.status(400).send({ message: "Dados inválidos!" });
@@ -181,7 +182,7 @@ export async function update(req, res) {
   }
 }
 
-export async function deleteOne(req, res) {
+export async function deleteOne(req: UserRequest, res: Response): Promise<Response> {
   const { id } = req.params;
   if (!id) return res.status(400).send({ message: "Dados inválidos!" });
   try {

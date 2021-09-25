@@ -1,12 +1,12 @@
 import { render } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
-import { IProfile } from "../../../../../dashboard/src/interfaces";
+import { ProfileInterface } from "../../Layout";
 
 import Nav from "./Nav";
 
 describe("Nav", () => {
   it("should render successfully", () => {
-    const profile: IProfile = {
+    const profile: ProfileInterface = {
       avatar: "AAA",
       name: "BBB",
       email: "CCC",

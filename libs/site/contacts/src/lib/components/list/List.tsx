@@ -6,13 +6,15 @@ import {
   PenIcon,
   TrashIcon,
 } from "@iustitia/site/shared-components";
-import { ModuleInterface, ModuleName } from "../..";
+import { getUserInitials } from "@iustitia/site/shared-utils";
+import { ContactServices} from "@iustitia/site/services";
+import { ContactInterface, route } from "../../Contacts";
 
 export interface ListProps {
-  dataList: ModuleInterface[];
+  dataList: ContactInterface[];
   sort: string;
   setSort(order: "ASC" | "DESC"): void;
-  setSelected(delected: ModuleInterface): void;
+  setSelected(delected: ContactInterface): void;
   setConfirm(confirm: boolean): void;
 }
 
@@ -25,7 +27,7 @@ export function List({
 }: ListProps) {
   const history = useHistory();
 
-  function formatAddress(data: ModuleInterface) {
+  function formatAddress(data: ContactInterface) {
     if (data.city || data.state) {
       let res = data.city && data.city;
       res = data.city && data.state && res + " | ";
@@ -40,6 +42,7 @@ export function List({
       <table className="w-full table">
         <thead>
           <tr className="bg-primary-500 text-white uppercase leading-normal">
+            <th className="w-12"></th>
             <th className="py-2 px-2 text-sm text-left">
               Nome
               {sort === "ASC" && (
@@ -66,6 +69,19 @@ export function List({
                 key={i}
                 className="border-b border-gray-200 hover:bg-gray-100"
               >
+                <td className="py-3 px-3">
+                  {data.avatar ? (
+                    <img
+                      className="w-6 h-6 rounded-full"
+                      src={`${process.env.NX_BUCKET_AVATAR_URL}${data.avatar}`}
+                      alt={data.name}
+                    />
+                  ) : (
+                    <span className="w-6 h-6 rounded-full flex justify-center items-center text-center font-bold text-primary-500 bg-primary-50 hover:text-primary-900 hover:bg-primary-100 focus:outline-none focus:bg-primary-100 focus:ring-primary-900">
+                      {data.name ? getUserInitials(data.name) : "I"}
+                    </span>
+                  )}
+                </td>
                 <td className="py-3 px-3 text-left whitespace-nowrap">
                   <span className="font-medium">{data.name}</span>
                 </td>
@@ -89,7 +105,7 @@ export function List({
                     <div className="w-5 mr-3 transform hover:text-purple-500 hover:scale-110">
                       <div
                         onClick={() =>
-                          history.push(`${ModuleName.route}/${data.id}`)
+                          history.push(`${route}/${data.id}`)
                         }
                         className="w-5 mr-3 transform hover:text-purple-500 hover:scale-110"
                       >
@@ -98,7 +114,7 @@ export function List({
                     </div>
                     <div
                       onClick={() =>
-                        history.push(`${ModuleName.route}/edit/${data.id}`)
+                        history.push(`${route}/edit/${data.id}`)
                       }
                       className="w-5 mr-3 transform hover:text-purple-500 hover:scale-110"
                     >

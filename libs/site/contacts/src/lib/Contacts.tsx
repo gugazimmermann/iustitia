@@ -7,70 +7,27 @@ import {
   SearchIcon,
 } from "@iustitia/site/shared-components";
 import { WARNING_TYPES } from "@iustitia/site/shared-utils";
-import * as Services from "./services";
-import Form from "./form/Form";
-import List from "./list/List";
-import Details from "./details/Details";
-import { SiteRoutes as Routes } from "@iustitia/react-routes";
-import { getOffices, IOffice } from "@iustitia/site/dashboard";
-import { getCompanies, ModuleInterface as ICompany } from "@iustitia/site/companies";
+import {
+  ContactServices,
+  OfficeServices,
+  CompanyService,
+  NoteServices,
+  AttchmentServices
+} from "@iustitia/site/services";
+import { Details, Form, List } from "./components";
 
-export const ModuleName = {
-  module: "contacts",
-  parents: ["Agenda"],
-  singular: "Contato",
-  plural: "Contatos",
-  route: Routes.Contacts,
-};
-
-export interface ModuleInterface {
-  id?: string;
-  avatar?: string;
-  name?: string;
-  email?: string;
-  phone?: string;
-  zip?: string;
-  address?: string;
-  number?: string;
-  complement?: string;
-  neighborhood?: string;
-  city?: string;
-  state?: string;
-  comments?: string;
-  tenantId?: string;
-  userId?: string;
-  officeId?: string;
-  type?: string;
-  position?: string;
-  companyId?: string;
-  company?: string;
-}
-
-export interface AttachmentInterface {
-  id: string;
-  date: string;
-  name: string;
-  link: string;
-}
-
-export interface NoteInterface {
-  id?: string;
-  date: string;
-  title: string;
-  content: string;
-  tenantId?: string;
-  ownerId: string;
-}
-
-interface useParamsProps {
-  id: string;
-}
+export const { route, singular, parents, plural } = ContactServices.ContactModule;
+export type ContactInterface = ContactServices.ContactInterface;
+export type OfficeInterface = OfficeServices.OfficeInterface;
+export type CompanyInterface = CompanyService.CompanyInterface;
+export type NoteInterface = NoteServices.NoteInterface;
+export type AttachmentInterface = AttchmentServices.AttachmentInterface;
 
 export function Contacts() {
   const history = useHistory();
   const location = useLocation();
   const { pathname } = useLocation();
-  const { id } = useParams<useParamsProps>();
+  const { id } = useParams<{ id: string }>();
   const [showSuccessAlert, setShowSuccessAlert] = useState(false);
   const [showEditAlert, setShowEditAlert] = useState(false);
   const [showDeleteAlert, setShowDeleteAlert] = useState(false);
@@ -82,11 +39,11 @@ export function Contacts() {
   const [error, setError] = useState("");
   const [back, setBack] = useState(false);
   const [confirm, setConfirm] = useState(false);
-  const [dataList, setDataList] = useState([] as ModuleInterface[]);
-  const [showDataList, setShowDataList] = useState([] as ModuleInterface[]);
-  const [selected, setSelected] = useState({} as ModuleInterface);
-  const [offices, setOffices] = useState<IOffice[]>();
-  const [companies, setCompanies] = useState<ICompany[]>();
+  const [dataList, setDataList] = useState([] as ContactInterface[]);
+  const [showDataList, setShowDataList] = useState([] as ContactInterface[]);
+  const [selected, setSelected] = useState({} as ContactInterface);
+  const [offices, setOffices] = useState<OfficeInterface[]>();
+  const [companies, setCompanies] = useState<CompanyInterface[]>();
   const [selectedType, setSelectedType] = useState<string>("Personal");
   const [searchParam, setSearchParam] = useState<string>();
   const [sort, setSort] = useState("ASC");
@@ -141,7 +98,7 @@ export function Contacts() {
 
   async function seeOffices() {
     try {
-      const offices: IOffice[] = await getOffices();
+      const offices: OfficeInterface[] = await OfficeServices.getAll();
       if (offices.length) setOffices(offices);
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
@@ -152,8 +109,9 @@ export function Contacts() {
 
   async function seeCompanies() {
     try {
-      const companies = await getCompanies();
-      if ((companies as ICompany[]).length) setCompanies(companies as ICompany[]);
+      const companies = await CompanyService.getAll();
+      if ((companies as CompanyInterface[]).length)
+        setCompanies(companies as CompanyInterface[]);
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       setError(err.message as string);
@@ -163,12 +121,12 @@ export function Contacts() {
 
   async function getSelected(id: string) {
     try {
-      const data = await Services.getOne(id);
+      const data = await ContactServices.getOne(id);
       setSelected(data);
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       setError(err.message as string);
-      history.push(ModuleName.route);
+      history.push(route);
       console.log(err);
     }
   }
@@ -187,7 +145,7 @@ export function Contacts() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sort]);
 
-  function handleSort(data?: ModuleInterface[]) {
+  function handleSort(data?: ContactInterface[]) {
     const sortData = data ? data : dataList.slice(0);
     if (sortData) {
       if (sort === "ASC")
@@ -230,7 +188,7 @@ export function Contacts() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchParam]);
 
-  function handleSearch(data: ModuleInterface[], param: string) {
+  function handleSearch(data: ContactInterface[], param: string) {
     const res = data.filter((d) => d.name?.includes(param));
     setShowDataList(res);
   }
@@ -259,13 +217,13 @@ export function Contacts() {
       <button
         onClick={() => {
           if (back) {
-            if (location.pathname !== ModuleName.route) {
-              history.push(ModuleName.route);
+            if (location.pathname !== route) {
+              history.push(route);
             } else {
               reloadList();
             }
           } else {
-            history.push(`${ModuleName.route}/add`);
+            history.push(`${route}/add`);
           }
         }}
         className={`px-4 py-2 text-sm text-white rounded-md ${
@@ -274,15 +232,15 @@ export function Contacts() {
             : `bg-secondary-500 hover:bg-secondary-700 `
         }`}
       >
-        {back ? "Listagem" : `Adicionar ${ModuleName.singular}`}
+        {back ? "Listagem" : `Adicionar ${singular}`}
       </button>
     );
   };
 
   async function getDataList(selectedType: string) {
     try {
-      const allData = (await Services.getAll()) as ModuleInterface[];
-      let data: ModuleInterface[] = [];
+      const allData = (await ContactServices.getAll()) as ContactInterface[];
+      let data: ContactInterface[] = [];
       if (selectedType === "All") data = allData;
       if (selectedType === "Personal") data = allData.filter((d) => d.userId);
       if (selectedType !== "All" && selectedType !== "Personal")
@@ -297,18 +255,18 @@ export function Contacts() {
   }
 
   function handleEdit() {
-    history.push(`${ModuleName.route}/edit/${selected?.id}`);
+    history.push(`${route}/edit/${selected?.id}`);
   }
 
   async function handleCreate(data: FormData) {
     setLoading(true);
     try {
-      await Services.create(data);
+      await ContactServices.create(data);
       setShowSuccessAlert(true);
       setShowEditAlert(false);
       setShowDeleteAlert(false);
       reloadList();
-      history.push(ModuleName.route);
+      history.push(route);
       setLoading(false);
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
@@ -321,12 +279,12 @@ export function Contacts() {
   async function handleUpate(data: FormData) {
     setLoading(true);
     try {
-      await Services.update(data);
+      await ContactServices.update(data);
       setShowSuccessAlert(false);
       setShowEditAlert(true);
       setShowDeleteAlert(false);
       reloadList();
-      history.push(ModuleName.route);
+      history.push(route);
       setLoading(false);
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
@@ -340,7 +298,7 @@ export function Contacts() {
     if (selected.id) {
       setLoading(true);
       try {
-        await Services.deleteOne(selected.id);
+        await ContactServices.deleteOne(selected.id);
         setShowSuccessAlert(false);
         setShowEditAlert(false);
         setShowDeleteAlert(true);
@@ -358,8 +316,8 @@ export function Contacts() {
   return (
     <>
       <Header
-        before={ModuleName.parents}
-        main={ModuleName.plural}
+        before={parents}
+        main={plural}
         select={showList ? createSelect : undefined}
         search={createSearch}
         button={createButton}
@@ -373,21 +331,21 @@ export function Contacts() {
               {showSuccessAlert && (
                 <Alert
                   type={WARNING_TYPES.SUCCESS}
-                  message={`${ModuleName.singular} cadastrado com Sucesso!`}
+                  message={`${singular} cadastrado com Sucesso!`}
                   closeFunction={setShowSuccessAlert}
                 />
               )}
               {showEditAlert && (
                 <Alert
                   type={WARNING_TYPES.INFO}
-                  message={`${ModuleName.singular} alterado com Sucesso!`}
+                  message={`${singular} alterado com Sucesso!`}
                   closeFunction={setShowEditAlert}
                 />
               )}
               {showDeleteAlert && (
                 <Alert
                   type={WARNING_TYPES.WARNING}
-                  message={`${ModuleName.singular} removido com Sucesso!`}
+                  message={`${singular} removido com Sucesso!`}
                   closeFunction={setShowDeleteAlert}
                 />
               )}
@@ -424,8 +382,8 @@ export function Contacts() {
                 <ConfirmationModal
                   setConfirm={setConfirm}
                   type={WARNING_TYPES.ERROR}
-                  title={`Excluir ${ModuleName.singular}: ${selected.name}?`}
-                  content={`Você tem certeza que quer excluir o ${ModuleName.singular} ${selected.name}? Todos os dados desse ${ModuleName.singular} serão perdidos. Essa ação não poderá ser desfeita.`}
+                  title={`Excluir ${singular}: ${selected.name}?`}
+                  content={`Você tem certeza que quer excluir o ${singular} ${selected.name}? Todos os dados desse ${singular} serão perdidos. Essa ação não poderá ser desfeita.`}
                   action={handleDelete}
                 />
               )}

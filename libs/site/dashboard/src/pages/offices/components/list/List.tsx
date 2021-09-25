@@ -1,9 +1,9 @@
 import { EyeIcon, PenIcon, TrashIcon } from "@iustitia/site/shared-components";
-import { IOffice } from "../../../interfaces";
+import { OfficeInterface } from "../../Offices";
 
 export interface ListProps {
-  offices: IOffice[];
-  setSelectedOffice(office: IOffice): void;
+  offices: OfficeInterface[];
+  setSelectedOffice(office: OfficeInterface): void;
   setBack(back: boolean): void;
   setUpdade(updade: boolean): void;
   setList(list: boolean): void;

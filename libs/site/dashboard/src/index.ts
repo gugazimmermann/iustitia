@@ -1,8 +1,5 @@
-export * from "./pages/subscriptions/Subscriptions";
-export * from "./pages/offices/Offices";
-export * from "./pages/profile/Profile";
-export * from "./pages/not-found/NotFound";
-export * from "./pages/dashboards/offices/DashboardOffices";
-export { getProfile } from "./services/profile"
-export { getAll as getOffices } from "../../services/src/lib/dashboard/office"
-export * from "./interfaces"
+export {default as DashboardOffices} from "./pages/dashboards/offices/DashboardOffices";
+export {default as Offices} from "./pages/offices/Offices";
+export {default as Profile} from "./pages/profile/Profile";
+export {default as Subscriptions}from "./pages/subscriptions/Subscriptions";
+export {default as NotFound} from "./pages/not-found/NotFound";

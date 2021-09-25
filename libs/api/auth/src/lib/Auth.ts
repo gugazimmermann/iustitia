@@ -1,3 +1,4 @@
+import { Express } from 'express';
 import checkDuplicateEmail from "./middleware/checkDuplicateEmail";
 import {
   signin,
@@ -11,7 +12,7 @@ import {
 } from "./controllers";
 import verifyToken from "./middleware/verifyToken";
 
-export default function Auth(app) {
+export default function Auth(app: Express) {
   app.post("/auth/signup", [checkDuplicateEmail], signup);
 
   app.post("/auth/signin", signin);

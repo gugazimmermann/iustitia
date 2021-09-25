@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import { getUserInitials, WARNING_TYPES } from "@iustitia/site/shared-utils";
 import {
   Alert,
@@ -10,20 +11,16 @@ import {
   NoteNewModal,
   ConfirmationModal,
 } from "@iustitia/site/shared-components";
-import {
-  AttachmentInterface,
-  ModuleInterface,
-  NoteInterface,
-} from "../Contacts";
-import * as ServicesAttachments from "../services/attachments";
-import * as ServicesNotes from "../services/notes";
-import { IOffice } from "@iustitia/site/dashboard";
-import { Link } from "react-router-dom";
 import { SiteRoutes } from "@iustitia/react-routes";
+import { ContactInterface, OfficeInterface, NoteInterface, AttachmentInterface } from "../../Contacts";
+import {
+  NoteServices,
+  AttchmentServices
+} from "@iustitia/site/services";
 
 export interface DetailsProps {
-  data: ModuleInterface;
-  offices?: IOffice[];
+  data: ContactInterface;
+  offices?: OfficeInterface[];
   edit(): void;
 }
 
@@ -54,8 +51,8 @@ export function Details({ data, offices, edit }: DetailsProps) {
 
   async function getAllNotes(id: string) {
     try {
-      const notes = await ServicesNotes.getAllNotes(id);
-      setNotesList(notes as NoteInterface[]);
+      const notes = await NoteServices.getAll(id);
+      setNotesList(notes as NoteServices.NoteInterface[]);
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       setError(err.message as string);
@@ -65,8 +62,8 @@ export function Details({ data, offices, edit }: DetailsProps) {
 
   async function getAllAttachments(id: string) {
     try {
-      const atts = await ServicesAttachments.getAllAttachments(id);
-      setAttList(atts as AttachmentInterface[]);
+      const atts = await AttchmentServices.getAll(id);
+      setAttList(atts as AttchmentServices.AttachmentInterface[]);
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       setError(err.message as string);
@@ -74,7 +71,7 @@ export function Details({ data, offices, edit }: DetailsProps) {
     }
   }
 
-  async function receiveNoteFromModal(note: NoteInterface) {
+  async function receiveNoteFromModal(note: NoteServices.NoteInterface) {
     if (!editNote?.id) {
       createNote(note);
     } else {
@@ -82,11 +79,11 @@ export function Details({ data, offices, edit }: DetailsProps) {
     }
   }
 
-  async function createNote(note: NoteInterface) {
+  async function createNote(note:  NoteServices.NoteInterface) {
     setLoading(true);
     try {
       const ownerId = data.id as string;
-      await ServicesNotes.createNote({ ...note, ownerId });
+      await NoteServices.create({ ...note, ownerId });
       await getAllNotes(ownerId);
       setLoading(false);
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -97,10 +94,10 @@ export function Details({ data, offices, edit }: DetailsProps) {
     }
   }
 
-  async function updateNote(note: NoteInterface) {
+  async function updateNote(note: NoteServices.NoteInterface) {
     setLoading(true);
     try {
-      await ServicesNotes.updateNote({ ...editNote, ...note });
+      await NoteServices.update({ ...editNote, ...note });
       await getAllNotes(data.id as string);
       setLoading(false);
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -126,7 +123,7 @@ export function Details({ data, offices, edit }: DetailsProps) {
         formData.append("attachments", file, file.name);
       }
       formData.append("ownerId", data?.id as string);
-      await ServicesAttachments.createAttachments(
+      await AttchmentServices.create(
         formData,
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         (event: any) => {
@@ -155,7 +152,7 @@ export function Details({ data, offices, edit }: DetailsProps) {
   async function deleteOneNote() {
     setLoading(true);
     try {
-      await ServicesNotes.deleteOneNote(selectedNote?.id as string);
+      await NoteServices.deleteOne(selectedNote?.id as string);
       getAllNotes(data?.id as string);
       setLoading(false);
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -169,7 +166,7 @@ export function Details({ data, offices, edit }: DetailsProps) {
   async function deleteOneAttachment() {
     setLoading(true);
     try {
-      await ServicesAttachments.deleteOneAttachment(
+      await AttchmentServices.deleteOne(
         selectedAttchment?.id as string
       );
       getAllAttachments(data?.id as string);

@@ -1,6 +1,8 @@
+import { Response } from "express";
+import { UserRequest } from "@iustitia/api/auth";
 import { database } from '@iustitia/api/database';
 
-export async function getPlans(req, res) {
+export async function getPlans(req: UserRequest, res: Response): Promise<Response> {
   try {
     const plans = await database.Plan.findAll();
     return res.status(200).send(plans);
@@ -9,7 +11,7 @@ export async function getPlans(req, res) {
   }
 }
 
-export async function getSubscription(req, res) {
+export async function getSubscription(req: UserRequest, res: Response): Promise<Response> {
   try {
     const subscription = await database.Subscription.findOne({ where: { userId: req.userId } });
     return res.status(200).send(subscription);
@@ -18,7 +20,7 @@ export async function getSubscription(req, res) {
   }
 }
 
-export async function getPayments(req, res) {
+export async function getPayments(req: UserRequest, res: Response): Promise<Response> {
   try {
     const payments = await database.Payment.findAll({
       where: { userId: req.userId }, order: [
@@ -31,7 +33,7 @@ export async function getPayments(req, res) {
   }
 }
 
-export async function getCreditcards(req, res) {
+export async function getCreditcards(req: UserRequest, res: Response): Promise<Response> {
   try {
     const creditcards = await database.Creditcard.findAll({ where: { userId: req.userId } });
     return res.status(200).send(creditcards);

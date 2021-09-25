@@ -1,8 +1,8 @@
 import { DateTime } from "luxon";
-import { IPayment } from "../../../interfaces";
+import { PaymentInterface } from "../../Subscriptions";
 
 export interface ListPaymentsProps {
-  payments: IPayment[];
+  payments: PaymentInterface[];
 }
 
 export function ListPayments({ payments }: ListPaymentsProps) {

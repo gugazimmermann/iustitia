@@ -1,7 +1,9 @@
+import { Response } from "express";
+import { UserRequest } from "@iustitia/api/auth";
 import { database } from '@iustitia/api/database';
 import { validateEmail } from '@iustitia/site/shared-utils';
 
-export async function getOneOffice(req, res) {
+export async function getOneOffice(req: UserRequest, res: Response): Promise<Response> {
   const { tenantId, officeId } = req.params;
   if (!tenantId || !officeId) {
     return res.status(400).send({ message: "Dados inválidos!" });
@@ -18,7 +20,7 @@ export async function getOneOffice(req, res) {
   }
 }
 
-export async function getAllOffices(req, res) {
+export async function getAllOffices(req: UserRequest, res: Response): Promise<Response> {
   const { tenantId } = req.params;
   if (!tenantId) {
     return res.status(400).send({ message: "Dados inválidos!" });
@@ -35,7 +37,7 @@ export async function getAllOffices(req, res) {
   }
 }
 
-export async function createOffice(req, res) {
+export async function createOffice(req: UserRequest, res: Response): Promise<Response> {
   const { body } = req;
   if (
     !body.name ||
@@ -80,7 +82,7 @@ export async function createOffice(req, res) {
   }
 }
 
-export async function updateOffice(req, res) {
+export async function updateOffice(req: UserRequest, res: Response): Promise<Response> {
   const { body } = req;
   if (
     !body.id ||
@@ -120,7 +122,7 @@ export async function updateOffice(req, res) {
   }
 }
 
-export async function deleteOffice(req, res) {
+export async function deleteOffice(req: UserRequest, res: Response): Promise<Response> {
   const { officeId } = req.params;
   if (!officeId) {
     return res.status(400).send({ message: "Dados inválidos!" });

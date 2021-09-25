@@ -2,20 +2,16 @@ import { useEffect, useState } from "react";
 import { useHistory, useLocation, Redirect } from "react-router-dom";
 import { SiteRoutes as Routes } from "@iustitia/react-routes";
 import {
+  Alert,
   PlanBasicIcon,
   PlanProfessionalIcon,
 } from "@iustitia/site/shared-components";
-import { getPlans } from "../../services/subscription";
-import { signup } from "../../services/auth";
+import { WARNING_TYPES } from "@iustitia/site/shared-utils";
+import { AuthService, SubscriptionServices } from "@iustitia/site/services";
 import { BasicFeatures, ProfessionalFeatures } from "./features";
 import { SignUpForm } from "../..";
 
-export interface PlanInterface {
-  id: string;
-  reason: string;
-  transactionAmount: number;
-  currencyId: string;
-}
+export type PlanInterface = SubscriptionServices.PlanInterface;
 
 interface State {
   form: SignUpForm;
@@ -34,14 +30,17 @@ export function Plan() {
 
   useEffect(() => {
     async function Plans() {
+      setLoading(true);
       try {
-        const data: PlanInterface[] = await getPlans();
+        const data = (await SubscriptionServices.getPlans()) as PlanInterface[];
         const freePlan = data.find((p) => p.transactionAmount === 0);
         setSelectedPlan(freePlan?.id || "");
         setPlan(freePlan);
         setPlans(data);
+        setLoading(false);
       } catch (err) {
         console.log(err);
+        setLoading(false);
       }
     }
 
@@ -57,8 +56,8 @@ export function Plan() {
 
   function planIcon(p: PlanInterface | undefined) {
     if (
-      p?.reason.toLowerCase().includes("profissional") ||
-      p?.reason.toLowerCase().includes("gratuito")
+      (p?.reason as string).toLowerCase().includes("profissional") ||
+      (p?.reason as string).toLowerCase().includes("gratuito")
     ) {
       return <PlanProfessionalIcon styles="w-12 h-12 text-primary-700" />;
     } else {
@@ -68,8 +67,8 @@ export function Plan() {
 
   function planFeatures(p: PlanInterface | undefined) {
     if (
-      p?.reason.toLowerCase().includes("profissional") ||
-      p?.reason.toLowerCase().includes("gratuito")
+      (p?.reason as string).toLowerCase().includes("profissional") ||
+      (p?.reason as string).toLowerCase().includes("gratuito")
     ) {
       return <ProfessionalFeatures />;
     } else {
@@ -79,8 +78,8 @@ export function Plan() {
 
   function planMsg(p: PlanInterface | undefined) {
     if (
-      !p?.reason.toLowerCase().includes("profissional") &&
-      !p?.reason.toLowerCase().includes("gratuito")
+      !(p?.reason as string).toLowerCase().includes("profissional") &&
+      !(p?.reason as string).toLowerCase().includes("gratuito")
     ) {
       return (
         <div className="flex flex-col items-center justify-center text-center">
@@ -89,7 +88,7 @@ export function Plan() {
           </p>
         </div>
       );
-    } else if (p?.reason.toLowerCase().includes("gratuito")) {
+    } else if ((p?.reason as string).toLowerCase().includes("gratuito")) {
       return (
         <div className="flex flex-col items-center justify-center text-center">
           <p className="mt-4 text-sm font-bold text-red-600">
@@ -113,15 +112,15 @@ export function Plan() {
       history.push(Routes.Subscription, { form, plan: plan });
     } else {
       try {
-        await signup({
+        await AuthService.signup({
           name: form.name,
           email: form.email,
           password: form.password,
-          planId: plan.id,
+          planId: plan.id as string,
         });
         setLoading(false);
         history.push(Routes.SignIn, { email: form.email });
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } catch (err: any) {
         setError(err.message as string);
         setLoading(false);
@@ -140,6 +139,7 @@ export function Plan() {
               Selecione seu Plano
             </h1>
           </div>
+          {error && <Alert type={WARNING_TYPES.ERROR} message={error} />}
           <form className="flex flex-col">
             <div className="mb-6 rounded">
               <select
@@ -153,7 +153,7 @@ export function Plan() {
                   plans.map((p, i) => (
                     <option key={i} value={p.id}>
                       {p.reason} -{" "}
-                      {p.transactionAmount.toLocaleString("pt-br", {
+                      {(p.transactionAmount as number).toLocaleString("pt-br", {
                         style: "currency",
                         currency: p.currencyId,
                       })}
@@ -164,41 +164,52 @@ export function Plan() {
           </form>
           <div className="grid mx-auto">
             <div className="flex flex-col justify-between p-4 bg-white border rounded shadow-sm">
-              <div className="mb-6">
-                <div className="flex flex-col md:flex-row items-center justify-between pb-6 mb-6 border-b">
-                  <div>
-                    <p className="text-sm font-bold uppercase text-center">
-                      {plan?.reason}
-                    </p>
-                    <p className="text-3xl font-bold text-primary-700">
-                      {plan?.transactionAmount.toLocaleString("pt-br", {
-                        style: "currency",
-                        currency: plan?.currencyId,
-                      })}{" "}
-                      /{" "}
-                      <span className="text-xl">
-                        {plan?.reason.toLowerCase().includes("mensal")
-                          ? `mês`
-                          : plan?.reason.toLowerCase().includes("semestral")
-                          ? `semestre`
-                          : `ano`}
-                      </span>
-                    </p>
+              {plan && (
+                <>
+                  <div className="mb-6">
+                    <div className="flex flex-col md:flex-row items-center justify-between pb-6 mb-6 border-b">
+                      <div>
+                        <p className="text-sm font-bold uppercase text-center">
+                          {plan?.reason}
+                        </p>
+                        <p className="text-3xl font-bold text-primary-700">
+                          {(plan?.transactionAmount as number).toLocaleString(
+                            "pt-br",
+                            {
+                              style: "currency",
+                              currency: plan?.currencyId,
+                            }
+                          )}{" "}
+                          /{" "}
+                          <span className="text-xl">
+                            {(plan?.reason as string)
+                              .toLowerCase()
+                              .includes("mensal")
+                              ? `mês`
+                              : (plan?.reason as string)
+                                  .toLowerCase()
+                                  .includes("semestral")
+                              ? `semestre`
+                              : `ano`}
+                          </span>
+                        </p>
+                      </div>
+                      <div className="mt-4 md:mt-0 flex items-center justify-center w-24 h-24 rounded-full bg-primary-100">
+                        {planIcon(plan)}
+                      </div>
+                    </div>
+                    <div>
+                      <div className="w-full text-center">
+                        <p className="mb-2 font-bold tracking-wide">
+                          Características
+                        </p>
+                      </div>
+                      {planFeatures(plan)}
+                    </div>
                   </div>
-                  <div className="mt-4 md:mt-0 flex items-center justify-center w-24 h-24 rounded-full bg-primary-100">
-                    {planIcon(plan)}
-                  </div>
-                </div>
-                <div>
-                  <div className="w-full text-center">
-                    <p className="mb-2 font-bold tracking-wide">
-                      Características
-                    </p>
-                  </div>
-                  {planFeatures(plan)}
-                </div>
-              </div>
-              <div>{planMsg(plan)}</div>
+                  <div>{planMsg(plan)}</div>
+                </>
+              )}
             </div>
           </div>
           <div className="flex flex-col mt-4">

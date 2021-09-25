@@ -3,10 +3,10 @@ import {
   CreditCardIcon,
   TrashIcon,
 } from "@iustitia/site/shared-components";
-import { ICreditCard } from "../../../interfaces";
+import { CreditCardInterface } from "../../Subscriptions";
 
 export interface ListCreditCardsProps {
-  creditCards: ICreditCard[];
+  creditCards: CreditCardInterface[];
 }
 
 export function ListCreditCards({ creditCards }: ListCreditCardsProps) {

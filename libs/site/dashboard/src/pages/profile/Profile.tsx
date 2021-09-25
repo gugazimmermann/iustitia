@@ -15,15 +15,17 @@ import {
   validateEmail,
   WARNING_TYPES,
 } from "@iustitia/site/shared-utils";
-import { updateProfile } from "../../services/profile";
-import { IProfile } from "../../interfaces";
+import { ProfileServices } from "@iustitia/site/services";
+
+export const { route, singular, parents, plural } = ProfileServices.ProfileModule;
+export type ProfileInterface = ProfileServices.ProfileInterface;
 
 interface ProfileProps {
-  profile?: IProfile;
-  setProfile?(profile: IProfile): void;
+  profile?: ProfileInterface;
+  setProfile?(profile: ProfileInterface): void;
 }
 
-export type IProfileForm = Omit<IProfile, "avatar"> & { avatar: FileList };
+export type IProfileForm = Omit<ProfileInterface, "avatar"> & { avatar: FileList };
 
 const schema = yup.object().shape({
   name: yup.string().required(),
@@ -157,9 +159,9 @@ export function Profile({ profile, setProfile }: ProfileProps) {
     });
 
     try {
-      const profileData: IProfile = await updateProfile(formData);
+      const profileData = await ProfileServices.update(formData);
       if (profileData && setProfile) {
-        setProfile(profileData);
+        setProfile(profileData as ProfileInterface);
         setShowSuccess(true);
         setLoading(false);
       }

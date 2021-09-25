@@ -1,10 +1,11 @@
-import { SeeEventBackgroundColor, SeeEventTextColor } from "@iustitia/site/shared-utils";
 import { DateTime } from "luxon";
-import { ModuleInterface } from "../../Calendar";
+import { SeeEventBackgroundColor, SeeEventTextColor } from "@iustitia/site/shared-utils";
+import { CalendarService } from "@iustitia/site/services";
+import { CalendarInterface } from "../../Calendar";
 import styles from "../../Calendar.module.css";
 
 export interface CalendarEventMultiProps {
-  event: ModuleInterface;
+  event: CalendarInterface;
   dateStart: DateTime;
   day: DateTime;
 }

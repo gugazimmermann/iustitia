@@ -1,39 +1,50 @@
 import { api, token } from "../..";
 import { errorHandler } from "@iustitia/site/shared-utils";
-import { NoteInterface, ModuleName } from "@iustitia/site/contacts";
+import { ContactModule } from "../contacts/contacts";
 
-export async function getAllNotes(ownerId: string): Promise<NoteInterface[] | Error> {
+export interface NoteInterface {
+  id?: string;
+  date: string;
+  title: string;
+  content: string;
+  tenantId?: string;
+  ownerId: string;
+}
+
+const RouteName = `${ContactModule.module}/notes`;
+
+export async function getAll(ownerId: string): Promise<NoteInterface[] | Error> {
   try {
     const tenantId = token.getLocalTenantId();
-    const { data } = await api.get(`/api/${ModuleName.module}/notes/${tenantId}/${ownerId}`);
+    const { data } = await api.get(`/api/${RouteName}/${tenantId}/${ownerId}`);
     return data
   } catch (err) {
     return errorHandler(err)
   }
 };
 
-export async function createNote(formData: NoteInterface): Promise<NoteInterface | Error> {
+export async function create(formData: NoteInterface): Promise<NoteInterface | Error> {
   try {
     formData.tenantId = token.getLocalTenantId();
-    const { data } = await api.post(`/api/${ModuleName.module}/notes`, formData);
+    const { data } = await api.post(`/api/${RouteName}`, formData);
     return data
   } catch (err) {
     return errorHandler(err)
   }
 };
 
-export async function updateNote(formData: NoteInterface): Promise<NoteInterface | Error> {
+export async function update(formData: NoteInterface): Promise<NoteInterface | Error> {
   try {
-    const { data } = await api.put(`/api/${ModuleName.module}/notes`, formData);
+    const { data } = await api.put(`/api/${RouteName}`, formData);
     return data
   } catch (err) {
     return errorHandler(err)
   }
 };
 
-export async function deleteOneNote(id: string): Promise<{ message: string } | Error> {
+export async function deleteOne(id: string): Promise<{ message: string } | Error> {
   try {
-    return await api.delete(`/api/${ModuleName.module}/notes/${id}`);
+    return await api.delete(`/api/${RouteName}/${id}`);
   } catch (err) {
     return errorHandler(err)
   }

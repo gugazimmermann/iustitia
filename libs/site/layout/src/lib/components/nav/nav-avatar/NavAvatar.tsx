@@ -1,12 +1,11 @@
 import { useEffect, useRef, useState } from "react";
 import { Link, useHistory } from "react-router-dom";
 import { SiteRoutes as Routes, SiteRoutes } from "@iustitia/react-routes";
-import { logout } from "@iustitia/site/auth";
 import { getUserInitials } from "@iustitia/site/shared-utils";
-import { IProfile } from "@iustitia/site/dashboard";
-
+import { AuthService } from "@iustitia/site/services";
+import { ProfileInterface } from "../../../Layout";
 export interface NavAvatarProps {
-  profile: IProfile;
+  profile: ProfileInterface;
 }
 
 export function NavAvatar({ profile }: NavAvatarProps) {
@@ -28,11 +27,11 @@ export function NavAvatar({ profile }: NavAvatarProps) {
   }, [open]);
 
   const handleLogout = () => {
-    logout();
+    AuthService.logout();
     history.push(Routes.SignIn);
   };
 
-  function avatarButton(profile: IProfile) {
+  function avatarButton(profile: ProfileInterface) {
     if (!profile.avatar) {
       return (
         <button

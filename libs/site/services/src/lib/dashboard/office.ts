@@ -1,49 +1,79 @@
 import { api, token } from "../..";
 import { errorHandler } from "@iustitia/site/shared-utils";
-import { IOffice } from "../../../../dashboard/src/interfaces";
+import { SiteRoutes } from "@iustitia/react-routes";
 
-export async function getOne(officeId: string) {
-  try {
-    const tenantId = token.getLocalTenantId();
-    const { data } = await api.get(`/api/office/${tenantId}/${officeId}`);
-    return data
-  } catch (err) {
-    return errorHandler(err)
-  }
+export const OfficeModule = {
+  module: "office",
+  parents: [],
+  singular: "Escritório",
+  plural: "Escritórios",
+  route: SiteRoutes.Offices,
 };
+
+export interface OfficeInterface {
+  id?: string;
+  name: string;
+  email: string;
+  phone: string;
+  zip: string;
+  address: string;
+  number: string;
+  complement: string;
+  neighborhood: string;
+  city: string;
+  state: string;
+  userId?: string;
+  tenantId?: string;
+  updatedAt?: string;
+  createdAt?: string;
+  deletedAt?: string;
+};
+
+type ModuleInterface = OfficeInterface;
+const RouteName = OfficeModule.module;
 
 export async function getAll() {
   try {
     const tenantId = token.getLocalTenantId();
-    const { data } = await api.get(`/api/office/${tenantId}`);
+    const { data } = await api.get(`/api/${RouteName}/${tenantId}`);
     return data
   } catch (err) {
     return errorHandler(err)
   }
 };
 
-export async function createOffice(office: IOffice) {
+export async function getOne(id: string) {
   try {
-    office.tenantId = token.getLocalTenantId();
-    const { data } = await api.post("/api/office", office);
+    const tenantId = token.getLocalTenantId();
+    const { data } = await api.get(`/api/${RouteName}/${tenantId}/${id}`);
     return data
   } catch (err) {
     return errorHandler(err)
   }
 };
 
-export async function updateOffice(office: IOffice) {
+export async function create(formData: ModuleInterface) {
   try {
-    const { data } = await api.put("/api/office", office);
+    formData.tenantId = token.getLocalTenantId();
+    const { data } = await api.post("/api/${RouteName}", formData);
     return data
   } catch (err) {
     return errorHandler(err)
   }
 };
 
-export async function deleteOffice(officeId: string) {
+export async function update(formData: ModuleInterface) {
   try {
-    return await api.delete(`/api/office/${officeId}`);
+    const { data } = await api.put("/api/${RouteName}", formData);
+    return data
+  } catch (err) {
+    return errorHandler(err)
+  }
+};
+
+export async function deleteOne(id: string) {
+  try {
+    return await api.delete(`/api/${RouteName}/${id}`);
   } catch (err) {
     return errorHandler(err)
   }

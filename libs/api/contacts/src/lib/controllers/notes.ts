@@ -1,3 +1,5 @@
+import { Response } from "express";
+import { UserRequest } from "@iustitia/api/auth";
 import { DateTime } from "luxon";
 import { moduleNotesDB, ModuleNotesInstance, userDB } from ".";
 
@@ -18,7 +20,7 @@ function noteDataToResult(data: ModuleNotesInstance): NotesInterface {
   }
 }
 
-export async function getAllNotes(req, res) {
+export async function getAllNotes(req: UserRequest, res: Response): Promise<Response> {
   const { tenantId, ownerId } = req.params;
   if (!tenantId || !ownerId) return res.status(400).send({ message: "Dados inválidos!" });
   try {
@@ -33,7 +35,7 @@ export async function getAllNotes(req, res) {
   }
 }
 
-export async function createNote(req, res) {
+export async function createNote(req: UserRequest, res: Response): Promise<Response> {
   const { body } = req;
   if (!body.title || !body.content || !body.ownerId) return res.status(400).send({ message: "Dados inválidos!" });
   try {
@@ -48,7 +50,7 @@ export async function createNote(req, res) {
   }
 }
 
-export async function updateNote(req, res) {
+export async function updateNote(req: UserRequest, res: Response): Promise<Response> {
   const { body } = req;
   if (!body.id || !body.title || !body.content) return res.status(400).send({ message: "Dados inválidos!" });
   try {
@@ -61,7 +63,7 @@ export async function updateNote(req, res) {
   }
 }
 
-export async function deleteOneNote(req, res) {
+export async function deleteOneNote(req: UserRequest, res: Response): Promise<Response> {
   const { id } = req.params;
   if (!id) return res.status(400).send({ message: "Dados inválidos!" });
   try {

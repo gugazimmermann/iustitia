@@ -4,8 +4,8 @@ import { useForm } from "react-hook-form";
 import { SiteRoutes as Routes } from "@iustitia/react-routes";
 import { Alert, LoadingButton } from "@iustitia/site/shared-components";
 import { validateEmail, WARNING_TYPES } from "@iustitia/site/shared-utils";
+import { AuthService } from "@iustitia/site/services";
 import { Title, Link } from "../..";
-import { forgotpassword } from "../../services/auth";
 
 type Form = {
   email: string;
@@ -30,7 +30,7 @@ export function ForgotPassword() {
       return;
     }
     try {
-      const res = await forgotpassword(form.email);
+      const res = await AuthService.forgotpassword(form.email);
       if ("email" in res) {
         setLoading(false);
         history.push(Routes.ChangePassword, {

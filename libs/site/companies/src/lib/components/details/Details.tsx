@@ -1,10 +1,10 @@
+import { Link } from "react-router-dom";
 import { SiteRoutes } from "@iustitia/react-routes";
 import { FormatAddress } from "@iustitia/site/shared-components";
-import { Link } from "react-router-dom";
-import { ModuleInterface } from "../..";
+import { CompanyInterface } from "../../Companies";
 
 export interface DetailsProps {
-  data: ModuleInterface;
+  data: CompanyInterface;
   edit(): void;
 }
 

@@ -1,9 +1,10 @@
+import { Request, Response } from 'express'
 import * as jwt from "jsonwebtoken";
 import * as bcrypt from "bcryptjs";
 import { v4 as uuidv4 } from 'uuid';
 import { DateTime } from "luxon";
-import { SiteRoutes as Routes } from '@iustitia/react-routes';
 import * as mercadopago from 'mercadopago';
+import { SiteRoutes as Routes } from '@iustitia/react-routes';
 import { database } from '@iustitia/api/database';
 import { sendForgotPasswordEmail } from '@iustitia/api/email';
 import { validateEmail } from "@iustitia/site/shared-utils";
@@ -16,22 +17,22 @@ const ACCESS_TOKEN =
 
 mercadopago.configure({ access_token: ACCESS_TOKEN });
 
-async function createToken(user) {
+async function createToken(userId: string): Promise<string> {
   const expiredAt = new Date();
   expiredAt.setSeconds(expiredAt.getSeconds() + config.jwtRefreshExpiration);
   const refreshToken = await database.RefreshToken.create({
     token: uuidv4(),
     expiryDate: expiredAt,
-    userId: user.id,
+    userId: userId,
   });
   return refreshToken.token;
 };
 
-function verifyExpiration(token) {
-  return token.expiryDate.getTime() < new Date().getTime();
+function verifyExpiration(expiryDate: Date): boolean {
+  return expiryDate.getTime() < new Date().getTime();
 };
 
-export async function signup(req, res) {
+export async function signup(req: Request, res: Response): Promise<Response> {
   if (!req.body?.name || !req.body?.password || !req.body?.email || !validateEmail(req.body.email) || !req.body?.planId) {
     return res.status(400).send({ message: "Dados inválidos!" });
   }
@@ -94,7 +95,7 @@ export async function signup(req, res) {
   }
 }
 
-export async function signin(req, res) {
+export async function signin(req: Request, res: Response): Promise<Response> {
   if (!req.body?.password || !req.body?.email || !validateEmail(req.body.email)) {
     return res.status(400).send({ message: "Dados inválidos!" });
   }
@@ -119,14 +120,14 @@ export async function signin(req, res) {
     const accessToken = jwt.sign({ id: user.id }, config.jwtSecret, {
       expiresIn: config.jwtExpiration,
     });
-    const refreshToken = await createToken(user);
+    const refreshToken = await createToken(user.id);
     return res.status(200).send({ accessToken, refreshToken, tenant: user.tenant });
   } catch (err) {
     return res.status(500).send({ message: err.message });
   }
 }
 
-export async function forgotPassword(req, res) {
+export async function forgotPassword(req: Request, res: Response): Promise<Response> {
   if (!req.body.email || !validateEmail(req.body.email)) {
     return res.status(400).json({ message: "Email é necessário!" });
   }
@@ -160,7 +161,7 @@ export async function forgotPassword(req, res) {
   }
 }
 
-export async function forgotPasswordCode(req, res) {
+export async function forgotPasswordCode(req: Request, res: Response): Promise<Response> {
   if (!req.body.urlcode) {
     return res.status(400).json({ message: "Código é necessário!" });
   }
@@ -175,7 +176,7 @@ export async function forgotPasswordCode(req, res) {
   }
 }
 
-export async function changePassword(req, res) {
+export async function changePassword(req: Request, res: Response): Promise<Response> {
   if (!req.body.code || !req.body.password) {
     return res.status(400).json({ message: "Código e Senha são necessários!" });
   }
@@ -202,7 +203,7 @@ export async function changePassword(req, res) {
   }
 }
 
-export async function refreshToken(req, res) {
+export async function refreshToken(req: Request, res: Response): Promise<Response> {
   if (!req.body.refreshToken) {
     return res.status(400).json({ message: "Refresh Token é necessário!" });
   }
@@ -213,7 +214,7 @@ export async function refreshToken(req, res) {
     if (!refreshToken) {
       return res.status(404).json({ message: "Refresh token não encontrado!" });
     }
-    if (verifyExpiration(refreshToken)) {
+    if (verifyExpiration(refreshToken.expiryDate)) {
       database.RefreshToken.destroy({ where: { id: refreshToken.id } });
       return res.status(403).json({
         message: "Refresh token está expirado. Faça Login novamente.",

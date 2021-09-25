@@ -7,51 +7,17 @@ import {
   SearchIcon,
 } from "@iustitia/site/shared-components";
 import { WARNING_TYPES } from "@iustitia/site/shared-utils";
-import { SiteRoutes as Routes } from "@iustitia/react-routes";
-import * as Services from "./services";
-import Form from "./form/Form";
-import List from "./list/List";
-import Details from "./details/Details";
+import { CompanyService } from "@iustitia/site/services";
+import { List, Details, Form } from "./components";
 
-export const ModuleName = {
-  module: "companies",
-  parents: ["Agenda"],
-  singular: "Empresa",
-  plural: "Empresas",
-  route: Routes.Companies,
-};
-
-export interface ModuleInterface {
-  id?: string;
-  name?: string;
-  site?: string;
-  email?: string;
-  phone?: string;
-  zip?: string;
-  address?: string;
-  number?: string;
-  complement?: string;
-  neighborhood?: string;
-  city?: string;
-  state?: string;
-  comments?: string;
-  tenantId?: string;
-  contacts?: {
-    id: string;
-    name: string;
-    position: string;
-  }[]
-}
-
-interface useParamsProps {
-  id: string;
-}
+export const { route, singular, parents, plural } = CompanyService.CompanyModule;
+export type CompanyInterface = CompanyService.CompanyInterface;
 
 export function Companies() {
   const history = useHistory();
   const location = useLocation();
   const { pathname } = useLocation();
-  const { id } = useParams<useParamsProps>();
+  const { id } = useParams<{ id: string }>();
   const [showSuccessAlert, setShowSuccessAlert] = useState(false);
   const [showEditAlert, setShowEditAlert] = useState(false);
   const [showDeleteAlert, setShowDeleteAlert] = useState(false);
@@ -63,9 +29,15 @@ export function Companies() {
   const [error, setError] = useState("");
   const [back, setBack] = useState(false);
   const [confirm, setConfirm] = useState(false);
-  const [dataList, setDataList] = useState([] as ModuleInterface[]);
-  const [showDataList, setShowDataList] = useState([] as ModuleInterface[]);
-  const [selected, setSelected] = useState({} as ModuleInterface);
+  const [dataList, setDataList] = useState(
+    [] as CompanyInterface[]
+  );
+  const [showDataList, setShowDataList] = useState(
+    [] as CompanyInterface[]
+  );
+  const [selected, setSelected] = useState(
+    {} as CompanyInterface
+  );
   const [searchParam, setSearchParam] = useState<string>();
   const [sort, setSort] = useState("ASC");
 
@@ -113,12 +85,12 @@ export function Companies() {
 
   async function getSelected(id: string) {
     try {
-      const data = await Services.getOne(id);
+      const data = await CompanyService.getOne(id);
       setSelected(data);
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       setError(err.message as string);
-      history.push(ModuleName.route);
+      history.push(route);
       console.log(err);
     }
   }
@@ -137,7 +109,7 @@ export function Companies() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sort]);
 
-  function handleSort(data?: ModuleInterface[]) {
+  function handleSort(data?: CompanyInterface[]) {
     const sortData = data ? data : dataList.slice(0);
     if (sortData) {
       if (sort === "ASC")
@@ -180,8 +152,10 @@ export function Companies() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchParam]);
 
-  function handleSearch(data: ModuleInterface[], param: string) {
-    const res = data.filter((d) => d.name?.toLocaleLowerCase().includes(param.toLocaleLowerCase()));
+  function handleSearch(data: CompanyInterface[], param: string) {
+    const res = data.filter((d) =>
+      d.name?.toLocaleLowerCase().includes(param.toLocaleLowerCase())
+    );
     setShowDataList(res);
   }
 
@@ -190,13 +164,13 @@ export function Companies() {
       <button
         onClick={() => {
           if (back) {
-            if (location.pathname !== ModuleName.route) {
-              history.push(ModuleName.route);
+            if (location.pathname !== route) {
+              history.push(route);
             } else {
               reloadList();
             }
           } else {
-            history.push(`${ModuleName.route}/add`);
+            history.push(`${route}/add`);
           }
         }}
         className={`px-4 py-2 text-sm text-white rounded-md ${
@@ -205,14 +179,15 @@ export function Companies() {
             : `bg-secondary-500 hover:bg-secondary-700 `
         }`}
       >
-        {back ? "Listagem" : `Adicionar ${ModuleName.singular}`}
+        {back ? "Listagem" : `Adicionar ${singular}`}
       </button>
     );
   };
 
   async function getDataList() {
     try {
-      const data = (await Services.getAll()) as ModuleInterface[];
+      const data =
+        (await CompanyService.getAll()) as CompanyInterface[];
       setDataList(data);
       handleSort(data);
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -223,18 +198,18 @@ export function Companies() {
   }
 
   function handleEdit() {
-    history.push(`${ModuleName.route}/edit/${selected?.id}`);
+    history.push(`${route}/edit/${selected?.id}`);
   }
 
-  async function handleCreate(data: ModuleInterface) {
+  async function handleCreate(data: CompanyInterface) {
     setLoading(true);
     try {
-      await Services.create(data);
+      await CompanyService.create(data);
       setShowSuccessAlert(true);
       setShowEditAlert(false);
       setShowDeleteAlert(false);
       reloadList();
-      history.push(ModuleName.route);
+      history.push(route);
       setLoading(false);
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
@@ -244,15 +219,15 @@ export function Companies() {
     }
   }
 
-  async function handleUpate(data: ModuleInterface) {
+  async function handleUpate(data: CompanyInterface) {
     setLoading(true);
     try {
-      await Services.update(data);
+      await CompanyService.update(data);
       setShowSuccessAlert(false);
       setShowEditAlert(true);
       setShowDeleteAlert(false);
       reloadList();
-      history.push(ModuleName.route);
+      history.push(route);
       setLoading(false);
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
@@ -266,7 +241,7 @@ export function Companies() {
     if (selected.id) {
       setLoading(true);
       try {
-        await Services.deleteOne(selected.id);
+        await CompanyService.deleteOne(selected.id);
         setShowSuccessAlert(false);
         setShowEditAlert(false);
         setShowDeleteAlert(true);
@@ -284,8 +259,8 @@ export function Companies() {
   return (
     <>
       <Header
-        before={ModuleName.parents}
-        main={ModuleName.plural}
+        before={parents}
+        main={plural}
         search={showList ? createSearch : undefined}
         button={createButton}
         back={back}
@@ -298,21 +273,21 @@ export function Companies() {
               {showSuccessAlert && (
                 <Alert
                   type={WARNING_TYPES.SUCCESS}
-                  message={`${ModuleName.singular} cadastrada com Sucesso!`}
+                  message={`${singular} cadastrada com Sucesso!`}
                   closeFunction={setShowSuccessAlert}
                 />
               )}
               {showEditAlert && (
                 <Alert
                   type={WARNING_TYPES.INFO}
-                  message={`${ModuleName.singular} alterada com Sucesso!`}
+                  message={`${singular} alterada com Sucesso!`}
                   closeFunction={setShowEditAlert}
                 />
               )}
               {showDeleteAlert && (
                 <Alert
                   type={WARNING_TYPES.WARNING}
-                  message={`${ModuleName.singular} removida com Sucesso!`}
+                  message={`${singular} removida com Sucesso!`}
                   closeFunction={setShowDeleteAlert}
                 />
               )}
@@ -325,28 +300,17 @@ export function Companies() {
                   setConfirm={setConfirm}
                 />
               )}
-              {showDetails && (
-                <Details data={selected} edit={handleEdit} />
-              )}
-              {showCreate && (
-                <Form
-                  loading={loading}
-                  create={handleCreate}
-                />
-              )}
+              {showDetails && <Details data={selected} edit={handleEdit} />}
+              {showCreate && <Form loading={loading} create={handleCreate} />}
               {showUpdate && (
-                <Form
-                  loading={loading}
-                  data={selected}
-                  update={handleUpate}
-                />
+                <Form loading={loading} data={selected} update={handleUpate} />
               )}
               {confirm && (
                 <ConfirmationModal
                   setConfirm={setConfirm}
                   type={WARNING_TYPES.ERROR}
-                  title={`Excluir ${ModuleName.singular}: ${selected.name}?`}
-                  content={`Você tem certeza que quer excluir a ${ModuleName.singular} ${selected.name}? Todos os dados dessa ${ModuleName.singular} serão perdidos. Essa ação não poderá ser desfeita.`}
+                  title={`Excluir ${singular}: ${selected.name}?`}
+                  content={`Você tem certeza que quer excluir a ${singular} ${selected.name}? Todos os dados dessa ${singular} serão perdidos. Essa ação não poderá ser desfeita.`}
                   action={handleDelete}
                 />
               )}

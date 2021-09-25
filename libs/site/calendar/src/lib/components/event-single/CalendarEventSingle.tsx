@@ -1,9 +1,9 @@
-import { SeeEventBackgroundColor } from "@iustitia/site/shared-utils";
 import { DateTime } from "luxon";
-import { ModuleInterface } from "../../Calendar";
+import { SeeEventBackgroundColor } from "@iustitia/site/shared-utils";
+import { CalendarInterface } from "../../Calendar";
 
 export interface CalendarEventSingleProps {
-  event: ModuleInterface;
+  event: CalendarInterface;
 }
 
 export function CalendarEventSingle({ event }: CalendarEventSingleProps) {

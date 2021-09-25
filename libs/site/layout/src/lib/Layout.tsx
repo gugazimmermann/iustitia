@@ -9,8 +9,12 @@ import {
 import { DateTime } from "luxon";
 import { Alert, Callout } from "@iustitia/site/shared-components";
 import { WARNING_TYPES } from "@iustitia/site/shared-utils";
-import { getOffices, getProfile, IOffice, IProfile } from "@iustitia/site/dashboard";
+import { ProfileServices,  OfficeServices } from "@iustitia/site/services";
 import { Nav, Menu } from "./components";
+
+export const { route, singular, parents, plural } = ProfileServices.ProfileModule;
+export type ProfileInterface = ProfileServices.ProfileInterface;
+export type OfficeInterface = OfficeServices.OfficeInterface;
 
 interface LayoutProps {
   children: ReactNode;
@@ -20,8 +24,8 @@ export function Layout({ children }: LayoutProps) {
   const [menuOpen, setMenuOpen] = useState(true);
   const [navOpen, setNavOpen] = useState(false);
   const [notificationOpen, setNotificationOpen] = useState(false);
-  const [profile, setProfile] = useState({} as IProfile);
-  const [offices, setOffices] = useState({} as IOffice[]);
+  const [profile, setProfile] = useState({} as ProfileInterface);
+  const [offices, setOffices] = useState({} as OfficeInterface[]);
 
   useEffect(() => {
     const { innerWidth: width } = window;
@@ -30,7 +34,7 @@ export function Layout({ children }: LayoutProps) {
     whoIAm();
     async function whoIAm() {
       try {
-        const data: IProfile = await getProfile();
+        const data = (await ProfileServices.getOne()) as ProfileInterface;
         setProfile(data);
       } catch (err) {
         console.log(err);
@@ -40,7 +44,7 @@ export function Layout({ children }: LayoutProps) {
     seeOffices();
     async function seeOffices() {
       try {
-        const data: IOffice[] = await getOffices();
+        const data = (await OfficeServices.getAll()) as OfficeInterface[];
         setOffices(data);
       } catch (err) {
         console.log(err);

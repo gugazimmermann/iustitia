@@ -1,10 +1,11 @@
+import { Express } from "express";
 import * as multer from 'multer';
 import { verifyToken } from '@iustitia/api/auth'
 import { getProfile, updateProfile } from './controllers/profile';
 import { getOneOffice, getAllOffices, createOffice, updateOffice, deleteOffice } from './controllers/office';
 import { getCreditcards, getPayments, getPlans, getSubscription } from './controllers/subscriptions';
 
-export default function Dashboard(app) {
+export default function Dashboard(app: Express) {
 
   const upload = multer()
 
@@ -17,7 +18,7 @@ export default function Dashboard(app) {
   app.put("/api/office", [verifyToken], updateOffice);
   app.delete("/api/office/:officeId", [verifyToken], deleteOffice);
 
-  app.get("/api/plans", [verifyToken], getPlans);
+  app.get("/api/plans", getPlans);
   app.get("/api/subscription", [verifyToken], getSubscription);
   app.get("/api/payments", [verifyToken], getPayments);
   app.get("/api/creditcards", [verifyToken], getCreditcards);
