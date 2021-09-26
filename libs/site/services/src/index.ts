@@ -9,3 +9,4 @@ export * as NoteServices from "./lib/contacts/notes"
 export * as OfficeServices from "./lib/dashboard/office"
 export * as ProfileServices from "./lib/dashboard/profile"
 export * as SubscriptionServices from "./lib/dashboard/subscriptions"
+export * as PeopleServices from "./lib/people/people";

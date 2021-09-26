@@ -6,7 +6,7 @@ import { DateTime } from "luxon";
 import * as mercadopago from 'mercadopago';
 import { SiteRoutes as Routes } from '@iustitia/react-routes';
 import { database } from '@iustitia/api/database';
-import { sendForgotPasswordEmail } from '@iustitia/api/email';
+import { ForgotPasswordEmail } from '@iustitia/api/email';
 import { validateEmail } from "@iustitia/site/shared-utils";
 import config from "../../config";
 
@@ -43,7 +43,9 @@ export async function signup(req: Request, res: Response): Promise<Response> {
     }
     const userData = { email: req.body.email, password: bcrypt.hashSync(req.body.password, 8) };
     const user = await database.User.create(userData);
+    const role = await database.Role.findOne({ where: { name: "Administrador"}})
     await user.update({ tenant: user.id });
+    user.addRole(role);
     await database.Profile.create({
       name: req.body.name,
       email: userData.email,
@@ -142,7 +144,7 @@ export async function forgotPassword(req: Request, res: Response): Promise<Respo
       route: Routes.ChangePassword,
       email: req.body.email,
       date: expiryDate.toFormat("dd/MM/yyyy HH:mm:ss"),
-      code: +Math.random().toString().substr(2, 6),
+      code: +Math.random().toString().substring(2, 6),
       codeUrl: uuidv4()
     }
     await database.ForgotPassword.create({
@@ -151,7 +153,7 @@ export async function forgotPassword(req: Request, res: Response): Promise<Respo
       codeurl: forgotPasswordParams.codeUrl,
       expiryDate: expiryDate.toJSDate()
     });
-    await sendForgotPasswordEmail(forgotPasswordParams);
+    await ForgotPasswordEmail(forgotPasswordParams);
     return res.status(200).json({
       email: forgotPasswordParams.email,
       date: expiryDate.toFormat("dd/MM/yyyy HH:mm:ss")

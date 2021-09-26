@@ -62,7 +62,7 @@ export function Layout({ children }: LayoutProps) {
 
   return (
     <div className="flex h-screen antialiased text-gray-900 bg-gray-100">
-      <Menu setMenuOpen={setMenuOpen} menuOpen={menuOpen} />
+      <Menu profile={profile} setMenuOpen={setMenuOpen} menuOpen={menuOpen} />
       <div className="flex flex-col flex-1 min-h-screen overflow-x-hidden overflow-y-auto">
         <Nav
           setMenuOpen={setMenuOpen}

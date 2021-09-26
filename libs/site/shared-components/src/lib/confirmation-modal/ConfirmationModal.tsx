@@ -5,6 +5,7 @@ export interface ConfirmationModalProps {
   setConfirm(confirm: boolean): void;
   type?: WARNING_TYPES;
   title: string;
+  buttonText?: string;
   content: string;
   action(): void;
 }
@@ -13,6 +14,7 @@ export function ConfirmationModal({
   setConfirm,
   type,
   title,
+  buttonText,
   content,
   action,
 }: ConfirmationModalProps) {
@@ -49,7 +51,7 @@ export function ConfirmationModal({
               }}
               className={`w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 ${bg} text-white text-base font-medium sm:ml-3 sm:w-auto sm:text-sm`}
             >
-              Sim, desejo excluir
+              {buttonText ? buttonText : `Sim, desejo excluir`}
             </button>
             <button
               type="button"

@@ -43,17 +43,17 @@ export function NavAvatar({ profile }: NavAvatarProps) {
       );
     }
     return (
-        <button
-          onClick={() => setOpen(!open)}
-          className="transition-opacity duration-200 rounded-full"
-        >
-          <span className="sr-only">Perfil Menu</span>
-          <img
-            className="w-10 h-10 rounded-full"
-            src={`${process.env.NX_BUCKET_AVATAR_URL}${profile.avatar}`}
-            alt={profile.name}
-          />
-        </button>
+      <button
+        onClick={() => setOpen(!open)}
+        className="transition-opacity duration-200 rounded-full"
+      >
+        <span className="sr-only">Perfil Menu</span>
+        <img
+          className="w-10 h-10 rounded-full"
+          src={`${process.env.NX_BUCKET_AVATAR_URL}${profile.avatar}`}
+          alt={profile.name}
+        />
+      </button>
     );
   }
 
@@ -78,12 +78,14 @@ export function NavAvatar({ profile }: NavAvatarProps) {
         >
           Seu Perfil
         </Link>
-        <Link
-          to={SiteRoutes.Subscriptions}
-          className="cursor-pointer w-full block px-4 py-2 text-sm text-gray-700 transition-colors hover:bg-gray-100"
-        >
-          Assinatura
-        </Link>
+        {profile?.role === "Administrador" && (
+          <Link
+            to={SiteRoutes.Subscriptions}
+            className="cursor-pointer w-full block px-4 py-2 text-sm text-gray-700 transition-colors hover:bg-gray-100"
+          >
+            Assinatura
+          </Link>
+        )}
         <div
           onClick={() => handleLogout()}
           className="cursor-pointer w-full block px-4 py-2 text-sm text-gray-700 transition-colors hover:bg-gray-100"

@@ -23,6 +23,7 @@
       "@iustitia/api/database": ["libs/api/database/src/index.ts"],
       "@iustitia/api/email": ["libs/api/email/src/index.ts"],
       "@iustitia/api/mercadopago": ["libs/api/mercadopago/src/index.ts"],
+      "@iustitia/api/people": ["libs/api/people/src/index.ts"],
       "@iustitia/api/public": ["libs/api/public/src/index.ts"],
       "@iustitia/landing-page/components": [
         "libs/landing-page/components/src/index.ts"
@@ -35,6 +36,7 @@
       "@iustitia/site/contacts": ["libs/site/contacts/src/index.ts"],
       "@iustitia/site/dashboard": ["libs/site/dashboard/src/index.ts"],
       "@iustitia/site/layout": ["libs/site/layout/src/index.ts"],
+      "@iustitia/site/people": ["libs/site/people/src/index.ts"],
       "@iustitia/site/schedule": ["libs/site/schedule/src/index.ts"],
       "@iustitia/site/services": ["libs/site/services/src/index.ts"],
       "@iustitia/site/shared-components": [

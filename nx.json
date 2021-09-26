@@ -54,6 +54,9 @@
     "api-mercadopago": {
       "tags": []
     },
+    "api-people": {
+      "tags": []
+    },
     "api-public": {
       "tags": []
     },
@@ -96,6 +99,9 @@
       "implicitDependencies": ["site"]
     },
     "site-layout": {
+      "tags": []
+    },
+    "site-people": {
       "tags": []
     },
     "site-schedule": {

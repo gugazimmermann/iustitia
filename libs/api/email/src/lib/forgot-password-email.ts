@@ -1,6 +1,6 @@
 import { getTransporter } from "./Transporter";
 
-export interface SendForgotPasswordEmailParams {
+export interface ForgotPasswordEmailParams {
   route: string;
   email: string;
   date: string;
@@ -8,7 +8,7 @@ export interface SendForgotPasswordEmailParams {
   codeUrl: string;
 }
 
-export async function sendForgotPasswordEmail({ route, email, date, code, codeUrl }: SendForgotPasswordEmailParams) {
+export async function ForgotPasswordEmail({ route, email, date, code, codeUrl }: ForgotPasswordEmailParams) {
   const transporter = getTransporter();
 
   const getTime = (date) => {

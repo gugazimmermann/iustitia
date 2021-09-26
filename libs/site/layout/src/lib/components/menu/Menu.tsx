@@ -1,8 +1,10 @@
 import { SiteRoutes as Routes } from "@iustitia/react-routes";
-import { DashboardIcon, ScheduleIcon } from "@iustitia/site/shared-components";
+import { DashboardIcon, PeopleIcon, ScheduleIcon } from "@iustitia/site/shared-components";
+import { ProfileInterface } from "../../Layout";
 import { MenuFooter, MenuItem, MenuTitle } from ".";
 
 interface MenuProps {
+  profile?: ProfileInterface
   setMenuOpen(menuOpen: boolean): void;
   menuOpen: boolean;
 }
@@ -18,19 +20,35 @@ export interface MenuSubItemInterface {
   link: string;
 }
 
-export function Menu({ setMenuOpen, menuOpen }: MenuProps) {
-  const menuItems: MenuItemInterface[] = [
+export function Menu({ profile, setMenuOpen, menuOpen }: MenuProps) {
+
+  const menuItems: MenuItemInterface[] = [{
+    name: "Dashboards",
+    icon: <DashboardIcon styles="w-5 h-5" />,
+    subItems: [
+      {
+        name: "Escritórios",
+        link: `${Routes.Dashboard}`,
+      },
+      {
+        name: "Processos",
+        link: `${Routes.DashboardProcessos}`,
+      },
+    ],
+  }];
+  const adminItem: MenuItemInterface[] = [];
+  const openItem: MenuItemInterface[] = [
     {
-      name: "Dashboards",
-      icon: <DashboardIcon styles="w-5 h-5" />,
+      name: "Pessoal",
+      icon: <PeopleIcon styles="w-5 h-5" stroke={2} />,
       subItems: [
         {
-          name: "Escritórios",
-          link: `${Routes.Dashboard}`,
+          name: "Pessoas",
+          link: `${Routes.People}`,
         },
         {
-          name: "Processos",
-          link: `${Routes.DashboardProcessos}`,
+          name: "Permissões",
+          link: `${Routes.Permissions}`,
         },
       ],
     },
@@ -57,6 +75,12 @@ export function Menu({ setMenuOpen, menuOpen }: MenuProps) {
       ],
     },
   ];
+
+  if (profile?.role === "Administrador") {
+    adminItem.forEach(i => menuItems.push(i))
+  }
+  openItem.forEach(i => menuItems.push(i))
+
 
   return (
     <aside

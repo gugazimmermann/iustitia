@@ -1,4 +1,16 @@
-import { Sequelize, DataTypes, Optional, Model } from "sequelize";
+import {
+  Sequelize,
+  Model,
+  DataTypes,
+  HasManyGetAssociationsMixin,
+  HasManyAddAssociationMixin,
+  HasManyHasAssociationMixin,
+  Association,
+  HasManyCountAssociationsMixin,
+  HasManyCreateAssociationMixin,
+  Optional,
+} from "sequelize";
+import { RoleInstance } from "./role";
 import { ProfileInstance } from "./profile";
 import { SubscriptionInstance } from "./subscription";
 
@@ -17,8 +29,18 @@ export interface UserInstance
   createdAt?: Date;
   updatedAt?: Date;
   deletedAt?: Date;
+  roles?: RoleInstance[];
   profile?: ProfileInstance;
   subscription?: SubscriptionInstance;
+  getRoles?: HasManyGetAssociationsMixin<RoleInstance>;
+  addRole?: HasManyAddAssociationMixin<RoleInstance, number>;
+  hasRole?: HasManyHasAssociationMixin<RoleInstance, number>;
+  countRoles?: HasManyCountAssociationsMixin;
+  createRole?: HasManyCreateAssociationMixin<RoleInstance>;
+
+  associations: {
+    roles: Association<UserInstance, RoleInstance>;
+  };
 }
 
 export default function user(sequelize: Sequelize) {

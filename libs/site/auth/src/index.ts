@@ -9,4 +9,5 @@ export * from "./pages/subscription/Subscription";
 export * from "./pages/sign-in/SignIn";
 export * from "./pages/forgot-password/ForgotPassword";
 export * from "./pages/change-password/ChangePassword";
+export * from "./pages/invite/Invite";
 export * from "./pages/layout/Layout";

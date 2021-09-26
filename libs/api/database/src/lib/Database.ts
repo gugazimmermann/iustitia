@@ -1,10 +1,12 @@
 import { Sequelize, ModelCtor } from "sequelize";
 import config from "./config";
 import user, { UserInstance } from "./models/user";
+import role, { RoleInstance } from "./models/role";
 import refreshToken, { RefreshTokenInstance } from "./models/refreshToken";
 import forgotPassword, { ForgotPasswordInstance } from "./models/forgotPassword";
 import profile, { ProfileInstance } from "./models/profile";
 import office, { OfficeInstance } from "./models/office";
+import people, { PeopleInstance } from "./models/people";
 import plan, { PlansInstance } from "./models/plan";
 import subscription, { SubscriptionInstance } from "./models/subscription";
 import payment, { PaymentInstance } from "./models/payment";
@@ -23,10 +25,12 @@ const sequelize = new Sequelize(config.DB, config.USER, config.PASSWORD, {
 export interface IDatabase {
   Sequelize: Sequelize;
   User: ModelCtor<UserInstance>;
+  Role: ModelCtor<RoleInstance>;
   RefreshToken: ModelCtor<RefreshTokenInstance>;
   ForgotPassword: ModelCtor<ForgotPasswordInstance>;
   Profile: ModelCtor<ProfileInstance>;
   Office: ModelCtor<OfficeInstance>;
+  People: ModelCtor<PeopleInstance>;
   Plan: ModelCtor<PlansInstance>;
   Subscription: ModelCtor<SubscriptionInstance>;
   Payment: ModelCtor<PaymentInstance>;
@@ -41,10 +45,12 @@ export interface IDatabase {
 const database: IDatabase = {
   Sequelize: sequelize,
   User: user(sequelize),
+  Role: role(sequelize),
   RefreshToken: refreshToken(sequelize),
   ForgotPassword: forgotPassword(sequelize),
   Profile: profile(sequelize),
   Office: office(sequelize),
+  People: people(sequelize),
   Plan: plan(sequelize),
   Subscription: subscription(sequelize),
   Payment: payment(sequelize),
@@ -59,6 +65,8 @@ const database: IDatabase = {
 // database.Sequelize.sync();
 
 database.User.hasOne(database.RefreshToken);
+database.User.belongsToMany(database.Role, { through: { model: "user_role", paranoid: true } });
+database.Role.belongsToMany(database.User, { through: { model: "user_role", paranoid: true } });
 
 database.Plan.hasMany(database.Subscription);
 database.Subscription.hasMany(database.Payment);

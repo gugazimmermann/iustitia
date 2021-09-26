@@ -10,6 +10,7 @@ import {
   SignUp,
   Plan,
   Subscription,
+  Invite,
 } from "@iustitia/site/auth";
 import { Layout } from "@iustitia/site/layout";
 import {
@@ -19,6 +20,7 @@ import {
   Offices,
   Subscriptions,
 } from "@iustitia/site/dashboard";
+import { People } from "@iustitia/site/people";
 import { Companies } from "@iustitia/site/companies";
 import { Contacts } from "@iustitia/site/contacts";
 import { Schedule } from "@iustitia/site/schedule";
@@ -112,6 +114,32 @@ export const App = () => {
       <ProtectedRoute exact path={Routes.Subscriptions}>
         <Layout>
           <Subscriptions />
+        </Layout>
+      </ProtectedRoute>
+
+      <PublicRoute exact path={`/convite/:tenantId?/:code?`}>
+        <AuthLayout>
+          <Invite />
+        </AuthLayout>
+      </PublicRoute>
+      <ProtectedRoute exact path={Routes.People}>
+        <Layout>
+          <People />
+        </Layout>
+      </ProtectedRoute>
+      <ProtectedRoute exact path={`${Routes.People}/add`}>
+        <Layout>
+          <People />
+        </Layout>
+      </ProtectedRoute>
+      <ProtectedRoute exact path={`${Routes.People}/edit/:id?`}>
+        <Layout>
+          <People />
+        </Layout>
+      </ProtectedRoute>
+      <ProtectedRoute exact path={`${Routes.People}/:id?`}>
+        <Layout>
+          <People />
         </Layout>
       </ProtectedRoute>
 

@@ -69,7 +69,7 @@ export async function getforgotpasswordcode(urlcode: string): Promise<{
 };
 
 export async function changepassword(codeNumber: string, password: string): Promise<void | Error> {
-  const code = `${codeNumber}`.trim().replace(" ", "");
+  const code = `${codeNumber}`.trim().replace(/ /g, "");
   try {
     await api.post("/auth/changepassword", { code, password })
   } catch (err) {

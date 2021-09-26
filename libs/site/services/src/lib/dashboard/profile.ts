@@ -11,6 +11,8 @@ export const ProfileModule = {
 };
 
 export interface ProfileInterface {
+  id?: string;
+  role: string;
   avatar: string;
   name: string;
   email: string;

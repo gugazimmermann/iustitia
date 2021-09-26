@@ -20,6 +20,8 @@ export * from "./EyeIcon"
 export * from "./FileUnknowIcon"
 export * from './GraphDownIcon'
 export * from './GraphUpIcon'
+export * from './GraphUpIcon'
+export * from "./MailIcon"
 export * from "./MenuArrowIcon"
 export * from "./MenuIcon"
 export * from './MoneyIcon'

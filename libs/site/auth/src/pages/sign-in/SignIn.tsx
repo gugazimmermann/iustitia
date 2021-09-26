@@ -15,6 +15,7 @@ type Form = {
 interface State {
   email: string;
   changePassword: boolean;
+  inviteaccepted: boolean;
 }
 
 export function SignIn() {
@@ -30,6 +31,7 @@ export function SignIn() {
   const [loading, setLoading] = useState(false);
   const [changepassword, setChangepassword] = useState(false);
   const [cadastro, setCadastro] = useState(false);
+  const [invite, setInvite] = useState(false);
   const [error, setError] = useState("");
 
   useEffect(() => {
@@ -39,6 +41,9 @@ export function SignIn() {
     }
     if (state?.changePassword) {
       setChangepassword(true);
+    }
+    if (state?.inviteaccepted) {
+      setInvite(true);
     }
   }, [state, setValue]);
 
@@ -67,6 +72,7 @@ export function SignIn() {
     <>
       <main className="bg-white max-w-lg mx-auto p-8 md:p-12 my-10 rounded-lg shadow-2xl">
         <Title title="Entre em seu escritório" />
+        {invite && <Alert type={WARNING_TYPES.SUCCESS} message="Convite Aceito!" />}
         {changepassword && <Alert type={WARNING_TYPES.SUCCESS} message="Senha alterada com sucesso!" />}
         {cadastro && <Alert type={WARNING_TYPES.SUCCESS} message="Cadastro realizado com sucesso!" />}
         {error && <Alert type={WARNING_TYPES.ERROR} message={error} />}

@@ -55,7 +55,9 @@ export function Nav({
             openState={notificationOpen}
           />
           <NavItem item="Search" icon={NAVICONS.SEARCH} alert={false} />
-          <NavItem item="Settings" icon={NAVICONS.SETTINGS} alert={false} />
+          {profile?.role === "Administrador" && (
+            <NavItem item="Settings" icon={NAVICONS.SETTINGS} alert={false} />
+          )}
         </div>
         <div className="pt-2">
           <NavAvatar profile={profile} />

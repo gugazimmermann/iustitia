@@ -2,7 +2,7 @@ import { Response } from "express";
 import { UserRequest } from "@iustitia/api/auth";
 import * as AWS from 'aws-sdk';
 import * as sharp from 'sharp';
-import { database } from '@iustitia/api/database';
+import { database, ProfileInstance } from '@iustitia/api/database';
 import { validateEmail } from '@iustitia/site/shared-utils';
 
 const s3 = new AWS.S3();
@@ -83,12 +83,13 @@ export async function getProfile(req: UserRequest, res: Response): Promise<Respo
   try {
     const user = await database.User.findOne({
       where: { id: req.userId },
-      include: ["subscription", "profile"],
+      include: ["subscription", "profile", "roles"],
     });
     if (!user || !user.profile || !user.subscription) {
       return res.status(404).send({ message: "Perfil não encontrado!" });
     }
     return res.status(200).send({
+      role: user.roles[0].name,
       avatar: user.profile.avatar,
       name: user.profile.name,
       email: user.profile.email,
