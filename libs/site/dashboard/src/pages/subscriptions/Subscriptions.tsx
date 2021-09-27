@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { DateTime } from "luxon";
-import { Alert, Header } from "@iustitia/site/shared-components";
+import { Alert, AlertInterface, Header } from "@iustitia/site/shared-components";
 import ListPayments from "./components/list/ListPayments";
 import ListCreditCards from "./components/list/ListCreditCards";
 import { WARNING_TYPES } from "@iustitia/site/shared-utils";
@@ -13,16 +13,17 @@ export type PaymentInterface = SubscriptionServices.PaymentInterface;
 
 
 export function Subscriptions() {
-  const [error, setError] = useState("");
+  const [showAlert, setShowAlert] = useState<AlertInterface>({
+    show: false,
+    message: "",
+    type: WARNING_TYPES.NONE,
+    time: 3000,
+  });
   const [subscription, setSubscription] = useState({} as SubscriptionInterface);
   const [payments, setPayments] = useState([] as PaymentInterface[]);
   const [creditCards, setCreditCards] = useState([] as CreditCardInterface[]);
   const [list, setList] = useState(true);
   const [back, setBack] = useState(false);
-
-  useEffect(() => {
-    if (error) setTimeout(() => setError(""), 3000);
-  }, [error]);
 
   useEffect(() => {
     populateData();
@@ -104,8 +105,12 @@ export function Subscriptions() {
       setCreditCards(dataCreditCards);
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
-      setError(err.message as string);
-      console.log(err);
+      setShowAlert({
+        show: true,
+        message: err.message as string,
+        type: WARNING_TYPES.ERROR,
+        time: 3000,
+      });
     }
   }
 
@@ -117,7 +122,7 @@ export function Subscriptions() {
         button={createButton}
         back={back}
       />
-      {error && <Alert type={WARNING_TYPES.ERROR} message={error} />}
+      {showAlert && <Alert alert={showAlert} setAlert={setShowAlert} />}
       <div className="overflow-x-auto">
         <div className="flex items-center justify-center overflow-hidden p-2">
           <div className="w-full">

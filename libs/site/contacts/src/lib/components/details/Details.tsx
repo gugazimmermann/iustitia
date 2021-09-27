@@ -10,6 +10,7 @@ import {
   NoteShow,
   NoteNewModal,
   ConfirmationModal,
+  AlertInterface,
 } from "@iustitia/site/shared-components";
 import { SiteRoutes } from "@iustitia/react-routes";
 import { ContactInterface, OfficeInterface, NoteInterface, AttachmentInterface } from "../../Contacts";
@@ -26,7 +27,12 @@ export interface DetailsProps {
 
 export function Details({ data, offices, edit }: DetailsProps) {
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
+  const [showAlert, setShowAlert] = useState<AlertInterface>({
+    show: false,
+    message: "",
+    type: WARNING_TYPES.NONE,
+    time: 3000,
+  });
 
   const [notesList, setNotesList] = useState<NoteInterface[]>();
   const [showNoteModal, setShowNoteModal] = useState(false);
@@ -55,8 +61,12 @@ export function Details({ data, offices, edit }: DetailsProps) {
       setNotesList(notes as NoteServices.NoteInterface[]);
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
-      setError(err.message as string);
-      console.log(err);
+      setShowAlert({
+        show: true,
+        message: err.message as string,
+        type: WARNING_TYPES.ERROR,
+        time: 3000,
+      })
     }
   }
 
@@ -66,8 +76,12 @@ export function Details({ data, offices, edit }: DetailsProps) {
       setAttList(atts as AttchmentServices.AttachmentInterface[]);
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
-      setError(err.message as string);
-      console.log(err);
+      setShowAlert({
+        show: true,
+        message: err.message as string,
+        type: WARNING_TYPES.ERROR,
+        time: 3000,
+      })
     }
   }
 
@@ -89,8 +103,12 @@ export function Details({ data, offices, edit }: DetailsProps) {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       setLoading(false);
-      setError(err.message as string);
-      console.log(err);
+      setShowAlert({
+        show: true,
+        message: err.message as string,
+        type: WARNING_TYPES.ERROR,
+        time: 3000,
+      })
     }
   }
 
@@ -103,8 +121,12 @@ export function Details({ data, offices, edit }: DetailsProps) {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       setLoading(false);
-      setError(err.message as string);
-      console.log(err);
+      setShowAlert({
+        show: true,
+        message: err.message as string,
+        type: WARNING_TYPES.ERROR,
+        time: 3000,
+      })
     }
   }
 
@@ -135,8 +157,12 @@ export function Details({ data, offices, edit }: DetailsProps) {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       setLoading(false);
-      setError(err.message as string);
-      console.log(err);
+      setShowAlert({
+        show: true,
+        message: err.message as string,
+        type: WARNING_TYPES.ERROR,
+        time: 3000,
+      })
     }
   }
 
@@ -158,8 +184,12 @@ export function Details({ data, offices, edit }: DetailsProps) {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       setLoading(false);
-      setError(err.message as string);
-      console.log(err);
+      setShowAlert({
+        show: true,
+        message: err.message as string,
+        type: WARNING_TYPES.ERROR,
+        time: 3000,
+      })
     }
   }
 
@@ -174,18 +204,24 @@ export function Details({ data, offices, edit }: DetailsProps) {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       setLoading(false);
-      setError(err.message as string);
-      console.log(err);
+      setShowAlert({
+        show: true,
+        message: err.message as string,
+        type: WARNING_TYPES.ERROR,
+        time: 3000,
+      })
     }
   }
 
   return (
     <>
-      {error && <Alert type={WARNING_TYPES.ERROR} message={error} />}
+      {showAlert.show && <Alert alert={showAlert} setAlert={setShowAlert} />}
       {attUploadProgress && attUploadProgress < 100 && (
-        <Alert
-          type={WARNING_TYPES.WARNING}
-          message="Enviando arquivos, aguarde..."
+        <Alert alert={{
+          show: true,
+          message: "Enviando arquivos, aguarde...",
+          type: WARNING_TYPES.WARNING,
+        }} setAlert={setShowAlert}
         />
       )}
       <div className="mb-6 grid grid-cols-12 items-center justify-center">

@@ -6,7 +6,7 @@ import {
   PenIcon,
   TrashIcon,
 } from "@iustitia/site/shared-components";
-import { getUserInitials } from "@iustitia/site/shared-utils";
+import { formatAddress, getUserInitials } from "@iustitia/site/shared-utils";
 import { ContactServices} from "@iustitia/site/services";
 import { ContactInterface, route } from "../../Contacts";
 
@@ -26,16 +26,6 @@ export function List({
   setConfirm,
 }: ListProps) {
   const history = useHistory();
-
-  function formatAddress(data: ContactInterface) {
-    if (data.city || data.state) {
-      let res = data.city && data.city;
-      res = data.city && data.state && res + " | ";
-      res = data.state && res + data.state;
-      return res;
-    }
-    return null;
-  }
 
   return (
     <div className=" overflow-x-auto">
@@ -98,7 +88,7 @@ export function List({
                   )}
                 </td>
                 <td className="py-3 px-3 text-left">
-                  <span>{formatAddress(data)}</span>
+                  <span>{formatAddress(data?.city, data?.state)}</span>
                 </td>
                 <td className="py-3 px-3">
                   <div className="flex items-end justify-end">

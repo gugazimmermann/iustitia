@@ -1,7 +1,11 @@
 import { useState, useEffect } from "react";
 import { useHistory, useParams } from "react-router-dom";
 import { SiteRoutes as Routes } from "@iustitia/react-routes";
-import { Header, InfoCard, INFOCARDSICONS } from "@iustitia/site/shared-components";
+import {
+  Header,
+  InfoCard,
+  INFOCARDSICONS,
+} from "@iustitia/site/shared-components";
 import { OfficeServices } from "@iustitia/site/services";
 
 type OfficeInterface = OfficeServices.OfficeInterface;
@@ -49,7 +53,7 @@ export function DashboardOffices({ offices }: DashboardOfficesProps) {
     if (id) {
       getOffice(id);
     } else {
-      setSelectedOffice({} as OfficeInterface)
+      setSelectedOffice({} as OfficeInterface);
     }
   }, [id]);
 
@@ -63,52 +67,58 @@ export function DashboardOffices({ offices }: DashboardOfficesProps) {
   }
 
   return (
-    <>
-      <Header
-        before={["Dashboards"]}
-        main={
-          selectedOffice.name
-            ? `Escritório: ${selectedOffice.name}`
-            : `Escritórios`
-        }
-        select={selectOffices}
-      />
-      <div className="mt-2">
-        <div className="grid grid-cols-1 gap-8 p-4 lg:grid-cols-2 xl:grid-cols-4">
-          <InfoCard
-            title="Entradas"
-            content="$30.000"
-            badge="+4.5%"
-            badgeColor="blue"
-            icon={INFOCARDSICONS.MONEY}
-          />
+    offices &&
+    offices?.length > 0 ? (
+      <>
+        <Header
+          before={["Dashboards"]}
+          main={
+            selectedOffice.name
+              ? `Escritório: ${selectedOffice.name}`
+              : `Escritórios`
+          }
+          select={offices.length > 1 ? selectOffices : undefined}
+        />
 
-          <InfoCard
-            title="Despesas"
-            content="$16.000"
-            badge="+1.8%"
-            badgeColor="red"
-            icon={INFOCARDSICONS.GRAPH_UP}
-          />
+        <div className="mt-2">
+          <div className="grid grid-cols-1 gap-8 p-4 lg:grid-cols-2 xl:grid-cols-4">
+            <InfoCard
+              title="Entradas"
+              content="$0"
+              badge="0%"
+              badgeColor="gray"
+              icon={INFOCARDSICONS.MONEY}
+            />
 
-          <InfoCard
-            title="Clientes Ativos"
-            content="35"
-            badge="+2.6%"
-            badgeColor="green"
-            icon={INFOCARDSICONS.PEOPLE}
-          />
+            <InfoCard
+              title="Despesas"
+              content="$0"
+              badge="0%"
+              badgeColor="gray"
+              icon={INFOCARDSICONS.GRAPH_UP}
+            />
 
-          <InfoCard
-            title="Processos Ativos"
-            content="56"
-            badge="+5.2%"
-            badgeColor="green"
-            icon={INFOCARDSICONS.CASE}
-          />
+            <InfoCard
+              title="Clientes Ativos"
+              content="0"
+              badge="0%"
+              badgeColor="gray"
+              icon={INFOCARDSICONS.PEOPLE}
+            />
+
+            <InfoCard
+              title="Processos Ativos"
+              content="0"
+              badge="0%"
+              badgeColor="gray"
+              icon={INFOCARDSICONS.CASE}
+            />
+          </div>
         </div>
-      </div>
-    </>
+      </>
+    ) : (
+      <div></div>
+    )
   );
 }
 

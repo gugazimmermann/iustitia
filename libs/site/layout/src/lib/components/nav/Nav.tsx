@@ -6,7 +6,7 @@ import {
   NavMenuButton,
   NavMobileButton,
 } from ".";
-import { ProfileInterface } from "../../Layout";
+import { ProfileInterface, OfficeInterface } from "../../Layout";
 import NavNotification from "./nav-notification/NavNotification";
 
 export interface NavProps {
@@ -17,6 +17,7 @@ export interface NavProps {
   setNotificationOpen(notificationOpen: boolean): void;
   notificationOpen: boolean;
   profile: ProfileInterface;
+  offices: OfficeInterface[];
 }
 
 export function Nav({
@@ -27,6 +28,7 @@ export function Nav({
   setNotificationOpen,
   notificationOpen,
   profile,
+  offices
 }: NavProps) {
   const divRef = useRef<HTMLDivElement>(null);
 
@@ -46,22 +48,22 @@ export function Nav({
   function showNavItems(profile: ProfileInterface) {
     return (
       <>
-        <div className="pt-1 space-x-2">
-          <NavItem
-            item="Notification"
-            icon={NAVICONS.NOTIFICATION}
-            alert={true}
-            open={setNotificationOpen}
-            openState={notificationOpen}
-          />
-          <NavItem item="Search" icon={NAVICONS.SEARCH} alert={false} />
-          {profile?.role === "Administrador" && (
-            <NavItem item="Settings" icon={NAVICONS.SETTINGS} alert={false} />
-          )}
-        </div>
-        <div className="pt-2">
-          <NavAvatar profile={profile} />
-        </div>
+        {profile.zip && offices.length > 0 &&  (
+          <div className="pt-1 space-x-2">
+            <NavItem
+              item="Notification"
+              icon={NAVICONS.NOTIFICATION}
+              alert={true}
+              open={setNotificationOpen}
+              openState={notificationOpen}
+            />
+            <NavItem item="Search" icon={NAVICONS.SEARCH} alert={false} />
+            {profile?.role === "Admin" && (
+              <NavItem item="Settings" icon={NAVICONS.SETTINGS} alert={false} />
+            )}
+          </div>
+        )}
+        <NavAvatar profile={profile} />
       </>
     );
   }

@@ -2,14 +2,13 @@ import { useHistory } from "react-router-dom";
 import {
   ArrowDownIcon,
   ArrowUpIcon,
-  Callout,
   EyeIcon,
   PenIcon,
   TrashIcon,
 } from "@iustitia/site/shared-components";
-import { WARNING_TYPES } from "@iustitia/site/shared-utils";
-import { route, singular } from "../../People";
+import { route } from "../../People";
 import { ProfileServices } from "@iustitia/site/services";
+import { getUserInitials } from "@iustitia/site/shared-utils";
 
 export interface ListProps {
   dataList: ProfileServices.ProfileInterface[];
@@ -17,6 +16,7 @@ export interface ListProps {
   setSort(order: "ASC" | "DESC"): void;
   setSelected(delected: ProfileServices.ProfileInterface): void;
   setConfirm(confirm: boolean): void;
+  profile: ProfileServices.ProfileInterface;
 }
 
 export function List({
@@ -25,18 +25,18 @@ export function List({
   setSort,
   setSelected,
   setConfirm,
+  profile
 }: ListProps) {
   const history = useHistory();
 
-  return dataList.length === 0 ? (
-    <Callout title={`Nenhuma ${singular} Cadastrada`} type={WARNING_TYPES.INFO} />
-  ) : (
-    <div className=" overflow-x-auto">
+  return (
+    <div className=" overflow-x-auto mb-4">
       <table className="w-full table">
         <thead>
           <tr className="bg-primary-500 text-white uppercase leading-normal">
+            <th className="w-12"></th>
             <th className="py-2 px-2 text-sm text-left">
-              Escritório
+              Nome
               {sort === "ASC" && (
                 <button onClick={() => setSort("DESC")}>
                   <ArrowDownIcon styles="h-4 w-4 inline" stroke={2} />
@@ -48,9 +48,8 @@ export function List({
                 </button>
               )}
             </th>
-            <th className="py-2 px-2 text-sm text-left">Cidade</th>
-            <th className="py-2 px-2 text-sm text-left">Responsável</th>
-            <th className="py-2 px-2 text-sm text-left">Usuários</th>
+            <th className="py-2 px-2 text-sm text-left">Telefone</th>
+            <th className="py-2 px-2 text-sm text-left">E-Mail</th>
             <th className="py-2 px-2 text-sm text-left">Status</th>
             <th className="py-2 px-2"></th>
           </tr>
@@ -62,52 +61,46 @@ export function List({
                 key={i}
                 className="border-b border-gray-200 hover:bg-gray-100"
               >
+                <td className="py-3 px-3">
+                  {data.avatar ? (
+                    <img
+                      className="w-6 h-6 rounded-full"
+                      src={`${process.env.NX_BUCKET_AVATAR_URL}${data.avatar}`}
+                      alt={data.name}
+                    />
+                  ) : (
+                    <span className="w-6 h-6 rounded-full flex justify-center items-center text-center font-bold text-primary-500 bg-primary-50 hover:text-primary-900 hover:bg-primary-100 focus:outline-none focus:bg-primary-100 focus:ring-primary-900">
+                      {data.name ? getUserInitials(data.name) : "I"}
+                    </span>
+                  )}
+                </td>
                 <td className="py-3 px-3 text-left whitespace-nowrap">
                   <span className="font-medium">{data.name}</span>
                 </td>
-                <td className="py-3 px-3 text-left hidden sm:table-cell">
-                  <div className="flex items-center">
-                    <span>{`${data.city} / ${data.state}`}</span>
-                  </div>
+                <td className="py-3 px-3 text-left">
+                  <span>{data.phone}</span>
                 </td>
-                <td className="py-3 px-3 text-left hidden sm:table-cell">
-                  <div className="flex items-center">
-                    <div className="mr-2">
-                      <img
-                        className="w-6 h-6 rounded-full"
-                        src="https://randomuser.me/api/portraits/men/1.jpg"
-                        alt="respionsavel name"
-                      />
-                    </div>
-                    <span>Paulo Souza</span>
-                  </div>
+                <td className="py-3 px-3 text-left">
+                  {data.email ? (
+                    <a href={`mailto:${data.email}`} className="underline">
+                      {data.email}
+                    </a>
+                  ) : (
+                    <span>{data.email}</span>
+                  )}
                 </td>
-                <td className="py-3 px-3 text-center hidden sm:table-cell">
-                  <div className="flex items-center justify-center">
-                    <img
-                      className="w-6 h-6 rounded-full border-gray-200 border transform hover:scale-125"
-                      src="https://randomuser.me/api/portraits/men/1.jpg"
-                      alt="usuario 1"
-                    />
-                    <img
-                      className="w-6 h-6 rounded-full border-gray-200 border -m-1 transform hover:scale-125"
-                      src="https://randomuser.me/api/portraits/women/2.jpg"
-                      alt="usuario 2"
-                    />
-                    <img
-                      className="w-6 h-6 rounded-full border-gray-200 border -m-1 transform hover:scale-125"
-                      src="https://randomuser.me/api/portraits/men/3.jpg"
-                      alt="usuario 3"
-                    />
-                  </div>
-                </td>
-                <td className="py-3 px-3 text-center hidden sm:table-cell">
-                  <span className="bg-primary-200 text-primary-500 font-bold py-1 px-3 rounded-full text-xs">
+                <td className="py-3 px-3  text-left">
+                  <span className={`${data.role === "Admin" ? `bg-primary-300 text-primary-600` : `bg-secondary-300 text-secondary-600`} font-bold py-1 px-3 mr-2 rounded-full text-xs`}>
+                    {data.role === "User" ? "Colaborador" : data.role}
+                  </span>
+                  <span className="bg-green-300 text-green-600 font-bold py-1 px-3 rounded-full text-xs">
                     Ativo
                   </span>
                 </td>
                 <td className="py-3 px-3">
                   <div className="flex items-end justify-end">
+                  {profile?.role === "Admin" && (
+                    <>
                     <div className="w-5 mr-3 transform hover:text-purple-500 hover:scale-110">
                       <div
                         onClick={() => history.push(`${route}/${data.id}`)}
@@ -115,12 +108,6 @@ export function List({
                       >
                         <EyeIcon styles={"cursor-pointer"} />
                       </div>
-                    </div>
-                    <div
-                      onClick={() => history.push(`${route}/edit/${data.id}`)}
-                      className="w-5 mr-3 transform hover:text-purple-500 hover:scale-110"
-                    >
-                      <PenIcon styles={"cursor-pointer"} />
                     </div>
                     <div
                       onClick={() => {
@@ -131,6 +118,8 @@ export function List({
                     >
                       <TrashIcon styles={"cursor-pointer"} />
                     </div>
+                    </>
+                    )}
                   </div>
                 </td>
               </tr>

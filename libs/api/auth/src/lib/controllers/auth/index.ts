@@ -41,9 +41,9 @@ export async function signup(req: Request, res: Response): Promise<Response> {
     if (userPlan.transactionAmount !== 0 && !req.body?.cardInfo) {
       return res.status(400).send({ message: "Dados inválidos!" });
     }
-    const userData = { email: req.body.email, password: bcrypt.hashSync(req.body.password, 8) };
+    const userData = { email: req.body.email, password: bcrypt.hashSync(req.body.password, 8), active: true };
     const user = await database.User.create(userData);
-    const role = await database.Role.findOne({ where: { name: "Administrador"}})
+    const role = await database.Role.findOne({ where: { name: "Admin"}})
     await user.update({ tenant: user.id });
     user.addRole(role);
     await database.Profile.create({
@@ -106,9 +106,8 @@ export async function signin(req: Request, res: Response): Promise<Response> {
       where: { email: req.body.email },
       include: "subscription"
     });
-    if (!user) {
-      return res.status(404).send({ message: "Email ou senha inválidos!" });
-    }
+    if (!user) return res.status(404).send({ message: "Email ou senha inválidos!" });
+    if (!user.active) return res.status(401).send({ message: "Cadastro Inativo!" });
     const passwordIsValid = bcrypt.compareSync(
       req.body.password,
       user.password

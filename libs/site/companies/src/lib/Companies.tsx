@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useHistory, useLocation, useParams } from "react-router-dom";
 import {
   Alert,
+  AlertInterface,
   ConfirmationModal,
   Header,
   SearchIcon,
@@ -18,15 +19,17 @@ export function Companies() {
   const location = useLocation();
   const { pathname } = useLocation();
   const { id } = useParams<{ id: string }>();
-  const [showSuccessAlert, setShowSuccessAlert] = useState(false);
-  const [showEditAlert, setShowEditAlert] = useState(false);
-  const [showDeleteAlert, setShowDeleteAlert] = useState(false);
   const [showList, setShowList] = useState(true);
   const [showDetails, setShowDetails] = useState(false);
   const [showCreate, setShowCreate] = useState(false);
   const [showUpdate, setShowUpdade] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
+  const [showAlert, setShowAlert] = useState<AlertInterface>({
+    show: false,
+    message: "",
+    type: WARNING_TYPES.NONE,
+    time: 3000,
+  });
   const [back, setBack] = useState(false);
   const [confirm, setConfirm] = useState(false);
   const [dataList, setDataList] = useState(
@@ -40,13 +43,6 @@ export function Companies() {
   );
   const [searchParam, setSearchParam] = useState<string>();
   const [sort, setSort] = useState("ASC");
-
-  useEffect(() => {
-    if (showSuccessAlert) setTimeout(() => setShowSuccessAlert(false), 3000);
-    if (showEditAlert) setTimeout(() => setShowEditAlert(false), 3000);
-    if (showDeleteAlert) setTimeout(() => setShowDeleteAlert(false), 3000);
-    if (error) setTimeout(() => setError(""), 3000);
-  }, [showSuccessAlert, showEditAlert, showDeleteAlert, error]);
 
   useEffect(() => {
     if (pathname.includes("add")) {
@@ -89,7 +85,12 @@ export function Companies() {
       setSelected(data);
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
-      setError(err.message as string);
+      setShowAlert({
+        show: true,
+        message: err.message as string,
+        type: WARNING_TYPES.ERROR,
+        time: 3000,
+      })
       history.push(route);
       console.log(err);
     }
@@ -192,7 +193,12 @@ export function Companies() {
       handleSort(data);
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
-      setError(err.message as string);
+      setShowAlert({
+        show: true,
+        message: err.message as string,
+        type: WARNING_TYPES.ERROR,
+        time: 3000,
+      })
       console.log(err);
     }
   }
@@ -205,16 +211,24 @@ export function Companies() {
     setLoading(true);
     try {
       await CompanyService.create(data);
-      setShowSuccessAlert(true);
-      setShowEditAlert(false);
-      setShowDeleteAlert(false);
+      setShowAlert({
+        show: true,
+        message: `${singular} cadastrada com sucesso.`,
+        type: WARNING_TYPES.SUCCESS,
+        time: 3000,
+      })
       reloadList();
       history.push(route);
       setLoading(false);
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       setLoading(false);
-      setError(err.message as string);
+      setShowAlert({
+        show: true,
+        message: err.message as string,
+        type: WARNING_TYPES.ERROR,
+        time: 3000,
+      })
       console.log(err);
     }
   }
@@ -223,16 +237,24 @@ export function Companies() {
     setLoading(true);
     try {
       await CompanyService.update(data);
-      setShowSuccessAlert(false);
-      setShowEditAlert(true);
-      setShowDeleteAlert(false);
+      setShowAlert({
+        show: true,
+        message: `${singular} alterada com sucesso.`,
+        type: WARNING_TYPES.INFO,
+        time: 3000,
+      })
       reloadList();
       history.push(route);
       setLoading(false);
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       setLoading(false);
-      setError(err.message as string);
+      setShowAlert({
+        show: true,
+        message: err.message as string,
+        type: WARNING_TYPES.ERROR,
+        time: 3000,
+      })
       console.log(err);
     }
   }
@@ -242,15 +264,23 @@ export function Companies() {
       setLoading(true);
       try {
         await CompanyService.deleteOne(selected.id);
-        setShowSuccessAlert(false);
-        setShowEditAlert(false);
-        setShowDeleteAlert(true);
+        setShowAlert({
+          show: true,
+          message: `${singular} removida com sucesso.`,
+          type: WARNING_TYPES.WARNING,
+          time: 3000,
+        })
         reloadList();
         setLoading(false);
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } catch (err: any) {
         setLoading(false);
-        setError(err.message as string);
+        setShowAlert({
+          show: true,
+          message: err.message as string,
+          type: WARNING_TYPES.ERROR,
+          time: 3000,
+        })
         console.log(err);
       }
     }
@@ -269,28 +299,7 @@ export function Companies() {
         <div className="flex items-center justify-center overflow-hidden p-2">
           <div className="w-full">
             <div className="bg-white shadow-sm rounded">
-              {error && <Alert type={WARNING_TYPES.ERROR} message={error} />}
-              {showSuccessAlert && (
-                <Alert
-                  type={WARNING_TYPES.SUCCESS}
-                  message={`${singular} cadastrada com Sucesso!`}
-                  closeFunction={setShowSuccessAlert}
-                />
-              )}
-              {showEditAlert && (
-                <Alert
-                  type={WARNING_TYPES.INFO}
-                  message={`${singular} alterada com Sucesso!`}
-                  closeFunction={setShowEditAlert}
-                />
-              )}
-              {showDeleteAlert && (
-                <Alert
-                  type={WARNING_TYPES.WARNING}
-                  message={`${singular} removida com Sucesso!`}
-                  closeFunction={setShowDeleteAlert}
-                />
-              )}
+              {showAlert.show && <Alert alert={showAlert} setAlert={setShowAlert} />}
               {showList && (
                 <List
                   dataList={showDataList}

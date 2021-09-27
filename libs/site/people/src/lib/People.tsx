@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 import { useHistory, useLocation, useParams } from "react-router-dom";
 import {
   Alert,
+  AlertInterface,
+  Callout,
   ConfirmationModal,
   Header,
   SearchIcon,
@@ -30,15 +32,17 @@ export function People({ profile, offices, setOffices }: PeopleProps) {
   const location = useLocation();
   const { pathname } = useLocation();
   const { id } = useParams<{ id: string }>();
-  const [showSuccessAlert, setShowSuccessAlert] = useState(false);
-  const [showEditAlert, setShowEditAlert] = useState(false);
-  const [showDeleteAlert, setShowDeleteAlert] = useState(false);
   const [showList, setShowList] = useState(true);
   const [showDetails, setShowDetails] = useState(false);
   const [showCreate, setShowCreate] = useState(false);
   const [showUpdate, setShowUpdade] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
+  const [showAlert, setShowAlert] = useState<AlertInterface>({
+    show: false,
+    message: "",
+    type: WARNING_TYPES.NONE,
+    time: 3000,
+  });
   const [back, setBack] = useState(false);
   const [confirm, setConfirm] = useState(false);
   const [dataList, setDataList] = useState([] as ProfileInterface[]);
@@ -46,31 +50,10 @@ export function People({ profile, offices, setOffices }: PeopleProps) {
   const [selected, setSelected] = useState({} as ProfileInterface);
   const [searchParam, setSearchParam] = useState<string>();
   const [sort, setSort] = useState("ASC");
-
   const [invitesList, setInvitesList] = useState([] as PeopleInterface[]);
   const [selectedInvite, setSelectedInvite] = useState({} as PeopleInterface);
   const [inviteSendConfirm, setInviteSendConfirm] = useState(false);
-  const [inviteSendSuccessAlert, setInviteSendSuccessAlert] = useState(false);
   const [inviteDeleteConfirm, setInviteDeleteConfirm] = useState(false);
-  const [inviteDeleteAlert, setInviteDeleteAlert] = useState(false);
-
-  useEffect(() => {
-    if (inviteSendSuccessAlert)
-      setTimeout(() => setInviteSendSuccessAlert(false), 3000);
-    if (inviteDeleteAlert)
-      setTimeout(() => setInviteDeleteAlert(false), 3000);
-    if (showSuccessAlert) setTimeout(() => setShowSuccessAlert(false), 3000);
-    if (showEditAlert) setTimeout(() => setShowEditAlert(false), 3000);
-    if (showDeleteAlert) setTimeout(() => setShowDeleteAlert(false), 3000);
-    if (error) setTimeout(() => setError(""), 3000);
-  }, [
-    inviteDeleteAlert,
-    inviteSendSuccessAlert,
-    showSuccessAlert,
-    showEditAlert,
-    showDeleteAlert,
-    error,
-  ]);
 
   useEffect(() => {
     if (pathname.includes("add")) {
@@ -116,9 +99,13 @@ export function People({ profile, offices, setOffices }: PeopleProps) {
       setSelected(data);
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
-      setError(err.message as string);
+      setShowAlert({
+        show: true,
+        message: err.message as string,
+        type: WARNING_TYPES.ERROR,
+        time: 3000,
+      });
       history.push(route);
-      console.log(err);
     }
   }
 
@@ -193,23 +180,15 @@ export function People({ profile, offices, setOffices }: PeopleProps) {
       <button
         onClick={() => {
           if (back) {
-            if (location.pathname !== route) {
-              history.push(route);
-            } else {
-              reloadList();
-            }
-          } else if (!profile?.subscription?.basic) {
-            history.push(`${route}/add`);
-          }
+            if (location.pathname !== route) history.push(route);
+            else reloadList();
+          } else history.push(`${route}/add`);
         }}
         className={`px-4 py-2 text-sm text-white rounded-md ${
           state
             ? `bg-secondary-500 hover:bg-secondary-700 `
-            : profile?.subscription?.basic
-            ? `bg-gray-300 `
             : `bg-primary-500 hover:bg-primary-900 focus:ring-primary-500`
         }`}
-        disabled={profile?.subscription?.basic}
       >
         {back ? "Listagem" : "Adicionar"}
       </button>
@@ -226,8 +205,12 @@ export function People({ profile, offices, setOffices }: PeopleProps) {
       setInvitesList(invitesData);
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
-      setError(err.message as string);
-      console.log(err);
+      setShowAlert({
+        show: true,
+        message: err.message as string,
+        type: WARNING_TYPES.ERROR,
+        time: 3000,
+      });
     }
   }
 
@@ -240,16 +223,17 @@ export function People({ profile, offices, setOffices }: PeopleProps) {
       setLoading(true);
       try {
         await OfficeServices.deleteOne(selected.id);
-        setShowSuccessAlert(false);
-        setShowEditAlert(false);
-        setShowDeleteAlert(true);
         reloadList();
         setLoading(false);
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } catch (err: any) {
         setLoading(false);
-        setError(err.message as string);
-        console.log(err);
+        setShowAlert({
+          show: true,
+          message: err.message as string,
+          type: WARNING_TYPES.ERROR,
+          time: 3000,
+        });
       }
     }
   }
@@ -258,16 +242,24 @@ export function People({ profile, offices, setOffices }: PeopleProps) {
     setLoading(true);
     try {
       (await PeopleServices.createInvite(data)) as PeopleInterface;
-      setInviteSendSuccessAlert(true);
-      setInviteDeleteAlert(false);
+      setShowAlert({
+        show: true,
+        message: "Convite enviado com sucesso!",
+        type: WARNING_TYPES.SUCCESS,
+        time: 3000,
+      });
       await reloadList();
       history.push(route);
       setLoading(false);
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       setLoading(false);
-      setError(err.message as string);
-      console.log(err);
+      setShowAlert({
+        show: true,
+        message: err.message as string,
+        type: WARNING_TYPES.ERROR,
+        time: 3000,
+      });
     }
   }
 
@@ -276,14 +268,22 @@ export function People({ profile, offices, setOffices }: PeopleProps) {
     try {
       await PeopleServices.sendInvite(selectedInvite.id as string);
       await getDataList();
-      setInviteSendSuccessAlert(true);
-      setInviteDeleteAlert(false);
+      setShowAlert({
+        show: true,
+        message: "Convite enviado com sucesso!",
+        type: WARNING_TYPES.SUCCESS,
+        time: 3000,
+      });
       setLoading(false);
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       setLoading(false);
-      setError(err.message as string);
-      console.log(err);
+      setShowAlert({
+        show: true,
+        message: err.message as string,
+        type: WARNING_TYPES.ERROR,
+        time: 3000,
+      });
     }
   }
 
@@ -292,120 +292,117 @@ export function People({ profile, offices, setOffices }: PeopleProps) {
       setLoading(true);
       try {
         await PeopleServices.deleteInvite(selectedInvite.id);
-        setInviteSendSuccessAlert(false);
-        setInviteDeleteAlert(true);
+        setShowAlert({
+          show: true,
+          message: "Convite removido com sucesso!",
+          type: WARNING_TYPES.SUCCESS,
+          time: 3000,
+        });
         reloadList();
         setLoading(false);
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } catch (err: any) {
         setLoading(false);
-        setError(err.message as string);
-        console.log(err);
+        setShowAlert({
+          show: true,
+          message: err.message as string,
+          type: WARNING_TYPES.ERROR,
+          time: 3000,
+        });
       }
     }
   }
 
   return (
-    <>
+    <div className="mb-10">
       <Header
         before={parents}
         main={plural}
-        search={createSearch}
-        button={createButton}
+        search={
+          profile?.isProfessional && showDataList.length > 0
+            ? createSearch
+            : undefined
+        }
+        button={
+          profile?.isAdmin &&
+          !profile?.isProfessional &&
+          (showDataList.length > 0 || invitesList.length > 0)
+            ? undefined
+            : createButton
+        }
         back={back}
       />
-      <div className="mb-10">
-        <div className="flex items-center justify-center overflow-hidden p-2">
-          <div className="w-full">
-            <div className="bg-white shadow-sm rounded">
-              {error && <Alert type={WARNING_TYPES.ERROR} message={error} />}
-              {inviteSendSuccessAlert && (
-                <Alert
-                  type={WARNING_TYPES.SUCCESS}
-                  message={`Convite enviado com sucesso!`}
-                  closeFunction={setShowSuccessAlert}
-                />
-              )}
-              {showEditAlert && (
-                <Alert
-                  type={WARNING_TYPES.INFO}
-                  message={`${singular} alterada com Sucesso!`}
-                  closeFunction={setShowEditAlert}
-                />
-              )}
-              {showDeleteAlert && (
-                <Alert
-                  type={WARNING_TYPES.WARNING}
-                  message={`${singular} removida com Sucesso!`}
-                  closeFunction={setShowDeleteAlert}
-                />
-              )}
-              {inviteDeleteAlert && (
-                <Alert
-                  type={WARNING_TYPES.WARNING}
-                  message={`Convite removido com sucesso!`}
-                  closeFunction={setShowSuccessAlert}
-                />
-              )}
-              {showList && (
-                <>
-                  <List
-                    dataList={showDataList}
-                    sort={sort}
-                    setSort={setSort}
-                    setSelected={setSelected}
-                    setConfirm={setConfirm}
-                  />
-                  <ListInvites
-                    dataList={invitesList}
-                    setSelected={setSelectedInvite}
-                    setSendConfirm={setInviteSendConfirm}
-                    setDeleteConfirm={setInviteDeleteConfirm}
-                  />
-                  {profile?.subscription?.basic && (
-                    <div className="text-xs text-gray-400 text-right p-2">
-                      Somente 1 {singular} permitido no Plano Básico
-                    </div>
-                  )}
-                </>
-              )}
-              {showDetails && <Details data={selected} edit={handleEdit} />}
-              {showCreate && <Form loading={loading} create={handleCreateInvite} />}
-              {showUpdate && <Form loading={loading} />}
-              {confirm && (
-                <ConfirmationModal
-                  setConfirm={setConfirm}
-                  type={WARNING_TYPES.ERROR}
-                  title={`Excluir ${singular}: ${selected.name}?`}
-                  content={`Você tem certeza que quer excluir o ${singular} ${selected.name}? Todos os dados desse ${singular} serão perdidos. Essa ação não poderá ser desfeita.`}
-                  action={handleDelete}
-                />
-              )}
-              {inviteSendConfirm && (
-                <ConfirmationModal
-                  setConfirm={setInviteSendConfirm}
-                  type={WARNING_TYPES.INFO}
-                  title={`Reenviar convite para: ${selectedInvite.email}?`}
-                  content={`Você tem certeza que quer reenviar o convite para ${selectedInvite.name}?`}
-                  buttonText={`Sim, Enviar`}
-                  action={handleInviteSend}
-                />
-              )}
-              {inviteDeleteConfirm && (
-                <ConfirmationModal
-                  setConfirm={setInviteDeleteConfirm}
-                  type={WARNING_TYPES.ERROR}
-                  title={`Excluir convite para: ${selectedInvite.email}?`}
-                  content={`Você tem certeza que quer excluir o convite para ${selectedInvite.name}?`}
-                  buttonText={`Sim, Excluir`}
-                  action={handleInviteDelete}
-                />
-              )}
-            </div>
+      <div className="flex items-center justify-center overflow-hidden p-2">
+        <div className="w-full">
+          <div className="bg-white shadow-sm rounded">
+            {showAlert && <Alert alert={showAlert} setAlert={setShowAlert} />}
+            {showList && showDataList.length > 0 && (
+              <List
+                dataList={showDataList}
+                sort={sort}
+                setSort={setSort}
+                setSelected={setSelected}
+                setConfirm={setConfirm}
+                profile={profile as ProfileInterface}
+              />
+            )}
+            {showList && showDataList.length === 0 && (
+              <Callout
+                title={`Nenhuma ${singular} Cadastrada`}
+                type={WARNING_TYPES.INFO}
+              />
+            )}
+            {showList && invitesList.length > 0 && (
+              <ListInvites
+                dataList={invitesList}
+                setSelected={setSelectedInvite}
+                setSendConfirm={setInviteSendConfirm}
+                setDeleteConfirm={setInviteDeleteConfirm}
+              />
+            )}
+            {showDetails && <Details data={selected} edit={handleEdit} />}
+            {showCreate && (
+              <Form loading={loading} create={handleCreateInvite} />
+            )}
+            {showUpdate && <Form loading={loading} />}
+            {confirm && (
+              <ConfirmationModal
+                setConfirm={setConfirm}
+                type={WARNING_TYPES.ERROR}
+                title={`Excluir ${singular}: ${selected.name}?`}
+                content={`Você tem certeza que quer excluir o ${singular} ${selected.name}? Todos os dados desse ${singular} serão perdidos. Essa ação não poderá ser desfeita.`}
+                action={handleDelete}
+              />
+            )}
+            {inviteSendConfirm && (
+              <ConfirmationModal
+                setConfirm={setInviteSendConfirm}
+                type={WARNING_TYPES.INFO}
+                title={`Reenviar convite para: ${selectedInvite.email}?`}
+                content={`Você tem certeza que quer reenviar o convite para ${selectedInvite.name}?`}
+                buttonText={`Sim, Enviar`}
+                action={handleInviteSend}
+              />
+            )}
+            {inviteDeleteConfirm && (
+              <ConfirmationModal
+                setConfirm={setInviteDeleteConfirm}
+                type={WARNING_TYPES.ERROR}
+                title={`Excluir convite para: ${selectedInvite.email}?`}
+                content={`Você tem certeza que quer excluir o convite para ${selectedInvite.name}?`}
+                buttonText={`Sim, Excluir`}
+                action={handleInviteDelete}
+              />
+            )}
           </div>
+          {!profile?.isProfessional && (
+            <div className="text-xs text-gray-400 text-right">
+              Somente 1 {singular} permitida no Plano Básico
+            </div>
+          )}
         </div>
       </div>
-    </>
+    </div>
   );
 }
 

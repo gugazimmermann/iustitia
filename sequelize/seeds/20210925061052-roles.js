@@ -7,13 +7,13 @@ module.exports = {
       [
         {
           id: "9a7accd1-ce26-4420-987e-26901277009d",
-          name: "Administrador",
+          name: "Admin",
           createdAt: new Date(),
           updatedAt: new Date(),
         },
         {
           id: "122da9dd-66be-48ad-98d4-e6c3872a6735",
-          name: "Colaborador",
+          name: "User",
           createdAt: new Date(),
           updatedAt: new Date(),
         },

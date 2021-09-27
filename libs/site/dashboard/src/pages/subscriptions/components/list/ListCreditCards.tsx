@@ -29,20 +29,20 @@ export function ListCreditCards({ creditCards }: ListCreditCardsProps) {
 
   return (
     <>
-      <div className="bg-primary-500 text-white uppercase font-bold p-2 mt-4">
+      <div className="bg-primary-500 text-white uppercase font-bold text-sm p-2 mt-4">
         Cartões
       </div>
       <table className="min-w-max w-full table-auto">
         <thead>
-          <tr className="bg-primary-500 text-white uppercase leading-normal">
-            <th className="py-2 px-2 text-sm text-left  hidden sm:table-cell">
+          <tr className="bg-primary-200 text-gray-900 text-xs uppercase leading-normal">
+            <th className="py-2 px-2 text-left  hidden sm:table-cell">
               Titular
             </th>
-            <th className="py-2 px-2 text-sm text-center">Número</th>
-            <th className="py-2 px-2 text-sm text-center  hidden sm:table-cell">
+            <th className="py-2 px-2 text-center">Número</th>
+            <th className="py-2 px-2 text-center  hidden sm:table-cell">
               Validade
             </th>
-            <th className="py-2 px-2 text-sm text-center">Status</th>
+            <th className="py-2 px-2 text-center">Status</th>
             <th className="py-2 px-2 text-right"></th>
           </tr>
         </thead>

@@ -6,6 +6,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import {
   LoadingButton,
   Alert,
+  AlertInterface,
   UploadCloudIcon,
   Header,
 } from "@iustitia/site/shared-components";
@@ -17,7 +18,8 @@ import {
 } from "@iustitia/site/shared-utils";
 import { ProfileServices } from "@iustitia/site/services";
 
-export const { route, singular, parents, plural } = ProfileServices.ProfileModule;
+export const { route, singular, parents, plural } =
+  ProfileServices.ProfileModule;
 export type ProfileInterface = ProfileServices.ProfileInterface;
 
 interface ProfileProps {
@@ -25,7 +27,9 @@ interface ProfileProps {
   setProfile?(profile: ProfileInterface): void;
 }
 
-export type IProfileForm = Omit<ProfileInterface, "avatar"> & { avatar: FileList };
+export type IProfileForm = Omit<ProfileInterface, "avatar"> & {
+  avatar: FileList;
+};
 
 const schema = yup.object().shape({
   name: yup.string().required(),
@@ -63,18 +67,19 @@ export function Profile({ profile, setProfile }: ProfileProps) {
     resolver: yupResolver(schema),
     defaultValues,
   });
-  const [showSuccess, setShowSuccess] = useState(false);
+
   const [loading, setLoading] = useState(false);
-  const [errorMsg, setErrorMsg] = useState("");
+  const [showAlert, setShowAlert] = useState<AlertInterface>({
+    show: false,
+    message: "",
+    type: WARNING_TYPES.NONE,
+    time: 3000,
+  });
+
   const avatarRegister = register("avatar");
   const [selectedFile, setSelectedFile] = useState<File>();
   const [preview, setPreview] = useState<string | undefined>("");
   const [validZip, setValidZip] = useState(!!defaultValues.zip);
-
-  useEffect(() => {
-    if (showSuccess) setTimeout(() => setShowSuccess(false), 3000);
-    if (errorMsg) setTimeout(() => setErrorMsg(""), 3000);
-  }, [showSuccess, errorMsg]);
 
   useEffect(() => {
     if (!selectedFile) {
@@ -124,8 +129,12 @@ export function Profile({ profile, setProfile }: ProfileProps) {
       }
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
-      setErrorMsg(err.message as string);
-      console.log(err);
+      setShowAlert({
+        show: true,
+        message: err.message as string,
+        type: WARNING_TYPES.ERROR,
+        time: 3000,
+      });
       setValidZip(false);
       setError("zip", { type: "manual" });
       setValue("address", "");
@@ -162,14 +171,23 @@ export function Profile({ profile, setProfile }: ProfileProps) {
       const profileData = await ProfileServices.update(formData);
       if (profileData && setProfile) {
         setProfile(profileData as ProfileInterface);
-        setShowSuccess(true);
+        setShowAlert({
+          show: true,
+          message: "Perfil Alerado com Sucesso!",
+          type: WARNING_TYPES.INFO,
+          time: 3000,
+        });
         setLoading(false);
       }
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       setLoading(false);
-      setErrorMsg(err.message as string);
-      console.log(err);
+      setShowAlert({
+        show: true,
+        message: err.message as string,
+        type: WARNING_TYPES.ERROR,
+        time: 3000,
+      });
     }
   }
 
@@ -179,16 +197,7 @@ export function Profile({ profile, setProfile }: ProfileProps) {
       <div className="overflow-x-auto">
         <div className="flex items-center justify-center overflow-hidden p-2">
           <div className="w-full">
-            {errorMsg && (
-              <Alert type={WARNING_TYPES.ERROR} message={errorMsg} />
-            )}
-            {showSuccess && (
-              <Alert
-                type={WARNING_TYPES.SUCCESS}
-                message="Perfil Alerado com Sucesso!"
-                closeFunction={setShowSuccess}
-              />
-            )}
+            {showAlert && <Alert alert={showAlert} setAlert={setShowAlert} />}
             <div className="bg-white shadow-sm rounded">
               <form
                 onSubmit={handleSubmit(onSubmit)}

@@ -1,10 +1,15 @@
 import { SiteRoutes as Routes } from "@iustitia/react-routes";
-import { DashboardIcon, PeopleIcon, ScheduleIcon } from "@iustitia/site/shared-components";
-import { ProfileInterface } from "../../Layout";
+import {
+  DashboardIcon,
+  PeopleIcon,
+  ScheduleIcon,
+} from "@iustitia/site/shared-components";
+import { ProfileInterface, OfficeInterface } from "../../Layout";
 import { MenuFooter, MenuItem, MenuTitle } from ".";
 
 interface MenuProps {
-  profile?: ProfileInterface
+  profile: ProfileInterface;
+  offices: OfficeInterface[];
   setMenuOpen(menuOpen: boolean): void;
   menuOpen: boolean;
 }
@@ -20,22 +25,23 @@ export interface MenuSubItemInterface {
   link: string;
 }
 
-export function Menu({ profile, setMenuOpen, menuOpen }: MenuProps) {
-
-  const menuItems: MenuItemInterface[] = [{
-    name: "Dashboards",
-    icon: <DashboardIcon styles="w-5 h-5" />,
-    subItems: [
-      {
-        name: "Escritórios",
-        link: `${Routes.Dashboard}`,
-      },
-      {
-        name: "Processos",
-        link: `${Routes.DashboardProcessos}`,
-      },
-    ],
-  }];
+export function Menu({ profile, offices, setMenuOpen, menuOpen }: MenuProps) {
+  const menuItems: MenuItemInterface[] = [
+    {
+      name: "Dashboards",
+      icon: <DashboardIcon styles="w-5 h-5" />,
+      subItems: [
+        {
+          name: "Escritórios",
+          link: `${Routes.Dashboard}`,
+        },
+        {
+          name: "Processos",
+          link: `${Routes.DashboardProcessos}`,
+        },
+      ],
+    },
+  ];
   const adminItem: MenuItemInterface[] = [];
   const openItem: MenuItemInterface[] = [
     {
@@ -77,10 +83,9 @@ export function Menu({ profile, setMenuOpen, menuOpen }: MenuProps) {
   ];
 
   if (profile?.role === "Administrador") {
-    adminItem.forEach(i => menuItems.push(i))
+    adminItem.forEach((i) => menuItems.push(i));
   }
-  openItem.forEach(i => menuItems.push(i))
-
+  openItem.forEach((i) => menuItems.push(i));
 
   return (
     <aside
@@ -92,10 +97,11 @@ export function Menu({ profile, setMenuOpen, menuOpen }: MenuProps) {
         <MenuTitle setMenuOpen={setMenuOpen} menuOpen={menuOpen} />
 
         <nav className="flex-1 px-2 pt-2 overflow-y-hidden hover:overflow-y-auto border-r">
-          {menuItems.map((item, i) => (
-            <MenuItem key={i} item={item} />
-          ))}
+          {profile.zip &&
+            offices.length > 0 &&
+            menuItems.map((item, i) => <MenuItem key={i} item={item} />)}
         </nav>
+
         <MenuFooter />
       </div>
     </aside>

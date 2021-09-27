@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { DateTime } from "luxon";
-import { Alert, EventNewModal, Header } from "@iustitia/site/shared-components";
+import { Alert, AlertInterface, EventNewModal, Header } from "@iustitia/site/shared-components";
 import {
   getDaysToShow,
   WARNING_TYPES,
@@ -27,15 +27,15 @@ export function Calendar() {
   const [period, setPeriod] = useState<PeriodType>("month");
   const [days, setDays] = useState<CalendarDayInterface[]>([]);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
+  const [showAlert, setShowAlert] = useState<AlertInterface>({
+    show: false,
+    message: "",
+    type: WARNING_TYPES.NONE,
+    time: 3000,
+  });
   const [showEventModal, setEShowEventModal] = useState(false);
   const [selectedDay, setSelectedDay] = useState<DateTime>();
   const [contacts, setContacts] = useState<ContactInterface[]>();
-
-
-  useEffect(() => {
-    if (error) setTimeout(() => setError(""), 3000);
-  }, [error]);
 
   useEffect(() => {
     handleChangeDays();
@@ -54,7 +54,12 @@ export function Calendar() {
       setDays(daysWithEvents);
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
-      setError(err.message as string);
+      setShowAlert({
+        show: true,
+        message: err.message as string,
+        type: WARNING_TYPES.NONE,
+        time: 3000,
+      })
       console.log(err);
     }
   }
@@ -93,7 +98,12 @@ export function Calendar() {
       setContacts(data as ContactInterface[]);
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
-      setError(err.message as string);
+      setShowAlert({
+        show: true,
+        message: err.message as string,
+        type: WARNING_TYPES.NONE,
+        time: 3000,
+      })
       console.log(err);
     }
   }
@@ -103,7 +113,7 @@ export function Calendar() {
       <div className="h-full">
         <Header before={parents} main={singular} />
         <div className={`${styles.containerHeight} px-4`}>
-          {error && <Alert type={WARNING_TYPES.ERROR} message={error} />}
+          {showAlert.show && <Alert alert={showAlert} setAlert={setShowAlert} />}
           <div className="flex justify-between h-10">
             <CalendarHeader
               firstDay={days[0]}

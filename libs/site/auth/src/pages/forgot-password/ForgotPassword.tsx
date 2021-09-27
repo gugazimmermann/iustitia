@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useHistory } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { SiteRoutes as Routes } from "@iustitia/react-routes";
-import { Alert, LoadingButton } from "@iustitia/site/shared-components";
+import { Alert, AlertInterface, LoadingButton } from "@iustitia/site/shared-components";
 import { validateEmail, WARNING_TYPES } from "@iustitia/site/shared-utils";
 import { AuthService } from "@iustitia/site/services";
 import { Title, Link } from "../..";
@@ -19,13 +19,22 @@ export function ForgotPassword() {
     formState: { errors },
   } = useForm<Form>();
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
+  const [showAlert, setShowAlert] = useState<AlertInterface>({
+    show: false,
+    message: "",
+    type: WARNING_TYPES.NONE,
+    time: 3000,
+  });
 
   const onSubmit = async (form: Form) => {
     setLoading(true);
-    setError("");
     if (!validateEmail(form.email)) {
-      setError("Email inválido!");
+      setShowAlert({
+        show: true,
+        message: "Email inválido!",
+        type: WARNING_TYPES.ERROR,
+        time: 3000,
+      });
       setLoading(false);
       return;
     }
@@ -40,7 +49,12 @@ export function ForgotPassword() {
       }
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
-      setError(err.message as string);
+      setShowAlert({
+        show: true,
+        message: err.message as string,
+        type: WARNING_TYPES.ERROR,
+        time: 3000,
+      });
       setLoading(false);
     }
   };
@@ -51,7 +65,7 @@ export function ForgotPassword() {
         title="Esqueceu a Senha?"
         subtitle="Digite seu email e receba o link de recuperação"
       />
-      {error && <Alert type={WARNING_TYPES.ERROR} message={error} />}
+      {showAlert.show && <Alert alert={showAlert} setAlert={setShowAlert} />}
       <section className="mt-5">
         <form className="flex flex-col" onSubmit={handleSubmit(onSubmit)}>
           <div className="mb-6 rounded">

@@ -2,7 +2,11 @@ import { useEffect, useState } from "react";
 import { useLocation, useHistory } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { SiteRoutes as Routes } from "@iustitia/react-routes";
-import { Alert, LoadingButton } from "@iustitia/site/shared-components";
+import {
+  Alert,
+  AlertInterface,
+  LoadingButton,
+} from "@iustitia/site/shared-components";
 import { validateEmail, WARNING_TYPES } from "@iustitia/site/shared-utils";
 import { AuthService } from "@iustitia/site/services";
 import { Title, Link, SignupLink } from "../..";
@@ -29,31 +33,47 @@ export function SignIn() {
     setValue,
   } = useForm<Form>();
   const [loading, setLoading] = useState(false);
-  const [changepassword, setChangepassword] = useState(false);
-  const [cadastro, setCadastro] = useState(false);
-  const [invite, setInvite] = useState(false);
-  const [error, setError] = useState("");
+  const [showAlert, setShowAlert] = useState<AlertInterface>({
+    show: false,
+    message: "",
+    type: WARNING_TYPES.NONE,
+    time: 3000,
+  });
 
   useEffect(() => {
     if (state?.email) {
       setValue("email", state.email);
-      setCadastro(true);
+      setShowAlert({
+        show: true,
+        message: "Cadastro realizado com sucesso!",
+        type: WARNING_TYPES.SUCCESS,
+      });
     }
     if (state?.changePassword) {
-      setChangepassword(true);
+      setShowAlert({
+        show: true,
+        message: "Senha alterada com sucesso!",
+        type: WARNING_TYPES.SUCCESS,
+      });
     }
     if (state?.inviteaccepted) {
-      setInvite(true);
+      setShowAlert({
+        show: true,
+        message: "Convite Aceito!",
+        type: WARNING_TYPES.SUCCESS,
+      });
     }
   }, [state, setValue]);
 
   const onSubmit = async (form: Form) => {
-    setChangepassword(false);
-    setCadastro(false);
     setLoading(true);
-    setError("");
     if (!validateEmail(form.email)) {
-      setError("Email inválido!");
+      setShowAlert({
+        show: true,
+        message: "Email inválido!",
+        type: WARNING_TYPES.ERROR,
+        time: 3000,
+      });
       setLoading(false);
       return;
     }
@@ -63,7 +83,12 @@ export function SignIn() {
       history.push(Routes.Dashboard);
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
-      setError(err.message as string);
+      setShowAlert({
+        show: true,
+        message: err.message as string,
+        type: WARNING_TYPES.ERROR,
+        time: 3000,
+      });
       setLoading(false);
     }
   };
@@ -72,10 +97,7 @@ export function SignIn() {
     <>
       <main className="bg-white max-w-lg mx-auto p-8 md:p-12 my-10 rounded-lg shadow-2xl">
         <Title title="Entre em seu escritório" />
-        {invite && <Alert type={WARNING_TYPES.SUCCESS} message="Convite Aceito!" />}
-        {changepassword && <Alert type={WARNING_TYPES.SUCCESS} message="Senha alterada com sucesso!" />}
-        {cadastro && <Alert type={WARNING_TYPES.SUCCESS} message="Cadastro realizado com sucesso!" />}
-        {error && <Alert type={WARNING_TYPES.ERROR} message={error} />}
+        {showAlert.show && <Alert alert={showAlert} setAlert={setShowAlert} />}
         <section className="mt-5">
           <form className="flex flex-col" onSubmit={handleSubmit(onSubmit)}>
             <div className="mb-6 rounded">

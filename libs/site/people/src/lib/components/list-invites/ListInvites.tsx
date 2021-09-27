@@ -1,7 +1,5 @@
 import { useHistory } from "react-router-dom";
-import { Callout, MailIcon, TrashIcon } from "@iustitia/site/shared-components";
-import { WARNING_TYPES } from "@iustitia/site/shared-utils";
-import { route } from "../../People";
+import { MailIcon, TrashIcon } from "@iustitia/site/shared-components";
 import { PeopleInterface } from "../../People";
 import { DateTime } from "luxon";
 
@@ -20,9 +18,7 @@ export function ListInvites({
 }: ListInvitesProps) {
   const history = useHistory();
 
-  return dataList.length === 0 ? (
-    <Callout title={`Nenhum Convite Enviado`} type={WARNING_TYPES.INFO} />
-  ) : (
+  return (
     <div className=" overflow-x-auto">
       <div className="bg-primary-500 text-white text-sm uppercase font-bold p-2">
         Convites
@@ -48,7 +44,8 @@ export function ListInvites({
                   )}
                 </td>
                 <td className="py-3 px-3 text-left whitespace-nowrap">
-                Enviado em {DateTime.fromISO(
+                  Enviado em{" "}
+                  {DateTime.fromISO(
                     data.updatedAt?.toString() as string
                   ).toFormat("dd/MM/yy HH:mm")}
                 </td>

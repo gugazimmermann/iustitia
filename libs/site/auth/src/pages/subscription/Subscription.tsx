@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useHistory, useLocation, Redirect } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { SiteRoutes as Routes } from "@iustitia/react-routes";
-import { Alert, LoadingButton } from "@iustitia/site/shared-components";
+import { Alert, AlertInterface, LoadingButton } from "@iustitia/site/shared-components";
 import { WARNING_TYPES } from "@iustitia/site/shared-utils";
 import { AuthService } from "@iustitia/site/services";
 import { MercadoPago } from "./protocols";
@@ -90,7 +90,12 @@ export function Subscription() {
     formState: { errors },
   } = useForm<SubscriptionForm>();
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
+  const [showAlert, setShowAlert] = useState<AlertInterface>({
+    show: false,
+    message: "",
+    type: WARNING_TYPES.NONE,
+    time: 3000,
+  });
   const [mercadoPago, setMercadoPago] = useState<MercadoPago>();
   const [identificationTypes, setIdentificationTypes] =
     useState<IdentificationInterface[]>();
@@ -143,7 +148,6 @@ export function Subscription() {
 
   const onSubmit = async (data: SubscriptionForm) => {
     setLoading(true);
-    setError("");
     try {
       const token: CardTokenInterface = await getCardToken({
         cardNumber: data.cardNumber.replace(/\D/g, ""),
@@ -172,7 +176,12 @@ export function Subscription() {
       history.push(Routes.SignIn, { email: form.email });
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
-      setError(err.message as string);
+      setShowAlert({
+        show: true,
+        message: err.message as string,
+        type: WARNING_TYPES.ERROR,
+        time: 3000,
+      })
       setLoading(false);
     }
   };
@@ -182,7 +191,7 @@ export function Subscription() {
   } else {
     return (
       <main className="bg-white max-w-lg mx-auto p-8 md:p-12 my-10 rounded-lg shadow-2xl">
-        {error && <Alert type={WARNING_TYPES.ERROR} message={error} />}
+        {showAlert.show && <Alert alert={showAlert} setAlert={setShowAlert} />}
         <section>
           <div className="mb-4 md:mb-6 md:mx-auto text-center">
             <h1 className="mb-2 text-2xl font-bold text-gray-700">

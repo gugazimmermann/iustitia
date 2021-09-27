@@ -93,11 +93,13 @@ export async function getInviteCode(tenantId: string, code: string): Promise<{ m
 
 export async function createUser(tenantId: string, code: string, password: string): Promise<{ message: string } | Error> {
   try {
-    const clearCode = +(code as string).trim().replace(/ /g, "");
+    const clearCode = +(code as string).toString().trim().replace(/ /g, "");
     const { data } = await api.post(`/api/${RouteName}/user/${tenantId}`, { code: clearCode, password });
     return data
   } catch (err) {
+    console.log(err)
     return errorHandler(err)
+
   }
 };
 

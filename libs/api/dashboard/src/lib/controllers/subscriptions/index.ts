@@ -5,6 +5,7 @@ import { database } from '@iustitia/api/database';
 export async function getPlans(req: UserRequest, res: Response): Promise<Response> {
   try {
     const plans = await database.Plan.findAll();
+    console.log(plans)
     return res.status(200).send(plans);
   } catch (err) {
     return res.status(500).send({ message: err.message });

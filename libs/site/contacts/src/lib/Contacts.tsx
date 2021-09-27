@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useHistory, useLocation, useParams } from "react-router-dom";
 import {
   Alert,
+  AlertInterface,
   ConfirmationModal,
   Header,
   SearchIcon,
@@ -28,15 +29,17 @@ export function Contacts() {
   const location = useLocation();
   const { pathname } = useLocation();
   const { id } = useParams<{ id: string }>();
-  const [showSuccessAlert, setShowSuccessAlert] = useState(false);
-  const [showEditAlert, setShowEditAlert] = useState(false);
-  const [showDeleteAlert, setShowDeleteAlert] = useState(false);
   const [showList, setShowList] = useState(true);
   const [showDetails, setShowDetails] = useState(false);
   const [showCreate, setShowCreate] = useState(false);
   const [showUpdate, setShowUpdade] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
+  const [showAlert, setShowAlert] = useState<AlertInterface>({
+    show: false,
+    message: "",
+    type: WARNING_TYPES.NONE,
+    time: 3000,
+  });
   const [back, setBack] = useState(false);
   const [confirm, setConfirm] = useState(false);
   const [dataList, setDataList] = useState([] as ContactInterface[]);
@@ -47,13 +50,6 @@ export function Contacts() {
   const [selectedType, setSelectedType] = useState<string>("Personal");
   const [searchParam, setSearchParam] = useState<string>();
   const [sort, setSort] = useState("ASC");
-
-  useEffect(() => {
-    if (showSuccessAlert) setTimeout(() => setShowSuccessAlert(false), 3000);
-    if (showEditAlert) setTimeout(() => setShowEditAlert(false), 3000);
-    if (showDeleteAlert) setTimeout(() => setShowDeleteAlert(false), 3000);
-    if (error) setTimeout(() => setError(""), 3000);
-  }, [showSuccessAlert, showEditAlert, showDeleteAlert, error]);
 
   useEffect(() => {
     seeOffices();
@@ -102,8 +98,12 @@ export function Contacts() {
       if (offices.length) setOffices(offices);
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
-      setError(err.message as string);
-      console.log(err);
+      setShowAlert({
+        show: true,
+        message: err.message as string,
+        type: WARNING_TYPES.ERROR,
+        time: 3000,
+      })
     }
   }
 
@@ -114,8 +114,12 @@ export function Contacts() {
         setCompanies(companies as CompanyInterface[]);
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
-      setError(err.message as string);
-      console.log(err);
+      setShowAlert({
+        show: true,
+        message: err.message as string,
+        type: WARNING_TYPES.ERROR,
+        time: 3000,
+      })
     }
   }
 
@@ -125,9 +129,13 @@ export function Contacts() {
       setSelected(data);
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
-      setError(err.message as string);
+      setShowAlert({
+        show: true,
+        message: err.message as string,
+        type: WARNING_TYPES.ERROR,
+        time: 3000,
+      })
       history.push(route);
-      console.log(err);
     }
   }
 
@@ -249,8 +257,12 @@ export function Contacts() {
       handleSort(data);
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
-      setError(err.message as string);
-      console.log(err);
+      setShowAlert({
+        show: true,
+        message: err.message as string,
+        type: WARNING_TYPES.ERROR,
+        time: 3000,
+      })
     }
   }
 
@@ -262,17 +274,24 @@ export function Contacts() {
     setLoading(true);
     try {
       await ContactServices.create(data);
-      setShowSuccessAlert(true);
-      setShowEditAlert(false);
-      setShowDeleteAlert(false);
       reloadList();
       history.push(route);
+      setShowAlert({
+        show: true,
+        message: `${singular} cadastrado com sucesso.`,
+        type: WARNING_TYPES.SUCCESS,
+        time: 3000,
+      })
       setLoading(false);
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       setLoading(false);
-      setError(err.message as string);
-      console.log(err);
+      setShowAlert({
+        show: true,
+        message: err.message as string,
+        type: WARNING_TYPES.ERROR,
+        time: 3000,
+      })
     }
   }
 
@@ -280,17 +299,24 @@ export function Contacts() {
     setLoading(true);
     try {
       await ContactServices.update(data);
-      setShowSuccessAlert(false);
-      setShowEditAlert(true);
-      setShowDeleteAlert(false);
       reloadList();
       history.push(route);
+      setShowAlert({
+        show: true,
+        message: `${singular} alterado com sucesso.`,
+        type: WARNING_TYPES.INFO,
+        time: 3000,
+      })
       setLoading(false);
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       setLoading(false);
-      setError(err.message as string);
-      console.log(err);
+      setShowAlert({
+        show: true,
+        message: err.message as string,
+        type: WARNING_TYPES.ERROR,
+        time: 3000,
+      })
     }
   }
 
@@ -299,16 +325,23 @@ export function Contacts() {
       setLoading(true);
       try {
         await ContactServices.deleteOne(selected.id);
-        setShowSuccessAlert(false);
-        setShowEditAlert(false);
-        setShowDeleteAlert(true);
         reloadList();
+        setShowAlert({
+          show: true,
+          message: `${singular} removido com sucesso.`,
+          type: WARNING_TYPES.WARNING,
+          time: 3000,
+        })
         setLoading(false);
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } catch (err: any) {
         setLoading(false);
-        setError(err.message as string);
-        console.log(err);
+        setShowAlert({
+          show: true,
+          message: err.message as string,
+          type: WARNING_TYPES.ERROR,
+          time: 3000,
+        })
       }
     }
   }
@@ -327,28 +360,7 @@ export function Contacts() {
         <div className="flex items-center justify-center overflow-hidden p-2">
           <div className="w-full">
             <div className="bg-white shadow-sm rounded">
-              {error && <Alert type={WARNING_TYPES.ERROR} message={error} />}
-              {showSuccessAlert && (
-                <Alert
-                  type={WARNING_TYPES.SUCCESS}
-                  message={`${singular} cadastrado com Sucesso!`}
-                  closeFunction={setShowSuccessAlert}
-                />
-              )}
-              {showEditAlert && (
-                <Alert
-                  type={WARNING_TYPES.INFO}
-                  message={`${singular} alterado com Sucesso!`}
-                  closeFunction={setShowEditAlert}
-                />
-              )}
-              {showDeleteAlert && (
-                <Alert
-                  type={WARNING_TYPES.WARNING}
-                  message={`${singular} removido com Sucesso!`}
-                  closeFunction={setShowDeleteAlert}
-                />
-              )}
+              {showAlert.show && <Alert alert={showAlert} setAlert={setShowAlert} />}
               {showList && (
                 <List
                   dataList={showDataList}

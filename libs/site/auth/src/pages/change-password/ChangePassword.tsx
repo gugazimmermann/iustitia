@@ -2,7 +2,11 @@ import { useEffect, useState } from "react";
 import { useHistory, useLocation, useParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { SiteRoutes as Routes } from "@iustitia/react-routes";
-import { Alert, LoadingButton } from "@iustitia/site/shared-components";
+import {
+  Alert,
+  AlertInterface,
+  LoadingButton,
+} from "@iustitia/site/shared-components";
 import { WARNING_TYPES } from "@iustitia/site/shared-utils";
 import { AuthService } from "@iustitia/site/services";
 import { Title, Link } from "../..";
@@ -35,7 +39,12 @@ export function ChangePassword() {
     setValue,
   } = useForm<Form>();
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
+  const [showAlert, setShowAlert] = useState<AlertInterface>({
+    show: false,
+    message: "",
+    type: WARNING_TYPES.NONE,
+    time: 3000,
+  });
 
   useEffect(() => {
     if (codeurl) {
@@ -43,13 +52,20 @@ export function ChangePassword() {
     }
     async function getPasswordCode(codeurl: string) {
       try {
-        const res = (await AuthService.getforgotpasswordcode(codeurl)) as { code: string};
+        const res = (await AuthService.getforgotpasswordcode(codeurl)) as {
+          code: string;
+        };
         setLoading(false);
         setValue("code", res.code);
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } catch (err: any) {
         setCodeurl("");
-        setError("Não foi possível recuperar o código, verifique seu email.");
+        setShowAlert({
+          show: true,
+          message: "Não foi possível recuperar o código, verifique seu email.",
+          type: WARNING_TYPES.ERROR,
+          time: 3000,
+        });
         setLoading(false);
       }
     }
@@ -93,9 +109,13 @@ export function ChangePassword() {
   const onSubmit = async (form: Form) => {
     setLoading(true);
     setState({ ...state, email: "" });
-    setError("");
     if (form.newpassword !== form.repeatnewpassword) {
-      setError("Senhas são diferentes!");
+      setShowAlert({
+        show: true,
+        message: "Senhas são diferentes!",
+        type: WARNING_TYPES.ERROR,
+        time: 3000,
+      });
       setLoading(false);
       return;
     }
@@ -105,7 +125,12 @@ export function ChangePassword() {
       history.push(Routes.SignIn, { changePassword: true });
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
-      setError(err.message as string);
+      setShowAlert({
+        show: true,
+        message: err.message as string,
+        type: WARNING_TYPES.ERROR,
+        time: 3000,
+      });
       setLoading(false);
     }
   };
@@ -114,7 +139,7 @@ export function ChangePassword() {
     <main className="bg-white max-w-lg mx-auto p-8 md:p-12 my-10 rounded-lg shadow-2xl">
       <Title title="Mudar Senha" />
       {state?.email && showInfo(state)}
-      {error && <Alert type={WARNING_TYPES.ERROR} message={error} />}
+      {showAlert.show && <Alert alert={showAlert} setAlert={setShowAlert} />}
       <section className="mt-5">
         <form className="flex flex-col" onSubmit={handleSubmit(onSubmit)}>
           <div className="mb-6 rounded">

@@ -7,7 +7,7 @@ import {
   useState,
 } from "react";
 import { DateTime } from "luxon";
-import { Alert, Callout } from "@iustitia/site/shared-components";
+import { Alert, AlertInterface, Callout } from "@iustitia/site/shared-components";
 import { WARNING_TYPES } from "@iustitia/site/shared-utils";
 import { ProfileServices, OfficeServices } from "@iustitia/site/services";
 import { Nav, Menu } from "./components";
@@ -22,6 +22,12 @@ interface LayoutProps {
 }
 
 export function Layout({ children }: LayoutProps) {
+  const [showAlert, setShowAlert] = useState<AlertInterface>({
+    show: false,
+    message: "",
+    type: WARNING_TYPES.NONE,
+    time: 3000,
+  });
   const [menuOpen, setMenuOpen] = useState(true);
   const [navOpen, setNavOpen] = useState(false);
   const [notificationOpen, setNotificationOpen] = useState(false);
@@ -31,28 +37,31 @@ export function Layout({ children }: LayoutProps) {
   useEffect(() => {
     const { innerWidth: width } = window;
     if (width <= 640) setMenuOpen(false);
-
     whoIAm();
-    async function whoIAm() {
-      try {
-        const data = (await ProfileServices.getOne()) as ProfileInterface;
-        if (data.subscription) data.subscription.basic = data.subscription?.reason.toLowerCase().includes("profissional") ? false : true;
-        setProfile(data);
-      } catch (err) {
-        console.log(err);
-      }
-    }
-
     seeOffices();
-    async function seeOffices() {
-      try {
-        const data = (await OfficeServices.getAll()) as OfficeInterface[];
-        setOffices(data);
-      } catch (err) {
-        console.log(err);
-      }
-    }
   }, []);
+
+  async function whoIAm() {
+    try {
+      const data = (await ProfileServices.getOne()) as ProfileInterface;
+      data.isAdmin = data.role === "Admin" ? true : false;
+      if (data.subscription)
+        data.isProfessional =
+          data.subscription?.type === "professional" ? true : false;
+      setProfile(data);
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
+  async function seeOffices() {
+    try {
+      const data = (await OfficeServices.getAll()) as OfficeInterface[];
+      setOffices(data);
+    } catch (err) {
+      console.log(err);
+    }
+  }
 
   function subscriptionEndDate(createdAt: string, frequency: number) {
     const subsCreatedAt = DateTime.fromISO(createdAt).plus({ days: frequency });
@@ -62,7 +71,12 @@ export function Layout({ children }: LayoutProps) {
 
   return (
     <div className="flex h-screen antialiased text-gray-900 bg-gray-100">
-      <Menu profile={profile} setMenuOpen={setMenuOpen} menuOpen={menuOpen} />
+      <Menu
+        profile={profile}
+        offices={offices}
+        setMenuOpen={setMenuOpen}
+        menuOpen={menuOpen}
+      />
       <div className="flex flex-col flex-1 min-h-screen overflow-x-hidden overflow-y-auto">
         <Nav
           setMenuOpen={setMenuOpen}
@@ -72,26 +86,31 @@ export function Layout({ children }: LayoutProps) {
           setNotificationOpen={setNotificationOpen}
           notificationOpen={notificationOpen}
           profile={profile}
+          offices={offices}
         />
         {/* md:max-w-screen-lg */}
         <main className="h-full bg-gray-50">
           {profile.subscription &&
             profile.subscription.planId === process.env.NX_FREE_PLAN && (
               <Alert
-                type={
-                  subscriptionEndDate(
+                alert={{
+                  show: true,
+                  message: `${
+                    profile.subscription.reason
+                  } termina em ${subscriptionEndDate(
                     profile.subscription.createdAt,
                     profile.subscription.frequency
-                  ) > 3
-                    ? WARNING_TYPES.NONE
-                    : WARNING_TYPES.WARNING
-                }
-                message={`${
-                  profile.subscription.reason
-                } termina em ${subscriptionEndDate(
-                  profile.subscription.createdAt,
-                  profile.subscription.frequency
-                )} dias.`}
+                  )} dias.`,
+                  type:
+                    subscriptionEndDate(
+                      profile.subscription.createdAt,
+                      profile.subscription.frequency
+                    ) > 3
+                      ? WARNING_TYPES.NONE
+                      : WARNING_TYPES.WARNING,
+                  time: 3000,
+                }}
+                setAlert={setShowAlert}
               />
             )}
           {!profile.zip && (

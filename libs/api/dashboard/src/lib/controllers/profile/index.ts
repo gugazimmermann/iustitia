@@ -103,6 +103,7 @@ export async function getProfile(req: UserRequest, res: Response): Promise<Respo
       state: user.profile.state,
       subscription: {
         planId: user.subscription.planId,
+        type: user.subscription.type,
         reason: user.subscription.reason,
         frequency: user.subscription.frequency,
         createdAt: user.subscription.createdAt,

@@ -19,6 +19,7 @@ export interface UserAttributes {
   email: string;
   password: string;
   tenant: string;
+  active: boolean;
 }
 
 export type UserCreationAttributes = Optional<UserAttributes, 'id' | 'tenant'>
@@ -55,7 +56,8 @@ export default function user(sequelize: Sequelize) {
     },
     email: { type: DataTypes.TEXT, allowNull: false },
     password: { type: DataTypes.TEXT, allowNull: false },
-    tenant: { type: DataTypes.UUID, allowNull: true }
+    tenant: { type: DataTypes.UUID, allowNull: true },
+    active: { type: DataTypes.BOOLEAN, allowNull: false }
   }, {
     paranoid: true,
     timestamps: true,

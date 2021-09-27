@@ -3,6 +3,7 @@ import { useHistory, useLocation, Redirect } from "react-router-dom";
 import { SiteRoutes as Routes } from "@iustitia/react-routes";
 import {
   Alert,
+  AlertInterface,
   PlanBasicIcon,
   PlanProfessionalIcon,
 } from "@iustitia/site/shared-components";
@@ -22,25 +23,26 @@ export function Plan() {
   const location = useLocation();
   const state = location?.state as State;
   const form = state?.form;
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
+  const [showAlert, setShowAlert] = useState<AlertInterface>({
+    show: false,
+    message: "",
+    type: WARNING_TYPES.NONE,
+    time: 3000,
+  });
   const [plans, setPlans] = useState<PlanInterface[]>([]);
   const [plan, setPlan] = useState<PlanInterface>();
   const [selectedPlan, setSelectedPlan] = useState("");
 
   useEffect(() => {
     async function Plans() {
-      setLoading(true);
       try {
         const data = (await SubscriptionServices.getPlans()) as PlanInterface[];
         const freePlan = data.find((p) => p.transactionAmount === 0);
         setSelectedPlan(freePlan?.id || "");
         setPlan(freePlan);
         setPlans(data);
-        setLoading(false);
       } catch (err) {
         console.log(err);
-        setLoading(false);
       }
     }
 
@@ -106,9 +108,7 @@ export function Plan() {
   }
 
   async function handleFoward() {
-    setLoading(true);
     if (plan?.transactionAmount !== 0) {
-      setLoading(false);
       history.push(Routes.Subscription, { form, plan: plan });
     } else {
       try {
@@ -118,12 +118,15 @@ export function Plan() {
           password: form.password,
           planId: plan.id as string,
         });
-        setLoading(false);
         history.push(Routes.SignIn, { email: form.email });
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } catch (err: any) {
-        setError(err.message as string);
-        setLoading(false);
+        setShowAlert({
+          show: true,
+          message: err.message as string,
+          type: WARNING_TYPES.ERROR,
+          time: 3000,
+        })
       }
     }
   }
@@ -139,7 +142,7 @@ export function Plan() {
               Selecione seu Plano
             </h1>
           </div>
-          {error && <Alert type={WARNING_TYPES.ERROR} message={error} />}
+          {showAlert.show && <Alert alert={showAlert} setAlert={setShowAlert} />}
           <form className="flex flex-col">
             <div className="mb-6 rounded">
               <select

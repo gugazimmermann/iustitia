@@ -31,6 +31,7 @@ function dataToPeopleResult(data: ModuleInstance): ModuleInterface {
 
 interface ProfileInterface {
   id?: string;
+  role?: string;
   avatar?: string;
   name: string;
   email?: string;
@@ -44,9 +45,10 @@ interface ProfileInterface {
   state?: string;
 }
 
-function dataToProfileResult(id: string, data: ProfileInstance): ProfileInterface {
+function dataToProfileResult(id: string, data: ProfileInstance, roles: { name: string }[]): ProfileInterface {
   return {
-    id,
+    id: data.id,
+    role: roles[0].name,
     avatar: data.avatar,
     name: data.name,
     email: data.email,
@@ -73,10 +75,10 @@ export async function getAll(req: UserRequest, res: Response): Promise<Response>
         id: {
           [Op.not]: user.id
         },
-      }, include: "profile"
+      }, include: ["profile", "roles"]
     });
     const resultData = [] as ProfileInterface[];
-    if (data.length > 0) data.forEach(d => resultData.push(dataToProfileResult(d.id, d.profile)));
+    if (data.length > 0) data.forEach(d => resultData.push(dataToProfileResult(d.id, d.profile, d.roles)));
     return res.status(200).send(resultData);
   } catch (err) {
     return res.status(500).send({ message: err.message });
@@ -106,7 +108,19 @@ export async function createInvite(req: UserRequest, res: Response): Promise<Res
   const { body } = req;
   if (!body.name || !body.email || !validateEmail(body.email)) return res.status(400).send({ message: "Dados inválidos!" });
   try {
-    const user = await userDB.findOne({ where: { id: req.userId }, include: ["profile"], });
+    const user = await userDB.findOne({ where: { id: req.userId }, include: ["profile", "subscription"] });
+    if (user.subscription.type !== "professional") {
+      const countPeoples = await database.People.count({ where: { tenantId: user.tenant } });
+      const countUsers = await database.User.count({
+        where: {
+          tenant: user.tenant,
+          id: {
+            [Op.not]: user.id
+          },
+        }
+      });
+      if (countPeoples > 0 || countUsers > 0) return res.status(401).send({ message: "Plano sem permissão!" });
+    }
     const people = {
       name: body.name,
       email: body.email,
@@ -167,7 +181,6 @@ export async function getInviteCode(req: Request, res: Response): Promise<Respon
   if (!tenantId || !code) return res.status(400).send({ message: "Dados inválidos!" });
   try {
     const data = await moduleDB.findOne({ where: { tenantId: tenantId, code: code } });
-    console.log(data)
     return res.status(200).send({ ...dataToPeopleResult(data), code: data.code });
   } catch (err) {
     return res.status(500).send({ message: err.message });
@@ -180,15 +193,17 @@ export async function createUser(req: Request, res: Response): Promise<Response>
   const { code, password } = req.body;
   if (!code || !password) return res.status(400).send({ message: "Dados inválidos!" });
   try {
+    console.log(tenantId, code)
     const invite = await moduleDB.findOne({ where: { tenantId, code } });
     if (!invite) return res.status(404).send({ message: "Nenhum registro encontrado!" });
     const user = await database.User.create({
       email: invite.email,
       password: bcrypt.hashSync(req.body.password, 8),
-      tenant: tenantId
+      tenant: tenantId,
+      active: true
     }
     );
-    const role = await database.Role.findOne({ where: { name: "Colaborador" } })
+    const role = await database.Role.findOne({ where: { name: "User" } })
     user.addRole(role);
     await database.Profile.create({
       name: invite.name,

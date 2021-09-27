@@ -42,7 +42,6 @@ function dataToResult(data: ModuleInstance): ModuleInterface {
 
 export async function getOne(req: UserRequest, res: Response): Promise<Response> {
   const { tenantId, id } = req.params;
-  console.log(tenantId, id)
   if (!tenantId || !id) return res.status(400).send({ message: "Dados inválidos!" });
   try {
     const user = await userDB.findOne({ where: { id: req.userId } });

@@ -43,22 +43,24 @@ export function NavAvatar({ profile }: NavAvatarProps) {
       );
     }
     return (
-      <button
-        onClick={() => setOpen(!open)}
-        className="transition-opacity duration-200 rounded-full"
-      >
-        <span className="sr-only">Perfil Menu</span>
-        <img
-          className="w-10 h-10 rounded-full"
-          src={`${process.env.NX_BUCKET_AVATAR_URL}${profile.avatar}`}
-          alt={profile.name}
-        />
-      </button>
+      <div className="pt-1">
+        <button
+          onClick={() => setOpen(!open)}
+          className="transition-opacity duration-200 rounded-full"
+        >
+          <span className="sr-only">Perfil Menu</span>
+          <img
+            className="w-10 h-10 rounded-full"
+            src={`${process.env.NX_BUCKET_AVATAR_URL}${profile.avatar}`}
+            alt={profile.name}
+          />
+        </button>
+      </div>
     );
   }
 
   return (
-    <div className="relative z-40">
+    <div className="relative z-40 pt-1">
       {avatarButton(profile)}
       <div
         ref={divRef}
@@ -78,7 +80,7 @@ export function NavAvatar({ profile }: NavAvatarProps) {
         >
           Seu Perfil
         </Link>
-        {profile?.role === "Administrador" && (
+        {profile.isAdmin && (
           <Link
             to={SiteRoutes.Subscriptions}
             className="cursor-pointer w-full block px-4 py-2 text-sm text-gray-700 transition-colors hover:bg-gray-100"

@@ -25,15 +25,15 @@ export function ListPayments({ payments }: ListPaymentsProps) {
 
   return (
     <>
-      <div className="bg-primary-500 text-white uppercase font-bold p-2">
+      <div className="bg-primary-500 text-white uppercase text-sm font-bold p-2">
         Pagamentos
       </div>
       <table className="min-w-max w-full table-auto">
         <thead>
-          <tr className="bg-primary-500 text-white uppercase leading-normal">
-            <th className="py-2 px-2 text-sm text-left">Data</th>
-            <th className="py-2 px-2 text-sm text-center">Valor</th>
-            <th className="py-2 px-2 text-sm text-right">Status</th>
+          <tr className="bg-primary-200 text-gray-900 text-xs uppercase leading-normal">
+            <th className="py-2 px-2 text-left">Data</th>
+            <th className="py-2 px-2 text-center">Valor</th>
+            <th className="py-2 px-2 text-right">Status</th>
           </tr>
         </thead>
         <tbody className="text-gray-600 text-sm font-light">

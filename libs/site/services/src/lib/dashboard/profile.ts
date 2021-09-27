@@ -13,6 +13,8 @@ export const ProfileModule = {
 export interface ProfileInterface {
   id?: string;
   role: string;
+  isAdmin?: boolean;
+  isProfessional?: boolean;
   avatar: string;
   name: string;
   email: string;
@@ -32,7 +34,6 @@ export interface ProfileSubscriptionInterface {
   reason: string;
   frequency: number;
   type: string;
-  basic?: boolean;
   createdAt: string;
 }
 
