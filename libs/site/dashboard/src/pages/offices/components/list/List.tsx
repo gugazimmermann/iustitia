@@ -1,14 +1,15 @@
 import { useHistory } from "react-router-dom";
 import {
+  ActiveBadge,
   ArrowDownIcon,
   ArrowUpIcon,
   Callout,
   EyeIcon,
-  PenIcon,
+  Tooltip,
   TrashIcon,
 } from "@iustitia/site/shared-components";
 import { OfficeInterface, route, singular } from "../../Offices";
-import { WARNING_TYPES } from "@iustitia/site/shared-utils";
+import { getUserInitials, WARNING_TYPES } from "@iustitia/site/shared-utils";
 
 export interface ListProps {
   dataList: OfficeInterface[];
@@ -48,13 +49,13 @@ export function List({
               )}
             </th>
             <th className="py-2 px-2 text-sm text-left">Cidade</th>
-            <th className="py-2 px-2 text-sm text-left">Responsável</th>
-            <th className="py-2 px-2 text-sm text-left">Usuários</th>
-            <th className="py-2 px-2 text-sm text-left">Status</th>
+            <th className="py-2 px-2 text-sm text-center">Responsável</th>
+            <th className="py-2 px-2 text-sm text-center">Usuários</th>
+            <th className="py-2 px-2 text-sm text-center">Status</th>
             <th className="py-2 px-2"></th>
           </tr>
         </thead>
-        <tbody className="text-gray-600 text-sm font-light">
+        <tbody className="bg-white text-gray-600 text-sm">
           {dataList &&
             dataList.map((data, i) => (
               <tr
@@ -64,48 +65,65 @@ export function List({
                 <td className="py-3 px-3 text-left whitespace-nowrap">
                   <span className="font-medium">{data.name}</span>
                 </td>
-                <td className="py-3 px-3 text-left hidden sm:table-cell">
+                <td className="text-left hidden sm:table-cell">
                   <div className="flex items-center">
                     <span>{`${data.city} / ${data.state}`}</span>
                   </div>
                 </td>
-                <td className="py-3 px-3 text-left hidden sm:table-cell">
-                  <div className="flex items-center">
-                    <div className="mr-2">
-                      <img
-                        className="w-6 h-6 rounded-full"
-                        src="https://randomuser.me/api/portraits/men/1.jpg"
-                        alt="respionsavel name"
-                      />
-                    </div>
-                    <span>Paulo Souza</span>
-                  </div>
-                </td>
-                <td className="py-3 px-3 text-center hidden sm:table-cell">
+                <td className="text-center hidden sm:table-cell">
                   <div className="flex items-center justify-center">
-                    <img
-                      className="w-6 h-6 rounded-full border-gray-200 border transform hover:scale-125"
-                      src="https://randomuser.me/api/portraits/men/1.jpg"
-                      alt="usuario 1"
-                    />
-                    <img
-                      className="w-6 h-6 rounded-full border-gray-200 border -m-1 transform hover:scale-125"
-                      src="https://randomuser.me/api/portraits/women/2.jpg"
-                      alt="usuario 2"
-                    />
-                    <img
-                      className="w-6 h-6 rounded-full border-gray-200 border -m-1 transform hover:scale-125"
-                      src="https://randomuser.me/api/portraits/men/3.jpg"
-                      alt="usuario 3"
-                    />
+                    {data.managersOffice &&
+                      data.managersOffice.map((manager, i) => (
+                        <Tooltip
+                          key={i}
+                          message={manager.name}
+                          styles="w-8 h-8 -ml-1"
+                        >
+                          {manager.avatar ? (
+                            <img
+                              className="w-8 h-8 rounded-full border transform hover:scale-125"
+                              src={`${process.env.NX_BUCKET_AVATAR_URL}${manager.avatar}`}
+                              alt={manager.name}
+                            />
+                          ) : (
+                            <span className="w-8 h-8 rounded-full flex justify-center items-center text-center font-bold text-primary-500 bg-primary-50  border transform hover:scale-125">
+                              {manager.name
+                                ? getUserInitials(manager.name)
+                                : "I"}
+                            </span>
+                          )}
+                        </Tooltip>
+                      ))}
                   </div>
                 </td>
-                <td className="py-3 px-3 text-center hidden sm:table-cell">
-                  <span className="bg-primary-200 text-primary-500 font-bold py-1 px-3 rounded-full text-xs">
-                    Ativo
-                  </span>
+                <td className="text-center hidden sm:table-cell">
+                  <div className="flex items-center justify-center">
+                    {data.usersOffice &&
+                      data.usersOffice.map((user, i) => (
+                        <Tooltip
+                          key={i}
+                          message={user.name}
+                          styles="w-8 h-8 -ml-1"
+                        >
+                          {user.avatar ? (
+                            <img
+                              className="w-8 h-8 rounded-full  border transform hover:scale-125"
+                              src={`${process.env.NX_BUCKET_AVATAR_URL}${user.avatar}`}
+                              alt={user.name}
+                            />
+                          ) : (
+                            <span className="w-8 h-8 rounded-full flex justify-center items-center text-center font-bold text-primary-500 bg-primary-50  border transform hover:scale-125">
+                              {user.name ? getUserInitials(user.name) : "I"}
+                            </span>
+                          )}
+                        </Tooltip>
+                      ))}
+                  </div>
                 </td>
-                <td className="py-3 px-3">
+                <td className="text-center hidden sm:table-cell">
+                  <ActiveBadge status={data.active} />
+                </td>
+                <td>
                   <div className="flex items-end justify-end">
                     <div className="w-5 mr-3 transform hover:text-purple-500 hover:scale-110">
                       <div
@@ -114,12 +132,6 @@ export function List({
                       >
                         <EyeIcon styles={"cursor-pointer"} />
                       </div>
-                    </div>
-                    <div
-                      onClick={() => history.push(`${route}/edit/${data.id}`)}
-                      className="w-5 mr-3 transform hover:text-purple-500 hover:scale-110"
-                    >
-                      <PenIcon styles={"cursor-pointer"} />
                     </div>
                     <div
                       onClick={() => {

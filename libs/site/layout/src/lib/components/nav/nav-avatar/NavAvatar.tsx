@@ -59,6 +59,18 @@ export function NavAvatar({ profile }: NavAvatarProps) {
     );
   }
 
+  function NavLink({ name, route }: { name: string; route: SiteRoutes }) {
+    return (
+      <Link
+        to={route}
+        onClick={() => setOpen(false)}
+        className="cursor-pointer w-full block px-4 py-2 text-sm text-gray-700 transition-colors hover:bg-primary-100"
+      >
+        {name}
+      </Link>
+    );
+  }
+
   return (
     <div className="relative z-40 pt-1">
       {avatarButton(profile)}
@@ -68,29 +80,14 @@ export function NavAvatar({ profile }: NavAvatarProps) {
           !open ? `hidden` : ``
         }`}
       >
-        <Link
-          to={SiteRoutes.Offices}
-          className="cursor-pointer w-full block px-4 py-2 text-sm text-gray-700 transition-colors hover:bg-gray-100"
-        >
-          Escritórios
-        </Link>
-        <Link
-          to={SiteRoutes.Profile}
-          className="cursor-pointer w-full block px-4 py-2 text-sm text-gray-700 transition-colors hover:bg-gray-100"
-        >
-          Seu Perfil
-        </Link>
+        <NavLink route={SiteRoutes.Offices} name="Escritórios" />
+        <NavLink route={SiteRoutes.Profile} name="Seu Perfil" />
         {profile.isAdmin && (
-          <Link
-            to={SiteRoutes.Subscriptions}
-            className="cursor-pointer w-full block px-4 py-2 text-sm text-gray-700 transition-colors hover:bg-gray-100"
-          >
-            Assinatura
-          </Link>
+          <NavLink route={SiteRoutes.Subscriptions} name="Assinatura" />
         )}
         <div
           onClick={() => handleLogout()}
-          className="cursor-pointer w-full block px-4 py-2 text-sm text-gray-700 transition-colors hover:bg-gray-100"
+          className="cursor-pointer w-full block px-4 py-2 text-sm text-gray-700 transition-colors hover:bg-primary-100"
         >
           Sair
         </div>

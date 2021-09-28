@@ -8,15 +8,16 @@ export interface AlertInterface {
   time?: number;
 }
 
-export interface AlertSuccessProps {
+interface AlertSuccessProps {
   alert: AlertInterface;
-  setAlert(alert: AlertInterface): void;
+  setAlert?(alert: AlertInterface): void;
 }
 
 export function Alert({ alert, setAlert }: AlertSuccessProps) {
-  const {message, type, time} = alert;
+  const { message, type, time } = alert;
   useEffect(() => {
-    if (time) setTimeout(() => setAlert({ ...alert, show: false }), time);
+    if (time && setAlert)
+      setTimeout(() => setAlert({ ...alert, show: false }), time);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -65,6 +66,7 @@ export function Alert({ alert, setAlert }: AlertSuccessProps) {
         </div>
         <div>
           <p className="font-bold py-1">{message}</p>
+          {setAlert && (
             <span
               className="absolute top-0 bottom-0 right-0 px-4 py-3"
               onClick={() => setAlert({ ...alert, show: false })}
@@ -79,6 +81,7 @@ export function Alert({ alert, setAlert }: AlertSuccessProps) {
                 <path d="M14.348 14.849a1.2 1.2 0 0 1-1.697 0L10 11.819l-2.651 3.029a1.2 1.2 0 1 1-1.697-1.697l2.758-3.15-2.759-3.152a1.2 1.2 0 1 1 1.697-1.697L10 8.183l2.651-3.031a1.2 1.2 0 1 1 1.697 1.697l-2.758 3.152 2.758 3.15a1.2 1.2 0 0 1 0 1.698z" />
               </svg>
             </span>
+          )}
         </div>
       </div>
     </div>

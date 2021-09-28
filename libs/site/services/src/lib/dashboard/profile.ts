@@ -40,10 +40,18 @@ export interface ProfileSubscriptionInterface {
 type ModuleInterface = ProfileInterface;
 const RouteName = ProfileModule.module;
 
+function seeUserParams(profile: ProfileInterface): ProfileInterface {
+  profile.isAdmin = profile.role === "Admin" ? true : false;
+  if (profile.subscription)
+    profile.isProfessional =
+      profile.subscription?.type === "professional" ? true : false;
+  return profile
+}
+
 export async function update(formData: FormData): Promise<ModuleInterface | Error> {
   try {
     const { data } = await api.put(`/api/${RouteName}`, formData);
-    return data
+    return seeUserParams(data)
   } catch (err) {
     return errorHandler(err)
   }
@@ -52,7 +60,7 @@ export async function update(formData: FormData): Promise<ModuleInterface | Erro
 export async function getOne(): Promise<ModuleInterface | Error> {
   try {
     const { data } = await api.get(`/api/${RouteName}`);
-    return data
+    return seeUserParams(data)
   } catch (err) {
     return errorHandler(err)
   }

@@ -75,7 +75,6 @@ export function Profile({ profile, setProfile }: ProfileProps) {
     type: WARNING_TYPES.NONE,
     time: 3000,
   });
-
   const avatarRegister = register("avatar");
   const [selectedFile, setSelectedFile] = useState<File>();
   const [preview, setPreview] = useState<string | undefined>("");
@@ -170,6 +169,7 @@ export function Profile({ profile, setProfile }: ProfileProps) {
     try {
       const profileData = await ProfileServices.update(formData);
       if (profileData && setProfile) {
+        console.log(profileData);
         setProfile(profileData as ProfileInterface);
         setShowAlert({
           show: true,
@@ -197,7 +197,7 @@ export function Profile({ profile, setProfile }: ProfileProps) {
       <div className="overflow-x-auto">
         <div className="flex items-center justify-center overflow-hidden p-2">
           <div className="w-full">
-            {showAlert && <Alert alert={showAlert} setAlert={setShowAlert} />}
+            {showAlert.show && <Alert alert={showAlert} setAlert={setShowAlert} />}
             <div className="bg-white shadow-sm rounded">
               <form
                 onSubmit={handleSubmit(onSubmit)}

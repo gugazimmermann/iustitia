@@ -10,14 +10,35 @@ import { OfficeServices } from "@iustitia/site/services";
 
 type OfficeInterface = OfficeServices.OfficeInterface;
 
-interface DashboardOfficesProps {
-  offices?: OfficeInterface[];
-}
-
-export function DashboardOffices({ offices }: DashboardOfficesProps) {
+export function DashboardOffices() {
   const history = useHistory();
   const { id } = useParams<{ id: string }>();
+  const [offices, setOffices] = useState<OfficeInterface[]>();
   const [selectedOffice, setSelectedOffice] = useState({} as OfficeInterface);
+
+  useEffect(() => {
+    if (id) getOffice(id);
+    else getOffices();
+  }, [id]);
+
+  async function getOffice(id: string) {
+    try {
+      const office = (await OfficeServices.getOne(id)) as OfficeInterface;
+      setSelectedOffice(office);
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
+  async function getOffices() {
+    try {
+      const data = (await OfficeServices.getAll()) as OfficeInterface[];
+      setOffices(data);
+      if (data.length === 1) setSelectedOffice(data[0]);
+    } catch (err) {
+      console.log(err);
+    }
+  }
 
   const selectOffices = () => {
     return (
@@ -49,76 +70,56 @@ export function DashboardOffices({ offices }: DashboardOfficesProps) {
     );
   };
 
-  useEffect(() => {
-    if (id) {
-      getOffice(id);
-    } else {
-      setSelectedOffice({} as OfficeInterface);
-    }
-  }, [id]);
+  return offices && offices?.length > 0 ? (
+    <>
+      <Header
+        before={["Dashboards"]}
+        main={
+          selectedOffice.name
+            ? `${selectedOffice.name}`
+            : `Escritórios`
+        }
+        select={offices.length > 1 ? selectOffices : undefined}
+      />
 
-  async function getOffice(id: string) {
-    try {
-      const office = (await OfficeServices.getOne(id)) as OfficeInterface;
-      setSelectedOffice(office);
-    } catch (err) {
-      console.log(err);
-    }
-  }
+      <div className="mt-2">
+        <div className="grid grid-cols-1 gap-8 p-4 lg:grid-cols-2 xl:grid-cols-4">
+          <InfoCard
+            title="Entradas"
+            content="$0"
+            badge="0%"
+            badgeColor="gray"
+            icon={INFOCARDSICONS.MONEY}
+          />
 
-  return (
-    offices &&
-    offices?.length > 0 ? (
-      <>
-        <Header
-          before={["Dashboards"]}
-          main={
-            selectedOffice.name
-              ? `Escritório: ${selectedOffice.name}`
-              : `Escritórios`
-          }
-          select={offices.length > 1 ? selectOffices : undefined}
-        />
+          <InfoCard
+            title="Despesas"
+            content="$0"
+            badge="0%"
+            badgeColor="gray"
+            icon={INFOCARDSICONS.GRAPH_UP}
+          />
 
-        <div className="mt-2">
-          <div className="grid grid-cols-1 gap-8 p-4 lg:grid-cols-2 xl:grid-cols-4">
-            <InfoCard
-              title="Entradas"
-              content="$0"
-              badge="0%"
-              badgeColor="gray"
-              icon={INFOCARDSICONS.MONEY}
-            />
+          <InfoCard
+            title="Clientes Ativos"
+            content="0"
+            badge="0%"
+            badgeColor="gray"
+            icon={INFOCARDSICONS.PEOPLE}
+          />
 
-            <InfoCard
-              title="Despesas"
-              content="$0"
-              badge="0%"
-              badgeColor="gray"
-              icon={INFOCARDSICONS.GRAPH_UP}
-            />
-
-            <InfoCard
-              title="Clientes Ativos"
-              content="0"
-              badge="0%"
-              badgeColor="gray"
-              icon={INFOCARDSICONS.PEOPLE}
-            />
-
-            <InfoCard
-              title="Processos Ativos"
-              content="0"
-              badge="0%"
-              badgeColor="gray"
-              icon={INFOCARDSICONS.CASE}
-            />
-          </div>
+          <InfoCard
+            title="Processos Ativos"
+            content="0"
+            badge="0%"
+            badgeColor="gray"
+            icon={INFOCARDSICONS.CASE}
+          />
         </div>
-      </>
-    ) : (
-      <div></div>
-    )
+      </div>
+    </>
+  ) : (
+    <div></div>
   );
 }
 

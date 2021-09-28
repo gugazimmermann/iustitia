@@ -9,7 +9,7 @@ import { MenuFooter, MenuItem, MenuTitle } from ".";
 
 interface MenuProps {
   profile: ProfileInterface;
-  offices: OfficeInterface[];
+  offices: number;
   setMenuOpen(menuOpen: boolean): void;
   menuOpen: boolean;
 }
@@ -97,8 +97,7 @@ export function Menu({ profile, offices, setMenuOpen, menuOpen }: MenuProps) {
         <MenuTitle setMenuOpen={setMenuOpen} menuOpen={menuOpen} />
 
         <nav className="flex-1 px-2 pt-2 overflow-y-hidden hover:overflow-y-auto border-r">
-          {profile.zip &&
-            offices.length > 0 &&
+          {profile.zip && offices > 0 &&
             menuItems.map((item, i) => <MenuItem key={i} item={item} />)}
         </nav>
 

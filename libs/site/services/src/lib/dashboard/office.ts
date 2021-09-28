@@ -1,6 +1,7 @@
 import { api, token } from "../..";
 import { errorHandler } from "@iustitia/site/shared-utils";
 import { SiteRoutes } from "@iustitia/react-routes";
+import { ProfileInterface } from "./profile";
 
 export const OfficeModule = {
   module: "office",
@@ -22,7 +23,9 @@ export interface OfficeInterface {
   neighborhood: string;
   city: string;
   state: string;
-  userId?: string;
+  active: boolean;
+  managersOffice?: ProfileInterface[];
+  usersOffice?: ProfileInterface[];
   tenantId?: string;
   updatedAt?: string;
   createdAt?: string;
@@ -31,6 +34,16 @@ export interface OfficeInterface {
 
 type ModuleInterface = OfficeInterface;
 const RouteName = OfficeModule.module;
+
+export async function count(): Promise<number | Error> {
+  try {
+    const tenantId = token.getLocalTenantId();
+    const {data} = await api.get(`/api/${RouteName}/count/${tenantId}`);
+    return data.offices;
+  } catch (err) {
+    return errorHandler(err)
+  }
+};
 
 export async function getAll(): Promise<OfficeInterface[] | Error> {
   try {

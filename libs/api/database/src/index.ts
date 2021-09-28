@@ -1,6 +1,7 @@
 export { default as database } from "./lib/Database";
 export { PlansInstance } from "./lib/models/plan";
 export { PeopleInstance } from "./lib/models/people";
+export { UserInstance } from "./lib/models/user";
 export { ProfileInstance } from "./lib/models/profile";
 export { OfficeInstance } from "./lib/models/office";
 export { CompanyInstance } from "./lib/models/company/company";

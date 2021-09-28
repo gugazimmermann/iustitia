@@ -18,7 +18,7 @@ export interface ForgotPasswordInstance
 }
 
 export default function forgotPassword(sequelize: Sequelize) {
-  const ForgotPassword = sequelize.define<ForgotPasswordInstance>("forgotPassword", {
+  const ForgotPassword = sequelize.define<ForgotPasswordInstance>("forgot-password", {
     id: {
       type: DataTypes.INTEGER,
       autoIncrement: true,

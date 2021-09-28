@@ -61,18 +61,30 @@ export async function updateProfile(req: UserRequest, res: Response): Promise<Re
       await s3.upload(params).promise();
       profile.update({ avatar: fileName });
     }
+    const user = await database.User.findOne({
+      where: { id: req.userId },
+      include: ["subscription", "profile", "roles"],
+    });
     return res.status(200).send({
-      avatar: profile.avatar,
-      name: profile.name,
-      email: profile.email,
-      phone: profile.phone,
-      zip: profile.zip,
-      address: profile.address,
-      number: profile.number,
-      complement: profile.complement,
-      neighborhood: profile.neighborhood,
-      city: profile.city,
-      state: profile.state
+      role: user.roles[0].name,
+      avatar: user.profile.avatar,
+      name: user.profile.name,
+      email: user.profile.email,
+      phone: user.profile.phone,
+      zip: user.profile.zip,
+      address: user.profile.address,
+      number: user.profile.number,
+      complement: user.profile.complement,
+      neighborhood: user.profile.neighborhood,
+      city: user.profile.city,
+      state: user.profile.state,
+      subscription: {
+        planId: user.subscription.planId,
+        type: user.subscription.type,
+        reason: user.subscription.reason,
+        frequency: user.subscription.frequency,
+        createdAt: user.subscription.createdAt,
+      }
     });
   } catch (err) {
     return res.status(500).send({ message: err.message });

@@ -7,7 +7,11 @@ import {
   useState,
 } from "react";
 import { DateTime } from "luxon";
-import { Alert, AlertInterface, Callout } from "@iustitia/site/shared-components";
+import {
+  Alert,
+  AlertInterface,
+  Callout,
+} from "@iustitia/site/shared-components";
 import { WARNING_TYPES } from "@iustitia/site/shared-utils";
 import { ProfileServices, OfficeServices } from "@iustitia/site/services";
 import { Nav, Menu } from "./components";
@@ -32,34 +36,32 @@ export function Layout({ children }: LayoutProps) {
   const [navOpen, setNavOpen] = useState(false);
   const [notificationOpen, setNotificationOpen] = useState(false);
   const [profile, setProfile] = useState({} as ProfileInterface);
-  const [offices, setOffices] = useState({} as OfficeInterface[]);
+  const [offices, setOffices] = useState<number>(0);
 
   useEffect(() => {
     const { innerWidth: width } = window;
     if (width <= 640) setMenuOpen(false);
     whoIAm();
-    seeOffices();
+    countOffices();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   async function whoIAm() {
     try {
       const data = (await ProfileServices.getOne()) as ProfileInterface;
-      data.isAdmin = data.role === "Admin" ? true : false;
-      if (data.subscription)
-        data.isProfessional =
-          data.subscription?.type === "professional" ? true : false;
       setProfile(data);
+      freePlanMsg(data)
     } catch (err) {
-      console.log(err);
+      console.error(err);
     }
   }
 
-  async function seeOffices() {
+  async function countOffices() {
     try {
-      const data = (await OfficeServices.getAll()) as OfficeInterface[];
-      setOffices(data);
+      const countOffices = (await OfficeServices.count()) as number;
+      setOffices(countOffices);
     } catch (err) {
-      console.log(err);
+      console.error(err);
     }
   }
 
@@ -67,6 +69,25 @@ export function Layout({ children }: LayoutProps) {
     const subsCreatedAt = DateTime.fromISO(createdAt).plus({ days: frequency });
     const finish = subsCreatedAt.diff(DateTime.now(), ["days"]);
     return Math.ceil(finish.toObject().days as number);
+  }
+
+  function freePlanMsg(profile: ProfileInterface) {
+    if (
+      profile.subscription &&
+      profile.subscription.planId === process.env.NX_FREE_PLAN
+    ) {
+      const days = subscriptionEndDate(
+        profile.subscription.createdAt as string,
+        profile.subscription.frequency as number
+      );
+      setShowAlert({
+        show: true,
+        message: `${profile.subscription.reason} termina em ${
+          days === 0 ? `Hoje` : days > 1 ? `${days} dias` : `${days} dia`
+        }.`,
+        type: days > 3 ? WARNING_TYPES.NONE : WARNING_TYPES.WARNING,
+      });
+    }
   }
 
   return (
@@ -90,44 +111,22 @@ export function Layout({ children }: LayoutProps) {
         />
         {/* md:max-w-screen-lg */}
         <main className="h-full bg-gray-50">
-          {profile.subscription &&
-            profile.subscription.planId === process.env.NX_FREE_PLAN && (
-              <Alert
-                alert={{
-                  show: true,
-                  message: `${
-                    profile.subscription.reason
-                  } termina em ${subscriptionEndDate(
-                    profile.subscription.createdAt,
-                    profile.subscription.frequency
-                  )} dias.`,
-                  type:
-                    subscriptionEndDate(
-                      profile.subscription.createdAt,
-                      profile.subscription.frequency
-                    ) > 3
-                      ? WARNING_TYPES.NONE
-                      : WARNING_TYPES.WARNING,
-                  time: 3000,
-                }}
-                setAlert={setShowAlert}
-              />
-            )}
+          {showAlert.show && <Alert alert={showAlert} />}
           {!profile.zip && (
             <Callout
               type={WARNING_TYPES.WARNING}
               title="Seu Perfil está"
               emphasis="Incompleto"
-              content="Acesse seu Perfil clicando em suas iniciais no canto superior direito."
+              content="Acesse seu Perfil clicando no canto superior direito."
             />
           )}
 
-          {!offices.length && (
+          {offices === 0 && (
             <Callout
               type={WARNING_TYPES.WARNING}
               title="Nenhum Escritório Cadastrado"
-              content={`Acesse Escritórios clicando em ${
-                profile.avatar ? `sua foto` : `suas iniciais`
+              content={`Acesse Escritórios clicando ${
+                profile.avatar && `em sua foto`
               } no canto superior direito.`}
             />
           )}

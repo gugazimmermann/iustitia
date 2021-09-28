@@ -17,7 +17,7 @@ export interface RefreshTokenInstance
 }
 
 export default function refreshToken(sequelize: Sequelize) {
-  const RefreshToken = sequelize.define<RefreshTokenInstance>("refreshToken", {
+  const RefreshToken = sequelize.define<RefreshTokenInstance>("refresh-tokens", {
     id: {
       type: DataTypes.INTEGER,
       autoIncrement: true,

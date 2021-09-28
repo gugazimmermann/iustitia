@@ -2,8 +2,8 @@ import { Sequelize, ModelCtor } from "sequelize";
 import config from "./config";
 import user, { UserInstance } from "./models/user";
 import role, { RoleInstance } from "./models/role";
-import refreshToken, { RefreshTokenInstance } from "./models/refreshToken";
-import forgotPassword, { ForgotPasswordInstance } from "./models/forgotPassword";
+import refreshToken, { RefreshTokenInstance } from "./models/refresh-token";
+import forgotPassword, { ForgotPasswordInstance } from "./models/forgot-password";
 import profile, { ProfileInstance } from "./models/profile";
 import office, { OfficeInstance } from "./models/office";
 import people, { PeopleInstance } from "./models/people";
@@ -65,8 +65,8 @@ const database: IDatabase = {
 // database.Sequelize.sync();
 
 database.User.hasOne(database.RefreshToken);
-database.User.belongsToMany(database.Role, { through: { model: "user_role", paranoid: true } });
-database.Role.belongsToMany(database.User, { through: { model: "user_role", paranoid: true } });
+database.User.belongsToMany(database.Role, { through: { model: "user_roles", paranoid: true } });
+database.Role.belongsToMany(database.User, { through: { model: "user_roles", paranoid: true } });
 
 database.Plan.hasMany(database.Subscription);
 database.Subscription.hasMany(database.Payment);
@@ -77,8 +77,34 @@ database.User.hasMany(database.Payment);
 
 database.User.hasOne(database.Profile);
 
-database.User.belongsToMany(database.Office, { through: { model: "user_office", paranoid: true } });
-database.Office.belongsToMany(database.User, { through: { model: "user_office", paranoid: true } });
+database.User.belongsToMany(database.Office, {
+  as: 'officeManagers',
+  through: {
+    model: "office_managers",
+    paranoid: true
+  }
+});
+database.Office.belongsToMany(database.User, {
+  as: 'managersOffice',
+  through: {
+    model: "office_managers",
+    paranoid: true
+  }
+});
+database.User.belongsToMany(database.Office, {
+  as: 'officeUsers',
+  through: {
+    model: "office_users",
+    paranoid: true
+  }
+});
+database.Office.belongsToMany(database.User, {
+  as: 'usersOffice',
+  through: {
+    model: "office_users",
+    paranoid: true
+  }
+});
 
 database.User.hasMany(database.Contact);
 database.Office.hasMany(database.Contact);
@@ -88,7 +114,7 @@ database.Contact.hasMany(database.ContactNotes);
 
 database.User.hasMany(database.Event);
 database.Office.hasMany(database.Event);
-database.Event.belongsToMany(database.Contact, { through: { model: "event_contact", paranoid: true } });
-database.Contact.belongsToMany(database.Event, { through: { model: "event_contact", paranoid: true } });
+database.Event.belongsToMany(database.Contact, { through: { model: "event_contacts", paranoid: true } });
+database.Contact.belongsToMany(database.Event, { through: { model: "event_contacts", paranoid: true } });
 
 export default database;

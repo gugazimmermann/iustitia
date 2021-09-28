@@ -1,5 +1,5 @@
 export * from "./lib/add-button/AddButton";
-export { default as Alert, AlertInterface } from "./lib/alert/Alert";
+export * from "./lib/alert/Alert";
 export * from "./lib/breadcrumb/Breadcrumb";
 export * from "./lib/callout/Callout";
 export * from "./lib/confirmation-modal/ConfirmationModal";
@@ -17,3 +17,6 @@ export * from "./lib/event-new-modal/EventNewModal";
 export * from "./lib/calendar-day-input/CalendarInput";
 export * from "./lib/color-picker/ColorPicker";
 export * from "./lib/search-field/SearchField";
+export * from "./lib/basic-plan-msg/BasicPlanMsg";
+export * from "./lib/active-badge/ActiveBadge";
+export * from "./lib/tooltip/Tooltip";

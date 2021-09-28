@@ -12,6 +12,7 @@ export default function Dashboard(app: Express) {
   app.get("/api/profile", [verifyToken], getProfile);
   app.put("/api/profile", upload.single('avatar'), [verifyToken], updateProfile);
 
+  app.get(`/api/${OfficeController.moduleName}/count/:tenantId`, [verifyToken], OfficeController.count);
   app.get(`/api/${OfficeController.moduleName}/:tenantId/:id`, [verifyToken], OfficeController.getOne);
   app.get(`/api/${OfficeController.moduleName}/:tenantId`, [verifyToken], OfficeController.getAll);
   app.post(`/api/${OfficeController.moduleName}/`, [verifyToken], OfficeController.create);

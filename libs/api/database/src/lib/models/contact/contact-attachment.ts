@@ -18,7 +18,7 @@ export interface ContactAttachmentsInstance
 }
 
 export default function contactAttachments(sequelize: Sequelize) {
-  const ContactAttachments = sequelize.define<ContactAttachmentsInstance>('contactAttachments', {
+  const ContactAttachments = sequelize.define<ContactAttachmentsInstance>('contact-attachments', {
     id: {
       type: DataTypes.UUID,
       defaultValue: DataTypes.UUIDV4,

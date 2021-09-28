@@ -4,6 +4,7 @@ import {
   AddButton,
   Alert,
   AlertInterface,
+  BasicPlanMsg,
   ConfirmationModal,
   Header,
   SearchField,
@@ -18,7 +19,7 @@ export type OfficeInterface = OfficeServices.OfficeInterface;
 
 interface OfficesProps {
   profile?: ProfileInterface;
-  setOffices?(offices: OfficeInterface[]): void;
+  setOffices?(countOffices: number): void;
 }
 
 export function Offices({ profile, setOffices }: OfficesProps) {
@@ -33,79 +34,53 @@ export function Offices({ profile, setOffices }: OfficesProps) {
     type: WARNING_TYPES.NONE,
     time: 3000,
   });
-
-  const [showList, setShowList] = useState(true);
-  const [showDetails, setShowDetails] = useState(false);
-  const [showCreate, setShowCreate] = useState(false);
-  const [showUpdate, setShowUpdade] = useState(false);
-  const [back, setBack] = useState(false);
-  const [confirm, setConfirm] = useState(false);
+  const [whatToShow, setWhatToShow] = useState<
+    "list" | "details" | "update" | "create"
+  >();
   const [dataList, setDataList] = useState([] as OfficeInterface[]);
   const [showDataList, setShowDataList] = useState([] as OfficeInterface[]);
   const [selected, setSelected] = useState({} as OfficeInterface);
+  const [confirm, setConfirm] = useState(false);
   const [searchParam, setSearchParam] = useState<string>();
   const [sort, setSort] = useState<"ASC" | "DESC">("ASC");
 
-  function handleShow(component: "list" | "details" | "update" | "create") {
-    if (component === "list") {
-      setShowList(true);
-      setShowDetails(false);
-      setShowUpdade(false);
-      setShowCreate(false);
-    } else if (component === "details") {
-      setShowList(false);
-      setShowDetails(true);
-      setShowUpdade(false);
-      setShowCreate(false);
-    } else if (component === "update") {
-      setShowList(false);
-      setShowDetails(false);
-      setShowUpdade(true);
-      setShowCreate(false);
-    } else if (component === "create") {
-      setShowList(false);
-      setShowDetails(false);
-      setShowUpdade(false);
-      setShowCreate(true);
-    }
-  }
-
   useEffect(() => {
     if (pathname.includes("add")) {
-      setBack(true);
-      handleShow("create");
+      setWhatToShow("create");
     } else if (pathname.includes("edit")) {
       getSelected(id);
-      setBack(true);
-      handleShow("update");
+      setWhatToShow("update");
     } else {
       if (id) {
         getSelected(id);
-        setBack(true);
-        handleShow("details");
+        setWhatToShow("details");
       } else {
         getDataList();
-        setBack(false);
-        handleShow("list");
+        setWhatToShow("list");
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id, pathname]);
 
+  async function reloadList() {
+    await getDataList();
+    setWhatToShow("list");
+  }
+
   async function getDataList() {
     try {
       const data = (await OfficeServices.getAll()) as OfficeInterface[];
-      if (setOffices) setOffices(data);
+      if (setOffices) setOffices(data.length);
       setDataList(data);
       const sortedData = Sort(data.slice(0), sort);
       setShowDataList(sortedData);
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       setShowAlert({
-        ...showAlert,
         show: true,
         message: err.message as string,
         type: WARNING_TYPES.ERROR,
+        time: 3000,
       });
     }
   }
@@ -117,37 +92,25 @@ export function Offices({ profile, setOffices }: OfficesProps) {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       setShowAlert({
-        ...showAlert,
         show: true,
         message: err.message as string,
         type: WARNING_TYPES.ERROR,
+        time: 3000,
       });
       history.push(route);
       console.log(err);
     }
   }
 
-  async function reloadList() {
-    await getDataList();
-    handleShow("list");
-    setBack(false);
-  }
-
-  useEffect(() => {
-    const sortedData = Sort(dataList.slice(0), sort);
-    setShowDataList(sortedData);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [sort]);
-
   async function handleCreate(data: OfficeInterface) {
     setLoading(true);
     try {
       const newOffice = (await OfficeServices.create(data)) as OfficeInterface;
       setShowAlert({
-        ...showAlert,
         show: true,
         message: `${singular} cadastrado com sucesso!`,
         type: WARNING_TYPES.SUCCESS,
+        time: 3000,
       });
       await getDataList();
       id = newOffice.id as string;
@@ -157,10 +120,10 @@ export function Offices({ profile, setOffices }: OfficesProps) {
     } catch (err: any) {
       setLoading(false);
       setShowAlert({
-        ...showAlert,
         show: true,
         message: err.message as string,
         type: WARNING_TYPES.ERROR,
+        time: 3000,
       });
     }
   }
@@ -170,10 +133,10 @@ export function Offices({ profile, setOffices }: OfficesProps) {
     try {
       await OfficeServices.update(data);
       setShowAlert({
-        ...showAlert,
         show: true,
         message: `${singular} alterado com sucesso!`,
         type: WARNING_TYPES.WARNING,
+        time: 3000,
       });
       reloadList();
       history.push(route);
@@ -182,10 +145,10 @@ export function Offices({ profile, setOffices }: OfficesProps) {
     } catch (err: any) {
       setLoading(false);
       setShowAlert({
-        ...showAlert,
         show: true,
         message: err.message as string,
         type: WARNING_TYPES.ERROR,
+        time: 3000,
       });
     }
   }
@@ -196,10 +159,10 @@ export function Offices({ profile, setOffices }: OfficesProps) {
       try {
         await OfficeServices.deleteOne(selected.id);
         setShowAlert({
-          ...showAlert,
           show: true,
           message: `${singular} removido com sucesso!`,
           type: WARNING_TYPES.ERROR,
+          time: 3000,
         });
         reloadList();
         setLoading(false);
@@ -217,21 +180,23 @@ export function Offices({ profile, setOffices }: OfficesProps) {
   }
 
   useEffect(() => {
+    const sortedData = Sort(dataList.slice(0), sort);
+    setShowDataList(sortedData);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [sort]);
+
+  useEffect(() => {
     const data = dataList.length ? dataList.slice(0) : [];
     if (searchParam) {
-      handleSearch(data, searchParam);
+      const res = data.filter((d) =>
+        d.name.toLocaleLowerCase().includes(searchParam.toLocaleLowerCase())
+      );
+      setShowDataList(res);
     } else {
       setShowDataList(data);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchParam]);
-
-  function handleSearch(data: OfficeInterface[], param: string) {
-    const res = data.filter((d) =>
-      d.name.toLocaleLowerCase().includes(param.toLocaleLowerCase())
-    );
-    setShowDataList(res);
-  }
 
   const createSearch = () => {
     return <SearchField setSearchParam={setSearchParam} />;
@@ -240,7 +205,7 @@ export function Offices({ profile, setOffices }: OfficesProps) {
   function createButton() {
     return (
       <AddButton
-        back={back}
+        back={whatToShow !== "list"}
         route={route}
         reload={reloadList}
         isProfessional={profile?.isProfessional}
@@ -255,33 +220,29 @@ export function Offices({ profile, setOffices }: OfficesProps) {
         main={plural}
         search={createSearch}
         button={createButton}
-        back={back}
+        back={whatToShow !== "list"}
       />
       <div className="flex items-center justify-center overflow-hidden p-2">
         <div className="w-full">
-          <div className="bg-white shadow-sm rounded">
             {showAlert.show && (
               <Alert alert={showAlert} setAlert={setShowAlert} />
             )}
-            {showList && (
-              <>
-                <List
-                  dataList={showDataList}
-                  sort={sort}
-                  setSort={setSort}
-                  setSelected={setSelected}
-                  setConfirm={setConfirm}
-                />
-                {!profile?.isProfessional && (
-                  <div className="text-xs text-gray-400 text-right p-2">
-                    Somnete 1 {singular} permitido no Plano Básico
-                  </div>
-                )}
-              </>
+            {whatToShow === "list" && (
+              <List
+                dataList={showDataList}
+                sort={sort}
+                setSort={setSort}
+                setSelected={setSelected}
+                setConfirm={setConfirm}
+              />
             )}
-            {showDetails && <Details data={selected} route={route} />}
-            {showCreate && <Form loading={loading} create={handleCreate} />}
-            {showUpdate && (
+            {whatToShow === "details" && (
+              <Details data={selected} route={route} setConfirm={setConfirm} />
+            )}
+            {whatToShow === "create" && (
+              <Form loading={loading} create={handleCreate} />
+            )}
+            {whatToShow === "update" && (
               <Form loading={loading} data={selected} update={handleUpate} />
             )}
             {confirm && (
@@ -293,7 +254,11 @@ export function Offices({ profile, setOffices }: OfficesProps) {
                 action={handleDelete}
               />
             )}
-          </div>
+            {!profile?.isProfessional && (
+              <BasicPlanMsg
+                message={`Somente 1 ${singular} permitido no Plano Básico`}
+              />
+            )}
         </div>
       </div>
     </>

@@ -122,7 +122,7 @@ export function Subscriptions() {
         button={createButton}
         back={back}
       />
-      {showAlert && <Alert alert={showAlert} setAlert={setShowAlert} />}
+      {showAlert.show && <Alert alert={showAlert} setAlert={setShowAlert} />}
       <div className="overflow-x-auto">
         <div className="flex items-center justify-center overflow-hidden p-2">
           <div className="w-full">

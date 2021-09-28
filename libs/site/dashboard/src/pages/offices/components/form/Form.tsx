@@ -29,7 +29,8 @@ export function Form({ loading, data, create, update }: FormProps) {
     complement: data?.complement || "",
     neighborhood: data?.neighborhood || "",
     city: data?.city || "",
-    state: data?.state || ""
+    state: data?.state || "",
+    active: data?.active || true
   };
   const {
     control,

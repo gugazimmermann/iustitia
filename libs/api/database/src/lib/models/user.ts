@@ -13,6 +13,7 @@ import {
 import { RoleInstance } from "./role";
 import { ProfileInstance } from "./profile";
 import { SubscriptionInstance } from "./subscription";
+import { OfficeInstance } from "./office";
 
 export interface UserAttributes {
   id: string;
@@ -33,14 +34,24 @@ export interface UserInstance
   roles?: RoleInstance[];
   profile?: ProfileInstance;
   subscription?: SubscriptionInstance;
+  offices?: OfficeInstance[];
+
   getRoles?: HasManyGetAssociationsMixin<RoleInstance>;
   addRole?: HasManyAddAssociationMixin<RoleInstance, number>;
   hasRole?: HasManyHasAssociationMixin<RoleInstance, number>;
   countRoles?: HasManyCountAssociationsMixin;
   createRole?: HasManyCreateAssociationMixin<RoleInstance>;
 
+  getOffices?: HasManyGetAssociationsMixin<OfficeInstance>;
+  addOffice?: HasManyAddAssociationMixin<OfficeInstance, number>;
+  hasOffice?: HasManyHasAssociationMixin<OfficeInstance, number>;
+  countOffices?: HasManyCountAssociationsMixin;
+  createOffice?: HasManyCreateAssociationMixin<OfficeInstance>;
+
   associations: {
+    profile: Association<UserInstance, ProfileInstance>;
     roles: Association<UserInstance, RoleInstance>;
+    offices: Association<UserInstance, OfficeInstance>;
   };
 }
 

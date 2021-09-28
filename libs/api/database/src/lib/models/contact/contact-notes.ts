@@ -18,7 +18,7 @@ export interface ContactNotesInstance
 }
 
 export default function contactNotes(sequelize: Sequelize) {
-  const ContactNotes = sequelize.define<ContactNotesInstance>('contactNotes', {
+  const ContactNotes = sequelize.define<ContactNotesInstance>('contact-notes', {
     id: {
       type: DataTypes.UUID,
       defaultValue: DataTypes.UUIDV4,
