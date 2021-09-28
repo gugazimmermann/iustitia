@@ -192,18 +192,17 @@ export function Profile({ profile, setProfile }: ProfileProps) {
   }
 
   return (
-    <>
+    <div className="container mx-auto">
       <Header before={[]} main="Perfil" />
       <div className="overflow-x-auto">
         <div className="flex items-center justify-center overflow-hidden p-2">
           <div className="w-full">
             {showAlert.show && <Alert alert={showAlert} setAlert={setShowAlert} />}
-            <div className="bg-white shadow-sm rounded">
               <form
                 onSubmit={handleSubmit(onSubmit)}
                 className="flex flex-col mx-auto"
               >
-                <fieldset className="grid grid-cols-1 gap-4 p-4">
+                <fieldset className="grid grid-cols-1 gap-4 p-4 bg-white shadow-sm">
                   <div className="grid grid-cols-12 gap-4 col-span-full lg:col-span-3">
                     <div className="col-span-full sm:col-span-4">
                       <label htmlFor="name" className="text-sm">
@@ -471,11 +470,10 @@ export function Profile({ profile, setProfile }: ProfileProps) {
                   </div>
                 </fieldset>
               </form>
-            </div>
           </div>
         </div>
       </div>
-    </>
+    </div>
   );
 }
 

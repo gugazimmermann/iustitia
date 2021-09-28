@@ -28,7 +28,7 @@ export function ListPayments({ payments }: ListPaymentsProps) {
       <div className="bg-primary-500 text-white uppercase text-sm font-bold p-2">
         Pagamentos
       </div>
-      <table className="min-w-max w-full table-auto">
+      <table className="min-w-max w-full table-auto bg-white shadow-sm">
         <thead>
           <tr className="bg-primary-200 text-gray-900 text-xs uppercase leading-normal">
             <th className="py-2 px-2 text-left">Data</th>

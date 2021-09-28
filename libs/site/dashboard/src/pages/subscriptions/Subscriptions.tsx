@@ -115,7 +115,7 @@ export function Subscriptions() {
   }
 
   return (
-    <>
+    <div className="container mx-auto">
       <Header
         before={[]}
         main={`Assinatura - ${subscription.reason}`}
@@ -126,18 +126,16 @@ export function Subscriptions() {
       <div className="overflow-x-auto">
         <div className="flex items-center justify-center overflow-hidden p-2">
           <div className="w-full">
-            <div className="bg-white shadow-sm rounded">
               {list && (
                 <>
                   <ListPayments payments={payments} />
                   <ListCreditCards creditCards={creditCards} />
                 </>
               )}
-            </div>
           </div>
         </div>
       </div>
-    </>
+    </div>
   );
 }
 

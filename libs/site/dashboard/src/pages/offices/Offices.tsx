@@ -214,7 +214,7 @@ export function Offices({ profile, setOffices }: OfficesProps) {
   }
 
   return (
-    <>
+    <div className="container mx-auto">
       <Header
         before={parents}
         main={plural}
@@ -261,7 +261,7 @@ export function Offices({ profile, setOffices }: OfficesProps) {
             )}
         </div>
       </div>
-    </>
+    </div>
   );
 }
 
