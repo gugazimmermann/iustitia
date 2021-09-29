@@ -24,3 +24,4 @@ export * from "./lib/show-avatars/ShowAvatars";
 export * from "./lib/avatar-modal/AvatarModal";
 export * from "./lib/avatar-modal-content/AvatarModalContent";
 export * from "./lib/avatar-modal-content-list/AvatarModalContentList";
+export * from "./lib/use-close-modal/useCloseModal";

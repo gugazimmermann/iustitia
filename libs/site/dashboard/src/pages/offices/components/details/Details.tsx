@@ -279,6 +279,8 @@ export function Details({
           cancel={handleModalCancelManagers}
           submit={handleModalSendManagers}
           submitText="Salvar Responsáveis"
+          open={showManagersModal}
+          setOpen={setShowManagersModal}
         />
       )}
       {showUsersModal && (
@@ -290,6 +292,8 @@ export function Details({
           cancel={handleModalCancelUsers}
           submit={handleModalSendUsers}
           submitText="Salvar Usuários"
+          open={showUsersModal}
+          setOpen={setShowUsersModal}
         />
       )}
     </>

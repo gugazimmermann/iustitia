@@ -41,7 +41,8 @@ export function AvatarModalContent({
                 peopleList={peopleList}
                 currentList={currentList}
                 handleSelect={handleSelect}
-                listOpen={setListOpen}
+                open={listOpen}
+                setOpen={setListOpen}
               />
             )}
           </div>

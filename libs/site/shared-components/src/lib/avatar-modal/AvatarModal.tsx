@@ -1,5 +1,5 @@
 import { PeopleServices } from "@iustitia/site/services";
-import { AvatarModalContent } from "../..";
+import { AvatarModalContent, useCloseModal } from "../..";
 
 export interface AvatarModalProps {
   title: string;
@@ -9,6 +9,8 @@ export interface AvatarModalProps {
   cancel(): void;
   submit(): void;
   submitText: string;
+  open: boolean;
+  setOpen(open: boolean): void;
 }
 
 export function AvatarModal({
@@ -19,13 +21,19 @@ export function AvatarModal({
   cancel,
   submit,
   submitText,
+  open,
+  setOpen,
 }: AvatarModalProps) {
+  const ref = useCloseModal({open, setOpen});
   return (
     <div className="fixed z-10 inset-0 overflow-y-auto">
       <div className="flex items-end justify-center pt-4 px-4 pb-20 text-center sm:block sm:p-0">
         <div className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"></div>
         <span className="hidden sm:inline-block sm:align-middle sm:h-screen"></span>
-        <div className="inline-block align-bottom bg-white rounded-lg shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+        <div
+          ref={ref}
+          className="inline-block align-bottom bg-white rounded-lg shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full"
+        >
           <div className="flex flex-col mx-auto ">
             <AvatarModalContent
               title={title}

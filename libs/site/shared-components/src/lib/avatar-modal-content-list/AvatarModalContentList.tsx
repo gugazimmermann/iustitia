@@ -1,22 +1,28 @@
 import { PeopleServices } from "@iustitia/site/services";
 import { getUserInitials } from "@iustitia/site/shared-utils";
-import { CheckIcon } from "../..";
+import { CheckIcon, useCloseModal } from "../..";
 
 export interface AvatarModalContentListProps {
   peopleList: PeopleServices.SimpleUserInterface[];
   currentList: PeopleServices.SimpleUserInterface[];
   handleSelect(p: PeopleServices.SimpleUserInterface): void;
-  listOpen(open: boolean): void;
+  open: boolean;
+  setOpen(open: boolean): void;
 }
 
 export function AvatarModalContentList({
   peopleList,
   currentList,
   handleSelect,
-  listOpen
+  open,
+  setOpen,
 }: AvatarModalContentListProps) {
+  const ref = useCloseModal({ open, setOpen });
   return (
-    <div className="absolute z-30 -mt-5 w-full rounded-md bg-white shadow-lg">
+    <div
+      ref={ref}
+      className="absolute z-30 -mt-5 w-full rounded-md bg-white shadow-lg"
+    >
       <ul className="max-h-56 rounded-md py-1 text-base ring-1 ring-black ring-opacity-5 overflow-auto focus:outline-none sm:text-sm">
         {peopleList.map((p, i) => (
           <li
@@ -24,7 +30,7 @@ export function AvatarModalContentList({
             className="text-gray-900 cursor-default hover:bg-indigo-500 hover:text-white select-none relative py-2 pl-3 pr-9"
             onClick={() => {
               handleSelect(p);
-              listOpen(false);
+              setOpen(false);
             }}
           >
             <div className="flex items-center">
