@@ -153,31 +153,6 @@ export function Offices({ profile, setOffices }: OfficesProps) {
     }
   }
 
-  async function handleActive(active: boolean) {
-    setLoading(true);
-    try {
-      await OfficeServices.active({active: active, officeId: (selected.id as string)});
-      setShowAlert({
-        show: true,
-        message: `${singular} alterado com sucesso!`,
-        type: WARNING_TYPES.WARNING,
-        time: 3000,
-      });
-      reloadList();
-      history.push(route);
-      setLoading(false);
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } catch (err: any) {
-      setLoading(false);
-      setShowAlert({
-        show: true,
-        message: err.message as string,
-        type: WARNING_TYPES.ERROR,
-        time: 3000,
-      });
-    }
-  }
-
   async function handleDelete() {
     if (selected.id) {
       setLoading(true);
@@ -249,39 +224,40 @@ export function Offices({ profile, setOffices }: OfficesProps) {
       />
       <div className="flex items-center justify-center overflow-hidden p-2">
         <div className="w-full">
-            {showAlert.show && (
-              <Alert alert={showAlert} setAlert={setShowAlert} />
-            )}
-            {whatToShow === "list" && (
-              <List
-                dataList={showDataList}
-                sort={sort}
-                setSort={setSort}
-              />
-            )}
-            {whatToShow === "details" && (
-              <Details data={selected} setData={setSelected} route={route} setActive={handleActive} setConfirm={setConfirm} />
-            )}
-            {whatToShow === "create" && (
-              <Form loading={loading} create={handleCreate} />
-            )}
-            {whatToShow === "update" && (
-              <Form loading={loading} data={selected} update={handleUpate} />
-            )}
-            {confirm && (
-              <ConfirmationModal
-                setConfirm={setConfirm}
-                type={WARNING_TYPES.ERROR}
-                title={`Excluir ${singular}: ${selected.name}?`}
-                content={`Você tem certeza que quer excluir o ${singular} ${selected.name}? Todos os dados desse ${singular} serão perdidos. Essa ação não poderá ser desfeita.`}
-                action={handleDelete}
-              />
-            )}
-            {!profile?.isProfessional && (
-              <BasicPlanMsg
-                message={`Somente 1 ${singular} permitido no Plano Básico`}
-              />
-            )}
+          {showAlert.show && (
+            <Alert alert={showAlert} setAlert={setShowAlert} />
+          )}
+          {whatToShow === "list" && (
+            <List dataList={showDataList} sort={sort} setSort={setSort} />
+          )}
+          {whatToShow === "details" && (
+            <Details
+              data={selected}
+              setData={setSelected}
+              route={route}
+              setConfirm={setConfirm}
+            />
+          )}
+          {whatToShow === "create" && (
+            <Form loading={loading} create={handleCreate} />
+          )}
+          {whatToShow === "update" && (
+            <Form loading={loading} data={selected} update={handleUpate} />
+          )}
+          {confirm && (
+            <ConfirmationModal
+              setConfirm={setConfirm}
+              type={WARNING_TYPES.ERROR}
+              title={`Excluir ${singular}: ${selected.name}?`}
+              content={`Você tem certeza que quer excluir o ${singular} ${selected.name}? Todos os dados desse ${singular} serão perdidos. Essa ação não poderá ser desfeita.`}
+              action={handleDelete}
+            />
+          )}
+          {!profile?.isProfessional && (
+            <BasicPlanMsg
+              message={`Somente 1 ${singular} permitido no Plano Básico`}
+            />
+          )}
         </div>
       </div>
     </div>

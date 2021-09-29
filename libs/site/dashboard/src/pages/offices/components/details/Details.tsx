@@ -4,6 +4,7 @@ import {
   FormatAddress,
   AvatarModal,
   ShowAvatars,
+  ConfirmationModal,
 } from "@iustitia/site/shared-components";
 import { SiteRoutes } from "@iustitia/react-routes";
 import {
@@ -11,14 +12,14 @@ import {
   PeopleServices,
   ProfileServices,
 } from "@iustitia/site/services";
-import { OfficeInterface } from "../../Offices";
+import { OfficeInterface, singular } from "../../Offices";
 import { convertProfileToSimpleProfile } from "..";
+import { WARNING_TYPES } from "@iustitia/site/shared-utils";
 
 export interface DetailsProps {
   data: OfficeInterface;
   setData(data: OfficeInterface): void;
   route: SiteRoutes;
-  setActive(active: boolean): void;
   setConfirm(confirm: boolean): void;
 }
 
@@ -26,10 +27,10 @@ export function Details({
   data,
   setData,
   route,
-  setActive,
   setConfirm,
 }: DetailsProps) {
   const history = useHistory();
+  const [confirmInative, setConfirmInative] = useState(false);
   const [peopleList, setPeopleList] = useState<
     PeopleServices.SimpleUserInterface[]
   >([]);
@@ -41,6 +42,19 @@ export function Details({
   const [selectedUsers, setSelectedUsers] = useState<
     PeopleServices.SimpleUserInterface[]
   >([]);
+
+  async function handleActive() {
+    try {
+      await OfficeServices.active({
+        active: !data.active,
+        officeId: data.id as string,
+      });
+      history.push(route);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (err: any) {
+      console.log(err)
+    }
+  }
 
   useEffect(() => {
     getListOfPeople();
@@ -65,14 +79,14 @@ export function Details({
   function addDataManagersToSelected(
     managersOffice: ProfileServices.ProfileInterface[]
   ) {
-    const managers = convertProfileToSimpleProfile(managersOffice)
+    const managers = convertProfileToSimpleProfile(managersOffice);
     setSelectedManagers(managers);
   }
 
   function addDataUsersToSelected(
     usersOffice: ProfileServices.ProfileInterface[]
   ) {
-    const users = convertProfileToSimpleProfile(usersOffice)
+    const users = convertProfileToSimpleProfile(usersOffice);
     setSelectedUsers(users);
   }
 
@@ -146,7 +160,7 @@ export function Details({
         <div className="flex space-x-2 justify-center md:justify-start mb-4 md:mb-0">
           <button
             type="button"
-            onClick={() => history.push(`${route}/edit/${data?.id}`)}
+            onClick={() => history.push(`${SiteRoutes.Dashboard}/escritorios/${data?.id}`)}
             className="px-2 py-1 text-xs text-white rounded-md bg-primary-500 hover:bg-primary-900 focus:ring-primary-500"
           >
             Dashboard
@@ -169,11 +183,11 @@ export function Details({
           </button>
           <button
             type="button"
-            onClick={() => setActive(!data.active)}
+            onClick={() => setConfirmInative(true)}
             className={`px-2 py-1 text-xs text-white rounded-md ${
               data.active
-                ? `bg-green-500 hover:bg-green-800 focus:ring-green-500`
-                : `bg-gray-500 hover:bg-gray-800 focus:ring-gray-500`
+                ? `bg-gray-500 hover:bg-gray-800 focus:ring-gray-500`
+                : `bg-green-500 hover:bg-green-800 focus:ring-green-500`
             } `}
           >
             {data.active ? `Tornar Inativo` : `Tornar Ativo`}
@@ -245,7 +259,7 @@ export function Details({
             <div className="md:grid md:grid-cols-12 hover:bg-gray-50 md:space-y-0 space-y-1 p-4 border-b">
               <p className="col-span-3 font-bold">Usuários</p>
               <div className="col-span-9 flex justify-between">
-              {<ShowAvatars toShow={selectedUsers} qtd={8} smallQtd={5} />}
+                {<ShowAvatars toShow={selectedUsers} qtd={8} smallQtd={5} />}
                 <button
                   type="button"
                   onClick={() => setShowUsersModal(true)}
@@ -259,13 +273,13 @@ export function Details({
           <div className="col-span-full">
             <div className="md:grid md:grid-cols-12 hover:bg-gray-50 md:space-y-0 space-y-1 p-4 border-b">
               <p className="col-span-3 font-bold">Contatos</p>
-              <p className="col-span-9">{data.phone}</p>
+              <p className="col-span-9"></p>
             </div>
           </div>
           <div className="col-span-full">
             <div className="md:grid md:grid-cols-12 hover:bg-gray-50 md:space-y-0 space-y-1 p-4 border-b">
               <p className="col-span-3 font-bold">Eventos</p>
-              <p className="col-span-9">{data.phone}</p>
+              <p className="col-span-9"></p>
             </div>
           </div>
         </div>
@@ -294,6 +308,16 @@ export function Details({
           submitText="Salvar Usuários"
           open={showUsersModal}
           setOpen={setShowUsersModal}
+        />
+      )}
+      {confirmInative && (
+        <ConfirmationModal
+          setConfirm={setConfirmInative}
+          type={WARNING_TYPES.WARNING}
+          title={`Tornar ${data.name} ${data.active ? `inativo` : `ativo`}?`}
+          content={`Você tem certeza que quer tonar o ${singular} ${data.name} ${data.active ? `inativo` : `ativo`}?`}
+          buttonText={`Sim, tornar ${data.active ? `inativo` : `ativo`}`}
+          action={handleActive}
         />
       )}
     </>
