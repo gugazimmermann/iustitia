@@ -10,12 +10,20 @@ import {
   SearchField,
 } from "@iustitia/site/shared-components";
 import { Sort, WARNING_TYPES } from "@iustitia/site/shared-utils";
+import { SimpleUserInterface } from "@iustitia/site/people";
 import { OfficeServices } from "@iustitia/site/services";
-import { Details, Form, List } from "./components";
 import { ProfileInterface } from "../profile/Profile";
+import { Details, Form, List } from "./components";
 
-export const { route, singular, parents, plural } = OfficeServices.OfficeModule;
+export const OfficeModule = OfficeServices.OfficeModule;
 export type OfficeInterface = OfficeServices.OfficeInterface;
+
+export function convertProfileToSimpleProfile(profiles: ProfileInterface[]) {
+  const simpleProfiles: SimpleUserInterface[] = [];
+  for (const profile of profiles)
+    simpleProfiles.push(profile as unknown as SimpleUserInterface);
+  return simpleProfiles;
+}
 
 interface OfficesProps {
   profile?: ProfileInterface;
@@ -68,14 +76,17 @@ export function Offices({ profile, setOffices }: OfficesProps) {
   }
 
   async function getDataList() {
+    setLoading(true);
     try {
       const data = (await OfficeServices.getAll()) as OfficeInterface[];
       if (setOffices) setOffices(data.length);
       setDataList(data);
       const sortedData = Sort(data.slice(0), sort);
       setShowDataList(sortedData);
+      setLoading(false);
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
+      setLoading(false);
       setShowAlert({
         show: true,
         message: err.message as string,
@@ -86,19 +97,21 @@ export function Offices({ profile, setOffices }: OfficesProps) {
   }
 
   async function getSelected(id: string) {
+    setLoading(true);
     try {
       const data = (await OfficeServices.getOne(id)) as OfficeInterface;
       setSelected(data);
+      setLoading(false);
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
+      setLoading(false);
       setShowAlert({
         show: true,
         message: err.message as string,
         type: WARNING_TYPES.ERROR,
         time: 3000,
       });
-      history.push(route);
-      console.log(err);
+      history.push(OfficeModule.route);
     }
   }
 
@@ -108,13 +121,13 @@ export function Offices({ profile, setOffices }: OfficesProps) {
       const newOffice = (await OfficeServices.create(data)) as OfficeInterface;
       setShowAlert({
         show: true,
-        message: `${singular} cadastrado com sucesso!`,
+        message: `${OfficeModule.singular} cadastrado com sucesso!`,
         type: WARNING_TYPES.SUCCESS,
         time: 3000,
       });
       await getDataList();
       id = newOffice.id as string;
-      history.push(`${route}/${newOffice.id}`);
+      history.push(`${OfficeModule.route}/${newOffice.id}`);
       setLoading(false);
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
@@ -134,12 +147,12 @@ export function Offices({ profile, setOffices }: OfficesProps) {
       await OfficeServices.update(data);
       setShowAlert({
         show: true,
-        message: `${singular} alterado com sucesso!`,
+        message: `${OfficeModule.singular} alterado com sucesso!`,
         type: WARNING_TYPES.WARNING,
         time: 3000,
       });
       reloadList();
-      history.push(route);
+      history.push(OfficeModule.route);
       setLoading(false);
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
@@ -160,7 +173,7 @@ export function Offices({ profile, setOffices }: OfficesProps) {
         await OfficeServices.deleteOne(selected.id);
         setShowAlert({
           show: true,
-          message: `${singular} removido com sucesso!`,
+          message: `${OfficeModule.singular} removido com sucesso!`,
           type: WARNING_TYPES.ERROR,
           time: 3000,
         });
@@ -206,7 +219,7 @@ export function Offices({ profile, setOffices }: OfficesProps) {
     return (
       <AddButton
         back={whatToShow !== "list"}
-        route={route}
+        route={OfficeModule.route}
         reload={reloadList}
         isProfessional={profile?.isProfessional}
       />
@@ -216,8 +229,8 @@ export function Offices({ profile, setOffices }: OfficesProps) {
   return (
     <div className="container mx-auto">
       <Header
-        before={parents}
-        main={plural}
+        before={OfficeModule.parents}
+        main={OfficeModule.plural}
         search={createSearch}
         button={createButton}
         back={whatToShow !== "list"}
@@ -232,9 +245,12 @@ export function Offices({ profile, setOffices }: OfficesProps) {
           )}
           {whatToShow === "details" && (
             <Details
+              loading={loading}
+              setLoading={setLoading}
+              setShowAlert={setShowAlert}
               data={selected}
               setData={setSelected}
-              route={route}
+              route={OfficeModule.route}
               setConfirm={setConfirm}
             />
           )}
@@ -248,14 +264,14 @@ export function Offices({ profile, setOffices }: OfficesProps) {
             <ConfirmationModal
               setConfirm={setConfirm}
               type={WARNING_TYPES.ERROR}
-              title={`Excluir ${singular}: ${selected.name}?`}
-              content={`Você tem certeza que quer excluir o ${singular} ${selected.name}? Todos os dados desse ${singular} serão perdidos. Essa ação não poderá ser desfeita.`}
+              title={`Excluir ${OfficeModule.singular}: ${selected.name}?`}
+              content={`Você tem certeza que quer excluir o ${OfficeModule.singular} ${selected.name}? Todos os dados desse ${OfficeModule.singular} serão perdidos. Essa ação não poderá ser desfeita.`}
               action={handleDelete}
             />
           )}
           {!profile?.isProfessional && (
             <BasicPlanMsg
-              message={`Somente 1 ${singular} permitido no Plano Básico`}
+              message={`Somente 1 ${OfficeModule.singular} permitido no Plano Básico`}
             />
           )}
         </div>

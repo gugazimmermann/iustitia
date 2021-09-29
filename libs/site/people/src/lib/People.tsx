@@ -15,10 +15,10 @@ import {
   PeopleServices,
 } from "@iustitia/site/services";
 import { Details, Form, List, ListInvites } from "./components";
-import { bool } from "yup";
 
 export const { route, singular, parents, plural } = PeopleServices.PeopleModule;
 export type PeopleInterface = PeopleServices.PeopleInterface;
+export type SimpleUserInterface = PeopleServices.SimpleUserInterface;
 type ProfileInterface = ProfileServices.ProfileInterface;
 
 interface PeopleProps {
@@ -335,7 +335,7 @@ export function People({ profile, offices, setOffices }: PeopleProps) {
       <div className="flex items-center justify-center overflow-hidden p-2">
         <div className="w-full">
           <div className="bg-white shadow-sm rounded">
-            {showAlert && <Alert alert={showAlert} setAlert={setShowAlert} />}
+            {showAlert.show && <Alert alert={showAlert} setAlert={setShowAlert} />}
             {showList && showDataList.length > 0 && (
               <List
                 dataList={showDataList}

@@ -5,7 +5,7 @@ import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import {getAddressFromCEP, validateEmail } from "@iustitia/site/shared-utils";
 import { LoadingButton } from "@iustitia/site/shared-components";
-import { OfficeInterface, singular } from "../../Offices";
+import { OfficeInterface, OfficeModule } from "../../Offices";
 
 export interface FormProps {
   loading: boolean;
@@ -321,8 +321,8 @@ export function Form({ loading, data, create, update }: FormProps) {
               type="submit"
               text={
                 create
-                  ? `Cadastrar ${singular}`
-                  : `Editar ${singular}`
+                  ? `Cadastrar ${OfficeModule.singular}`
+                  : `Editar ${OfficeModule.singular}`
               }
               loading={loading}
             />

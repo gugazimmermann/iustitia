@@ -6,25 +6,14 @@ import {
   Callout,
   ShowAvatars,
 } from "@iustitia/site/shared-components";
-import { OfficeInterface, route, singular } from "../../Offices";
 import { WARNING_TYPES } from "@iustitia/site/shared-utils";
-import { PeopleServices, ProfileServices } from "@iustitia/site/services";
+import { ProfileServices } from "@iustitia/site/services";
+import { convertProfileToSimpleProfile, OfficeInterface, OfficeModule } from "../../Offices";
 
 export interface ListProps {
   dataList: OfficeInterface[];
   sort: string;
   setSort(order: "ASC" | "DESC"): void;
-}
-
-export function convertProfileToSimpleProfile(
-  profiles: ProfileServices.ProfileInterface[]
-) {
-  const simpleProfiles: PeopleServices.SimpleUserInterface[] = [];
-  for (const profile of profiles)
-    simpleProfiles.push(
-      profile as unknown as PeopleServices.SimpleUserInterface
-    );
-  return simpleProfiles;
 }
 
 export function List({
@@ -35,7 +24,7 @@ export function List({
   const history = useHistory();
 
   return dataList.length === 0 ? (
-    <Callout title={`Nenhum ${singular}Cadastrado`} type={WARNING_TYPES.INFO} />
+    <Callout title={`Nenhum ${OfficeModule.singular}Cadastrado`} type={WARNING_TYPES.INFO} />
   ) : (
     <div className=" overflow-x-auto">
       <table className="w-full table">
@@ -66,7 +55,7 @@ export function List({
               <tr
                 key={i}
                 className="border-b border-gray-200 hover:bg-gray-100 cursor-pointer"
-                onClick={() => history.push(`${route}/${data.id}`)}
+                onClick={() => history.push(`${OfficeModule.route}/${data.id}`)}
               >
                 <td className="py-3 px-3 text-left whitespace-nowrap">
                   <span className="font-medium">{data.name}</span>

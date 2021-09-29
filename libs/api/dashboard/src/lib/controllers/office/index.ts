@@ -191,8 +191,9 @@ export async function active(req: UserRequest, res: Response): Promise<Response>
     const data = await moduleDB.findByPk(body.officeId);
     if (!data) return res.status(404).send({ message: "Nenhum registro encontrado!" });
     data.active = body.active;
-    data.update(body);
-    return res.status(200).send(dataToResult(data));
+    await data.update(body);
+    const savedOffice = (await findOfficeById(data.id as string)) as OfficeInstance;
+    return res.status(200).send(dataToResult(savedOffice));
   } catch (err) {
     return res.status(500).send({ message: err.message });
   }
