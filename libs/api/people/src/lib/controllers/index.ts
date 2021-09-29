@@ -3,7 +3,7 @@ import { Request, Response } from "express";
 import * as bcrypt from "bcryptjs";
 import { UserRequest } from "@iustitia/api/auth";
 import { validateEmail } from '@iustitia/site/shared-utils';
-import { database, PeopleInstance, ProfileInstance } from '@iustitia/api/database';
+import { database, PeopleInstance, ProfileInstance, UserInstance } from '@iustitia/api/database';
 import { InvitationEmail } from "@iustitia/api/email";
 
 const userDB = database.User;
@@ -224,6 +224,50 @@ export async function createUser(req: Request, res: Response): Promise<Response>
     await invite.destroy();
     await invite.save();
     return res.status(201).send({ message: "Usuário cadastrado com sucesso!" });
+  } catch (err) {
+    return res.status(500).send({ message: err.message });
+  }
+}
+
+// used in offices to select users and managers
+interface SimpleUserInterface {
+  id: string;
+  name: string;
+  avatar: string;
+}
+
+function userDataToResult(data: UserInstance): SimpleUserInterface {
+  return {
+    id: data.id,
+    name: data.profile.name,
+    avatar: data.profile.avatar,
+  }
+}
+
+export async function getList(req: UserRequest, res: Response): Promise<Response> {
+  const { tenantId } = req.params;
+  if (!tenantId) return res.status(400).send({ message: "Dados inválidos!" });
+  try {
+    const user = await userDB.findOne({ where: { id: req.userId } });
+    if (user.tenant !== tenantId) return res.status(401).send({ message: "Sem permissão!" });
+    const data = await userDB.findAll({
+      where:
+      {
+        tenant: user.tenant,
+        active: true
+      },
+      attributes: ['id'],
+      include: [
+        {
+          model: database.Profile,
+          attributes: ['id', 'avatar', 'name'],
+        },
+      ],
+      order: [[database.Profile, 'name', 'ASC']],
+    });
+    const resultData = [] as SimpleUserInterface[];
+    if (data.length > 0) data.forEach(d => resultData.push(userDataToResult(d)));
+    return res.status(200).send(resultData);
   } catch (err) {
     return res.status(500).send({ message: err.message });
   }

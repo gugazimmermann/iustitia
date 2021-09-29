@@ -1,4 +1,4 @@
-import { api, token } from "../..";
+import { api, PeopleServices, token } from "../..";
 import { errorHandler } from "@iustitia/site/shared-utils";
 import { SiteRoutes } from "@iustitia/react-routes";
 import { ProfileInterface } from "./profile";
@@ -38,7 +38,7 @@ const RouteName = OfficeModule.module;
 export async function count(): Promise<number | Error> {
   try {
     const tenantId = token.getLocalTenantId();
-    const {data} = await api.get(`/api/${RouteName}/count/${tenantId}`);
+    const { data } = await api.get(`/api/${RouteName}/count/${tenantId}`);
     return data.offices;
   } catch (err) {
     return errorHandler(err)
@@ -69,6 +69,36 @@ export async function create(formData: ModuleInterface): Promise<OfficeInterface
   try {
     formData.tenantId = token.getLocalTenantId();
     const { data } = await api.post(`/api/${RouteName}`, formData);
+    return data
+  } catch (err) {
+    return errorHandler(err)
+  }
+};
+
+export async function active({ active, officeId }: { active: boolean, officeId: string }): Promise<OfficeInterface | Error> {
+  try {
+    const tenantId = token.getLocalTenantId();
+    const { data } = await api.post(`/api/${RouteName}/active/${tenantId}`, { active, officeId });
+    return data
+  } catch (err) {
+    return errorHandler(err)
+  }
+};
+
+export async function managers(officeId: string, managersList: PeopleServices.SimpleUserInterface[]): Promise<OfficeInterface | Error> {
+  try {
+    const tenantId = token.getLocalTenantId();
+    const { data } = await api.post(`/api/${RouteName}/managers/${tenantId}`, { officeId, managersList });
+    return data
+  } catch (err) {
+    return errorHandler(err)
+  }
+};
+
+export async function users(officeId: string, usersList: PeopleServices.SimpleUserInterface[]): Promise<OfficeInterface | Error> {
+  try {
+    const tenantId = token.getLocalTenantId();
+    const { data } = await api.post(`/api/${RouteName}/users/${tenantId}`, { officeId, usersList });
     return data
   } catch (err) {
     return errorHandler(err)

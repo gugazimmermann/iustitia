@@ -20,3 +20,7 @@ export * from "./lib/search-field/SearchField";
 export * from "./lib/basic-plan-msg/BasicPlanMsg";
 export * from "./lib/active-badge/ActiveBadge";
 export * from "./lib/tooltip/Tooltip";
+export * from "./lib/show-avatars/ShowAvatars";
+export * from "./lib/avatar-modal/AvatarModal";
+export * from "./lib/avatar-modal-content/AvatarModalContent";
+export * from "./lib/avatar-modal-content-list/AvatarModalContentList";

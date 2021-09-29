@@ -153,6 +153,31 @@ export function Offices({ profile, setOffices }: OfficesProps) {
     }
   }
 
+  async function handleActive(active: boolean) {
+    setLoading(true);
+    try {
+      await OfficeServices.active({active: active, officeId: (selected.id as string)});
+      setShowAlert({
+        show: true,
+        message: `${singular} alterado com sucesso!`,
+        type: WARNING_TYPES.WARNING,
+        time: 3000,
+      });
+      reloadList();
+      history.push(route);
+      setLoading(false);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (err: any) {
+      setLoading(false);
+      setShowAlert({
+        show: true,
+        message: err.message as string,
+        type: WARNING_TYPES.ERROR,
+        time: 3000,
+      });
+    }
+  }
+
   async function handleDelete() {
     if (selected.id) {
       setLoading(true);
@@ -232,12 +257,10 @@ export function Offices({ profile, setOffices }: OfficesProps) {
                 dataList={showDataList}
                 sort={sort}
                 setSort={setSort}
-                setSelected={setSelected}
-                setConfirm={setConfirm}
               />
             )}
             {whatToShow === "details" && (
-              <Details data={selected} route={route} setConfirm={setConfirm} />
+              <Details data={selected} setData={setSelected} route={route} setActive={handleActive} setConfirm={setConfirm} />
             )}
             {whatToShow === "create" && (
               <Form loading={loading} create={handleCreate} />

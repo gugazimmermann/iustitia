@@ -59,6 +59,42 @@ function dataToResult(data: ModuleInstance): ModuleInterface {
   }
 }
 
+async function findOfficeById(id: string): Promise<OfficeInstance | Error> {
+  try {
+    return await moduleDB.findOne({
+      where: { id },
+      include: [
+        {
+          association: "managersOffice",
+          attributes: ['id'],
+          where: { active: true },
+          required: false,
+          include: [
+            {
+              model: database.Profile,
+              attributes: ['id', 'avatar', 'name'],
+            },
+          ],
+        },
+        {
+          association: "usersOffice",
+          attributes: ['id'],
+          where: { active: true },
+          required: false,
+          include: [
+            {
+              model: database.Profile,
+              attributes: ['id', 'avatar', 'name'],
+            },
+          ],
+        },
+      ],
+    });
+  } catch (err) {
+    return err;
+  }
+}
+
 export async function count(req: UserRequest, res: Response): Promise<Response> {
   const { tenantId } = req.params;
   if (!tenantId) return res.status(400).send({ message: "Dados inválidos!" });
@@ -78,38 +114,8 @@ export async function getOne(req: UserRequest, res: Response): Promise<Response>
   try {
     const user = await userDB.findOne({ where: { id: req.userId } });
     if (user.tenant !== tenantId) return res.status(401).send({ message: "Sem permissão!" });
-    const data = await moduleDB.findOne({
-      where: { id }, include: [
-
-        {
-          association: "managersOffice",
-          as: "managers",
-          attributes: ['id'],
-          where: { active: true },
-          required: false,
-          include: [
-            {
-              model: database.Profile,
-              attributes: ['id', 'avatar', 'name'],
-            },
-          ],
-        },
-        {
-          association: "usersOffice",
-          as: "users",
-          attributes: ['id'],
-          where: { active: true },
-          required: false,
-          include: [
-            {
-              model: database.Profile,
-              attributes: ['id', 'avatar', 'name'],
-            },
-          ],
-        },
-      ],
-    });
-    return res.status(200).send(dataToResult(data));
+    const data = await findOfficeById(id)
+    return res.status(200).send(dataToResult(data as OfficeInstance));
   } catch (err) {
     return res.status(500).send({ message: err.message });
   }
@@ -156,7 +162,6 @@ export async function getAll(req: UserRequest, res: Response): Promise<Response>
     });
     const resultData = [] as ModuleInterface[];
     if (data.length > 0) data.forEach(d => resultData.push(dataToResult(d)));
-    console.log("resultData", JSON.stringify(resultData, undefined, 2))
     return res.status(200).send(resultData);
   } catch (err) {
     return res.status(500).send({ message: err.message });
@@ -170,6 +175,66 @@ export async function create(req: UserRequest, res: Response): Promise<Response>
   try {
     const data = await moduleDB.create({ ...body, active: true });
     return res.status(201).send(dataToResult(data));
+  } catch (err) {
+    return res.status(500).send({ message: err.message });
+  }
+}
+
+export async function active(req: UserRequest, res: Response): Promise<Response> {
+  const { tenantId } = req.params;
+  if (!tenantId) return res.status(400).send({ message: "Dados inválidos!" });
+  const { body } = req;
+  if (!body.officeId || typeof body.active !== "boolean") return res.status(400).send({ message: "Dados inválidos!" });
+  const user = await userDB.findOne({ where: { id: req.userId } });
+  if (user.tenant !== tenantId) return res.status(401).send({ message: "Sem permissão!" });
+  try {
+    const data = await moduleDB.findByPk(body.officeId);
+    if (!data) return res.status(404).send({ message: "Nenhum registro encontrado!" });
+    data.active = body.active;
+    data.update(body);
+    return res.status(200).send(dataToResult(data));
+  } catch (err) {
+    return res.status(500).send({ message: err.message });
+  }
+}
+
+export async function managers(req: UserRequest, res: Response): Promise<Response> {
+  const { tenantId } = req.params;
+  if (!tenantId) return res.status(400).send({ message: "Dados inválidos!" });
+  const { body } = req;
+  if (!body.officeId || !body.managersList) return res.status(400).send({ message: "Dados inválidos!" });
+  const user = await userDB.findOne({ where: { id: req.userId } });
+  if (user.tenant !== tenantId) return res.status(401).send({ message: "Sem permissão!" });
+  try {
+    const office = (await findOfficeById(body.officeId as string)) as OfficeInstance;
+    if (!office) return res.status(404).send({ message: "Nenhum registro encontrado!" });
+    const exintingIds: string[] = office.managersOffice.map((m) => m.id)
+    await office.removeManagersOffice(exintingIds);
+    const userIds: string[] = body.managersList.map((m: SimpleUserInterface) => m.id)
+    await office.addManagersOffice(userIds)
+    const savedOffice = (await findOfficeById(office.id as string)) as OfficeInstance;
+    return res.status(200).send(dataToResult(savedOffice));
+  } catch (err) {
+    return res.status(500).send({ message: err.message });
+  }
+}
+
+export async function users(req: UserRequest, res: Response): Promise<Response> {
+  const { tenantId } = req.params;
+  if (!tenantId) return res.status(400).send({ message: "Dados inválidos!" });
+  const { body } = req;
+  if (!body.officeId || !body.usersList) return res.status(400).send({ message: "Dados inválidos!" });
+  const user = await userDB.findOne({ where: { id: req.userId } });
+  if (user.tenant !== tenantId) return res.status(401).send({ message: "Sem permissão!" });
+  try {
+    const office = (await findOfficeById(body.officeId as string)) as OfficeInstance;
+    if (!office) return res.status(404).send({ message: "Nenhum registro encontrado!" });
+    const exintingIds: string[] = office.usersOffice.map((u) => u.id)
+    await office.removeUsersOffice(exintingIds);
+    const userIds: string[] = body.usersList.map((u: SimpleUserInterface) => u.id)
+    await office.addUsersOffice(userIds)
+    const savedOffice = (await findOfficeById(office.id as string)) as OfficeInstance;
+    return res.status(200).send(dataToResult(savedOffice));
   } catch (err) {
     return res.status(500).send({ message: err.message });
   }

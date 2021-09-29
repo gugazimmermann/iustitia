@@ -4,27 +4,33 @@ import {
   ArrowDownIcon,
   ArrowUpIcon,
   Callout,
-  EyeIcon,
-  Tooltip,
-  TrashIcon,
+  ShowAvatars,
 } from "@iustitia/site/shared-components";
 import { OfficeInterface, route, singular } from "../../Offices";
-import { getUserInitials, WARNING_TYPES } from "@iustitia/site/shared-utils";
+import { WARNING_TYPES } from "@iustitia/site/shared-utils";
+import { PeopleServices, ProfileServices } from "@iustitia/site/services";
 
 export interface ListProps {
   dataList: OfficeInterface[];
   sort: string;
   setSort(order: "ASC" | "DESC"): void;
-  setSelected(delected: OfficeInterface): void;
-  setConfirm(confirm: boolean): void;
+}
+
+export function convertProfileToSimpleProfile(
+  profiles: ProfileServices.ProfileInterface[]
+) {
+  const simpleProfiles: PeopleServices.SimpleUserInterface[] = [];
+  for (const profile of profiles)
+    simpleProfiles.push(
+      profile as unknown as PeopleServices.SimpleUserInterface
+    );
+  return simpleProfiles;
 }
 
 export function List({
   dataList,
   sort,
   setSort,
-  setSelected,
-  setConfirm,
 }: ListProps) {
   const history = useHistory();
 
@@ -49,10 +55,9 @@ export function List({
               )}
             </th>
             <th className="py-2 px-2 text-sm text-left">Cidade</th>
-            <th className="py-2 px-2 text-sm text-center">Responsável</th>
+            <th className="py-2 px-2 text-sm text-center">Responsáveis</th>
             <th className="py-2 px-2 text-sm text-center">Usuários</th>
             <th className="py-2 px-2 text-sm text-center">Status</th>
-            <th className="py-2 px-2"></th>
           </tr>
         </thead>
         <tbody className="bg-white text-gray-600 text-sm">
@@ -60,7 +65,8 @@ export function List({
             dataList.map((data, i) => (
               <tr
                 key={i}
-                className="border-b border-gray-200 hover:bg-gray-100"
+                className="border-b border-gray-200 hover:bg-gray-100 cursor-pointer"
+                onClick={() => history.push(`${route}/${data.id}`)}
               >
                 <td className="py-3 px-3 text-left whitespace-nowrap">
                   <span className="font-medium">{data.name}</span>
@@ -72,77 +78,28 @@ export function List({
                 </td>
                 <td className="text-center hidden sm:table-cell">
                   <div className="flex items-center justify-center">
-                    {data.managersOffice &&
-                      data.managersOffice.map((manager, i) => (
-                        <Tooltip
-                          key={i}
-                          message={manager.name}
-                          styles="w-8 h-8 -ml-1"
-                        >
-                          {manager.avatar ? (
-                            <img
-                              className="w-8 h-8 rounded-full border transform hover:scale-125"
-                              src={`${process.env.NX_BUCKET_AVATAR_URL}${manager.avatar}`}
-                              alt={manager.name}
-                            />
-                          ) : (
-                            <span className="w-8 h-8 rounded-full flex justify-center items-center text-center font-bold text-primary-500 bg-primary-50  border transform hover:scale-125">
-                              {manager.name
-                                ? getUserInitials(manager.name)
-                                : "I"}
-                            </span>
-                          )}
-                        </Tooltip>
-                      ))}
+                    {
+                      <ShowAvatars
+                      toShow={convertProfileToSimpleProfile(data.managersOffice as ProfileServices.ProfileInterface[])}
+                        qtd={8}
+                        smallQtd={3}
+                      />
+                    }
                   </div>
                 </td>
                 <td className="text-center hidden sm:table-cell">
                   <div className="flex items-center justify-center">
-                    {data.usersOffice &&
-                      data.usersOffice.map((user, i) => (
-                        <Tooltip
-                          key={i}
-                          message={user.name}
-                          styles="w-8 h-8 -ml-1"
-                        >
-                          {user.avatar ? (
-                            <img
-                              className="w-8 h-8 rounded-full  border transform hover:scale-125"
-                              src={`${process.env.NX_BUCKET_AVATAR_URL}${user.avatar}`}
-                              alt={user.name}
-                            />
-                          ) : (
-                            <span className="w-8 h-8 rounded-full flex justify-center items-center text-center font-bold text-primary-500 bg-primary-50  border transform hover:scale-125">
-                              {user.name ? getUserInitials(user.name) : "I"}
-                            </span>
-                          )}
-                        </Tooltip>
-                      ))}
+                    {
+                      <ShowAvatars
+                      toShow={convertProfileToSimpleProfile(data.usersOffice as ProfileServices.ProfileInterface[])}
+                        qtd={8}
+                        smallQtd={3}
+                      />
+                    }
                   </div>
                 </td>
                 <td className="text-center hidden sm:table-cell">
                   <ActiveBadge status={data.active} />
-                </td>
-                <td>
-                  <div className="flex items-end justify-end">
-                    <div className="w-5 mr-3 transform hover:text-purple-500 hover:scale-110">
-                      <div
-                        onClick={() => history.push(`${route}/${data.id}`)}
-                        className="w-5 mr-3 transform hover:text-purple-500 hover:scale-110"
-                      >
-                        <EyeIcon styles={"cursor-pointer"} />
-                      </div>
-                    </div>
-                    <div
-                      onClick={() => {
-                        setSelected(data);
-                        setConfirm(true);
-                      }}
-                      className="w-5 mr-3 transform hover:text-purple-500 hover:scale-110"
-                    >
-                      <TrashIcon styles={"cursor-pointer"} />
-                    </div>
-                  </div>
                 </td>
               </tr>
             ))}

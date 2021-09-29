@@ -77,34 +77,10 @@ database.User.hasMany(database.Payment);
 
 database.User.hasOne(database.Profile);
 
-database.User.belongsToMany(database.Office, {
-  as: 'officeManagers',
-  through: {
-    model: "office_managers",
-    paranoid: true
-  }
-});
-database.Office.belongsToMany(database.User, {
-  as: 'managersOffice',
-  through: {
-    model: "office_managers",
-    paranoid: true
-  }
-});
-database.User.belongsToMany(database.Office, {
-  as: 'officeUsers',
-  through: {
-    model: "office_users",
-    paranoid: true
-  }
-});
-database.Office.belongsToMany(database.User, {
-  as: 'usersOffice',
-  through: {
-    model: "office_users",
-    paranoid: true
-  }
-});
+database.User.belongsToMany(database.Office, { as: 'officeManagers', through: { model: "office_managers" } });
+database.Office.belongsToMany(database.User, { as: 'managersOffice', through: { model: "office_managers" } });
+database.User.belongsToMany(database.Office, { as: 'officeUsers', through: { model: "office_users" } });
+database.Office.belongsToMany(database.User, { as: 'usersOffice', through: { model: "office_users" } });
 
 database.User.hasMany(database.Contact);
 database.Office.hasMany(database.Contact);

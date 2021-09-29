@@ -12,6 +12,7 @@ export * from './CalendarIcon'
 export * from './WarningIcon'
 export * from './CaseIcon'
 export * from './CloseIcon'
+export * from './CheckIcon'
 export * from './ColorPaletteIcon'
 export * from './CreditCardIcon'
 export * from "./DashboardIcon"
@@ -34,6 +35,7 @@ export * from "./PlanProfessionalIcon"
 export * from "./PresentationIcon"
 export * from "./ScheduleIcon"
 export * from "./SearchIcon"
+export * from "./SelectorIcon"
 export * from "./SettingsIcon"
 export * from "./SheetIcon"
 export * from "./TextIcon"

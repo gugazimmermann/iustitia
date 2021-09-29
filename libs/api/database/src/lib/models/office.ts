@@ -1,4 +1,4 @@
-import { Sequelize, DataTypes, Optional, Model } from "sequelize";
+import { Sequelize, DataTypes, Optional, Model, HasManyAddAssociationsMixin, HasManyRemoveAssociationsMixin, HasManyGetAssociationsMixin } from "sequelize";
 import { UserInstance } from "./user";
 
 export interface OfficeAttributes {
@@ -27,6 +27,14 @@ export interface OfficeInstance
   deletedAt?: Date;
   managersOffice?: UserInstance[];
   usersOffice?: UserInstance[];
+
+  getManagersOffice: HasManyGetAssociationsMixin<UserInstance>;
+  addManagersOffice?: HasManyAddAssociationsMixin<UserInstance, string>;
+  removeManagersOffice?: HasManyRemoveAssociationsMixin<UserInstance, string>;
+
+  getUsersOffice: HasManyGetAssociationsMixin<UserInstance>;
+  addUsersOffice?: HasManyAddAssociationsMixin<UserInstance, string>;
+  removeUsersOffice?: HasManyRemoveAssociationsMixin<UserInstance, string>;
 }
 
 export default function office(sequelize: Sequelize) {

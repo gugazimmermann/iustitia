@@ -1,6 +1,6 @@
 import { Express } from "express"
 import { verifyToken } from '@iustitia/api/auth'
-import { getInviteCode, createUser, sendInvite, createInvite, getAll, getInvites, deleteInvite } from './controllers';
+import { getInviteCode, createUser, sendInvite, createInvite, getAll, getInvites, deleteInvite, getList } from './controllers';
 
 export const moduleName = "people";
 
@@ -17,6 +17,9 @@ export default function People(app: Express) {
   app.get(`/api/${moduleName}/:tenantId`, [verifyToken], getAll);
   app.get(`/api/${moduleName}/invites/:tenantId`, [verifyToken], getInvites);
   app.post(`/api/${moduleName}/invites/:tenantId/:id`, [verifyToken], sendInvite);
+
+  // used in offices to select users and managers
+  app.get(`/api/${moduleName}/list/:tenantId`, [verifyToken], getList);
 
   app.delete(`/api/${moduleName}/:id`, [verifyToken], deleteInvite);
 }

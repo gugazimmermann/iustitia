@@ -11,7 +11,7 @@ export function NavNotification({
 }: NavNotificationProps) {
   return (
     <section
-      className={`fixed inset-y-0 right-0 z-50 w-full max-w-xs bg-white shadow-xl sm:max-w-md focus:outline-none ${
+      className={`fixed inset-y-0 right-0 z-20 w-full max-w-xs bg-white shadow-xl sm:max-w-md focus:outline-none ${
         notificationOpen ? `` : `hidden`
       }`}
     >

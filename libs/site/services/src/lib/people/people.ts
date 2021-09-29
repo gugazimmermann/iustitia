@@ -103,3 +103,19 @@ export async function createUser(tenantId: string, code: string, password: strin
   }
 };
 
+// used in offices to select users and managers
+export interface SimpleUserInterface {
+  id: string;
+  name: string;
+  avatar: string;
+}
+
+export async function list(): Promise<SimpleUserInterface[] | Error> {
+  try {
+    const tenantId = token.getLocalTenantId();
+    const { data } = await api.get(`/api/${RouteName}/list/${tenantId}`);
+    return data
+  } catch (err) {
+    return errorHandler(err)
+  }
+};

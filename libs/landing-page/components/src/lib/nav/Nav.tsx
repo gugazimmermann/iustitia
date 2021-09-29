@@ -25,7 +25,7 @@ export function Nav() {
     <nav
       id="header"
       className={
-        "w-full z-30 top-0 text-white sticky " + (scrollPosition > 50 && "menu")
+        "w-full z-10 top-0 text-white sticky " + (scrollPosition > 50 && "menu")
       }
     >
       <div className="w-full container mx-auto flex flex-wrap items-center justify-between mt-0 px-2 py-2">
@@ -56,7 +56,7 @@ export function Nav() {
 
         <div
           className={
-            "w-full flex-grow lg:flex lg:items-center lg:w-auto mt-2 lg:mt-0 text-black p-4 lg:p-0 z-20 " +
+            "w-full flex-grow lg:flex lg:items-center lg:w-auto mt-2 lg:mt-0 text-black p-4 lg:p-0 z-10 " +
             (!menu && "hidden")
           }
           id="nav-content"

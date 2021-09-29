@@ -72,7 +72,7 @@ export function NavAvatar({ profile }: NavAvatarProps) {
   }
 
   return (
-    <div className="relative z-40 pt-1">
+    <div className="relative z-10 pt-1">
       {avatarButton(profile)}
       <div
         ref={divRef}
