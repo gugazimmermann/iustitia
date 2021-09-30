@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { useHistory, useLocation, Redirect } from "react-router-dom";
-import { SiteRoutes as Routes } from "@iustitia/react-routes";
 import {
   Alert,
   AlertInterface,
@@ -11,8 +10,7 @@ import { WARNING_TYPES } from "@iustitia/site/shared-utils";
 import { AuthService, SubscriptionServices } from "@iustitia/site/services";
 import { BasicFeatures, ProfessionalFeatures } from "./features";
 import { SignUpForm } from "../..";
-
-export type PlanInterface = SubscriptionServices.PlanInterface;
+import { AuthRoutes } from "@iustitia/site-modules";
 
 interface State {
   form: SignUpForm;
@@ -109,7 +107,7 @@ export function Plan() {
 
   async function handleFoward() {
     if (plan?.transactionAmount !== 0) {
-      history.push(Routes.Subscription, { form, plan: plan });
+      history.push(AuthRoutes.Subscription, { form, plan: plan });
     } else {
       try {
         await AuthService.signup({
@@ -118,7 +116,7 @@ export function Plan() {
           password: form.password,
           planId: plan.id as string,
         });
-        history.push(Routes.SignIn, { email: form.email });
+        history.push(AuthRoutes.SignIn, { email: form.email });
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } catch (err: any) {
         setShowAlert({
@@ -132,7 +130,7 @@ export function Plan() {
   }
 
   if (form === undefined) {
-    return <Redirect to={Routes.SignUp} />;
+    return <Redirect to={AuthRoutes.SignUp} />;
   } else {
     return (
       <main className="bg-white max-w-lg mx-auto p-6 py-8 md:p-12 my-10 rounded-lg shadow-2xl">

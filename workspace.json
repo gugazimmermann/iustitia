@@ -632,6 +632,27 @@
         }
       }
     },
+    "site-icons": {
+      "root": "libs/site/icons",
+      "sourceRoot": "libs/site/icons/src",
+      "projectType": "library",
+      "targets": {
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["libs/site/icons/**/*.{ts,tsx,js,jsx}"]
+          }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/site/icons"],
+          "options": {
+            "jestConfig": "libs/site/icons/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
     "site-layout": {
       "root": "libs/site/layout",
       "sourceRoot": "libs/site/layout/src",
@@ -648,6 +669,27 @@
           "outputs": ["coverage/libs/site/layout"],
           "options": {
             "jestConfig": "libs/site/layout/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "site-modules": {
+      "root": "libs/site-modules",
+      "sourceRoot": "libs/site-modules/src",
+      "projectType": "library",
+      "targets": {
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["libs/site-modules/**/*.{ts,tsx,js,jsx}"]
+          }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/site-modules"],
+          "options": {
+            "jestConfig": "libs/site-modules/jest.config.js",
             "passWithNoTests": true
           }
         }
@@ -690,6 +732,27 @@
           "outputs": ["coverage/libs/site/people"],
           "options": {
             "jestConfig": "libs/site/people/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "site-profile": {
+      "root": "libs/site/profile",
+      "sourceRoot": "libs/site/profile/src",
+      "projectType": "library",
+      "targets": {
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["libs/site/profile/**/*.{ts,tsx,js,jsx}"]
+          }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/site/profile"],
+          "options": {
+            "jestConfig": "libs/site/profile/jest.config.js",
             "passWithNoTests": true
           }
         }
@@ -776,6 +839,27 @@
           "outputs": ["coverage/libs/site/shared-utils"],
           "options": {
             "jestConfig": "libs/site/shared-utils/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "site-subscriptions": {
+      "root": "libs/site/subscriptions",
+      "sourceRoot": "libs/site/subscriptions/src",
+      "projectType": "library",
+      "targets": {
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["libs/site/subscriptions/**/*.{ts,tsx,js,jsx}"]
+          }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/site/subscriptions"],
+          "options": {
+            "jestConfig": "libs/site/subscriptions/jest.config.js",
             "passWithNoTests": true
           }
         }

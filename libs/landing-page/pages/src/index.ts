@@ -1,3 +1,4 @@
+export * from "./lib/routes";
 export * from "./lib/terms/Terms";
 export * from "./lib/suport/Suport";
 export * from "./lib/privacity/Privacity";

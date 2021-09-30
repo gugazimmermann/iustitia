@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { useLocation, useHistory } from "react-router-dom";
 import { useForm } from "react-hook-form";
-import { SiteRoutes as Routes } from "@iustitia/react-routes";
 import {
   Alert,
   AlertInterface,
@@ -9,6 +8,7 @@ import {
 } from "@iustitia/site/shared-components";
 import { validateEmail, WARNING_TYPES } from "@iustitia/site/shared-utils";
 import { AuthService } from "@iustitia/site/services";
+import { AuthRoutes, getModulesRoutes, SiteModules } from "@iustitia/site-modules";
 import { Title, Link, SignupLink } from "../..";
 
 type Form = {
@@ -80,7 +80,7 @@ export function SignIn() {
     try {
       await AuthService.signin(form);
       setLoading(false);
-      history.push(Routes.Dashboard);
+      history.push(getModulesRoutes()[SiteModules.dashboard]);
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       setShowAlert({
@@ -138,7 +138,7 @@ export function SignIn() {
                 }
               />
             </div>
-            <Link link={Routes.ForgotPassword} text="Esqueceu sua senha?" />
+            <Link link={AuthRoutes.ForgotPassword} text="Esqueceu sua senha?" />
             <LoadingButton
               styles="bg-primary-600 hover:bg-primary-700 text-white font-bold py-2 rounded shadow-lg hover:shadow-xl transition duration-200"
               type="submit"

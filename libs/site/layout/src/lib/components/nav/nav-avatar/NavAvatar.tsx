@@ -80,7 +80,6 @@ export function NavAvatar({ profile }: NavAvatarProps) {
           !open ? `hidden` : ``
         }`}
       >
-        <NavLink route={SiteRoutes.Offices} name="Escritórios" />
         <NavLink route={SiteRoutes.Profile} name="Seu Perfil" />
         {profile.isAdmin && (
           <NavLink route={SiteRoutes.Subscriptions} name="Assinatura" />

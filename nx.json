@@ -98,13 +98,22 @@
       "tags": [],
       "implicitDependencies": ["site"]
     },
+    "site-icons": {
+      "tags": []
+    },
     "site-layout": {
+      "tags": []
+    },
+    "site-modules": {
       "tags": []
     },
     "site-offices": {
       "tags": []
     },
     "site-people": {
+      "tags": []
+    },
+    "site-profile": {
       "tags": []
     },
     "site-schedule": {
@@ -117,6 +126,9 @@
       "tags": []
     },
     "site-shared-utils": {
+      "tags": []
+    },
+    "site-subscriptions": {
       "tags": []
     }
   }

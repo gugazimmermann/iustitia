@@ -30,20 +30,24 @@
       ],
       "@iustitia/landing-page/pages": ["libs/landing-page/pages/src/index.ts"],
       "@iustitia/react-routes": ["libs/react-routes/src/index.ts"],
+      "@iustitia/site-modules": ["libs/site-modules/src/index.ts"],
       "@iustitia/site/auth": ["libs/site/auth/src/index.ts"],
       "@iustitia/site/calendar": ["libs/site/calendar/src/index.ts"],
       "@iustitia/site/companies": ["libs/site/companies/src/index.ts"],
       "@iustitia/site/contacts": ["libs/site/contacts/src/index.ts"],
       "@iustitia/site/dashboard": ["libs/site/dashboard/src/index.ts"],
+      "@iustitia/site/icons": ["libs/site/icons/src/index.ts"],
       "@iustitia/site/layout": ["libs/site/layout/src/index.ts"],
       "@iustitia/site/offices": ["libs/site/offices/src/index.ts"],
       "@iustitia/site/people": ["libs/site/people/src/index.ts"],
+      "@iustitia/site/profile": ["libs/site/profile/src/index.ts"],
       "@iustitia/site/schedule": ["libs/site/schedule/src/index.ts"],
       "@iustitia/site/services": ["libs/site/services/src/index.ts"],
       "@iustitia/site/shared-components": [
         "libs/site/shared-components/src/index.ts"
       ],
-      "@iustitia/site/shared-utils": ["libs/site/shared-utils/src/index.ts"]
+      "@iustitia/site/shared-utils": ["libs/site/shared-utils/src/index.ts"],
+      "@iustitia/site/subscriptions": ["libs/site/subscriptions/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]
