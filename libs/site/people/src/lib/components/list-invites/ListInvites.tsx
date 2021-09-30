@@ -1,7 +1,8 @@
 import { useHistory } from "react-router-dom";
-import { MailIcon, TrashIcon } from "@iustitia/site/shared-components";
+import { Callout, MailIcon, TrashIcon } from "@iustitia/site/shared-components";
 import { PeopleInterface } from "../../People";
 import { DateTime } from "luxon";
+import { WARNING_TYPES } from "@iustitia/site/shared-utils";
 
 export interface ListInvitesProps {
   dataList: PeopleInterface[];
@@ -18,13 +19,18 @@ export function ListInvites({
 }: ListInvitesProps) {
   const history = useHistory();
 
-  return (
-    <div className=" overflow-x-auto">
-      <div className="bg-primary-500 text-white text-sm uppercase font-bold p-2">
+  return dataList.length === 0 ? (
+    <Callout
+      title={`Nenhum Convite em Aberto`}
+      type={WARNING_TYPES.INFO}
+    />
+  ) : (
+    <div className=" overflow-x-auto mt-4">
+      <div className="bg-primary-500 text-white uppercase py-2 px-2 text-sm font-bold">
         Convites
       </div>
       <table className="w-full table">
-        <tbody className="text-gray-600 text-sm font-light">
+        <tbody className="bg-white text-gray-600 text-sm">
           {dataList &&
             dataList.map((data, i) => (
               <tr

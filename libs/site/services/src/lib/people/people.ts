@@ -1,11 +1,10 @@
 import { api, token } from "../..";
 import { errorHandler } from "@iustitia/site/shared-utils";
 import { SiteRoutes } from "@iustitia/react-routes";
-import { ProfileInterface } from "../dashboard/profile";
 
 export const PeopleModule = {
   module: "people",
-  parents: ["Pessoal"],
+  parents: ["Colaboradores"],
   singular: "Pessoa",
   plural: "Pessoas",
   route: SiteRoutes.People,
@@ -20,10 +19,20 @@ export interface PeopleInterface {
   updatedAt?: Date;
 }
 
+export interface SimpleUserInterface {
+  id: string;
+  avatar: string;
+  name: string;
+  phone: string;
+  email: string;
+  role: string;
+  active: boolean;
+}
+
 type ModuleInterface = PeopleInterface;
 const RouteName = PeopleModule.module;
 
-export async function getAll(): Promise<ProfileInterface[] | Error> {
+export async function getAll(): Promise<SimpleUserInterface[] | Error> {
   try {
     const tenantId = token.getLocalTenantId();
     const { data } = await api.get(`/api/${RouteName}/${tenantId}`);
@@ -33,7 +42,7 @@ export async function getAll(): Promise<ProfileInterface[] | Error> {
   }
 };
 
-export async function getOne(id: string): Promise<ProfileInterface | Error> {
+export async function getOne(id: string): Promise<SimpleUserInterface | Error> {
   try {
     const tenantId = token.getLocalTenantId();
     const { data } = await api.get(`/api/${RouteName}/${tenantId}/${id}`);
@@ -43,7 +52,7 @@ export async function getOne(id: string): Promise<ProfileInterface | Error> {
   }
 };
 
-export async function createInvite(formData: ModuleInterface): Promise<ModuleInterface | Error> {
+export async function createInvite(formData: { name: string; email: string, tenantId?: string }): Promise<ModuleInterface | Error> {
   try {
     const tenantId = token.getLocalTenantId();
     formData.tenantId = tenantId;
@@ -104,12 +113,6 @@ export async function createUser(tenantId: string, code: string, password: strin
 };
 
 // used in offices to select users and managers
-export interface SimpleUserInterface {
-  id: string;
-  name: string;
-  avatar: string;
-}
-
 export async function list(): Promise<SimpleUserInterface[] | Error> {
   try {
     const tenantId = token.getLocalTenantId();

@@ -10,7 +10,7 @@ import {
   SearchField,
 } from "@iustitia/site/shared-components";
 import { Sort, WARNING_TYPES } from "@iustitia/site/shared-utils";
-import { SimpleUserInterface } from "@iustitia/site/people";
+import { PeopleServices } from "@iustitia/site/services";
 import { OfficeServices } from "@iustitia/site/services";
 import { ProfileInterface } from "../profile/Profile";
 import { Details, Form, List } from "./components";
@@ -19,9 +19,9 @@ export const OfficeModule = OfficeServices.OfficeModule;
 export type OfficeInterface = OfficeServices.OfficeInterface;
 
 export function convertProfileToSimpleProfile(profiles: ProfileInterface[]) {
-  const simpleProfiles: SimpleUserInterface[] = [];
+  const simpleProfiles: PeopleServices.SimpleUserInterface[] = [];
   for (const profile of profiles)
-    simpleProfiles.push(profile as unknown as SimpleUserInterface);
+    simpleProfiles.push(profile as unknown as PeopleServices.SimpleUserInterface);
   return simpleProfiles;
 }
 
@@ -78,8 +78,9 @@ export function Offices({ profile, setOffices }: OfficesProps) {
   async function getDataList() {
     setLoading(true);
     try {
-      const data = (await OfficeServices.getAll()) as OfficeInterface[];
+      let data = (await OfficeServices.getAll()) as OfficeInterface[];
       if (setOffices) setOffices(data.length);
+      if (!profile?.isAdmin) data = data.filter(d => d.active)
       setDataList(data);
       const sortedData = Sort(data.slice(0), sort);
       setShowDataList(sortedData);
@@ -221,7 +222,7 @@ export function Offices({ profile, setOffices }: OfficesProps) {
         back={whatToShow !== "list"}
         route={OfficeModule.route}
         reload={reloadList}
-        isProfessional={profile?.isProfessional}
+        isProfessional={profile?.isProfessional && profile.isAdmin}
       />
     );
   }

@@ -1,67 +1,50 @@
 import { useHistory } from "react-router-dom";
 import {
-  ArrowDownIcon,
-  ArrowUpIcon,
-  EyeIcon,
-  PenIcon,
-  TrashIcon,
+  ActiveBadge,
+  Callout,
+  ListHeader,
+  ListHeaderItems,
+  RoleBadge,
 } from "@iustitia/site/shared-components";
-import { route } from "../../People";
-import { ProfileServices } from "@iustitia/site/services";
-import { getUserInitials } from "@iustitia/site/shared-utils";
+import { getUserInitials, WARNING_TYPES } from "@iustitia/site/shared-utils";
+import { SimpleUserInterface, PeopleModule } from "../../People";
 
 export interface ListProps {
-  dataList: ProfileServices.ProfileInterface[];
+  dataList: SimpleUserInterface[];
   sort: string;
   setSort(order: "ASC" | "DESC"): void;
-  setSelected(delected: ProfileServices.ProfileInterface): void;
-  setConfirm(confirm: boolean): void;
-  profile: ProfileServices.ProfileInterface;
 }
 
-export function List({
-  dataList,
-  sort,
-  setSort,
-  setSelected,
-  setConfirm,
-  profile
-}: ListProps) {
+export function List({ dataList, sort, setSort }: ListProps) {
   const history = useHistory();
 
-  return (
-    <div className=" overflow-x-auto mb-4">
-      <table className="w-full table">
-        <thead>
-          <tr className="bg-primary-500 text-white uppercase leading-normal">
-            <th className="w-12"></th>
-            <th className="py-2 px-2 text-sm text-left">
-              Nome
-              {sort === "ASC" && (
-                <button onClick={() => setSort("DESC")}>
-                  <ArrowDownIcon styles="h-4 w-4 inline" stroke={2} />
-                </button>
-              )}
-              {sort === "DESC" && (
-                <button onClick={() => setSort("ASC")}>
-                  <ArrowUpIcon styles="h-4 w-4 inline" stroke={2} />
-                </button>
-              )}
-            </th>
-            <th className="py-2 px-2 text-sm text-left">Telefone</th>
-            <th className="py-2 px-2 text-sm text-left">E-Mail</th>
-            <th className="py-2 px-2 text-sm text-left">Status</th>
-            <th className="py-2 px-2"></th>
-          </tr>
-        </thead>
-        <tbody className="text-gray-600 text-sm font-light">
+  const headerItems: ListHeaderItems[] = [
+    { name: "" },
+    { name: "Nome", sort: true },
+    { name: "Telefone" },
+    { name: "Email" },
+    { name: "Tipo", align: "center" },
+    { name: "Status", align: "center" },
+  ];
+
+  return dataList.length === 0 ? (
+    <Callout
+      title={`Nenhuma ${PeopleModule.singular} Cadastrada`}
+      type={WARNING_TYPES.INFO}
+    />
+  ) : (
+    <div className=" overflow-x-auto">
+      <table className="w-full table ">
+        <ListHeader items={headerItems} sort={sort} setSort={setSort} />
+        <tbody className="bg-white text-gray-600 text-sm">
           {dataList &&
             dataList.map((data, i) => (
               <tr
                 key={i}
-                className="border-b border-gray-200 hover:bg-gray-100"
+                className="border-b border-gray-200 hover:bg-gray-100 cursor-pointer"
+                onClick={() => history.push(`${PeopleModule.route}/${data.id}`)}
               >
-                <td className="py-3 px-3">
+                <td className="py-3 px-3 text-left">
                   {data.avatar ? (
                     <img
                       className="w-6 h-6 rounded-full"
@@ -77,10 +60,8 @@ export function List({
                 <td className="py-3 px-3 text-left whitespace-nowrap">
                   <span className="font-medium">{data.name}</span>
                 </td>
-                <td className="py-3 px-3 text-left">
-                  <span>{data.phone}</span>
-                </td>
-                <td className="py-3 px-3 text-left">
+                <td className="text-left hidden sm:table-cell">{data.phone}</td>
+                <td className="text-left hidden sm:table-cell">
                   {data.email ? (
                     <a href={`mailto:${data.email}`} className="underline">
                       {data.email}
@@ -89,38 +70,11 @@ export function List({
                     <span>{data.email}</span>
                   )}
                 </td>
-                <td className="py-3 px-3  text-left">
-                  <span className={`${data.role === "Admin" ? `bg-primary-300 text-primary-600` : `bg-secondary-300 text-secondary-600`} font-bold py-1 px-3 mr-2 rounded-full text-xs`}>
-                    {data.role === "User" ? "Colaborador" : data.role}
-                  </span>
-                  <span className="bg-green-300 text-green-600 font-bold py-1 px-3 rounded-full text-xs">
-                    Ativo
-                  </span>
+                <td className="text-center hidden sm:table-cell">
+                  <RoleBadge role={data.role} />
                 </td>
-                <td className="py-3 px-3">
-                  <div className="flex items-end justify-end">
-                  {profile?.role === "Admin" && (
-                    <>
-                    <div className="w-5 mr-3 transform hover:text-purple-500 hover:scale-110">
-                      <div
-                        onClick={() => history.push(`${route}/${data.id}`)}
-                        className="w-5 mr-3 transform hover:text-purple-500 hover:scale-110"
-                      >
-                        <EyeIcon styles={"cursor-pointer"} />
-                      </div>
-                    </div>
-                    <div
-                      onClick={() => {
-                        setSelected(data);
-                        setConfirm(true);
-                      }}
-                      className="w-5 mr-3 transform hover:text-purple-500 hover:scale-110"
-                    >
-                      <TrashIcon styles={"cursor-pointer"} />
-                    </div>
-                    </>
-                    )}
-                  </div>
+                <td className="text-center hidden sm:table-cell">
+                  <ActiveBadge status={data.active} />
                 </td>
               </tr>
             ))}

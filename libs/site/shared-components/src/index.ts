@@ -25,3 +25,5 @@ export * from "./lib/avatar-modal/AvatarModal";
 export * from "./lib/avatar-modal-content/AvatarModalContent";
 export * from "./lib/avatar-modal-content-list/AvatarModalContentList";
 export * from "./lib/use-close-modal/useCloseModal";
+export * from "./lib/role-badge/RoleBadge";
+export * from "./lib/list-header/ListHeader";

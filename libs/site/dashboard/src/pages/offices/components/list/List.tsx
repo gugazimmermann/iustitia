@@ -1,9 +1,9 @@
 import { useHistory } from "react-router-dom";
 import {
   ActiveBadge,
-  ArrowDownIcon,
-  ArrowUpIcon,
   Callout,
+  ListHeader,
+  ListHeaderItems,
   ShowAvatars,
 } from "@iustitia/site/shared-components";
 import { WARNING_TYPES } from "@iustitia/site/shared-utils";
@@ -23,32 +23,20 @@ export function List({
 }: ListProps) {
   const history = useHistory();
 
+  const headerItems: ListHeaderItems[] = [
+    { name: "Escritório", sort: true },
+    { name: "Cidade" },
+    { name: "Responsáveis" },
+    { name: "Usuários" },
+    { name: "Status", align: "center" },
+  ];
+
   return dataList.length === 0 ? (
     <Callout title={`Nenhum ${OfficeModule.singular}Cadastrado`} type={WARNING_TYPES.INFO} />
   ) : (
     <div className=" overflow-x-auto">
       <table className="w-full table">
-        <thead>
-          <tr className="bg-primary-500 text-white uppercase leading-normal">
-            <th className="py-2 px-2 text-sm text-left">
-              Escritório
-              {sort === "ASC" && (
-                <button onClick={() => setSort("DESC")}>
-                  <ArrowDownIcon styles="h-4 w-4 inline" stroke={2} />
-                </button>
-              )}
-              {sort === "DESC" && (
-                <button onClick={() => setSort("ASC")}>
-                  <ArrowUpIcon styles="h-4 w-4 inline" stroke={2} />
-                </button>
-              )}
-            </th>
-            <th className="py-2 px-2 text-sm text-left">Cidade</th>
-            <th className="py-2 px-2 text-sm text-center">Responsáveis</th>
-            <th className="py-2 px-2 text-sm text-center">Usuários</th>
-            <th className="py-2 px-2 text-sm text-center">Status</th>
-          </tr>
-        </thead>
+        <ListHeader items={headerItems} sort={sort} setSort={setSort} />
         <tbody className="bg-white text-gray-600 text-sm">
           {dataList &&
             dataList.map((data, i) => (
@@ -66,7 +54,7 @@ export function List({
                   </div>
                 </td>
                 <td className="text-center hidden sm:table-cell">
-                  <div className="flex items-center justify-center">
+                  <div className="flex items-center justify-start">
                     {
                       <ShowAvatars
                       toShow={convertProfileToSimpleProfile(data.managersOffice as ProfileServices.ProfileInterface[])}
@@ -77,7 +65,7 @@ export function List({
                   </div>
                 </td>
                 <td className="text-center hidden sm:table-cell">
-                  <div className="flex items-center justify-center">
+                  <div className="flex items-center justify-start">
                     {
                       <ShowAvatars
                       toShow={convertProfileToSimpleProfile(data.usersOffice as ProfileServices.ProfileInterface[])}

@@ -16,7 +16,6 @@ export interface PeopleInstance
   PeopleAttributes {
   createdAt?: Date;
   updatedAt?: Date;
-  deletedAt?: Date;
 }
 
 export default function people(sequelize: Sequelize) {
@@ -49,9 +48,6 @@ export default function people(sequelize: Sequelize) {
       allowNull: false,
       type: DataTypes.UUID,
     },
-  }, {
-    paranoid: true,
-    timestamps: true,
   });
 
   return People;

@@ -5,6 +5,9 @@ import { getInviteCode, createUser, sendInvite, createInvite, getAll, getInvites
 export const moduleName = "people";
 
 export default function People(app: Express) {
+  // used in offices to select users and managers
+  app.get(`/api/${moduleName}/list/:tenantId`, [verifyToken], getList);
+
   // invites
   app.post(`/api/${moduleName}/invites/create/:tenantId`, [verifyToken], createInvite);
 
@@ -14,12 +17,9 @@ export default function People(app: Express) {
 
 
   // app.get(`/api/${moduleName}/:tenantId/:id`, [verifyToken], getOne);
-  app.get(`/api/${moduleName}/:tenantId`, [verifyToken], getAll);
   app.get(`/api/${moduleName}/invites/:tenantId`, [verifyToken], getInvites);
   app.post(`/api/${moduleName}/invites/:tenantId/:id`, [verifyToken], sendInvite);
-
-  // used in offices to select users and managers
-  app.get(`/api/${moduleName}/list/:tenantId`, [verifyToken], getList);
+  app.get(`/api/${moduleName}/:tenantId`, [verifyToken], getAll);
 
   app.delete(`/api/${moduleName}/:id`, [verifyToken], deleteInvite);
 }

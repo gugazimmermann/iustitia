@@ -3,7 +3,7 @@ import { Request, Response } from "express";
 import * as bcrypt from "bcryptjs";
 import { UserRequest } from "@iustitia/api/auth";
 import { validateEmail } from '@iustitia/site/shared-utils';
-import { database, PeopleInstance, ProfileInstance, UserInstance } from '@iustitia/api/database';
+import { database, PeopleInstance, UserInstance } from '@iustitia/api/database';
 import { InvitationEmail } from "@iustitia/api/email";
 
 const userDB = database.User;
@@ -29,37 +29,25 @@ function dataToPeopleResult(data: ModuleInstance): ModuleInterface {
   }
 }
 
-interface ProfileInterface {
-  id?: string;
-  role?: string;
-  avatar?: string;
+interface ProfileListInterface {
+  id: string;
+  avatar: string;
   name: string;
-  email?: string;
-  phone?: string;
-  zip?: string;
-  address?: string;
-  number?: string;
-  complement?: string;
-  neighborhood?: string;
-  city?: string;
-  state?: string;
+  phone: string;
+  email: string;
+  role: string;
+  active: boolean;
 }
 
-function dataToProfileResult(id: string, data: ProfileInstance, roles: { name: string }[]): ProfileInterface {
+function dataToProfileListResult(data: UserInstance): ProfileListInterface {
   return {
     id: data.id,
-    role: roles[0].name,
-    avatar: data.avatar,
-    name: data.name,
-    email: data.email,
-    phone: data.phone,
-    zip: data.zip,
-    address: data.address,
-    number: data.number,
-    complement: data.complement,
-    neighborhood: data.neighborhood,
-    city: data.city,
-    state: data.state
+    avatar: data.profile.avatar,
+    name: data.profile.name,
+    phone: data.profile.phone,
+    email: data.profile.email,
+    role: data.roles[0].name,
+    active: data.active,
   }
 }
 
@@ -77,8 +65,9 @@ export async function getAll(req: UserRequest, res: Response): Promise<Response>
         },
       }, include: ["profile", "roles"]
     });
-    const resultData = [] as ProfileInterface[];
-    if (data.length > 0) data.forEach(d => resultData.push(dataToProfileResult(d.id, d.profile, d.roles)));
+    const resultData = [] as ProfileListInterface[];
+    if (data.length > 0) data.forEach(d => resultData.push(dataToProfileListResult(d)));
+    console.log(JSON.stringify(resultData, undefined, 2))
     return res.status(200).send(resultData);
   } catch (err) {
     return res.status(500).send({ message: err.message });
@@ -94,7 +83,7 @@ export async function getInvites(req: UserRequest, res: Response): Promise<Respo
     const data = await moduleDB.findAll({
       where: { tenantId: user.tenant }
     });
-    const resultData = [] as ProfileInterface[];
+    const resultData = [] as ModuleInterface[];
     if (data.length > 0) data.forEach(d => resultData.push(dataToPeopleResult(d)));
     return res.status(200).send(resultData);
   } catch (err) {
@@ -121,6 +110,8 @@ export async function createInvite(req: UserRequest, res: Response): Promise<Res
       });
       if (countPeoples > 0 || countUsers > 0) return res.status(401).send({ message: "Plano sem permissão!" });
     }
+    const seeEmail = await moduleDB.findOne({ where: { email: body.email } });
+    if (seeEmail) return res.status(401).send({ message: "Convite já criado, tente enviar novamente!" });
     const people = {
       name: body.name,
       email: body.email,
