@@ -17,9 +17,9 @@ import {
   DashboardOffices,
   NotFound,
   Profile,
-  Offices,
   Subscriptions,
 } from "@iustitia/site/dashboard";
+import { Offices } from "@iustitia/site/offices";
 import { People } from "@iustitia/site/people";
 import { Companies } from "@iustitia/site/companies";
 import { Contacts } from "@iustitia/site/contacts";

@@ -12,7 +12,7 @@ import {
 import { Sort, WARNING_TYPES } from "@iustitia/site/shared-utils";
 import { PeopleServices } from "@iustitia/site/services";
 import { OfficeServices } from "@iustitia/site/services";
-import { ProfileInterface } from "../profile/Profile";
+import { ProfileInterface } from "@iustitia/site/dashboard";
 import { Details, Form, List } from "./components";
 
 export const OfficeModule = OfficeServices.OfficeModule;

@@ -12,7 +12,7 @@ import { WARNING_TYPES } from "@iustitia/site/shared-utils";
 import { SiteRoutes } from "@iustitia/react-routes";
 import { OfficeServices, PeopleServices } from "@iustitia/site/services";
 import { SimpleUserInterface } from "@iustitia/site/people";
-import { ProfileInterface } from "../../../profile/Profile";
+import { ProfileInterface } from "@iustitia/site/dashboard";
 import {
   OfficeInterface,
   OfficeModule,

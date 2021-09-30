@@ -42,3 +42,4 @@ Thumbs.db
 apps/site/src/app/components
 
 /mercadopago/*
+libs/site/dashboard/src/pages/offices
