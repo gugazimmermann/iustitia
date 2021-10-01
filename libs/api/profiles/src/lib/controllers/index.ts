@@ -1,9 +1,9 @@
 import { Response } from "express";
 import * as AWS from 'aws-sdk';
 import * as sharp from 'sharp';
+import { UserRequest } from "@iustitia/interfaces";
 import { database } from '@iustitia/api/database';
 import { validateEmail } from '@iustitia/site/shared-utils';
-import { UserRequest } from "@iustitia/api/interfaces";
 
 const s3 = new AWS.S3();
 AWS.config.update({

@@ -1,8 +1,8 @@
 import { Response } from "express";
 import * as AWS from 'aws-sdk';
 import { DateTime } from "luxon";
+import { AttachmentsInterface, UserRequest } from "@iustitia/interfaces";
 import { AttachmentsInstance, database } from "@iustitia/api/database";
-import { AttachmentsInterface, UserRequest } from "@iustitia/api/interfaces";
 import { sitemodule } from "../..";
 
 const S3 = new AWS.S3();

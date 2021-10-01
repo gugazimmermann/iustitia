@@ -1,6 +1,6 @@
 import { Response } from "express";
+import { ScheduleEventsInterface, UserRequest } from "@iustitia/interfaces";
 import { database, ScheduleEventsInstance} from '@iustitia/api/database';
-import { ScheduleEventsInterface, UserRequest } from "@iustitia/api/interfaces";
 
 function dataToEventsResult(data: ScheduleEventsInstance): ScheduleEventsInterface {
   return {

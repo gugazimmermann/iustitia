@@ -4,11 +4,11 @@ import * as bcrypt from "bcryptjs";
 import { v4 as uuidv4 } from 'uuid';
 import { DateTime } from "luxon";
 import * as mercadopago from 'mercadopago';
+import { UserRequest } from "@iustitia/interfaces";
 import { database } from '@iustitia/api/database';
 import { ForgotPasswordEmail } from '@iustitia/api/email';
 import { validateEmail } from "@iustitia/site/shared-utils";
 import { AuthRoutes } from '@iustitia/site-modules';
-import { UserRequest } from "@iustitia/api/interfaces";
 import config from "../config";
 
 const ACCESS_TOKEN =

@@ -38,6 +38,7 @@
       "@iustitia/api/public": ["libs/api/public/src/index.ts"],
       "@iustitia/api/schedule": ["libs/api/schedule/src/index.ts"],
       "@iustitia/api/subscriptions": ["libs/api/subscriptions/src/index.ts"],
+      "@iustitia/interfaces": ["libs/interfaces/src/index.ts"],
       "@iustitia/landing-page/components": [
         "libs/landing-page/components/src/index.ts"
       ],

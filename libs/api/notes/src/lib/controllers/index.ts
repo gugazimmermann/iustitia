@@ -1,5 +1,5 @@
 import { database, NotesInstance } from "@iustitia/api/database";
-import { NotesInterface, UserRequest } from "@iustitia/api/interfaces";
+import { NotesInterface, UserRequest } from "@iustitia/interfaces";
 import { Response } from "express";
 import { DateTime } from "luxon";
 

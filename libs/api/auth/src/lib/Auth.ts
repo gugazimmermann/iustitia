@@ -1,19 +1,9 @@
 import { Express } from 'express';
-import {
-  GetModule,
-  SiteModulesEnum
-} from "@iustitia/site-modules";
-import checkDuplicateEmail from "./middleware/checkDuplicateEmail";
-import {
-  signin,
-  signup,
-  forgotPassword,
-  forgotPasswordCode,
-  changePassword,
-  refreshToken,
-  me
-} from "./controllers";
+import { GetModule, SiteModulesEnum } from "@iustitia/site-modules";
 import verifyToken from "./middleware/verifyToken";
+import checkDuplicateEmail from "./middleware/checkDuplicateEmail";
+import { signin, signup, forgotPassword, forgotPasswordCode, changePassword, refreshToken, me } from "./controllers";
+
 
 const sitemodule = GetModule(SiteModulesEnum.auth);
 if (!undefined) throw new Error("Module not Found!")

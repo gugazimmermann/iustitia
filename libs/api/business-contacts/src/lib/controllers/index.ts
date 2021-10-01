@@ -2,7 +2,7 @@ import { Response } from "express";
 import * as AWS from 'aws-sdk';
 import * as sharp from 'sharp';
 import { validateEmail } from '@iustitia/site/shared-utils';
-import { AttachmentFileInterface, BusinessContactsCompaniesInterface, BusinessContactsPersonsInterface, UserRequest } from "@iustitia/api/interfaces";
+import { AttachmentFileInterface, BusinessContactsCompaniesInterface, BusinessContactsPersonsInterface, UserRequest } from "@iustitia/interfaces";
 import {  BusinessContactsCompaniesInstance, BusinessContactsPersonsInstance, database } from "@iustitia/api/database";
 import { sitemodule } from "../..";
 

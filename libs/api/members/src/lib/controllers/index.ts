@@ -1,10 +1,11 @@
 import { Op } from "sequelize";
 import { Request, Response } from "express";
 import * as bcrypt from "bcryptjs";
-import { validateEmail } from '@iustitia/site/shared-utils';
+import { MembersInterface, ProfileListInterface, SimpleProfileListInterface, UserRequest } from "@iustitia/interfaces";
 import { database, MembersInstance, AuthUsersInstance } from '@iustitia/api/database';
 import { InvitationEmail } from "@iustitia/api/email";
-import { MembersInterface, ProfileListInterface, SimpleProfileListInterface, UserRequest } from "@iustitia/api/interfaces";
+import { validateEmail } from '@iustitia/site/shared-utils';
+
 
 function dataToPeopleResult(data: MembersInstance): MembersInterface {
   return {

@@ -1,7 +1,7 @@
 import { Response } from "express";
-import { validateEmail } from '@iustitia/site/shared-utils';
+import { PlacesInterface, SimpleProfileListInterface, UserRequest } from "@iustitia/interfaces";
 import { AuthUsersInstance, database, PlacesInstance } from '@iustitia/api/database';
-import { PlacesInterface, SimpleProfileListInterface, UserRequest } from "@iustitia/api/interfaces";
+import { validateEmail } from '@iustitia/site/shared-utils';
 
 function userDataToResult(data: AuthUsersInstance): SimpleProfileListInterface {
   return {

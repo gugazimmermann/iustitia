@@ -1,6 +1,6 @@
 import { Response } from "express";
+import { UserRequest } from "@iustitia/interfaces";
 import { database } from '@iustitia/api/database';
-import { UserRequest } from "@iustitia/api/interfaces";
 
 export async function getPlans(req: UserRequest, res: Response): Promise<Response> {
   try {

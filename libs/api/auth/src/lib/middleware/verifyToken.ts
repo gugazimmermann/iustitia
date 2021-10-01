@@ -1,6 +1,6 @@
 import { Response, NextFunction } from 'express';
 import * as jwt from "jsonwebtoken";
-import { UserRequest } from '@iustitia/api/interfaces';
+import { UserRequest } from "@iustitia/interfaces";
 import config from "../config"
 
 function catchError(err: unknown, res: Response): Response {
