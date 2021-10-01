@@ -4,7 +4,8 @@ import {
   ForgotPasswordCodeResponseInterface,
   ForgotPasswordInterface,
   ForgotPasswordResponseInterface,
-  GetModule, SignInInterface,
+  GetModule,
+  SignInInterface,
   SignInResponseInterface,
   SignUpInterface,
   SiteModulesEnum,
@@ -22,7 +23,7 @@ export async function signup(
   { name, email, password, planId, cardInfo }: SignUpInterface
 ): Promise<ApiMessageInterface | Error> {
   try {
-    const { data } = await api.post(`/${sitemodule.name}/signup`, { name, email, password, planId, cardInfo });
+    const { data } = await api.post(`/api/${sitemodule.name}/signup`, { name, email, password, planId, cardInfo });
     return data
   } catch (err) {
     return errorHandler(err)
@@ -33,7 +34,7 @@ export async function signin(
   { email, password }: SignInInterface
 ): Promise<SignInResponseInterface | Error> {
   try {
-    const { data } = await api.post(`/${sitemodule.name}/signin`, { email, password })
+    const { data } = await api.post(`/api/${sitemodule.name}/signin`, { email, password })
     if (data?.accessToken) TokenService.setUser(data);
     return data;
   } catch (err) {
@@ -45,7 +46,7 @@ export async function forgotpassword(
   { email }: ForgotPasswordInterface
 ): Promise<ForgotPasswordResponseInterface | Error> {
   try {
-    const res = await api.post(`/${sitemodule.name}/forgotpassword`, { email })
+    const res = await api.post(`/api/${sitemodule.name}/forgotpassword`, { email })
     return {
       email: res.data.email,
       date: res.data.date
@@ -59,7 +60,7 @@ export async function getforgotpasswordcode(
   { urlcode }: ForgotPasswordCodeInterface
 ): Promise<ForgotPasswordCodeResponseInterface | Error> {
   try {
-    const { data } = await api.post(`/${sitemodule.name}/forgotpasswordcode`, { urlcode });
+    const { data } = await api.post(`/api/${sitemodule.name}/forgotpasswordcode`, { urlcode });
     return data;
   } catch (err) {
     return errorHandler(err)
@@ -71,7 +72,7 @@ export async function changepassword(
 ): Promise<void | Error> {
   const code = `${codeNumber}`.trim().replace(/ /g, "");
   try {
-    await api.post(`/${sitemodule.name}/changepassword`, { code, password })
+    await api.post(`/api/${sitemodule.name}/changepassword`, { code, password })
   } catch (err) {
     return errorHandler(err)
   }
@@ -79,7 +80,7 @@ export async function changepassword(
 
 export async function getMe(): Promise<UserInterface | Error> {
   try {
-    const { data } = await api.get(`/${sitemodule.name}/me`);
+    const { data } = await api.get(`/api/${sitemodule.name}/me`);
     return data
   } catch (err) {
     return errorHandler(err)

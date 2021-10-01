@@ -1,17 +1,7 @@
-import { Request, Response, NextFunction } from 'express'
+import { Response, NextFunction } from 'express';
 import * as jwt from "jsonwebtoken";
+import { UserRequest } from '@iustitia/api/interfaces';
 import config from "../config"
-
-export interface AttachmentFileInterface extends File {
-  originalname: string;
-  buffer: Buffer;
-}
-
-export interface UserRequest extends Request {
-  userId: string;
-  file: AttachmentFileInterface;
-  files?: AttachmentFileInterface[];
-};
 
 function catchError(err: unknown, res: Response): Response {
   if (err instanceof jwt.TokenExpiredError) {

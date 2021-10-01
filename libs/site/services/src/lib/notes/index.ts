@@ -17,7 +17,7 @@ export async function getAll(
 ): Promise<NoteInterface[] | Error> {
   try {
     const tenantId = token.getLocalTenantId();
-    const { data } = await api.get(`/api/${sitemodule.name}/notes/${tenantId}/${ownerId}`);
+    const { data } = await api.get(`/api/${sitemodule.name}/${tenantId}/${ownerId}`);
     return data
   } catch (err) {
     return errorHandler(err)
@@ -29,7 +29,7 @@ export async function create(
 ): Promise<NoteInterface | Error> {
   try {
     formData.tenantId = token.getLocalTenantId();
-    const { data } = await api.post(`/api/${sitemodule.name}/notes`, formData);
+    const { data } = await api.post(`/api/${sitemodule.name}`, formData);
     return data
   } catch (err) {
     return errorHandler(err)
@@ -40,7 +40,7 @@ export async function update(
   { formData }: NotesFormDataInterface
 ): Promise<NoteInterface | Error> {
   try {
-    const { data } = await api.put(`/api/${sitemodule.name}/notes`, formData);
+    const { data } = await api.put(`/api/${sitemodule.name}`, formData);
     return data
   } catch (err) {
     return errorHandler(err)
@@ -51,7 +51,7 @@ export async function deleteOne(
   { id }: ApiIdInterface
   ): Promise<ApiMessageInterface | Error> {
   try {
-    return await api.delete(`/api/${sitemodule.name}/notes/${id}`);
+    return await api.delete(`/api/${sitemodule.name}/${id}`);
   } catch (err) {
     return errorHandler(err)
   }

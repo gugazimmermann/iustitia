@@ -30,7 +30,13 @@
     "api": {
       "tags": []
     },
+    "api-attachments": {
+      "tags": []
+    },
     "api-auth": {
+      "tags": []
+    },
+    "api-business-contacts": {
       "tags": []
     },
     "api-calendar": {
@@ -45,19 +51,46 @@
     "api-dashboard": {
       "tags": []
     },
+    "api-dashboards": {
+      "tags": []
+    },
     "api-database": {
       "tags": []
     },
     "api-email": {
       "tags": []
     },
+    "api-financial": {
+      "tags": []
+    },
+    "api-interfaces": {
+      "tags": []
+    },
+    "api-members": {
+      "tags": []
+    },
     "api-mercadopago": {
+      "tags": []
+    },
+    "api-notes": {
       "tags": []
     },
     "api-people": {
       "tags": []
     },
+    "api-places": {
+      "tags": []
+    },
+    "api-profiles": {
+      "tags": []
+    },
     "api-public": {
+      "tags": []
+    },
+    "api-schedule": {
+      "tags": []
+    },
+    "api-subscriptions": {
       "tags": []
     },
     "landing-page": {

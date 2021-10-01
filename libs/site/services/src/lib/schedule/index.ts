@@ -17,7 +17,7 @@ export async function getOneEvent(
 ): Promise<ScheduleEventInterface | Error> {
   try {
     const tenantId = token.getLocalTenantId();
-    const { data } = await api.get(`/api/${sitemodule.name}/calendar/${tenantId}/${id}`);
+    const { data } = await api.get(`/api/${sitemodule.name}/events/${tenantId}/${id}`);
     return data
   } catch (err) {
     return errorHandler(err)
@@ -29,7 +29,7 @@ export async function getAllEvents(
 ): Promise<ScheduleEventInterface[] | Error> {
   try {
     const tenantId = token.getLocalTenantId();
-    const url = !officeId ? `/api/${sitemodule.name}/calendar/${tenantId}` : `/api/${sitemodule.name}/calendar/${tenantId}/office/${officeId}`;
+    const url = !officeId ? `/api/${sitemodule.name}/events/${tenantId}` : `/api/${sitemodule.name}/events/${tenantId}/office/${officeId}`;
     await api.get(url);
     const { data } = await api.get(url);
     return data
@@ -43,29 +43,29 @@ export async function createEvent(
 ): Promise<ScheduleEventInterface | Error> {
   try {
     formData.tenantId = token.getLocalTenantId();
-    const { data } = await api.post(`/api/${sitemodule.name}/calendar`, formData);
+    const { data } = await api.post(`/api/${sitemodule.name}/events`, formData);
     return data
   } catch (err) {
     return errorHandler(err)
   }
 };
 
-export async function update(
+export async function updateEvent(
   { formData }: ScheduleFormDataEventInterface
 ): Promise<ScheduleEventInterface | Error> {
   try {
-    const { data } = await api.put(`/api/${sitemodule.name}/calendar`, formData);
+    const { data } = await api.put(`/api/${sitemodule.name}/events`, formData);
     return data
   } catch (err) {
     return errorHandler(err)
   }
 };
 
-export async function deleteOne(
+export async function deleteOneEvent(
   { id }: ApiIdInterface
 ): Promise<ApiMessageInterface | Error> {
   try {
-    return await api.delete(`/api/${sitemodule.name}/calendar/${id}`);
+    return await api.delete(`/api/${sitemodule.name}/events/${id}`);
   } catch (err) {
     return errorHandler(err)
   }

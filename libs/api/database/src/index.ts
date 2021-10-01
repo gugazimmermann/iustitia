@@ -1,11 +1,24 @@
 export { default as database } from "./lib/Database";
-export { PlansInstance } from "./lib/models/plan";
-export { PeopleInstance } from "./lib/models/people";
-export { UserInstance } from "./lib/models/user";
-export { ProfileInstance } from "./lib/models/profile";
-export { OfficeInstance } from "./lib/models/office";
-export { CompanyInstance } from "./lib/models/company/company";
-export { ContactInstance } from "./lib/models/contact/contact";
-export { ContactAttachmentsInstance } from "./lib/models/contact/contact-attachment";
-export { ContactNotesInstance } from "./lib/models/contact/contact-notes";
-export { EventInstance } from "./lib/models/calendar/event";
+export { AuthUsersInstance } from "./lib/models/auth-users";
+export { AuthRolesInstance } from "./lib/models/auth-roles";
+export { AuthRefreshTokenInstance } from "./lib/models/auth-refresh-token";
+
+export { SubscriptionsInstance } from "./lib/models/subscriptions";
+export { SubscriptionsPlansInstance } from "./lib/models/subscriptions-plans";
+export { SubscriptionsPaymentsInstance } from "./lib/models/subscriptions-payments";
+export { SubscriptionsCreditcardsInstance } from "./lib/models/subscriptions-creditcards";
+
+export { MembersInstance } from "./lib/models/members";
+
+export { ProfilesInstance } from "./lib/models/profiles";
+
+export { PlacesInstance } from "./lib/models/places";
+
+export { BusinessContactsPersonsInstance } from "./lib/models/business-contacts-persons";
+export { BusinessContactsCompaniesInstance } from "./lib/models/business-contacts-companies";
+
+export { NotesInstance } from "./lib/models/notes";
+
+export { AttachmentsInstance } from "./lib/models/attchment";
+
+export { ScheduleEventsInstance } from "./lib/models/schedule-events";

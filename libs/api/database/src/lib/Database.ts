@@ -1,21 +1,30 @@
 import { Sequelize, ModelCtor } from "sequelize";
 import config from "./config";
-import user, { UserInstance } from "./models/user";
-import role, { RoleInstance } from "./models/role";
-import refreshToken, { RefreshTokenInstance } from "./models/refresh-token";
-import forgotPassword, { ForgotPasswordInstance } from "./models/forgot-password";
-import profile, { ProfileInstance } from "./models/profile";
-import office, { OfficeInstance } from "./models/office";
-import people, { PeopleInstance } from "./models/people";
-import plan, { PlansInstance } from "./models/plan";
-import subscription, { SubscriptionInstance } from "./models/subscription";
-import payment, { PaymentInstance } from "./models/payment";
-import creditcard, { CreditcardInstance } from "./models/creditcard";
-import company, { CompanyInstance } from "./models/company/company";
-import contact, { ContactInstance } from "./models/contact/contact";
-import contactAttachments, { ContactAttachmentsInstance } from "./models/contact/contact-attachment";
-import contactNotes, { ContactNotesInstance } from "./models/contact/contact-notes";
-import event, { EventInstance } from "./models/calendar/event";
+
+import authUsers, { AuthUsersInstance } from "./models/auth-users";
+import authRoles, { AuthRolesInstance } from "./models/auth-roles";
+import authRefreshToken, { AuthRefreshTokenInstance } from "./models/auth-refresh-token";
+import authForgotPassword, { AuthForgotPasswordInstance } from "./models/auth-forgot-password";
+
+import subscriptions, { SubscriptionsInstance } from "./models/subscriptions";
+import subscriptionsPlans, { SubscriptionsPlansInstance  } from "./models/subscriptions-plans";
+import subscriptionsPayments, { SubscriptionsPaymentsInstance } from "./models/subscriptions-payments";
+import subscriptionsCreditcards, { SubscriptionsCreditcardsInstance } from "./models/subscriptions-creditcards";
+
+import profiles, { ProfilesInstance } from "./models/profiles";
+
+import places, { PlacesInstance } from "./models/places";
+
+import businessContactsPersons, { BusinessContactsPersonsInstance } from "./models/business-contacts-persons";
+import businessContactsCompanies, { BusinessContactsCompaniesInstance } from "./models/business-contacts-companies";
+
+import notes, { NotesInstance } from "./models/notes";
+
+import attachments, { AttachmentsInstance } from "./models/attchment";
+import members, { MembersInstance } from "./models/members";
+
+import scheduleEvents, { ScheduleEventsInstance } from "./models/schedule-events";
+
 
 const sequelize = new Sequelize(config.DB, config.USER, config.PASSWORD, {
   host: config.HOST,
@@ -24,73 +33,90 @@ const sequelize = new Sequelize(config.DB, config.USER, config.PASSWORD, {
 
 export interface IDatabase {
   Sequelize: Sequelize;
-  User: ModelCtor<UserInstance>;
-  Role: ModelCtor<RoleInstance>;
-  RefreshToken: ModelCtor<RefreshTokenInstance>;
-  ForgotPassword: ModelCtor<ForgotPasswordInstance>;
-  Profile: ModelCtor<ProfileInstance>;
-  Office: ModelCtor<OfficeInstance>;
-  People: ModelCtor<PeopleInstance>;
-  Plan: ModelCtor<PlansInstance>;
-  Subscription: ModelCtor<SubscriptionInstance>;
-  Payment: ModelCtor<PaymentInstance>;
-  Creditcard: ModelCtor<CreditcardInstance>;
-  Company: ModelCtor<CompanyInstance>;
-  Contact: ModelCtor<ContactInstance>;
-  ContactAttachments: ModelCtor<ContactAttachmentsInstance>;
-  ContactNotes: ModelCtor<ContactNotesInstance>;
-  Event: ModelCtor<EventInstance>;
+  AuthUsers: ModelCtor<AuthUsersInstance>;
+  AuthRoles: ModelCtor<AuthRolesInstance>;
+  AuthRefreshToken: ModelCtor<AuthRefreshTokenInstance>;
+  AuthForgotPassword: ModelCtor<AuthForgotPasswordInstance>;
+
+
+  Subscriptions: ModelCtor<SubscriptionsInstance>;
+  SubscriptionsPlans: ModelCtor<SubscriptionsPlansInstance>;
+  SubscriptionsPayments: ModelCtor<SubscriptionsPaymentsInstance>;
+  SubscriptionsCreditcards: ModelCtor<SubscriptionsCreditcardsInstance>;
+
+  Profiles: ModelCtor<ProfilesInstance>;
+
+  Places: ModelCtor<PlacesInstance>;
+
+  BusinessContactsPersons: ModelCtor<BusinessContactsPersonsInstance>;
+  BusinessContactsCompanies: ModelCtor<BusinessContactsCompaniesInstance>;
+
+  Notes: ModelCtor<NotesInstance>;
+
+  Attachments: ModelCtor<AttachmentsInstance>;
+  Members: ModelCtor<MembersInstance>;
+  ScheduleEvents: ModelCtor<ScheduleEventsInstance>;
 }
 
 const database: IDatabase = {
   Sequelize: sequelize,
-  User: user(sequelize),
-  Role: role(sequelize),
-  RefreshToken: refreshToken(sequelize),
-  ForgotPassword: forgotPassword(sequelize),
-  Profile: profile(sequelize),
-  Office: office(sequelize),
-  People: people(sequelize),
-  Plan: plan(sequelize),
-  Subscription: subscription(sequelize),
-  Payment: payment(sequelize),
-  Creditcard: creditcard(sequelize),
-  Company: company(sequelize),
-  Contact: contact(sequelize),
-  ContactAttachments: contactAttachments(sequelize),
-  ContactNotes: contactNotes(sequelize),
-  Event: event(sequelize),
+
+  AuthUsers: authUsers(sequelize),
+  AuthRoles: authRoles(sequelize),
+  AuthRefreshToken: authRefreshToken(sequelize),
+  AuthForgotPassword: authForgotPassword(sequelize),
+
+  Subscriptions: subscriptions(sequelize),
+  SubscriptionsPlans: subscriptionsPlans(sequelize),
+  SubscriptionsPayments: subscriptionsPayments(sequelize),
+  SubscriptionsCreditcards: subscriptionsCreditcards(sequelize),
+
+  Profiles: profiles(sequelize),
+
+  Members: members(sequelize),
+
+  Places: places(sequelize),
+
+  BusinessContactsPersons: businessContactsPersons(sequelize),
+  BusinessContactsCompanies: businessContactsCompanies(sequelize),
+
+  Notes: notes(sequelize),
+
+  Attachments: attachments(sequelize),
+
+  ScheduleEvents: scheduleEvents(sequelize),
 };
 
 // database.Sequelize.sync();
 
-database.User.hasOne(database.RefreshToken);
-database.User.belongsToMany(database.Role, { through: { model: "user_roles", paranoid: true } });
-database.Role.belongsToMany(database.User, { through: { model: "user_roles", paranoid: true } });
+database.AuthUsers.hasOne(database.AuthRefreshToken);
+database.AuthUsers.belongsToMany(database.AuthRoles, { through: { model: "auth_users_has_roles", paranoid: true } });
+database.AuthRoles.belongsToMany(database.AuthUsers, { through: { model: "auth_users_has_roles", paranoid: true } });
 
-database.Plan.hasMany(database.Subscription);
-database.Subscription.hasMany(database.Payment);
-database.User.hasOne(database.Subscription);
-database.User.hasMany(database.Creditcard);
-database.Creditcard.hasMany(database.Payment);
-database.User.hasMany(database.Payment);
+database.SubscriptionsPlans.hasMany(database.Subscriptions);
 
-database.User.hasOne(database.Profile);
+database.Subscriptions.hasMany(database.SubscriptionsPayments);
+database.AuthUsers.hasOne(database.Subscriptions);
+database.AuthUsers.hasMany(database.SubscriptionsCreditcards);
+database.SubscriptionsCreditcards.hasMany(database.SubscriptionsPayments);
+database.AuthUsers.hasMany(database.SubscriptionsPayments);
 
-database.User.belongsToMany(database.Office, { as: 'officeManagers', through: { model: "office_managers" } });
-database.Office.belongsToMany(database.User, { as: 'managersOffice', through: { model: "office_managers" } });
-database.User.belongsToMany(database.Office, { as: 'officeUsers', through: { model: "office_users" } });
-database.Office.belongsToMany(database.User, { as: 'usersOffice', through: { model: "office_users" } });
+database.AuthUsers.hasOne(database.Profiles);
 
-database.User.hasMany(database.Contact);
-database.Office.hasMany(database.Contact);
-database.Contact.belongsTo(database.Company);
-database.Contact.hasMany(database.ContactAttachments);
-database.Contact.hasMany(database.ContactNotes);
+database.AuthUsers.belongsToMany(database.Places, { as: 'placeManagers', through: { model: "places_has_managers" } });
+database.Places.belongsToMany(database.AuthUsers, { as: 'managersPlace', through: { model: "places_has_managers" } });
+database.AuthUsers.belongsToMany(database.Places, { as: 'placeUsers', through: { model: "places_has_users" } });
+database.Places.belongsToMany(database.AuthUsers, { as: 'usersPlace', through: { model: "places_has_users" } });
 
-database.User.hasMany(database.Event);
-database.Office.hasMany(database.Event);
-database.Event.belongsToMany(database.Contact, { through: { model: "event_contacts", paranoid: true } });
-database.Contact.belongsToMany(database.Event, { through: { model: "event_contacts", paranoid: true } });
+database.AuthUsers.hasMany(database.BusinessContactsPersons);
+database.Places.hasMany(database.BusinessContactsPersons);
+database.BusinessContactsPersons.belongsTo(database.BusinessContactsCompanies);
+database.BusinessContactsPersons.hasMany(database.Attachments);
+database.BusinessContactsPersons.hasMany(database.Notes);
+
+database.AuthUsers.hasMany(database.ScheduleEvents);
+database.Places.hasMany(database.ScheduleEvents);
+database.ScheduleEvents.belongsToMany(database.BusinessContactsPersons, { through: { model: "business_contacts_persons_has_schedule_events" } });
+database.BusinessContactsPersons.belongsToMany(database.ScheduleEvents, { through: { model: "business_contacts_persons_has_schedule_events" } });
 
 export default database;

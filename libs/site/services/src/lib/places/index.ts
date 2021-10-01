@@ -14,16 +14,6 @@ import { api, token } from "../..";
 const sitemodule = GetModule(SiteModulesEnum.places);
 if (!undefined) throw new Error("Module not Found!")
 
-export async function count(): Promise<number | Error> {
-  try {
-    const tenantId = token.getLocalTenantId();
-    const { data } = await api.get(`/api/${sitemodule.name}/count/${tenantId}`);
-    return data.offices;
-  } catch (err) {
-    return errorHandler(err)
-  }
-};
-
 export async function getAll(): Promise<PlaceInterface[] | Error> {
   try {
     const tenantId = token.getLocalTenantId();
@@ -53,6 +43,37 @@ export async function create(
     formData.tenantId = token.getLocalTenantId();
     const { data } = await api.post(`/api/${sitemodule.name}`, formData);
     return data
+  } catch (err) {
+    return errorHandler(err)
+  }
+};
+
+export async function update(
+  { formData }: PlaceFormDataInterface
+): Promise<PlaceInterface | Error> {
+  try {
+    const { data } = await api.put(`/api/${sitemodule.name}`, formData);
+    return data
+  } catch (err) {
+    return errorHandler(err)
+  }
+};
+
+export async function deleteOne(
+  { id }: ApiIdInterface
+): Promise<ApiMessageInterface | Error> {
+  try {
+    return await api.delete(`/api/${sitemodule.name}/${id}`);
+  } catch (err) {
+    return errorHandler(err)
+  }
+};
+
+export async function count(): Promise<number | Error> {
+  try {
+    const tenantId = token.getLocalTenantId();
+    const { data } = await api.get(`/api/${sitemodule.name}/count/${tenantId}`);
+    return data.offices;
   } catch (err) {
     return errorHandler(err)
   }
@@ -89,27 +110,6 @@ export async function users(
     const tenantId = token.getLocalTenantId();
     const { data } = await api.post(`/api/${sitemodule.name}/users/${tenantId}`, { officeId, usersList });
     return data
-  } catch (err) {
-    return errorHandler(err)
-  }
-};
-
-export async function update(
-  { formData }: PlaceFormDataInterface
-): Promise<PlaceInterface | Error> {
-  try {
-    const { data } = await api.put(`/api/${sitemodule.name}`, formData);
-    return data
-  } catch (err) {
-    return errorHandler(err)
-  }
-};
-
-export async function deleteOne(
-  { id }: ApiIdInterface
-): Promise<ApiMessageInterface | Error> {
-  try {
-    return await api.delete(`/api/${sitemodule.name}/${id}`);
   } catch (err) {
     return errorHandler(err)
   }

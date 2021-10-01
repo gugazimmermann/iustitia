@@ -1,5 +1,4 @@
 import { Response } from "express";
-import { UserRequest } from "@iustitia/api/auth";
 import * as AWS from 'aws-sdk';
 import { DateTime } from "luxon";
 import { moduleName } from '../Contacts';

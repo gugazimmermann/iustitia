@@ -1,8 +1,4 @@
-interface IConfig {
-  jwtSecret: string;
-  jwtExpiration: number;
-  jwtRefreshExpiration: number;
-}
+import { IConfig } from "@iustitia/api/interfaces";
 
 const config: IConfig = {
   jwtSecret: process.env.NX_JWT_SECRET,
