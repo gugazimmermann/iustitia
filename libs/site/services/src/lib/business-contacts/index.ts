@@ -5,7 +5,7 @@ import {
   GetModule, SiteModulesEnum
 } from "@iustitia/site-modules";
 import { errorHandler } from "@iustitia/site/shared-utils";
-import { ApiFormDataInterface, ApiIdInterface, ApiMessageInterface } from "../interfaces";
+import { ApiFormDataInterface, ApiIdInterface, ApiMessageInterface } from "@iustitia/interfaces";
 import { api, token } from "../..";
 
 const sitemodule = GetModule(SiteModulesEnum.businessContacts);

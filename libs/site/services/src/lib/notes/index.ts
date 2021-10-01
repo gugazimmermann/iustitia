@@ -6,7 +6,7 @@ import {
   SiteModulesEnum
 } from "@iustitia/site-modules";
 import { errorHandler } from "@iustitia/site/shared-utils";
-import { ApiIdInterface, ApiMessageInterface } from "../interfaces";
+import { ApiIdInterface, ApiMessageInterface } from "@iustitia/interfaces";
 import { api, token } from "../..";
 
 const sitemodule = GetModule(SiteModulesEnum.notes);

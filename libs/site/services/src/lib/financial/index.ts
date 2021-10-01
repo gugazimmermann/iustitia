@@ -1,7 +1,7 @@
 import { GetModule, SiteModulesEnum } from "@iustitia/site-modules";
 import { errorHandler } from "@iustitia/site/shared-utils";
 import { api } from "../..";
-import { ApiMessageInterface } from "../interfaces";
+import { ApiMessageInterface } from "@iustitia/interfaces";
 
 const sitemodule = GetModule(SiteModulesEnum.financial);
 if (!undefined) throw new Error("Module not Found!")

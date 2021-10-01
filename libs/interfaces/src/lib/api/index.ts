@@ -10,3 +10,15 @@ export interface UserRequest extends Request {
   file: AttachmentFileInterface;
   files?: AttachmentFileInterface[];
 };
+
+export interface ApiMessageInterface {
+  message: string;
+}
+
+export interface ApiIdInterface {
+  id: string;
+}
+
+export interface ApiFormDataInterface {
+  formData: FormData;
+}

@@ -1,6 +1,6 @@
 import { GetModule, ProfileInterface, SiteModulesEnum } from "@iustitia/site-modules";
 import { errorHandler } from "@iustitia/site/shared-utils";
-import { ApiFormDataInterface } from "../interfaces";
+import { ApiFormDataInterface } from "@iustitia/interfaces";
 import { api } from "../..";
 
 const sitemodule = GetModule(SiteModulesEnum.profiles);

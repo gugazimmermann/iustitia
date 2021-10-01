@@ -1,12 +1,7 @@
-import {
-  GetModule,
-  ScheduleEventInterface,
-  ScheduleFormDataEventInterface,
-  ScheduleGetAllEventsInterface,
-  SiteModulesEnum
-} from "@iustitia/site-modules";
+import { GetModule, SiteModulesEnum } from "@iustitia/site-modules";
+import { ScheduleEventInterface, ScheduleFormDataEventInterface, ScheduleGetAllEventsInterface } from "@iustitia/site-modules";
 import { errorHandler } from "@iustitia/site/shared-utils";
-import { ApiIdInterface, ApiMessageInterface } from "../interfaces";
+import { ApiIdInterface, ApiMessageInterface } from "@iustitia/interfaces";
 import { api, token } from "../.."
 
 const sitemodule = GetModule(SiteModulesEnum.schedule);

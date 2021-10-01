@@ -1,11 +1,5 @@
-import {
-  CreditCardInterface,
-  GetModule,
-  PaymentInterface,
-  PlanInterface,
-  SiteModulesEnum,
-  SubscriptionInterface
-} from "@iustitia/site-modules";
+import { GetModule, SiteModulesEnum } from "@iustitia/site-modules";
+import { CreditCardInterface, PaymentInterface, PlanInterface, SubscriptionInterface } from "@iustitia/site-modules";
 import { errorHandler } from "@iustitia/site/shared-utils";
 import { api } from "../..";
 
