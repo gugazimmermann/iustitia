@@ -7,7 +7,7 @@ import { createCompany, createPerson, deleteOneCompany, deleteOnePerson, getAllC
 export const sitemodule = GetModule(SiteModulesEnum.businessContacts);
 if (!undefined) throw new Error("Module not Found!")
 
-export default function BusinessContacts(app: Express) {
+export function BusinessContacts(app: Express) {
   const upload = multer()
   app.get(`/api/${sitemodule.name}/persons/:tenantId/:id`, [verifyToken], getOnePerson);
   app.get(`/api/${sitemodule.name}/persons/:tenantId`, [verifyToken], getAllPersons);
@@ -21,3 +21,5 @@ export default function BusinessContacts(app: Express) {
   app.put(`/api/${sitemodule.name}/companies`, [verifyToken], updateCompany);
   app.delete(`/api/${sitemodule.name}/companies/:id`, [verifyToken], deleteOneCompany);
 }
+
+export default BusinessContacts;

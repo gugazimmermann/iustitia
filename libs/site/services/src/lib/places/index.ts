@@ -1,20 +1,16 @@
-import {
-  GetModule,
-  PlaceActiveInterface,
-  PlaceFormDataInterface,
-  PlaceInterface,
-  PlaceManagerInterface,
-  PlaceUsersInterface,
-  SiteModulesEnum
-} from "@iustitia/site-modules";
+import { GetModule, SiteModulesEnum } from "@iustitia/site-modules";
 import { errorHandler } from "@iustitia/site/shared-utils";
-import { ApiIdInterface, ApiMessageInterface } from "@iustitia/interfaces";
+import {
+  ApiIdInterface,
+  ApiMessageInterface,
+  PlacesInterface
+} from "@iustitia/interfaces";
 import { api, token } from "../..";
 
 const sitemodule = GetModule(SiteModulesEnum.places);
 if (!undefined) throw new Error("Module not Found!")
 
-export async function getAll(): Promise<PlaceInterface[] | Error> {
+export async function getAll(): Promise<PlacesInterface[] | Error> {
   try {
     const tenantId = token.getLocalTenantId();
     const { data } = await api.get(`/api/${sitemodule.name}/${tenantId}`);
@@ -26,7 +22,7 @@ export async function getAll(): Promise<PlaceInterface[] | Error> {
 
 export async function getOne(
   { id }: ApiIdInterface
-): Promise<PlaceInterface | Error> {
+): Promise<PlacesInterface | Error> {
   try {
     const tenantId = token.getLocalTenantId();
     const { data } = await api.get(`/api/${sitemodule.name}/${tenantId}/${id}`);
@@ -38,7 +34,7 @@ export async function getOne(
 
 export async function create(
   { formData }: PlaceFormDataInterface
-): Promise<PlaceInterface | Error> {
+): Promise<PlacesInterface | Error> {
   try {
     formData.tenantId = token.getLocalTenantId();
     const { data } = await api.post(`/api/${sitemodule.name}`, formData);

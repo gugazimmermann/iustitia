@@ -6,7 +6,7 @@ import { count, create, getOne, getAll, active, managers, users, update, deleteO
 const sitemodule = GetModule(SiteModulesEnum.places);
 if (!undefined) throw new Error("Module not Found!")
 
-export default function Places(app: Express) {
+export function Places(app: Express) {
   app.get(`/api/${sitemodule.name}/:tenantId`, [verifyToken], getAll);
   app.get(`/api/${sitemodule.name}/:tenantId/:id`, [verifyToken], getOne);
   app.post(`/api/${sitemodule.name}/`, [verifyToken], create);
@@ -17,3 +17,5 @@ export default function Places(app: Express) {
   app.post(`/api/${sitemodule.name}/managers/:tenantId`, [verifyToken], managers);
   app.post(`/api/${sitemodule.name}/users/:tenantId`, [verifyToken], users);
 }
+
+export default Places;

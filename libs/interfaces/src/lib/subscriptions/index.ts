@@ -1,3 +1,12 @@
+export interface CardInfoInterface {
+  id: string;
+  name: string;
+  expirationMonth: number;
+  expirationYear: number;
+  firstSixDigits: string;
+  lastFourDigits: string;
+}
+
 export interface PlanInterface {
   id?: string;
   preapprovalPlanId?: string;
@@ -56,11 +65,3 @@ export interface CreditCardInterface {
   createdAt?: string;
   deletedAt?: string;
 }
-
-// export interface ProfileSubscriptionInterface {
-//   planId: string;
-//   reason: string;
-//   frequency: number;
-//   type: string;
-//   createdAt: string;
-// }

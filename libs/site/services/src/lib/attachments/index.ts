@@ -1,10 +1,5 @@
-import {
-  AttachmentCreateInterface,
-  AttachmentGetAllInterface,
-  AttachmentInterface,
-  GetModule,
-  SiteModulesEnum
-} from "@iustitia/site-modules";
+import { GetModule, SiteModulesEnum } from "@iustitia/site-modules";
+import { AttachmentsCreateInterface, AttachmentsGetAllInterface, AttachmentsInterface } from "@iustitia/interfaces"
 import { errorHandler } from "@iustitia/site/shared-utils";
 import { ApiIdInterface, ApiMessageInterface } from "@iustitia/interfaces";
 import { api, token } from "../..";
@@ -12,10 +7,9 @@ import { api, token } from "../..";
 const sitemodule = GetModule(SiteModulesEnum.attachments);
 if (!undefined) throw new Error("Module not Found!")
 
-
 export async function getAll(
-  { ownerId }: AttachmentGetAllInterface
-): Promise<AttachmentInterface[] | Error> {
+  { ownerId }: AttachmentsGetAllInterface
+): Promise<AttachmentsInterface[] | Error> {
   try {
     const tenantId = token.getLocalTenantId();
     const { data } = await api.get(`/api/${sitemodule.name}/${tenantId}/${ownerId}`);
@@ -26,7 +20,7 @@ export async function getAll(
 };
 
 export async function create(
-  { formData, onUploadProgress }: AttachmentCreateInterface
+  { formData, onUploadProgress }: AttachmentsCreateInterface
 ): Promise<ApiMessageInterface | Error> {
   try {
     return api.post(`/api/${sitemodule.name}`, formData, {

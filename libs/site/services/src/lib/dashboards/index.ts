@@ -1,7 +1,7 @@
 import { GetModule, SiteModulesEnum } from "@iustitia/site-modules";
+import { ApiMessageInterface } from "@iustitia/interfaces";
 import { errorHandler } from "@iustitia/site/shared-utils";
 import { api } from "../..";
-import { ApiMessageInterface } from "@iustitia/interfaces";
 
 const sitemodule = GetModule(SiteModulesEnum.businessContacts);
 if (!undefined) throw new Error("Module not Found!")

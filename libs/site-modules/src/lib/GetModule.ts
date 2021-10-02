@@ -1,4 +1,4 @@
-import { SiteModulesInterface } from "./interfaces";
+import { SiteModulesInterface } from "@iustitia/interfaces";
 import ModulesProperties from "./ModulesProperties";
 
 /**

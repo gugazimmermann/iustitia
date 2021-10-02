@@ -2,14 +2,19 @@ import * as express from "express";
 import * as morgan from 'morgan';
 import * as cors from "cors";
 import { database } from "@iustitia/api/database";
-import { publicRoutes } from "@iustitia/api/public";
-import { authRoutes } from "@iustitia/api/auth";
 import { mercadopagoRoutes } from "@iustitia/api/mercadopago";
-import { dashboardRoutes } from "@iustitia/api/dashboard";
-import { peopleRoutes } from "@iustitia/api/people";
-import { companiesRoutes } from "@iustitia/api/companies";
-import { contactsRoutes } from "@iustitia/api/contacts";
-import { calendarRoutes } from "@iustitia/api/calendar";
+
+import { Auth } from "@iustitia/api/auth";
+import { Subscriptions } from "@iustitia/api/subscriptions";
+import { Profiles } from "@iustitia/api/profiles";
+import { Members } from "@iustitia/api/members";
+import { Dashboards } from "@iustitia/api/dashboards";
+import { Places } from "@iustitia/api/places";
+import { BusinessContacts } from "@iustitia/api/business-contacts";
+import { Notes } from "@iustitia/api/notes";
+import { Attachments } from "@iustitia/api/attachments";
+import { Schedule } from "@iustitia/api/schedule";
+import { Financial } from "@iustitia/api/financial";
 
 const app = express();
 app.use(morgan("dev"));
@@ -28,14 +33,18 @@ app.use((req, res, next) => {
   next();
 });
 
-publicRoutes(app);
-authRoutes(app);
 mercadopagoRoutes(app);
-dashboardRoutes(app);
-peopleRoutes(app);
-companiesRoutes(app);
-contactsRoutes(app);
-calendarRoutes(app);
+Auth(app);
+Subscriptions(app);
+Profiles(app);
+Members(app);
+Dashboards(app);
+Places(app);
+BusinessContacts(app);
+Notes(app);
+Attachments(app);
+Schedule(app);
+Financial(app);
 
 app.use((req, res) => res.status(404).send("Not Found!"));
 // eslint-disable-next-line @typescript-eslint/no-unused-vars

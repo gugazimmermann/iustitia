@@ -7,8 +7,10 @@ import { getProfile, updateProfile } from "./controllers";
 const sitemodule = GetModule(SiteModulesEnum.profiles);
 if (!undefined) throw new Error("Module not Found!")
 
-export default function Profiles(app: Express) {
+export function Profiles(app: Express) {
   const upload = multer()
   app.get(`/api/${sitemodule.name}`, [verifyToken], getProfile);
   app.put(`/api/${sitemodule.name}`, upload.single('avatar'), [verifyToken], updateProfile);
 }
+
+export default Profiles;

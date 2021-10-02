@@ -1,12 +1,12 @@
+import { GetModule, SiteModulesEnum } from "@iustitia/site-modules";
+import { errorHandler } from "@iustitia/site/shared-utils";
 import {
-  GetModule,
+  ApiIdInterface,
+  ApiMessageInterface,
   NoteInterface,
   NotesFormDataInterface,
-  NotesGetAllInterface,
-  SiteModulesEnum
-} from "@iustitia/site-modules";
-import { errorHandler } from "@iustitia/site/shared-utils";
-import { ApiIdInterface, ApiMessageInterface } from "@iustitia/interfaces";
+  NotesGetAllInterface
+} from "@iustitia/interfaces";
 import { api, token } from "../..";
 
 const sitemodule = GetModule(SiteModulesEnum.notes);
@@ -49,7 +49,7 @@ export async function update(
 
 export async function deleteOne(
   { id }: ApiIdInterface
-  ): Promise<ApiMessageInterface | Error> {
+): Promise<ApiMessageInterface | Error> {
   try {
     return await api.delete(`/api/${sitemodule.name}/${id}`);
   } catch (err) {

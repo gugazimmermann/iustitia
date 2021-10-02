@@ -1,7 +1,7 @@
 export interface MenuItemInterface {
   name: string;
-  icon: JSX.Element;
-  subItems: MenuSubItemInterface[]
+  icon: string;
+  subItems: MenuSubItemInterface[];
 }
 
 export interface MenuSubItemInterface {

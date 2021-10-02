@@ -1,4 +1,4 @@
-import { IConfig } from "@iustitia/api/interfaces";
+import { IConfig } from "@iustitia/interfaces";
 
 const config: IConfig = {
   jwtSecret: process.env.NX_JWT_SECRET,

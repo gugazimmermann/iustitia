@@ -1,11 +1,13 @@
-import {
-  BusinessContactsCompanyInterface,
-  BusinessContactsFormDataCompanyInterface,
-  BusinessContactsPersonInterface,
-  GetModule, SiteModulesEnum
-} from "@iustitia/site-modules";
+import { GetModule, SiteModulesEnum } from "@iustitia/site-modules";
 import { errorHandler } from "@iustitia/site/shared-utils";
-import { ApiFormDataInterface, ApiIdInterface, ApiMessageInterface } from "@iustitia/interfaces";
+import {
+  ApiFormDataInterface,
+  ApiIdInterface,
+  ApiMessageInterface,
+  BusinessContactsCompaniesInterface,
+  BusinessContactsFormDataCompaniesInterface,
+  BusinessContactsPersonsInterface
+} from "@iustitia/interfaces";
 import { api, token } from "../..";
 
 const sitemodule = GetModule(SiteModulesEnum.businessContacts);
@@ -13,7 +15,7 @@ if (!undefined) throw new Error("Module not Found!")
 
 export async function getOnePerson(
   { id }: ApiIdInterface
-): Promise<BusinessContactsPersonInterface | Error> {
+): Promise<BusinessContactsPersonsInterface | Error> {
   try {
     const tenantId = token.getLocalTenantId();
     const { data } = await api.get(`/api/${sitemodule.name}/persons/${tenantId}/${id}`);
@@ -23,7 +25,7 @@ export async function getOnePerson(
   }
 };
 
-export async function getAllPersons(): Promise<BusinessContactsPersonInterface[] | Error> {
+export async function getAllPersons(): Promise<BusinessContactsPersonsInterface[] | Error> {
   try {
     const tenantId = token.getLocalTenantId();
     const { data } = await api.get(`/api/${sitemodule.name}/persons/${tenantId}`);
@@ -35,7 +37,7 @@ export async function getAllPersons(): Promise<BusinessContactsPersonInterface[]
 
 export async function createPerson(
   { formData }: ApiFormDataInterface
-): Promise<BusinessContactsPersonInterface | Error> {
+): Promise<BusinessContactsPersonsInterface | Error> {
   try {
     formData.append("tenantId", token.getLocalTenantId());
     const { data } = await api.post(`/api/${sitemodule.name}/persons`, formData);
@@ -47,7 +49,7 @@ export async function createPerson(
 
 export async function updatePerson(
   { formData }: ApiFormDataInterface
-): Promise<BusinessContactsPersonInterface | Error> {
+): Promise<BusinessContactsPersonsInterface | Error> {
   try {
     const { data } = await api.put(`/api/${sitemodule.name}/persons`, formData);
     return data
@@ -69,7 +71,7 @@ export async function deleteOnePerson(
 
 export async function getOneCompany(
   { id }: ApiIdInterface
-): Promise<BusinessContactsCompanyInterface | Error> {
+): Promise<BusinessContactsCompaniesInterface | Error> {
   try {
     const tenantId = token.getLocalTenantId();
     const { data } = await api.get(`/api/${sitemodule.name}/companies/${tenantId}/${id}`);
@@ -79,7 +81,7 @@ export async function getOneCompany(
   }
 };
 
-export async function getAllCompanies(): Promise<BusinessContactsCompanyInterface[] | Error> {
+export async function getAllCompanies(): Promise<BusinessContactsCompaniesInterface[] | Error> {
   try {
     const tenantId = token.getLocalTenantId();
     const { data } = await api.get(`/api/${sitemodule.name}/companies/${tenantId}`);
@@ -90,8 +92,8 @@ export async function getAllCompanies(): Promise<BusinessContactsCompanyInterfac
 };
 
 export async function createCompany(
-  { formData }: BusinessContactsFormDataCompanyInterface
-): Promise<BusinessContactsCompanyInterface | Error> {
+  { formData }: BusinessContactsFormDataCompaniesInterface
+): Promise<BusinessContactsCompaniesInterface | Error> {
   try {
     formData.tenantId = token.getLocalTenantId();
     const { data } = await api.post(`/api/${sitemodule.name}/companies`, formData);
@@ -102,8 +104,8 @@ export async function createCompany(
 };
 
 export async function updateCompany(
-  { formData }: BusinessContactsFormDataCompanyInterface
-): Promise<BusinessContactsCompanyInterface | Error> {
+  { formData }: BusinessContactsFormDataCompaniesInterface
+): Promise<BusinessContactsCompaniesInterface | Error> {
   try {
     const { data } = await api.put(`/api/${sitemodule.name}/companies`, formData);
     return data

@@ -6,7 +6,7 @@ import { GetModule, SiteModulesEnum } from "@iustitia/site-modules";
 export const sitemodule = GetModule(SiteModulesEnum.members);
 if (!undefined) throw new Error("Module not Found!")
 
-export default function Members(app: Express) {
+export function Members(app: Express) {
   app.get(`/api/${sitemodule.name}/:tenantId`, [verifyToken], getAll);
   app.get(`/api/${sitemodule.name}/:tenantId/:id`, [verifyToken], getOne);
   app.post(`/api/${sitemodule.name}/:tenantId`, [verifyToken], create);
@@ -19,3 +19,5 @@ export default function Members(app: Express) {
   app.post(`/api/${sitemodule.name}/invites/send/:tenantId/:id`, [verifyToken], sendInvite);
   app.delete(`/api/${sitemodule.name}/invites/:id`, [verifyToken], deleteInvite);
 }
+
+export default Members;

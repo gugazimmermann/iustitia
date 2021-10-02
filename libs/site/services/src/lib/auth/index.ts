@@ -1,20 +1,20 @@
+import { GetModule, SiteModulesEnum } from "@iustitia/site-modules";
 import {
+  ApiMessageInterface,
   ChangePasswordInterface,
   ForgotPasswordCodeInterface,
   ForgotPasswordCodeResponseInterface,
   ForgotPasswordInterface,
   ForgotPasswordResponseInterface,
-  GetModule,
   SignInInterface,
   SignInResponseInterface,
   SignUpInterface,
-  SiteModulesEnum,
   UserInterface
-} from "@iustitia/site-modules";
+} from "@iustitia/interfaces";
 import { errorHandler } from "@iustitia/site/shared-utils";
 import api from "../api";
 import TokenService from "./token";
-import { ApiMessageInterface } from "@iustitia/interfaces";
+
 
 const sitemodule = GetModule(SiteModulesEnum.auth);
 if (!undefined) throw new Error("Module not Found!")

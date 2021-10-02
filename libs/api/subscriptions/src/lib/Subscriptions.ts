@@ -6,9 +6,11 @@ import { getPlans, getSubscription, getPayments, getCreditcards } from "./contro
 const sitemodule = GetModule(SiteModulesEnum.subscriptions);
 if (!undefined) throw new Error("Module not Found!")
 
-export default function Subscriptions(app: Express) {
+export function Subscriptions(app: Express) {
   app.get(`/api/${sitemodule.name}/plans`, getPlans);
   app.get(`/api/${sitemodule.name}/subscription`, [verifyToken], getSubscription);
   app.get(`/api/${sitemodule.name}/payments`, [verifyToken], getPayments);
   app.get(`/api/${sitemodule.name}/creditcards`, [verifyToken], getCreditcards);
 }
+
+export default Subscriptions;

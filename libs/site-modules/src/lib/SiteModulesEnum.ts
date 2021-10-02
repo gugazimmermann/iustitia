@@ -3,7 +3,7 @@ export enum SiteModulesEnum {
   subscriptions = "subscriptions",
   profiles = "profiles",
   members = "members",
-  dashboard = "dashboard",
+  dashboards = "dashboards",
   places = "places",
   businessContacts = "business-contacts",
   notes = "notes",

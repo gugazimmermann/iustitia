@@ -42,3 +42,7 @@ export interface BusinessContactsCompaniesInterface {
   }[];
   tenantId?: string;
 }
+
+export interface BusinessContactsFormDataCompaniesInterface {
+  formData: BusinessContactsCompaniesInterface;
+}

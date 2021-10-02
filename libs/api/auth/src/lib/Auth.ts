@@ -8,7 +8,7 @@ import { signin, signup, forgotPassword, forgotPasswordCode, changePassword, ref
 const sitemodule = GetModule(SiteModulesEnum.auth);
 if (!undefined) throw new Error("Module not Found!")
 
-export default function Auth(app: Express) {
+export function Auth(app: Express) {
   app.post(`/api/${sitemodule.name}/signup`, [checkDuplicateEmail], signup);
 
   app.post(`/api/${sitemodule.name}/signin`, signin);
@@ -23,3 +23,5 @@ export default function Auth(app: Express) {
 
   app.get(`/api/${sitemodule.name}/me`, [verifyToken], me);
 }
+
+export default Auth;

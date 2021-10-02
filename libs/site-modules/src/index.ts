@@ -1,4 +1,3 @@
-export * from "./lib/interfaces";
 export * from "./lib/AuthRoutes";
 export * from "./lib/SiteModulesEnum";
 export * from "./lib/ModulesProperties";

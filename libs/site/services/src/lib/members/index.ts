@@ -1,14 +1,14 @@
+import { GetModule, SiteModulesEnum } from "@iustitia/site-modules";
 import {
-  GetModule,
+  ApiIdInterface,
+  ApiMessageInterface,
   MembersCreateInterface,
   MembersCreateInviteInterface,
   MembersInterface,
   MembersInviteCodeInterface,
-  MembersSimpleInterface,
-  SiteModulesEnum
-} from "@iustitia/site-modules";
+  MembersSimpleInterface
+} from "@iustitia/interfaces";
 import { errorHandler } from "@iustitia/site/shared-utils";
-import { ApiIdInterface, ApiMessageInterface } from "@iustitia/interfaces";
 import { api, token } from "../..";
 
 const sitemodule = GetModule(SiteModulesEnum.members);

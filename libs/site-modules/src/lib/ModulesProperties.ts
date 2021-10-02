@@ -1,5 +1,4 @@
-import {DashboardIcon, PeopleIcon} from "@iustitia/site/icons";
-import { SiteModulesInterface } from "./interfaces";
+import { SiteModulesInterface } from "@iustitia/interfaces";
 import SiteModules from "./SiteModulesEnum";
 
 export const ModulesProperties: SiteModulesInterface[] = [
@@ -28,7 +27,7 @@ export const ModulesProperties: SiteModulesInterface[] = [
     menu: [
       {
         name: "Colaboradores",
-        icon: <PeopleIcon styles="w-5 h-5" stroke={2} />,
+        icon: "PeopleIcon",
         subItems: [
           {
             name: "Colaboradores",
@@ -43,13 +42,13 @@ export const ModulesProperties: SiteModulesInterface[] = [
     ],
   },
   {
-    name: SiteModules.dashboard,
+    name: SiteModules.dashboards,
     singular: "Relatório",
     plural: "Relatórios",
     menu: [
       {
         name: "Relatórios",
-        icon: <DashboardIcon styles="w-5 h-5" stroke={2} />,
+        icon: "DashboardIcon",
 
         subItems: [
           {
@@ -71,7 +70,7 @@ export const ModulesProperties: SiteModulesInterface[] = [
     menu: [
       {
         name: "Escritórios",
-        icon: <PeopleIcon styles="w-5 h-5" stroke={2} />,
+        icon: "PeopleIcon",
         subItems: [
           {
             name: "Escritórios",
@@ -88,7 +87,7 @@ export const ModulesProperties: SiteModulesInterface[] = [
     menu: [
       {
         name: "Cadastros",
-        icon: <PeopleIcon styles="w-5 h-5" stroke={2} />,
+        icon: "PeopleIcon",
         subItems: [
           {
             name: "Clientes",
@@ -129,7 +128,7 @@ export const ModulesProperties: SiteModulesInterface[] = [
     menu: [
       {
         name: "Agenda",
-        icon: <PeopleIcon styles="w-5 h-5" stroke={2} />,
+        icon: "PeopleIcon",
         subItems: [
           {
             name: "Calendário",
@@ -150,7 +149,7 @@ export const ModulesProperties: SiteModulesInterface[] = [
     menu: [
       {
         name: "Financeiro",
-        icon: <PeopleIcon styles="w-5 h-5" stroke={2} />,
+        icon: "PeopleIcon",
         subItems: [
           {
             name: "Fluxo de Caixa",

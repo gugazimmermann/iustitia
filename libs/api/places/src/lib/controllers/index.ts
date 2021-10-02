@@ -1,9 +1,9 @@
 import { Response } from "express";
-import { PlacesInterface, SimpleProfileListInterface, UserRequest } from "@iustitia/interfaces";
+import { PlacesInterface, SimpleProfilesListInterface, UserRequest } from "@iustitia/interfaces";
 import { AuthUsersInstance, database, PlacesInstance } from '@iustitia/api/database';
 import { validateEmail } from '@iustitia/site/shared-utils';
 
-function userDataToResult(data: AuthUsersInstance): SimpleProfileListInterface {
+function userDataToResult(data: AuthUsersInstance): SimpleProfilesListInterface {
   return {
     id: data.id,
     name: data.profile.name,
@@ -211,7 +211,7 @@ export async function managers(req: UserRequest, res: Response): Promise<Respons
     if (!office) return res.status(404).send({ message: "Nenhum registro encontrado!" });
     const exintingIds: string[] = office.managersOffice.map((m) => m.id)
     await office.removeManagersOffice(exintingIds);
-    const userIds: string[] = body.managersList.map((m: SimpleProfileListInterface) => m.id)
+    const userIds: string[] = body.managersList.map((m: SimpleProfilesListInterface) => m.id)
     await office.addManagersOffice(userIds)
     const savedOffice = (await findOfficeById(office.id as string)) as PlacesInstance;
     return res.status(200).send(dataToResult(savedOffice));
@@ -232,7 +232,7 @@ export async function users(req: UserRequest, res: Response): Promise<Response> 
     if (!office) return res.status(404).send({ message: "Nenhum registro encontrado!" });
     const exintingIds: string[] = office.usersOffice.map((u) => u.id)
     await office.removeUsersOffice(exintingIds);
-    const userIds: string[] = body.usersList.map((u: SimpleProfileListInterface) => u.id)
+    const userIds: string[] = body.usersList.map((u: SimpleProfilesListInterface) => u.id)
     await office.addUsersOffice(userIds)
     const savedOffice = (await findOfficeById(office.id as string)) as PlacesInstance;
     return res.status(200).send(dataToResult(savedOffice));

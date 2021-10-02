@@ -1,8 +1,7 @@
-import SiteModulesEnum from "../../../SiteModulesEnum";
 import { MenuItemInterface } from "../layout";
 
 export interface SiteModulesInterface {
-  name: SiteModulesEnum;
+  name: string;
   singular: string;
   plural: string;
   menu: MenuItemInterface[];

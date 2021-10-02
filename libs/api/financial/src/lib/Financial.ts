@@ -5,6 +5,9 @@ import { placeholderFunction } from "./controllers";
 export const sitemodule = GetModule(SiteModulesEnum.financial);
 if (!undefined) throw new Error("Module not Found!")
 
-export default function Public(app: Express) {
+export function Financial(app: Express) {
   app.get(`/api/${sitemodule.name}`, placeholderFunction);
 }
+
+export default Financial;
+``

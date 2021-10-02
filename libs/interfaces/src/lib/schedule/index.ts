@@ -10,3 +10,11 @@ export interface ScheduleEventsInterface {
   officeId?: string;
   tenantId?: string;
 }
+
+export interface ScheduleEventsGetAllInterface {
+  officeId?: string;
+}
+
+export interface ScheduleEventsFormDataInterface {
+  formData: ScheduleEventsInterface
+}

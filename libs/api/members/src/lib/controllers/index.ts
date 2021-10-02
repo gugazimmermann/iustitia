@@ -1,7 +1,7 @@
 import { Op } from "sequelize";
 import { Request, Response } from "express";
 import * as bcrypt from "bcryptjs";
-import { MembersInterface, ProfileListInterface, SimpleProfileListInterface, UserRequest } from "@iustitia/interfaces";
+import { MembersInterface, ProfilesListInterface, SimpleProfilesListInterface, UserRequest } from "@iustitia/interfaces";
 import { database, MembersInstance, AuthUsersInstance } from '@iustitia/api/database';
 import { InvitationEmail } from "@iustitia/api/email";
 import { validateEmail } from '@iustitia/site/shared-utils';
@@ -16,7 +16,7 @@ function dataToPeopleResult(data: MembersInstance): MembersInterface {
   }
 }
 
-function dataToProfileListResult(data: AuthUsersInstance): ProfileListInterface {
+function dataToProfileListResult(data: AuthUsersInstance): ProfilesListInterface {
   return {
     id: data.id,
     avatar: data.profile.avatar,
@@ -28,7 +28,7 @@ function dataToProfileListResult(data: AuthUsersInstance): ProfileListInterface 
   }
 }
 
-function dataToSimpleProfileListResult(data: AuthUsersInstance): SimpleProfileListInterface {
+function dataToSimpleProfileListResult(data: AuthUsersInstance): SimpleProfilesListInterface {
   return {
     id: data.id,
     name: data.profile.name,
@@ -50,7 +50,7 @@ export async function getAll(req: UserRequest, res: Response): Promise<Response>
         },
       }, include: ["profile", "roles"]
     });
-    const resultData = [] as ProfileListInterface[];
+    const resultData = [] as ProfilesListInterface[];
     if (data.length > 0) data.forEach(d => resultData.push(dataToProfileListResult(d)));
     return res.status(200).send(resultData);
   } catch (err) {
@@ -138,7 +138,7 @@ export async function getList(req: UserRequest, res: Response): Promise<Response
       ],
       order: [[database.Profiles, 'name', 'ASC']],
     });
-    const resultData = [] as SimpleProfileListInterface[];
+    const resultData = [] as SimpleProfilesListInterface[];
     if (data.length > 0) data.forEach(d => resultData.push(dataToSimpleProfileListResult(d)));
     return res.status(200).send(resultData);
   } catch (err) {

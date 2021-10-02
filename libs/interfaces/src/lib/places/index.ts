@@ -1,4 +1,5 @@
-import { SimpleProfileListInterface } from "../profiles";
+import { MembersSimpleInterface } from "../members";
+import { SimpleProfilesListInterface } from "../profiles";
 
 export interface PlacesInterface {
   id?: string;
@@ -14,6 +15,25 @@ export interface PlacesInterface {
   state?: string;
   active?: boolean;
   tenantId?: string;
-  managersOffice?: SimpleProfileListInterface[];
-  usersOffice?: SimpleProfileListInterface[];
+  managersOffice?: SimpleProfilesListInterface[];
+  usersOffice?: SimpleProfilesListInterface[];
+}
+
+export interface PlacesFormDataInterface {
+  formData: PlacesInterface;
+}
+
+export interface PlacesActiveInterface {
+  active: boolean;
+  officeId: string;
+}
+
+export interface PlacesManagerInterface {
+  officeId: string;
+  managersList: MembersSimpleInterface[];
+}
+
+export interface PlacesUsersInterface {
+  officeId: string;
+  usersList: MembersSimpleInterface[];
 }
