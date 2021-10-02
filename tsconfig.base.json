@@ -37,6 +37,9 @@
         "libs/landing-page/components/src/index.ts"
       ],
       "@iustitia/landing-page/pages": ["libs/landing-page/pages/src/index.ts"],
+      "@iustitia/landing-page/routes": [
+        "libs/landing-page/routes/src/index.ts"
+      ],
       "@iustitia/site-modules": ["libs/site-modules/src/index.ts"],
       "@iustitia/site/auth": ["libs/site/auth/src/index.ts"],
       "@iustitia/site/icons": ["libs/site/icons/src/index.ts"],

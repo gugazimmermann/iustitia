@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { LandingPageRoutes as Routes } from "@iustitia/react-routes"
+import { Routes } from "@iustitia/landing-page/routes";
 
 export function Footer() {
   return (

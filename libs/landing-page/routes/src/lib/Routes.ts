@@ -1,4 +1,4 @@
-export enum LandingPageRoutes {
+export enum Routes {
   Functionalities = "/funcionalidades",
   Plans = "/planos",
   Faq = "/faq",
@@ -10,4 +10,4 @@ export enum LandingPageRoutes {
   Contact = "/contato",
 }
 
-export default LandingPageRoutes;
+export default Routes;

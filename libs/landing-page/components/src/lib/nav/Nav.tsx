@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { LandingPageRoutes as Routes } from "@iustitia/react-routes"
+import { Routes } from "@iustitia/landing-page/routes";
 import { NavItem } from "../..";
 
 export function Nav() {

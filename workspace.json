@@ -554,6 +554,27 @@
         }
       }
     },
+    "landing-page-routes": {
+      "root": "libs/landing-page/routes",
+      "sourceRoot": "libs/landing-page/routes/src",
+      "projectType": "library",
+      "targets": {
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["libs/landing-page/routes/**/*.ts"]
+          }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/landing-page/routes"],
+          "options": {
+            "jestConfig": "libs/landing-page/routes/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
     "site": {
       "root": "apps/site",
       "sourceRoot": "apps/site/src",
