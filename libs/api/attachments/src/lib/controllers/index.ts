@@ -1,9 +1,9 @@
 import { Response } from "express";
 import * as AWS from 'aws-sdk';
 import { DateTime } from "luxon";
-import { AttachmentsInterface, UserRequest } from "@iustitia/interfaces";
+import { AttachmentsInterface } from "@iustitia/interfaces";
 import { AttachmentsInstance, database } from "@iustitia/api/database";
-import { sitemodule } from "../..";
+import { attchmentPath } from "../Attachments";
 
 const S3 = new AWS.S3();
 AWS.config.update({
@@ -24,7 +24,7 @@ function dataToResult(data: AttachmentsInstance): AttachmentsInterface {
 function attchmentName(tenant: string, ownertId: string, originalname: string): string {
   const d = new Date();
   const now = `${d.getHours()}${d.getMinutes()}${d.getSeconds()}${d.getMilliseconds()}`
-  return `${tenant}/${sitemodule.name}/${ownertId.split("-").join("")}/${originalname}_${now}`
+  return `${tenant}/${attchmentPath}/${ownertId.split("-").join("")}/${originalname}_${now}`
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -52,7 +52,7 @@ export async function deleteFromBucket(fileName: string, bucket: string): Promis
   }
 }
 
-export async function getAll(req: UserRequest, res: Response): Promise<Response> {
+export async function getAll(req, res): Promise<Response> {
   const { tenantId, ownerId } = req.params;
   if (!tenantId || !ownerId) return res.status(400).send({ message: "Dados inválidos!" });
   try {
@@ -67,7 +67,7 @@ export async function getAll(req: UserRequest, res: Response): Promise<Response>
   }
 }
 
-export async function create(req: UserRequest, res: Response): Promise<Response> {
+export async function create(req, res): Promise<Response> {
   const { body } = req;
   if (!body.ownerId) return res.status(400).send({ message: "Dados inválidos!" });
   try {
@@ -89,7 +89,7 @@ export async function create(req: UserRequest, res: Response): Promise<Response>
   }
 }
 
-export async function deleteOne(req: UserRequest, res: Response): Promise<Response> {
+export async function deleteOne(req, res): Promise<Response> {
   const { id } = req.params;
   if (!id) return res.status(400).send({ message: "Dados inválidos!" });
   try {

@@ -5,7 +5,7 @@ import { GetModule, SiteModulesEnum } from "@iustitia/site-modules";
 import { getProfile, updateProfile } from "./controllers";
 
 const sitemodule = GetModule(SiteModulesEnum.profiles);
-if (!undefined) throw new Error("Module not Found!")
+if (!sitemodule) throw new Error("Module not Found!")
 
 export function Profiles(app: Express) {
   const upload = multer()

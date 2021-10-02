@@ -4,7 +4,7 @@ import { GetModule, SiteModulesEnum } from "@iustitia/site-modules";
 import { getPlans, getSubscription, getPayments, getCreditcards } from "./controllers";
 
 const sitemodule = GetModule(SiteModulesEnum.subscriptions);
-if (!undefined) throw new Error("Module not Found!")
+if (!sitemodule) throw new Error("Module not Found!")
 
 export function Subscriptions(app: Express) {
   app.get(`/api/${sitemodule.name}/plans`, getPlans);

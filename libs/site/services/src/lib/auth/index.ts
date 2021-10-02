@@ -17,7 +17,7 @@ import TokenService from "./token";
 
 
 const sitemodule = GetModule(SiteModulesEnum.auth);
-if (!undefined) throw new Error("Module not Found!")
+if (!sitemodule) throw new Error("Module not Found!")
 
 export async function signup(
   { name, email, password, planId, cardInfo }: SignUpInterface

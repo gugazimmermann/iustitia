@@ -4,7 +4,7 @@ import { GetModule, SiteModulesEnum } from "@iustitia/site-modules";
 import { count, create, getOne, getAll, active, managers, users, update, deleteOne } from "./controllers";
 
 const sitemodule = GetModule(SiteModulesEnum.places);
-if (!undefined) throw new Error("Module not Found!")
+if (!sitemodule) throw new Error("Module not Found!")
 
 export function Places(app: Express) {
   app.get(`/api/${sitemodule.name}/:tenantId`, [verifyToken], getAll);

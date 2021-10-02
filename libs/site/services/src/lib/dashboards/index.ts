@@ -4,7 +4,7 @@ import { errorHandler } from "@iustitia/site/shared-utils";
 import { api } from "../..";
 
 const sitemodule = GetModule(SiteModulesEnum.businessContacts);
-if (!undefined) throw new Error("Module not Found!")
+if (!sitemodule) throw new Error("Module not Found!")
 
 export async function placeholderFunction(): Promise<ApiMessageInterface | Error> {
   try {

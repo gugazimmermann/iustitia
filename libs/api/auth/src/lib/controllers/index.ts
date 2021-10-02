@@ -4,7 +4,6 @@ import * as bcrypt from "bcryptjs";
 import { v4 as uuidv4 } from 'uuid';
 import { DateTime } from "luxon";
 import * as mercadopago from 'mercadopago';
-import { UserRequest } from "@iustitia/interfaces";
 import { database } from '@iustitia/api/database';
 import { ForgotPasswordEmail } from '@iustitia/api/email';
 import { validateEmail } from "@iustitia/site/shared-utils";
@@ -235,7 +234,7 @@ export async function refreshToken(req: Request, res: Response): Promise<Respons
   }
 }
 
-export async function me(req: UserRequest, res: Response): Promise<Response> {
+export async function me(req, res): Promise<Response> {
   try {
     const user = await database.AuthUsers.findOne({ where: { id: req.userId } });
     if (!user) {

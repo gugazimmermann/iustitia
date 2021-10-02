@@ -5,7 +5,7 @@ import { ApiIdInterface, ApiMessageInterface } from "@iustitia/interfaces";
 import { api, token } from "../.."
 
 const sitemodule = GetModule(SiteModulesEnum.schedule);
-if (!undefined) throw new Error("Module not Found!")
+if (!sitemodule) throw new Error("Module not Found!")
 
 export async function getOneEvent(
   { id }: ApiIdInterface

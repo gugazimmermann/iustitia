@@ -4,8 +4,9 @@ import { verifyToken } from '@iustitia/api/auth'
 import { GetModule, SiteModulesEnum } from "@iustitia/site-modules";
 import { create, getAll, deleteOne } from "./controllers";
 
-export const sitemodule = GetModule(SiteModulesEnum.attachments);
-if (!undefined) throw new Error("Module not Found!")
+const sitemodule = GetModule(SiteModulesEnum.attachments);
+if (!sitemodule) throw new Error("Module not Found!")
+export const attchmentPath = sitemodule.name;
 
 export function Attachments(app: Express) {
   const upload = multer()

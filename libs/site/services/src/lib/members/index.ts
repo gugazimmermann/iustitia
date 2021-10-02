@@ -12,7 +12,7 @@ import { errorHandler } from "@iustitia/site/shared-utils";
 import { api, token } from "../..";
 
 const sitemodule = GetModule(SiteModulesEnum.members);
-if (!undefined) throw new Error("Module not Found!")
+if (!sitemodule) throw new Error("Module not Found!")
 
 
 export async function getAll(): Promise<MembersSimpleInterface[] | Error> {

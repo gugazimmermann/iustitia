@@ -1,5 +1,5 @@
 import { Response } from "express";
-import { ScheduleEventsInterface, UserRequest } from "@iustitia/interfaces";
+import { ScheduleEventsInterface } from "@iustitia/interfaces";
 import { database, ScheduleEventsInstance} from '@iustitia/api/database';
 
 function dataToEventsResult(data: ScheduleEventsInstance): ScheduleEventsInterface {
@@ -14,7 +14,7 @@ function dataToEventsResult(data: ScheduleEventsInstance): ScheduleEventsInterfa
   }
 }
 
-export async function getOneEvent(req: UserRequest, res: Response): Promise<Response> {
+export async function getOneEvent(req, res): Promise<Response> {
   const { tenantId, id } = req.params;
   if (!tenantId || !id) return res.status(400).send({ message: "Dados inválidos!" });
   try {
@@ -27,7 +27,7 @@ export async function getOneEvent(req: UserRequest, res: Response): Promise<Resp
   }
 }
 
-export async function getAllEvents(req: UserRequest, res: Response): Promise<Response> {
+export async function getAllEvents(req, res): Promise<Response> {
   const { tenantId, officeId } = req.params;
   if (!tenantId) return res.status(400).send({ message: "Dados inválidos!" });
   try {
@@ -44,7 +44,7 @@ export async function getAllEvents(req: UserRequest, res: Response): Promise<Res
   }
 }
 
-export async function createEvent(req: UserRequest, res: Response): Promise<Response> {
+export async function createEvent(req, res): Promise<Response> {
   const { body } = req;
   if (!body.startDate || !body.endDate || !body.fullDay || !body.color || !body.title || !body.tenantId) return res.status(400).send({ message: "Dados inválidos!" });
   try {
@@ -55,7 +55,7 @@ export async function createEvent(req: UserRequest, res: Response): Promise<Resp
   }
 }
 
-export async function updateEvent(req: UserRequest, res: Response): Promise<Response> {
+export async function updateEvent(req, res): Promise<Response> {
   const { body } = req;
   if (!body.id || !body.startDate || !body.endDate || !body.fullDay || !body.color || !body.title) return res.status(400).send({ message: "Dados inválidos!" });
   try {
@@ -68,7 +68,7 @@ export async function updateEvent(req: UserRequest, res: Response): Promise<Resp
   }
 }
 
-export async function deleteOneEvent(req: UserRequest, res: Response): Promise<Response> {
+export async function deleteOneEvent(req, res): Promise<Response> {
   const { id } = req.params;
   if (!id) return res.status(400).send({ message: "Dados inválidos!" });
   try {

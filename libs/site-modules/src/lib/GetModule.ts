@@ -8,7 +8,7 @@ import ModulesProperties from "./ModulesProperties";
  */
 export function GetModule(name: string): SiteModulesInterface | undefined {
   const module = ModulesProperties.find((m) => m.name === name);
-  return module || undefined;
+  return module ? module : undefined;
 }
 
 export default GetModule;

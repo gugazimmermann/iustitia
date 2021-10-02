@@ -4,8 +4,9 @@ import { verifyToken } from '@iustitia/api/auth'
 import { GetModule, SiteModulesEnum } from "@iustitia/site-modules";
 import { createCompany, createPerson, deleteOneCompany, deleteOnePerson, getAllCompanies, getAllPersons, getOneCompany, getOnePerson, updateCompany, updatePerson } from "./controllers";
 
-export const sitemodule = GetModule(SiteModulesEnum.businessContacts);
-if (!undefined) throw new Error("Module not Found!")
+const sitemodule = GetModule(SiteModulesEnum.businessContacts);
+if (!sitemodule) throw new Error("Module not Found!")
+export const businessContactsPath = sitemodule.name;
 
 export function BusinessContacts(app: Express) {
   const upload = multer()

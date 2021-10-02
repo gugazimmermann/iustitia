@@ -1,5 +1,5 @@
 import { database, NotesInstance } from "@iustitia/api/database";
-import { NotesInterface, UserRequest } from "@iustitia/interfaces";
+import { NotesInterface } from "@iustitia/interfaces";
 import { Response } from "express";
 import { DateTime } from "luxon";
 
@@ -12,7 +12,7 @@ function dataToResult(data: NotesInstance): NotesInterface {
   }
 }
 
-export async function getAll(req: UserRequest, res: Response): Promise<Response> {
+export async function getAll(req, res): Promise<Response> {
   const { tenantId, ownerId } = req.params;
   if (!tenantId || !ownerId) return res.status(400).send({ message: "Dados inválidos!" });
   try {
@@ -27,7 +27,7 @@ export async function getAll(req: UserRequest, res: Response): Promise<Response>
   }
 }
 
-export async function create(req: UserRequest, res: Response): Promise<Response> {
+export async function create(req, res): Promise<Response> {
   const { body } = req;
   if (!body.title || !body.content || !body.ownerId) return res.status(400).send({ message: "Dados inválidos!" });
   try {
@@ -42,7 +42,7 @@ export async function create(req: UserRequest, res: Response): Promise<Response>
   }
 }
 
-export async function update(req: UserRequest, res: Response): Promise<Response> {
+export async function update(req, res): Promise<Response> {
   const { body } = req;
   if (!body.id || !body.title || !body.content) return res.status(400).send({ message: "Dados inválidos!" });
   try {
@@ -55,7 +55,7 @@ export async function update(req: UserRequest, res: Response): Promise<Response>
   }
 }
 
-export async function deleteOne(req: UserRequest, res: Response): Promise<Response> {
+export async function deleteOne(req, res): Promise<Response> {
   const { id } = req.params;
   if (!id) return res.status(400).send({ message: "Dados inválidos!" });
   try {

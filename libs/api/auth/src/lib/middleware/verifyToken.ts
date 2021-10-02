@@ -1,6 +1,5 @@
-import { Response, NextFunction } from 'express';
+import { Response } from 'express';
 import * as jwt from "jsonwebtoken";
-import { UserRequest } from "@iustitia/interfaces";
 import config from "../config"
 
 function catchError(err: unknown, res: Response): Response {
@@ -10,8 +9,8 @@ function catchError(err: unknown, res: Response): Response {
   return res.sendStatus(401).send({ message: "Não Autorizado!" });
 };
 
-export default function verifyToken(req: UserRequest, res: Response, next: NextFunction): Response | Error {
-  const token= req.headers["x-access-token"];
+export default function verifyToken(req, res, next) {
+  const token = req.headers["x-access-token"];
   if (!token) return res.status(403).send({ message: "Token é necessário!" });
   jwt.verify((token as string), config.jwtSecret, (err, decoded) => {
     if (err) return catchError(err, res);

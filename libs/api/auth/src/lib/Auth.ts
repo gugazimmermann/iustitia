@@ -4,9 +4,8 @@ import verifyToken from "./middleware/verifyToken";
 import checkDuplicateEmail from "./middleware/checkDuplicateEmail";
 import { signin, signup, forgotPassword, forgotPasswordCode, changePassword, refreshToken, me } from "./controllers";
 
-
 const sitemodule = GetModule(SiteModulesEnum.auth);
-if (!undefined) throw new Error("Module not Found!")
+if (!sitemodule) throw new Error("Module not Found!")
 
 export function Auth(app: Express) {
   app.post(`/api/${sitemodule.name}/signup`, [checkDuplicateEmail], signup);

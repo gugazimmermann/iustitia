@@ -2,9 +2,9 @@ import { Response } from "express";
 import * as AWS from 'aws-sdk';
 import * as sharp from 'sharp';
 import { validateEmail } from '@iustitia/site/shared-utils';
-import { AttachmentFileInterface, BusinessContactsCompaniesInterface, BusinessContactsPersonsInterface, UserRequest } from "@iustitia/interfaces";
+import { AttachmentFileInterface, BusinessContactsCompaniesInterface, BusinessContactsPersonsInterface } from "@iustitia/interfaces";
 import {  BusinessContactsCompaniesInstance, BusinessContactsPersonsInstance, database } from "@iustitia/api/database";
-import { sitemodule } from "../..";
+import { businessContactsPath } from "../BusinessContacts";
 
 const S3 = new AWS.S3();
 AWS.config.update({
@@ -58,7 +58,7 @@ function dataToCompaniesResult(data: BusinessContactsCompaniesInstance): Busines
 function avatarName(id: string, tenantId: string): string {
   const d = new Date();
   const now = `${d.getHours()}${d.getMinutes()}${d.getSeconds()}${d.getMilliseconds()}`
-  return `${tenantId}/${sitemodule.name}/${id.split("-").join("")}${now}.jpeg`
+  return `${tenantId}/${businessContactsPath}/${id.split("-").join("")}${now}.jpeg`
 }
 
 async function sendAvatar(file: AttachmentFileInterface, fileName: string): Promise<AWS.S3.ManagedUpload.SendData> {
@@ -86,7 +86,7 @@ export async function deleteFromBucket(fileName: string, bucket: string): Promis
   }
 }
 
-export async function getOnePerson(req: UserRequest, res: Response): Promise<Response> {
+export async function getOnePerson(req, res): Promise<Response> {
   const { tenantId, id } = req.params;
   if (!tenantId || !id) return res.status(400).send({ message: "Dados inválidos!" });
   try {
@@ -102,7 +102,7 @@ export async function getOnePerson(req: UserRequest, res: Response): Promise<Res
   }
 }
 
-export async function getAllPersons(req: UserRequest, res: Response): Promise<Response> {
+export async function getAllPersons(req, res): Promise<Response> {
   const { tenantId } = req.params;
   if (!tenantId) return res.status(400).send({ message: "Dados inválidos!" });
   try {
@@ -117,7 +117,7 @@ export async function getAllPersons(req: UserRequest, res: Response): Promise<Re
   }
 }
 
-export async function createPerson(req: UserRequest, res: Response): Promise<Response> {
+export async function createPerson(req, res): Promise<Response> {
   const { body } = req;
   if (!body.type || !body.name || !body.tenantId) return res.status(400).send({ message: "Dados inválidos!" });
   if (body.email && !validateEmail(body.email)) return res.status(400).send({ message: "Dados inválidos!" });
@@ -137,7 +137,7 @@ export async function createPerson(req: UserRequest, res: Response): Promise<Res
   }
 }
 
-export async function updatePerson(req: UserRequest, res: Response): Promise<Response> {
+export async function updatePerson(req, res): Promise<Response> {
   const { body } = req;
   if (!body.id || !body.type || !body.name) return res.status(400).send({ message: "Dados inválidos!" });
   if (body.email && !validateEmail(body.email)) return res.status(400).send({ message: "Dados inválidos!" });
@@ -170,7 +170,7 @@ export async function updatePerson(req: UserRequest, res: Response): Promise<Res
   }
 }
 
-export async function deleteOnePerson(req: UserRequest, res: Response): Promise<Response> {
+export async function deleteOnePerson(req, res): Promise<Response> {
   const { id } = req.params;
   if (!id) return res.status(400).send({ message: "Dados inválidos!" });
   try {
@@ -194,7 +194,7 @@ export async function deleteOnePerson(req: UserRequest, res: Response): Promise<
   }
 }
 
-export async function getOneCompany(req: UserRequest, res: Response): Promise<Response> {
+export async function getOneCompany(req, res): Promise<Response> {
   const { tenantId, id } = req.params;
   if (!tenantId || !id) return res.status(400).send({ message: "Dados inválidos!" });
   try {
@@ -212,7 +212,7 @@ export async function getOneCompany(req: UserRequest, res: Response): Promise<Re
   }
 }
 
-export async function getAllCompanies(req: UserRequest, res: Response): Promise<Response> {
+export async function getAllCompanies(req, res): Promise<Response> {
   const { tenantId } = req.params;
   if (!tenantId) return res.status(400).send({ message: "Dados inválidos!" });
   try {
@@ -227,7 +227,7 @@ export async function getAllCompanies(req: UserRequest, res: Response): Promise<
   }
 }
 
-export async function createCompany(req: UserRequest, res: Response): Promise<Response> {
+export async function createCompany(req, res): Promise<Response> {
   const { body } = req;
   if (!body.name || !body.tenantId) return res.status(400).send({ message: "Dados inválidos!" });
   if (body.email && !validateEmail(body.email)) return res.status(400).send({ message: "Dados inválidos!" });
@@ -239,7 +239,7 @@ export async function createCompany(req: UserRequest, res: Response): Promise<Re
   }
 }
 
-export async function updateCompany(req: UserRequest, res: Response): Promise<Response> {
+export async function updateCompany(req, res): Promise<Response> {
   const { body } = req;
   if (!body.id || !body.name) return res.status(400).send({ message: "Dados inválidos!" });
   if (body.email && !validateEmail(body.email)) return res.status(400).send({ message: "Dados inválidos!" });
@@ -253,7 +253,7 @@ export async function updateCompany(req: UserRequest, res: Response): Promise<Re
   }
 }
 
-export async function deleteOneCompany(req: UserRequest, res: Response): Promise<Response> {
+export async function deleteOneCompany(req, res): Promise<Response> {
   const { id } = req.params;
   if (!id) return res.status(400).send({ message: "Dados inválidos!" });
   try {

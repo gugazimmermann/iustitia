@@ -10,7 +10,7 @@ import {
 import { api, token } from "../..";
 
 const sitemodule = GetModule(SiteModulesEnum.notes);
-if (!undefined) throw new Error("Module not Found!")
+if (!sitemodule) throw new Error("Module not Found!")
 
 export async function getAll(
   { ownerId }: NotesGetAllInterface

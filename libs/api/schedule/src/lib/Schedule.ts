@@ -3,8 +3,8 @@ import { verifyToken } from '@iustitia/api/auth'
 import { GetModule, SiteModulesEnum } from "@iustitia/site-modules";
 import { createEvent, deleteOneEvent, getAllEvents, getOneEvent, updateEvent } from "./controllers";
 
-export const sitemodule = GetModule(SiteModulesEnum.schedule);
-if (!undefined) throw new Error("Module not Found!")
+const sitemodule = GetModule(SiteModulesEnum.schedule);
+if (!sitemodule) throw new Error("Module not Found!")
 
 export function Schedule(app: Express) {
   app.get(`/api/${sitemodule.name}/events/:tenantId`, [verifyToken], getAllEvents);

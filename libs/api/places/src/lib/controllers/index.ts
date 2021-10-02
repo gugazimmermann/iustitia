@@ -1,5 +1,5 @@
 import { Response } from "express";
-import { PlacesInterface, SimpleProfilesListInterface, UserRequest } from "@iustitia/interfaces";
+import { PlacesInterface, SimpleProfilesListInterface } from "@iustitia/interfaces";
 import { AuthUsersInstance, database, PlacesInstance } from '@iustitia/api/database';
 import { validateEmail } from '@iustitia/site/shared-utils';
 
@@ -66,7 +66,7 @@ async function findOfficeById(id: string): Promise<PlacesInstance | Error> {
   }
 }
 
-export async function getAll(req: UserRequest, res: Response): Promise<Response> {
+export async function getAll(req, res): Promise<Response> {
   const { tenantId } = req.params;
   if (!tenantId) return res.status(400).send({ message: "Dados inválidos!" });
   try {
@@ -113,7 +113,7 @@ export async function getAll(req: UserRequest, res: Response): Promise<Response>
   }
 }
 
-export async function getOne(req: UserRequest, res: Response): Promise<Response> {
+export async function getOne(req, res): Promise<Response> {
   const { tenantId, id } = req.params;
   if (!tenantId || !id) return res.status(400).send({ message: "Dados inválidos!" });
   try {
@@ -126,7 +126,7 @@ export async function getOne(req: UserRequest, res: Response): Promise<Response>
   }
 }
 
-export async function create(req: UserRequest, res: Response): Promise<Response> {
+export async function create(req, res): Promise<Response> {
   const { body } = req;
   if (!body.name || !body.zip || !body.address || !body.neighborhood || !body.city || !body.state || !body.tenantId) return res.status(400).send({ message: "Dados inválidos!" });
   if (body.email && !validateEmail(body.email)) return res.status(400).send({ message: "Dados inválidos!" });
@@ -138,7 +138,7 @@ export async function create(req: UserRequest, res: Response): Promise<Response>
   }
 }
 
-export async function update(req: UserRequest, res: Response): Promise<Response> {
+export async function update(req, res): Promise<Response> {
   const { body } = req;
   if (!body.id || !body.name || !body.zip || !body.address || !body.neighborhood || !body.city || !body.state) return res.status(400).send({ message: "Dados inválidos!" });
   if (body.email && !validateEmail(body.email)) return res.status(400).send({ message: "Dados inválidos!" });
@@ -152,7 +152,7 @@ export async function update(req: UserRequest, res: Response): Promise<Response>
   }
 }
 
-export async function deleteOne(req: UserRequest, res: Response): Promise<Response> {
+export async function deleteOne(req, res): Promise<Response> {
   const { id } = req.params;
   if (!id) return res.status(400).send({ message: "Dados inválidos!" });
   try {
@@ -167,7 +167,7 @@ export async function deleteOne(req: UserRequest, res: Response): Promise<Respon
   }
 }
 
-export async function count(req: UserRequest, res: Response): Promise<Response> {
+export async function count(req, res): Promise<Response> {
   const { tenantId } = req.params;
   if (!tenantId) return res.status(400).send({ message: "Dados inválidos!" });
   try {
@@ -180,7 +180,7 @@ export async function count(req: UserRequest, res: Response): Promise<Response> 
   }
 }
 
-export async function active(req: UserRequest, res: Response): Promise<Response> {
+export async function active(req, res): Promise<Response> {
   const { tenantId } = req.params;
   if (!tenantId) return res.status(400).send({ message: "Dados inválidos!" });
   const { body } = req;
@@ -199,7 +199,7 @@ export async function active(req: UserRequest, res: Response): Promise<Response>
   }
 }
 
-export async function managers(req: UserRequest, res: Response): Promise<Response> {
+export async function managers(req, res): Promise<Response> {
   const { tenantId } = req.params;
   if (!tenantId) return res.status(400).send({ message: "Dados inválidos!" });
   const { body } = req;
@@ -220,7 +220,7 @@ export async function managers(req: UserRequest, res: Response): Promise<Respons
   }
 }
 
-export async function users(req: UserRequest, res: Response): Promise<Response> {
+export async function users(req, res): Promise<Response> {
   const { tenantId } = req.params;
   if (!tenantId) return res.status(400).send({ message: "Dados inválidos!" });
   const { body } = req;

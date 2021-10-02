@@ -4,7 +4,7 @@ import { ApiFormDataInterface } from "@iustitia/interfaces";
 import { api } from "../..";
 
 const sitemodule = GetModule(SiteModulesEnum.profiles);
-if (!undefined) throw new Error("Module not Found!")
+if (!sitemodule) throw new Error("Module not Found!")
 
 
 function seeUserParams(profile: ProfileInterface): ProfileInterface {

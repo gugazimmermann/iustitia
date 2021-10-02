@@ -11,7 +11,7 @@ import {
 import { api, token } from "../..";
 
 const sitemodule = GetModule(SiteModulesEnum.businessContacts);
-if (!undefined) throw new Error("Module not Found!")
+if (!sitemodule) throw new Error("Module not Found!")
 
 export async function getOnePerson(
   { id }: ApiIdInterface

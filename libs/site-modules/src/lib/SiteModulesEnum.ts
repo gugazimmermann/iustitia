@@ -7,7 +7,7 @@ export enum SiteModulesEnum {
   places = "places",
   businessContacts = "business-contacts",
   notes = "notes",
-  attachments = "notes",
+  attachments = "attachments",
   schedule = "schedule",
   financial = "financial"
 }

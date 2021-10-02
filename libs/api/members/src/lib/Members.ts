@@ -3,8 +3,8 @@ import { verifyToken } from '@iustitia/api/auth'
 import { create, getInviteCode, sendInvite, createInvite, getAll, getInvites, deleteInvite, getList, getOne } from './controllers';
 import { GetModule, SiteModulesEnum } from "@iustitia/site-modules";
 
-export const sitemodule = GetModule(SiteModulesEnum.members);
-if (!undefined) throw new Error("Module not Found!")
+const sitemodule = GetModule(SiteModulesEnum.members);
+if (!sitemodule) throw new Error("Module not Found!")
 
 export function Members(app: Express) {
   app.get(`/api/${sitemodule.name}/:tenantId`, [verifyToken], getAll);

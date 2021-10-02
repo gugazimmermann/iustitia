@@ -1,11 +1,10 @@
 import { Op } from "sequelize";
 import { Request, Response } from "express";
 import * as bcrypt from "bcryptjs";
-import { MembersInterface, ProfilesListInterface, SimpleProfilesListInterface, UserRequest } from "@iustitia/interfaces";
+import { MembersInterface, ProfilesListInterface, SimpleProfilesListInterface } from "@iustitia/interfaces";
 import { database, MembersInstance, AuthUsersInstance } from '@iustitia/api/database';
 import { InvitationEmail } from "@iustitia/api/email";
 import { validateEmail } from '@iustitia/site/shared-utils';
-
 
 function dataToPeopleResult(data: MembersInstance): MembersInterface {
   return {
@@ -36,7 +35,7 @@ function dataToSimpleProfileListResult(data: AuthUsersInstance): SimpleProfilesL
   }
 }
 
-export async function getAll(req: UserRequest, res: Response): Promise<Response> {
+export async function getAll(req, res): Promise<Response> {
   const { tenantId } = req.params;
   if (!tenantId) return res.status(400).send({ message: "Dados inválidos!" });
   try {
@@ -58,7 +57,7 @@ export async function getAll(req: UserRequest, res: Response): Promise<Response>
   }
 }
 
-export async function getOne(req: UserRequest, res: Response): Promise<Response> {
+export async function getOne(req, res): Promise<Response> {
   const { tenantId, id } = req.params;
   if (!tenantId || !id) return res.status(400).send({ message: "Dados inválidos!" });
   try {
@@ -117,7 +116,7 @@ export async function create(req: Request, res: Response): Promise<Response> {
   }
 }
 
-export async function getList(req: UserRequest, res: Response): Promise<Response> {
+export async function getList(req, res): Promise<Response> {
   const { tenantId } = req.params;
   if (!tenantId) return res.status(400).send({ message: "Dados inválidos!" });
   try {
@@ -146,7 +145,7 @@ export async function getList(req: UserRequest, res: Response): Promise<Response
   }
 }
 
-export async function getInvites(req: UserRequest, res: Response): Promise<Response> {
+export async function getInvites(req, res): Promise<Response> {
   const { tenantId } = req.params;
   if (!tenantId) return res.status(400).send({ message: "Dados inválidos!" });
   try {
@@ -174,7 +173,7 @@ export async function getInviteCode(req: Request, res: Response): Promise<Respon
   }
 }
 
-export async function createInvite(req: UserRequest, res: Response): Promise<Response> {
+export async function createInvite(req, res): Promise<Response> {
   const { tenantId } = req.params;
   if (!tenantId) return res.status(400).send({ message: "Dados inválidos!" });
   const { body } = req;
@@ -210,7 +209,7 @@ export async function createInvite(req: UserRequest, res: Response): Promise<Res
   }
 }
 
-export async function sendInvite(req: UserRequest, res: Response): Promise<Response> {
+export async function sendInvite(req, res): Promise<Response> {
   const { tenantId, id } = req.params;
   if (!tenantId || !id) return res.status(400).send({ message: "Dados inválidos!" });
   try {
@@ -235,7 +234,7 @@ export async function sendInvite(req: UserRequest, res: Response): Promise<Respo
   }
 }
 
-export async function deleteInvite(req: UserRequest, res: Response): Promise<Response> {
+export async function deleteInvite(req, res): Promise<Response> {
   const { id } = req.params;
   if (!id) return res.status(400).send({ message: "Dados inválidos!" });
   try {
