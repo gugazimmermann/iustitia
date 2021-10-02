@@ -1,5 +1,4 @@
-import { AttachmentIcon } from "../..";
-import { TrashIcon } from "../icons";
+import { AttachmentIcon, TrashIcon } from "@iustitia/site/icons";
 
 interface AttachmentInterface {
   id: string;

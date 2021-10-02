@@ -7,8 +7,8 @@ import {
   LoadingButton,
 } from "@iustitia/site/shared-components";
 import { validateEmail, WARNING_TYPES } from "@iustitia/site/shared-utils";
-import { AuthService } from "@iustitia/site/services";
-import { AuthRoutes, getModulesRoutes, SiteModules } from "@iustitia/site-modules";
+import { AuthServices } from "@iustitia/site/services";
+import { AuthRoutes } from "@iustitia/site-modules";
 import { Title, Link, SignupLink } from "../..";
 
 type Form = {
@@ -78,7 +78,7 @@ export function SignIn() {
       return;
     }
     try {
-      await AuthService.signin(form);
+      await AuthServices.signin(form);
       setLoading(false);
       history.push(getModulesRoutes()[SiteModules.dashboard]);
       // eslint-disable-next-line @typescript-eslint/no-explicit-any

@@ -1,4 +1,4 @@
-import { ArrowDownIcon, ArrowUpIcon } from "../..";
+import { ArrowDownIcon, ArrowUpIcon } from "@iustitia/site/icons";
 
 export interface ListHeaderItems {
   name: string;

@@ -1,18 +1,11 @@
-import { PenIcon, TrashIcon } from "../icons";
+import { NotesInterface } from "@iustitia/interfaces";
+import { PenIcon, TrashIcon } from "@iustitia/site/icons";
 
-interface NoteInterface {
-  id?: string;
-  date: string;
-  title: string;
-  content: string;
-  tenantId?: string;
-  ownerId: string;
-}
 export interface NoteShowProps {
-  note: NoteInterface;
+  note: NotesInterface;
   loading: boolean;
-  setEditNote(editNote: NoteInterface): void;
-  setSelectedNote(selectedNote: NoteInterface): void;
+  setEditNote(editNote: NotesInterface): void;
+  setSelectedNote(selectedNote: NotesInterface): void;
 }
 
 export function NoteShow({ note, loading, setEditNote, setSelectedNote }: NoteShowProps) {

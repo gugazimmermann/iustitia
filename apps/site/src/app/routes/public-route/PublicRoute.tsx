@@ -1,14 +1,15 @@
 import { useEffect, useState } from "react";
 import { Redirect, Route, RouteProps } from "react-router-dom";
 import { SiteRoutes as Routes } from "@iustitia/react-routes";
-import { AuthService } from "@iustitia/site/services";
+import { AuthServices } from "@iustitia/site/services";
+import { UserInterface } from "@iustitia/interfaces";
 
 export function PublicRoute({ children, ...rest }: RouteProps) {
   const [loading, setLoading] = useState(true);
-  const [user, setUser] = useState({} as AuthService.UserInterface);
+  const [user, setUser] = useState({} as UserInterface);
 
   useEffect(() => {
-    if (AuthService.getUser()) {
+    if (AuthServices.getUser()) {
       currentUser();
     } else {
       setLoading(false);
@@ -17,11 +18,11 @@ export function PublicRoute({ children, ...rest }: RouteProps) {
 
   async function currentUser() {
     try {
-      const currentUser = await AuthService.getMe();
+      const currentUser = (await AuthServices.getMe()) as UserInterface;
       setUser(currentUser);
       setLoading(false);
     } catch (err) {
-      AuthService.logout();
+      AuthServices.logout();
       setLoading(false);
       console.log(err);
     }

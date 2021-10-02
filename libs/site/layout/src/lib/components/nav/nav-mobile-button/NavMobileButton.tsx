@@ -1,4 +1,4 @@
-import { ButtonMobileIcon } from "@iustitia/site/shared-components";
+import { ButtonMobileIcon } from "@iustitia/site/icons";
 
 export interface NavMobileButtonProps {
   setNavOpen(navOpen: boolean): void;

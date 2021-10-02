@@ -4,12 +4,12 @@ import { useForm } from "react-hook-form";
 import TextareaAutosize from "react-textarea-autosize";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { CalendarIcon, CalendarInput, ColorPicker } from "../..";
-import { ColorPaletteIcon } from "../icons";
 import {
   SeeEventBackgroundColor,
   SeeEventTextColor,
 } from "@iustitia/site/shared-utils";
+import { ColorPaletteIcon, CalendarIcon } from "@iustitia/site/icons";
+import { ColorPicker, CalendarDayInput } from "../..";
 
 interface EventInterface {
   id?: string;
@@ -160,7 +160,7 @@ export function EventNewModal({
                     <CalendarIcon styles="h-6 w-6 text-gray-500" />
                   </div>
                   {showStartDayModal && (
-                    <CalendarInput
+                    <CalendarDayInput
                       start={DateTime.fromFormat("01/01/1900", "dd/MM/yyyy")}
                       day={selectedStartDay}
                       action={setSelectedStartDay}
@@ -221,7 +221,7 @@ export function EventNewModal({
                     <CalendarIcon styles="h-6 w-6 text-gray-500" />
                   </div>
                   {showEndDayModal && (
-                    <CalendarInput
+                    <CalendarDayInput
                       start={DateTime.fromFormat(
                         getValues("startDay") as string,
                         "dd 'de' MMMM 'de' yyyy"

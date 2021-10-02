@@ -1,4 +1,4 @@
-import { CaseIcon, GraphDownIcon, GraphUpIcon, MoneyIcon, PeopleIcon } from "../..";
+import { MoneyIcon, PeopleIcon, GraphUpIcon, GraphDownIcon, CaseIcon } from "@iustitia/site/icons";
 
 export enum INFOCARDSICONS {
   MONEY = "money",

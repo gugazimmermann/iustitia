@@ -57,10 +57,10 @@ export async function forgotpassword(
 };
 
 export async function getforgotpasswordcode(
-  { urlcode }: ForgotPasswordCodeInterface
+  { codeurl }: ForgotPasswordCodeInterface
 ): Promise<ForgotPasswordCodeResponseInterface | Error> {
   try {
-    const { data } = await api.post(`/api/${sitemodule.name}/forgotpasswordcode`, { urlcode });
+    const { data } = await api.post(`/api/${sitemodule.name}/forgotpasswordcode`, { codeurl });
     return data;
   } catch (err) {
     return errorHandler(err)

@@ -1,6 +1,6 @@
-import { PeopleServices } from "@iustitia/site/services";
+import { CheckIcon } from "@iustitia/site/icons";
 import { getUserInitials } from "@iustitia/site/shared-utils";
-import { CheckIcon, useCloseModal } from "../..";
+import { useCloseModal } from "../..";
 
 export interface AvatarModalContentListProps {
   peopleList: PeopleServices.SimpleUserInterface[];

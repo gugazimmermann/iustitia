@@ -1,9 +1,9 @@
+import { ProfilesInterface } from "@iustitia/interfaces";
 import { menuItems } from "@iustitia/site-modules";
-import { ProfileInterface } from "../../Layout";
 import { MenuFooter, MenuItem, MenuTitle } from ".";
 
 interface MenuProps {
-  profile: ProfileInterface;
+  profile: ProfilesInterface;
   offices: number;
   setMenuOpen(menuOpen: boolean): void;
   menuOpen: boolean;

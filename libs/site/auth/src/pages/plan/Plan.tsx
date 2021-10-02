@@ -3,14 +3,14 @@ import { useHistory, useLocation, Redirect } from "react-router-dom";
 import {
   Alert,
   AlertInterface,
-  PlanBasicIcon,
-  PlanProfessionalIcon,
 } from "@iustitia/site/shared-components";
 import { WARNING_TYPES } from "@iustitia/site/shared-utils";
-import { AuthService, SubscriptionServices } from "@iustitia/site/services";
+import { AuthServices, SubscriptionsServices } from "@iustitia/site/services";
 import { BasicFeatures, ProfessionalFeatures } from "./features";
 import { SignUpForm } from "../..";
 import { AuthRoutes } from "@iustitia/site-modules";
+import { PlanInterface } from "@iustitia/interfaces";
+import { PlanBasicIcon, PlanProfessionalIcon } from "@iustitia/site/icons";
 
 interface State {
   form: SignUpForm;
@@ -34,7 +34,7 @@ export function Plan() {
   useEffect(() => {
     async function Plans() {
       try {
-        const data = (await SubscriptionServices.getPlans()) as PlanInterface[];
+        const data = (await SubscriptionsServices.getPlans()) as PlanInterface[];
         const freePlan = data.find((p) => p.transactionAmount === 0);
         setSelectedPlan(freePlan?.id || "");
         setPlan(freePlan);
@@ -110,7 +110,7 @@ export function Plan() {
       history.push(AuthRoutes.Subscription, { form, plan: plan });
     } else {
       try {
-        await AuthService.signup({
+        await AuthServices.signup({
           name: form.name,
           email: form.email,
           password: form.password,

@@ -1,14 +1,5 @@
+import { AudioIcon, VideoIcon, TextIcon, SheetIcon, PresentationIcon, ZipIcon, PdfIcon, FileUnknowIcon } from "@iustitia/site/icons";
 import { formatBytes } from "@iustitia/site/shared-utils";
-import {
-  AudioIcon,
-  VideoIcon,
-  TextIcon,
-  SheetIcon,
-  PresentationIcon,
-  ZipIcon,
-  PdfIcon,
-  FileUnknowIcon,
-} from "../icons";
 import { AttachmentFile } from "./AttachmentUploadModal";
 
 function imgPreview(

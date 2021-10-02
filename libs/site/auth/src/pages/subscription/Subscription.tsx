@@ -1,12 +1,23 @@
 import { useEffect, useState } from "react";
 import { useHistory, useLocation, Redirect } from "react-router-dom";
 import { useForm } from "react-hook-form";
-import { SiteRoutes as Routes } from "@iustitia/react-routes";
-import { Alert, AlertInterface, LoadingButton } from "@iustitia/site/shared-components";
+import { AuthRoutes } from "@iustitia/site-modules";
+import {
+  Alert,
+  AlertInterface,
+  LoadingButton,
+} from "@iustitia/site/shared-components";
 import { WARNING_TYPES } from "@iustitia/site/shared-utils";
-import { AuthService } from "@iustitia/site/services";
+import { AuthServices } from "@iustitia/site/services";
 import { MercadoPago } from "./protocols";
-import { PlanInterface, SignUpForm } from "../..";
+import { SignUpForm } from "../..";
+import {
+  CardTokenInterface,
+  CreateCardTokenInterface,
+  IdentificationInterface,
+  PlanInterface,
+  SubscriptionForm,
+} from "@iustitia/interfaces";
 
 const PUBLIC_KEY =
   process.env.NX_STAGE === "dev"
@@ -20,57 +31,6 @@ declare global {
   interface Window {
     MercadoPago: Constructable<MercadoPago>;
   }
-}
-
-type SubscriptionForm = {
-  name: string;
-  cardNumber: string;
-  cardExpiration: string;
-  securityCode: string;
-  documentType: string;
-  document: string;
-};
-
-interface IdentificationInterface {
-  id: string;
-  name: string;
-  type: string;
-  min_length: number;
-  max_length: number;
-}
-
-interface CreateCardTokenInterface {
-  cardNumber: string;
-  cardholderName: string;
-  cardExpirationMonth: string;
-  cardExpirationYear: string;
-  securityCode: string;
-  identificationType: string;
-  identificationNumber: string;
-}
-
-interface CardTokenInterface {
-  card_number_length: number;
-  cardholder: {
-    identification: {
-      number: string;
-      type: string;
-    };
-    name: string;
-  };
-  date_created: string;
-  date_due: string;
-  date_last_updated: string;
-  expiration_month: number;
-  expiration_year: number;
-  first_six_digits: string;
-  id: string;
-  last_four_digits: string;
-  live_mode: boolean;
-  luhn_validatio: boolean;
-  public_key: string;
-  require_esc: boolean;
-  security_code_length: number;
 }
 
 interface State {
@@ -158,7 +118,7 @@ export function Subscription() {
         identificationType: data.documentType,
         identificationNumber: data.document,
       });
-      await AuthService.signup({
+      await AuthServices.signup({
         name: form.name,
         email: form.email,
         password: form.password,
@@ -170,10 +130,10 @@ export function Subscription() {
           expirationYear: token.expiration_year,
           firstSixDigits: token.first_six_digits,
           lastFourDigits: token.last_four_digits,
-        }
+        },
       });
       setLoading(false);
-      history.push(Routes.SignIn, { email: form.email });
+      history.push(AuthRoutes.SignIn, { email: form.email });
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       setShowAlert({
@@ -181,13 +141,13 @@ export function Subscription() {
         message: err.message as string,
         type: WARNING_TYPES.ERROR,
         time: 3000,
-      })
+      });
       setLoading(false);
     }
   };
 
   if (form === undefined || plan === undefined) {
-    return <Redirect to={Routes.SignUp} />;
+    return <Redirect to={AuthRoutes.SignUp} />;
   } else {
     return (
       <main className="bg-white max-w-lg mx-auto p-8 md:p-12 my-10 rounded-lg shadow-2xl">
@@ -368,8 +328,10 @@ export function Subscription() {
         </section>
         {process.env.NX_STAGE === "dev" && (
           <div className="mt-6 text-gray-400">
-            Titular: APRO<br />
-            Mastercard | 5031 4332 1540 6351 | 11/25 | 123<br />
+            Titular: APRO
+            <br />
+            Mastercard | 5031 4332 1540 6351 | 11/25 | 123
+            <br />
             Visa | 4235 6477 2802 5682 | 11/25 | 123
           </div>
         )}

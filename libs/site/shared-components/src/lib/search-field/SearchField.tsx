@@ -1,4 +1,4 @@
-import { SearchIcon } from "../..";
+import { SearchIcon } from "@iustitia/site/icons";
 
 export interface SearchFieldProps {
   setSearchParam(searchParam: string): void;

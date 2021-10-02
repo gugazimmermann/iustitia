@@ -1,10 +1,15 @@
 import { useEffect, useState } from "react";
 import { useHistory, useParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
-import { SiteRoutes as Routes } from "@iustitia/react-routes";
-import { Alert, AlertInterface, LoadingButton } from "@iustitia/site/shared-components";
+import { AuthRoutes } from "@iustitia/site-modules";
+import {
+  Alert,
+  AlertInterface,
+  LoadingButton,
+} from "@iustitia/site/shared-components";
 import { WARNING_TYPES } from "@iustitia/site/shared-utils";
-import { PeopleServices } from "@iustitia/site/services";
+import { MembersServices } from "@iustitia/site/services";
+import { MembersInterface } from "@iustitia/interfaces";
 import { Title } from "../..";
 
 type Form = {
@@ -23,7 +28,7 @@ export function Invite() {
   const { tenantId, code } = useParams<useParamsProps>();
   const [codeUrl, setCodeUrl] = useState(code);
   const [tenantIdUrl, setTenantIdUrl] = useState(tenantId);
-  const [invite, setInvite] = useState<PeopleServices.PeopleInterface>();
+  const [invite, setInvite] = useState<MembersInterface>();
 
   const {
     register,
@@ -47,14 +52,17 @@ export function Invite() {
 
   useEffect(() => {
     if (invite?.code) {
-      setValue("code", invite.code)
+      setValue("code", invite.code);
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [invite]);
 
   async function getCode(tenantIdUrl: string, codeUrl: string) {
     try {
-      const data = (await PeopleServices.getInviteCode(tenantIdUrl, codeUrl)) as PeopleServices.PeopleInterface;
+      const data = (await MembersServices.getInviteCode({
+        tenantId: tenantIdUrl,
+        code: codeUrl,
+      })) as MembersInterface;
       setInvite(data);
       setLoading(false);
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -82,9 +90,16 @@ export function Invite() {
       return;
     }
     try {
-      await PeopleServices.createUser(tenantIdUrl, form.code, form.newpassword);
+      await MembersServices.create({
+        tenantId: tenantIdUrl,
+        code: form.code,
+        password: form.newpassword,
+      });
       setLoading(false);
-      history.push(Routes.SignIn, { inviteaccepted: true, email: invite?.email });
+      history.push(AuthRoutes.SignIn, {
+        inviteaccepted: true,
+        email: invite?.email,
+      });
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       setShowAlert({

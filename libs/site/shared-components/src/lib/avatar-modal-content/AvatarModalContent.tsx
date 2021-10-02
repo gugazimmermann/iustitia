@@ -1,6 +1,6 @@
-import { PeopleServices } from "@iustitia/site/services";
+import { SelectorIcon } from "@iustitia/site/icons";
 import { useState } from "react";
-import { AvatarModalContentList, SelectorIcon, ShowAvatars } from "../..";
+import { AvatarModalContentList, ShowAvatars } from "../..";
 
 export interface AvatarModalContentProps {
   title: string;

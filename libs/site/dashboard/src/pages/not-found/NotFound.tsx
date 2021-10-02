@@ -1,5 +1,5 @@
+import { AuthRoutes } from "@iustitia/site-modules";
 import { Link } from "react-router-dom";
-import { SiteRoutes } from "@iustitia/react-routes";
 
 export function NotFound() {
   return (
@@ -32,7 +32,7 @@ export function NotFound() {
               A página que você está procurando não existe.
             </p>
             <p className="text-base font-normal text-gray-600">
-              <Link to={SiteRoutes.SignIn}>Clique aqui para retornar para página inicial</Link>
+              <Link to={AuthRoutes.SignIn}>Clique aqui para retornar para página inicial</Link>
             </p>
           </div>
         </div>

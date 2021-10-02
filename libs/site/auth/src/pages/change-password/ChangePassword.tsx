@@ -1,14 +1,14 @@
 import { useEffect, useState } from "react";
 import { useHistory, useLocation, useParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
-import { SiteRoutes as Routes } from "@iustitia/react-routes";
+import { AuthRoutes } from "@iustitia/site-modules";
 import {
   Alert,
   AlertInterface,
   LoadingButton,
 } from "@iustitia/site/shared-components";
 import { WARNING_TYPES } from "@iustitia/site/shared-utils";
-import { AuthService } from "@iustitia/site/services";
+import { AuthServices } from "@iustitia/site/services";
 import { Title, Link } from "../..";
 
 interface State {
@@ -52,7 +52,7 @@ export function ChangePassword() {
     }
     async function getPasswordCode(codeurl: string) {
       try {
-        const res = (await AuthService.getforgotpasswordcode(codeurl)) as {
+        const res = (await AuthServices.getforgotpasswordcode({ codeurl })) as {
           code: string;
         };
         setLoading(false);
@@ -120,9 +120,12 @@ export function ChangePassword() {
       return;
     }
     try {
-      await AuthService.changepassword(form.code, form.newpassword);
+      await AuthServices.changepassword({
+        codeNumber: form.code,
+        password: form.newpassword,
+      });
       setLoading(false);
-      history.push(Routes.SignIn, { changePassword: true });
+      history.push(AuthRoutes.SignIn, { changePassword: true });
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       setShowAlert({
@@ -198,7 +201,7 @@ export function ChangePassword() {
               }
             />
           </div>
-          <Link link={Routes.SignIn} text="Voltar para Entrar" />
+          <Link link={AuthRoutes.SignIn} text="Voltar para Entrar" />
           <LoadingButton
             styles="bg-primary-600 hover:bg-primary-700 text-white font-bold py-2 rounded shadow-lg hover:shadow-xl transition duration-200"
             type="submit"

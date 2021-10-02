@@ -13,13 +13,9 @@ import {
   Callout,
 } from "@iustitia/site/shared-components";
 import { WARNING_TYPES } from "@iustitia/site/shared-utils";
-import { ProfileServices, OfficeServices } from "@iustitia/site/services";
+import { ProfilesInterface } from "@iustitia/interfaces";
+import { PlacesServices, ProfilesServices } from "@iustitia/site/services";
 import { Nav, Menu } from "./components";
-
-export const { route, singular, parents, plural } =
-  ProfileServices.ProfileModule;
-export type ProfileInterface = ProfileServices.ProfileInterface;
-export type OfficeInterface = OfficeServices.OfficeInterface;
 
 interface LayoutProps {
   children: ReactNode;
@@ -35,7 +31,7 @@ export function Layout({ children }: LayoutProps) {
   const [menuOpen, setMenuOpen] = useState(true);
   const [navOpen, setNavOpen] = useState(false);
   const [notificationOpen, setNotificationOpen] = useState(false);
-  const [profile, setProfile] = useState({} as ProfileInterface);
+  const [profile, setProfile] = useState({} as ProfilesInterface);
   const [offices, setOffices] = useState<number>(0);
 
   useEffect(() => {
@@ -43,14 +39,14 @@ export function Layout({ children }: LayoutProps) {
     if (width <= 640) setMenuOpen(false);
     whoIAm();
     countOffices();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   async function whoIAm() {
     try {
-      const data = (await ProfileServices.getOne()) as ProfileInterface;
+      const data = (await ProfilesServices.getOne()) as ProfilesInterface;
       setProfile(data);
-      freePlanMsg(data)
+      freePlanMsg(data);
     } catch (err) {
       console.error(err);
     }
@@ -58,7 +54,7 @@ export function Layout({ children }: LayoutProps) {
 
   async function countOffices() {
     try {
-      const countOffices = (await OfficeServices.count()) as number;
+      const countOffices = (await PlacesServices.count()) as number;
       setOffices(countOffices);
     } catch (err) {
       console.error(err);
@@ -71,7 +67,7 @@ export function Layout({ children }: LayoutProps) {
     return Math.ceil(finish.toObject().days as number);
   }
 
-  function freePlanMsg(profile: ProfileInterface) {
+  function freePlanMsg(profile: ProfilesInterface) {
     if (
       profile.subscription &&
       profile.subscription.planId === process.env.NX_FREE_PLAN

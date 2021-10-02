@@ -1,9 +1,9 @@
 import { useEffect, useRef, useState } from "react";
 import { DateTime } from "luxon";
 import { firstUppercase, getDaysToShow, Weekdays } from "@iustitia/site/shared-utils";
-import { MenuArrowIcon } from "../..";
+import { MenuArrowIcon } from "@iustitia/site/icons";
 
-export interface CalendarInputProps {
+export interface CalendarDayInputProps {
   start?: DateTime;
   day: DateTime;
   action(selectedStartDay: DateTime): void;
@@ -11,13 +11,13 @@ export interface CalendarInputProps {
   setOpen(open: boolean): void;
 }
 
-export function CalendarInput({
+export function CalendarDayInput({
   start,
   day,
   action,
   open,
   setOpen,
-}: CalendarInputProps) {
+}: CalendarDayInputProps) {
   const divRef = useRef<HTMLDivElement>(null);
   const [startDay, setStartDay] = useState<DateTime>();
   const [currentMonth, setCurrentMonth] = useState<DateTime>();
@@ -138,4 +138,4 @@ export function CalendarInput({
   );
 }
 
-export default CalendarInput;
+export default CalendarDayInput;

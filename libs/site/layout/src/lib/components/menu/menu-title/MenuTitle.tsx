@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { SiteRoutes } from "@iustitia/react-routes";
-import { MenuArrowIcon } from "@iustitia/site/shared-components";
+import { MenuArrowIcon } from "@iustitia/site/icons";
 
 export interface MenuTitleProps {
   setMenuOpen(menuOpen: boolean): void;

@@ -63,7 +63,7 @@ export async function getInvites(): Promise<MembersInterface[] | Error> {
 
 export async function getInviteCode(
   { tenantId, code }: MembersInviteCodeInterface
-): Promise<ApiMessageInterface | Error> {
+): Promise<MembersInterface | Error> {
   try {
     const { data } = await api.get(`/api/${sitemodule.name}/invites/code/${tenantId}/${code}`);
     return data

@@ -35,7 +35,7 @@ export interface ForgotPasswordResponseInterface{
 }
 
 export interface ForgotPasswordCodeInterface {
-  urlcode: string;
+  codeurl: string;
 }
 
 export interface ForgotPasswordCodeResponseInterface {

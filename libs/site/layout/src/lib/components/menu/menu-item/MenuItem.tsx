@@ -1,7 +1,7 @@
+import { MenuItemInterface } from "@iustitia/interfaces";
+import { MenuArrowIcon } from "@iustitia/site/icons";
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
-import { MenuItemInterface } from "@iustitia/site-modules";
-import { MenuArrowIcon } from "@iustitia/site/shared-components";
 import { MenuLink } from "..";
 
 interface MenuItemProps {
