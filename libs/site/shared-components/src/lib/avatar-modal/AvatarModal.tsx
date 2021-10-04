@@ -1,11 +1,11 @@
-import { PeopleServices } from "@iustitia/site/services";
+import { SimpleProfilesListInterface } from "@iustitia/interfaces";
 import { AvatarModalContent, useCloseModal } from "../..";
 
 export interface AvatarModalProps {
   title: string;
-  peopleList: PeopleServices.SimpleUserInterface[];
-  currentList: PeopleServices.SimpleUserInterface[];
-  handleSelect(p: PeopleServices.SimpleUserInterface): void;
+  peopleList: SimpleProfilesListInterface[];
+  currentList: SimpleProfilesListInterface[];
+  handleSelect(p: SimpleProfilesListInterface): void;
   cancel(): void;
   submit(): void;
   submitText: string;

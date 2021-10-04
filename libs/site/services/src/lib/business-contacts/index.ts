@@ -1,4 +1,3 @@
-import { GetModule, SiteModulesEnum } from "@iustitia/site-modules";
 import { errorHandler } from "@iustitia/site/shared-utils";
 import {
   ApiFormDataInterface,
@@ -9,16 +8,17 @@ import {
   BusinessContactsPersonsInterface
 } from "@iustitia/interfaces";
 import { api, token } from "../..";
+import { GetComponent, ComponentsEnum } from "@iustitia/components";
 
-const sitemodule = GetModule(SiteModulesEnum.businessContacts);
-if (!sitemodule) throw new Error("Module not Found!")
+const component = GetComponent(ComponentsEnum.businessContacts);
+if (!component || !component?.name) throw new Error(`App Component not Found: ${ComponentsEnum.businessContacts}`)
 
 export async function getOnePerson(
   { id }: ApiIdInterface
 ): Promise<BusinessContactsPersonsInterface | Error> {
   try {
     const tenantId = token.getLocalTenantId();
-    const { data } = await api.get(`/api/${sitemodule.name}/persons/${tenantId}/${id}`);
+    const { data } = await api.get(`/api/${component?.name}/persons/${tenantId}/${id}`);
     return data
   } catch (err) {
     return errorHandler(err)
@@ -28,7 +28,7 @@ export async function getOnePerson(
 export async function getAllPersons(): Promise<BusinessContactsPersonsInterface[] | Error> {
   try {
     const tenantId = token.getLocalTenantId();
-    const { data } = await api.get(`/api/${sitemodule.name}/persons/${tenantId}`);
+    const { data } = await api.get(`/api/${component?.name}/persons/${tenantId}`);
     return data
   } catch (err) {
     return errorHandler(err)
@@ -40,7 +40,7 @@ export async function createPerson(
 ): Promise<BusinessContactsPersonsInterface | Error> {
   try {
     formData.append("tenantId", token.getLocalTenantId());
-    const { data } = await api.post(`/api/${sitemodule.name}/persons`, formData);
+    const { data } = await api.post(`/api/${component?.name}/persons`, formData);
     return data
   } catch (err) {
     return errorHandler(err)
@@ -51,7 +51,7 @@ export async function updatePerson(
   { formData }: ApiFormDataInterface
 ): Promise<BusinessContactsPersonsInterface | Error> {
   try {
-    const { data } = await api.put(`/api/${sitemodule.name}/persons`, formData);
+    const { data } = await api.put(`/api/${component?.name}/persons`, formData);
     return data
   } catch (err) {
     return errorHandler(err)
@@ -62,7 +62,7 @@ export async function deleteOnePerson(
   { id }: ApiIdInterface
 ): Promise<ApiMessageInterface | Error> {
   try {
-    return await api.delete(`/api/${sitemodule.name}/persons/${id}`);
+    return await api.delete(`/api/${component?.name}/persons/${id}`);
   } catch (err) {
     return errorHandler(err)
   }
@@ -74,7 +74,7 @@ export async function getOneCompany(
 ): Promise<BusinessContactsCompaniesInterface | Error> {
   try {
     const tenantId = token.getLocalTenantId();
-    const { data } = await api.get(`/api/${sitemodule.name}/companies/${tenantId}/${id}`);
+    const { data } = await api.get(`/api/${component?.name}/companies/${tenantId}/${id}`);
     return data
   } catch (err) {
     return errorHandler(err)
@@ -84,7 +84,7 @@ export async function getOneCompany(
 export async function getAllCompanies(): Promise<BusinessContactsCompaniesInterface[] | Error> {
   try {
     const tenantId = token.getLocalTenantId();
-    const { data } = await api.get(`/api/${sitemodule.name}/companies/${tenantId}`);
+    const { data } = await api.get(`/api/${component?.name}/companies/${tenantId}`);
     return data
   } catch (err) {
     return errorHandler(err)
@@ -96,7 +96,7 @@ export async function createCompany(
 ): Promise<BusinessContactsCompaniesInterface | Error> {
   try {
     formData.tenantId = token.getLocalTenantId();
-    const { data } = await api.post(`/api/${sitemodule.name}/companies`, formData);
+    const { data } = await api.post(`/api/${component?.name}/companies`, formData);
     return data
   } catch (err) {
     return errorHandler(err)
@@ -107,7 +107,7 @@ export async function updateCompany(
   { formData }: BusinessContactsFormDataCompaniesInterface
 ): Promise<BusinessContactsCompaniesInterface | Error> {
   try {
-    const { data } = await api.put(`/api/${sitemodule.name}/companies`, formData);
+    const { data } = await api.put(`/api/${component?.name}/companies`, formData);
     return data
   } catch (err) {
     return errorHandler(err)
@@ -118,7 +118,7 @@ export async function deleteOneCompany(
   { id }: ApiIdInterface
 ): Promise<ApiMessageInterface | Error> {
   try {
-    return await api.delete(`/api/${sitemodule.name}/companies/${id}`);
+    return await api.delete(`/api/${component?.name}/companies/${id}`);
   } catch (err) {
     return errorHandler(err)
   }

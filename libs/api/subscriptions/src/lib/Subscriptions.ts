@@ -1,16 +1,16 @@
 import { Express } from "express";
 import { verifyToken } from '@iustitia/api/auth'
-import { GetModule, SiteModulesEnum } from "@iustitia/site-modules";
+import { GetComponent, ComponentsEnum } from "@iustitia/components";
 import { getPlans, getSubscription, getPayments, getCreditcards } from "./controllers";
 
-const sitemodule = GetModule(SiteModulesEnum.subscriptions);
-if (!sitemodule) throw new Error("Module not Found!")
+const component = GetComponent(ComponentsEnum.attachments);
+if (!component || !component?.name) throw new Error(`App Component not Found: ${ComponentsEnum.attachments}`);
 
 export function Subscriptions(app: Express) {
-  app.get(`/api/${sitemodule.name}/plans`, getPlans);
-  app.get(`/api/${sitemodule.name}/subscription`, [verifyToken], getSubscription);
-  app.get(`/api/${sitemodule.name}/payments`, [verifyToken], getPayments);
-  app.get(`/api/${sitemodule.name}/creditcards`, [verifyToken], getCreditcards);
+  app.get(`/api/${component?.name}/plans`, getPlans);
+  app.get(`/api/${component?.name}/subscription`, [verifyToken], getSubscription);
+  app.get(`/api/${component?.name}/payments`, [verifyToken], getPayments);
+  app.get(`/api/${component?.name}/creditcards`, [verifyToken], getCreditcards);
 }
 
 export default Subscriptions;

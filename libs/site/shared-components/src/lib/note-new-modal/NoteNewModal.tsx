@@ -1,7 +1,5 @@
 import { useForm } from "react-hook-form";
 import TextareaAutosize from "react-textarea-autosize";
-import * as yup from "yup";
-import { yupResolver } from "@hookform/resolvers/yup";
 
 interface NoteInterface {
   id?: string;
@@ -18,11 +16,6 @@ interface NoteNewModalProps {
   editNote?: NoteInterface;
 }
 
-const schema = yup.object().shape({
-  title: yup.string().required(),
-  content: yup.string().required(),
-});
-
 export function NoteNewModal({ setShowModal, action, editNote }: NoteNewModalProps) {
   const defaultValues: NoteInterface = {
     title: editNote?.title || "",
@@ -33,7 +26,6 @@ export function NoteNewModal({ setShowModal, action, editNote }: NoteNewModalPro
     handleSubmit,
     formState: { errors },
   } = useForm<NoteInterface>({
-    resolver: yupResolver(schema),
     defaultValues,
   });
 

@@ -1,15 +1,14 @@
 import { useState } from "react";
 import { useHistory } from "react-router-dom";
 import { useForm } from "react-hook-form";
-import { AuthRoutes } from "@iustitia/site-modules";
-import {
-  Alert,
-  AlertInterface,
-  LoadingButton,
-} from "@iustitia/site/shared-components";
+import { Alert, AlertInterface, LoadingButton } from "@iustitia/site/shared-components";
 import { validateEmail, WARNING_TYPES } from "@iustitia/site/shared-utils";
 import { AuthServices } from "@iustitia/site/services";
-import { Title, Link } from "../..";
+import { GetComponentRoutes, ComponentsEnum } from "@iustitia/components";
+import { AuthRoutesInterface } from "@iustitia/interfaces";
+import { Link, Title } from "../../components";
+
+const routesAuth = GetComponentRoutes(ComponentsEnum.auth) as AuthRoutesInterface;
 
 type Form = {
   email: string;
@@ -46,7 +45,7 @@ export function ForgotPassword() {
       const res = await AuthServices.forgotpassword({ email: form.email });
       if ("email" in res) {
         setLoading(false);
-        history.push(AuthRoutes.ChangePassword, {
+        history.push(routesAuth.changePassword, {
           email: res.email,
           date: res.date,
         });
@@ -89,7 +88,7 @@ export function ForgotPassword() {
               }
             />
           </div>
-          <Link link={AuthRoutes.SignIn} text="Voltar para Entrar" />
+          <Link link={routesAuth.signIn} text="Voltar para Entrar" />
           <LoadingButton
             styles="bg-primary-600 hover:bg-primary-700 text-white font-bold py-2 rounded shadow-lg hover:shadow-xl transition duration-200"
             type="submit"

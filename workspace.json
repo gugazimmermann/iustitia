@@ -114,27 +114,6 @@
         }
       }
     },
-    "api-dashboard": {
-      "root": "libs/api/dashboard",
-      "sourceRoot": "libs/api/dashboard/src",
-      "projectType": "library",
-      "targets": {
-        "lint": {
-          "executor": "@nrwl/linter:eslint",
-          "options": {
-            "lintFilePatterns": ["libs/api/dashboard/**/*.ts"]
-          }
-        },
-        "test": {
-          "executor": "@nrwl/jest:jest",
-          "outputs": ["coverage/libs/api/dashboard"],
-          "options": {
-            "jestConfig": "libs/api/dashboard/jest.config.js",
-            "passWithNoTests": true
-          }
-        }
-      }
-    },
     "api-dashboards": {
       "root": "libs/api/dashboards",
       "sourceRoot": "libs/api/dashboards/src",
@@ -387,6 +366,27 @@
         }
       }
     },
+    "components": {
+      "root": "libs/components",
+      "sourceRoot": "libs/components/src",
+      "projectType": "library",
+      "targets": {
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["libs/components/**/*.{ts,tsx,js,jsx}"]
+          }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/components"],
+          "options": {
+            "jestConfig": "libs/components/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
     "interfaces": {
       "root": "libs/interfaces",
       "sourceRoot": "libs/interfaces/src",
@@ -395,7 +395,7 @@
         "lint": {
           "executor": "@nrwl/linter:eslint",
           "options": {
-            "lintFilePatterns": ["libs/interfaces/**/*.ts"]
+            "lintFilePatterns": ["libs/interfaces/**/*.{ts,tsx,js,jsx}"]
           }
         },
         "test": {
@@ -575,6 +575,27 @@
         }
       }
     },
+    "routes": {
+      "root": "libs/routes",
+      "sourceRoot": "libs/routes/src",
+      "projectType": "library",
+      "targets": {
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["libs/routes/**/*.{ts,tsx,js,jsx}"]
+          }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/routes"],
+          "options": {
+            "jestConfig": "libs/routes/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
     "site": {
       "root": "apps/site",
       "sourceRoot": "apps/site/src",
@@ -737,22 +758,22 @@
         }
       }
     },
-    "site-modules": {
-      "root": "libs/site-modules",
-      "sourceRoot": "libs/site-modules/src",
+    "site-not-found": {
+      "root": "libs/site/not-found",
+      "sourceRoot": "libs/site/not-found/src",
       "projectType": "library",
       "targets": {
         "lint": {
           "executor": "@nrwl/linter:eslint",
           "options": {
-            "lintFilePatterns": ["libs/site-modules/**/*.{ts,tsx,js,jsx}"]
+            "lintFilePatterns": ["libs/site/not-found/**/*.{ts,tsx,js,jsx}"]
           }
         },
         "test": {
           "executor": "@nrwl/jest:jest",
-          "outputs": ["coverage/libs/site-modules"],
+          "outputs": ["coverage/libs/site/not-found"],
           "options": {
-            "jestConfig": "libs/site-modules/jest.config.js",
+            "jestConfig": "libs/site/not-found/jest.config.js",
             "passWithNoTests": true
           }
         }
@@ -787,7 +808,7 @@
         "lint": {
           "executor": "@nrwl/linter:eslint",
           "options": {
-            "lintFilePatterns": ["libs/site/services/**/*.ts"]
+            "lintFilePatterns": ["libs/site/services/**/*.{ts,tsx,js,jsx}"]
           }
         },
         "test": {
@@ -831,7 +852,7 @@
         "lint": {
           "executor": "@nrwl/linter:eslint",
           "options": {
-            "lintFilePatterns": ["libs/site/shared-utils/**/*.ts"]
+            "lintFilePatterns": ["libs/site/shared-utils/**/*.{ts,tsx,js,jsx}"]
           }
         },
         "test": {

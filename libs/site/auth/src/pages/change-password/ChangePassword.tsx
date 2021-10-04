@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { useHistory, useLocation, useParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
-import { AuthRoutes } from "@iustitia/site-modules";
 import {
   Alert,
   AlertInterface,
@@ -9,7 +8,13 @@ import {
 } from "@iustitia/site/shared-components";
 import { WARNING_TYPES } from "@iustitia/site/shared-utils";
 import { AuthServices } from "@iustitia/site/services";
-import { Title, Link } from "../..";
+import { GetComponentRoutes, ComponentsEnum } from "@iustitia/components";
+import { AuthRoutesInterface } from "@iustitia/interfaces";
+import { Link, Title } from "../../components";
+
+const routesAuth = GetComponentRoutes(
+  ComponentsEnum.auth
+) as AuthRoutesInterface;
 
 interface State {
   email: string;
@@ -125,7 +130,7 @@ export function ChangePassword() {
         password: form.newpassword,
       });
       setLoading(false);
-      history.push(AuthRoutes.SignIn, { changePassword: true });
+      history.push(routesAuth.signIn, { changePassword: true });
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       setShowAlert({
@@ -201,7 +206,7 @@ export function ChangePassword() {
               }
             />
           </div>
-          <Link link={AuthRoutes.SignIn} text="Voltar para Entrar" />
+          <Link link={routesAuth.signIn} text="Voltar para Entrar" />
           <LoadingButton
             styles="bg-primary-600 hover:bg-primary-700 text-white font-bold py-2 rounded shadow-lg hover:shadow-xl transition duration-200"
             type="submit"

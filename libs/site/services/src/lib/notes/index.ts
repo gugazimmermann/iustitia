@@ -1,23 +1,23 @@
-import { GetModule, SiteModulesEnum } from "@iustitia/site-modules";
 import { errorHandler } from "@iustitia/site/shared-utils";
 import {
   ApiIdInterface,
   ApiMessageInterface,
-  NoteInterface,
+  NotesInterface,
   NotesFormDataInterface,
   NotesGetAllInterface
 } from "@iustitia/interfaces";
 import { api, token } from "../..";
+import { GetComponent, ComponentsEnum } from "@iustitia/components";
 
-const sitemodule = GetModule(SiteModulesEnum.notes);
-if (!sitemodule) throw new Error("Module not Found!")
+const component = GetComponent(ComponentsEnum.notes);
+if (!component || !component?.name) throw new Error(`App Component not Found: ${ComponentsEnum.notes}`)
 
 export async function getAll(
   { ownerId }: NotesGetAllInterface
-): Promise<NoteInterface[] | Error> {
+): Promise<NotesInterface[] | Error> {
   try {
     const tenantId = token.getLocalTenantId();
-    const { data } = await api.get(`/api/${sitemodule.name}/${tenantId}/${ownerId}`);
+    const { data } = await api.get(`/api/${component?.name}/${tenantId}/${ownerId}`);
     return data
   } catch (err) {
     return errorHandler(err)
@@ -26,10 +26,10 @@ export async function getAll(
 
 export async function create(
   { formData }: NotesFormDataInterface
-): Promise<NoteInterface | Error> {
+): Promise<NotesInterface | Error> {
   try {
     formData.tenantId = token.getLocalTenantId();
-    const { data } = await api.post(`/api/${sitemodule.name}`, formData);
+    const { data } = await api.post(`/api/${component?.name}`, formData);
     return data
   } catch (err) {
     return errorHandler(err)
@@ -38,9 +38,9 @@ export async function create(
 
 export async function update(
   { formData }: NotesFormDataInterface
-): Promise<NoteInterface | Error> {
+): Promise<NotesInterface | Error> {
   try {
-    const { data } = await api.put(`/api/${sitemodule.name}`, formData);
+    const { data } = await api.put(`/api/${component?.name}`, formData);
     return data
   } catch (err) {
     return errorHandler(err)
@@ -51,7 +51,7 @@ export async function deleteOne(
   { id }: ApiIdInterface
 ): Promise<ApiMessageInterface | Error> {
   try {
-    return await api.delete(`/api/${sitemodule.name}/${id}`);
+    return await api.delete(`/api/${component?.name}/${id}`);
   } catch (err) {
     return errorHandler(err)
   }

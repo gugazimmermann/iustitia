@@ -1,15 +1,15 @@
+import { GetComponentRoutes, ComponentsEnum } from "@iustitia/components";
+import { AuthRoutesInterface } from "@iustitia/interfaces";
 import { Link } from "react-router-dom";
-import { AuthRoutes } from "@iustitia/site-modules";
 
-/* eslint-disable-next-line */
-export interface SignupLinkProps {}
+const routes = GetComponentRoutes(ComponentsEnum.auth) as AuthRoutesInterface;
 
-export function SignupLink(props: SignupLinkProps) {
+export function SignupLink() {
   return (
     <div className="max-w-lg mx-auto text-center mt-12 mb-6">
     <p className="text-white">
       Não tem uma conta?{" "}
-      <Link to={AuthRoutes.SignUp}>
+      <Link to={routes.signUp}>
         <span className="font-bold hover:underline">Cadastrar</span>.
       </Link>
     </p>

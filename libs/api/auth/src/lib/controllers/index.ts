@@ -7,8 +7,13 @@ import * as mercadopago from 'mercadopago';
 import { database } from '@iustitia/api/database';
 import { ForgotPasswordEmail } from '@iustitia/api/email';
 import { validateEmail } from "@iustitia/site/shared-utils";
-import { AuthRoutes } from '@iustitia/site-modules';
 import config from "../config";
+import { GetComponentRoutes, ComponentsEnum } from "@iustitia/components";
+import { AuthRoutesInterface } from '@iustitia/interfaces';
+
+const routes = GetComponentRoutes(
+  ComponentsEnum.auth
+) as AuthRoutesInterface;
 
 const ACCESS_TOKEN =
   process.env.NX_STAGE === "dev"
@@ -140,7 +145,7 @@ export async function forgotPassword(req: Request, res: Response): Promise<Respo
     const dt = DateTime.now();
     const expiryDate = dt.plus({ hours: 1 });
     const forgotPasswordParams = {
-      route: AuthRoutes.ChangePassword,
+      route: routes.changePassword,
       email: req.body.email,
       date: expiryDate.toFormat("dd/MM/yyyy HH:mm:ss"),
       code: +Math.random().toString().substring(2, 6),

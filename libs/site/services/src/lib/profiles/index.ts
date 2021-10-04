@@ -1,12 +1,11 @@
-import { GetModule, SiteModulesEnum } from "@iustitia/site-modules";
 import { ProfilesInterface } from "@iustitia/interfaces";
 import { errorHandler } from "@iustitia/site/shared-utils";
 import { ApiFormDataInterface } from "@iustitia/interfaces";
 import { api } from "../..";
+import { GetComponent, ComponentsEnum } from "@iustitia/components";
 
-const sitemodule = GetModule(SiteModulesEnum.profiles);
-if (!sitemodule) throw new Error("Module not Found!")
-
+const component = GetComponent(ComponentsEnum.profiles);
+if (!component || !component?.name) throw new Error(`App Component not Found: ${ComponentsEnum.profiles}`)
 
 function seeUserParams(profile: ProfilesInterface): ProfilesInterface {
   profile.isAdmin = profile.role === "Admin" ? true : false;
@@ -18,7 +17,7 @@ function seeUserParams(profile: ProfilesInterface): ProfilesInterface {
 
 export async function getOne(): Promise<ProfilesInterface | Error> {
   try {
-    const { data } = await api.get(`/api/${sitemodule.name}`);
+    const { data } = await api.get(`/api/${component?.name}`);
     return seeUserParams(data)
   } catch (err) {
     return errorHandler(err)
@@ -30,7 +29,7 @@ export async function update(
   { formData }: ApiFormDataInterface
 ): Promise<ProfilesInterface | Error> {
   try {
-    const { data } = await api.put(`/api/${sitemodule.name}`, formData);
+    const { data } = await api.put(`/api/${component?.name}`, formData);
     return seeUserParams(data)
   } catch (err) {
     return errorHandler(err)

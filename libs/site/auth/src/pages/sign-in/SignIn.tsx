@@ -1,15 +1,15 @@
 import { useEffect, useState } from "react";
 import { useLocation, useHistory } from "react-router-dom";
 import { useForm } from "react-hook-form";
-import {
-  Alert,
-  AlertInterface,
-  LoadingButton,
-} from "@iustitia/site/shared-components";
+import { Alert, AlertInterface, LoadingButton } from "@iustitia/site/shared-components";
 import { validateEmail, WARNING_TYPES } from "@iustitia/site/shared-utils";
 import { AuthServices } from "@iustitia/site/services";
-import { AuthRoutes } from "@iustitia/site-modules";
-import { Title, Link, SignupLink } from "../..";
+import { GetComponentRoutes, ComponentsEnum } from "@iustitia/components";
+import { AuthRoutesInterface, DashboardsRoutesInterface } from "@iustitia/interfaces";
+import { Link, SignupLink, Title } from "../../components";
+
+const routesAuth = GetComponentRoutes(ComponentsEnum.auth) as AuthRoutesInterface;
+const routesDashboard = GetComponentRoutes(ComponentsEnum.dashboards) as DashboardsRoutesInterface;
 
 type Form = {
   email: string;
@@ -80,7 +80,7 @@ export function SignIn() {
     try {
       await AuthServices.signin(form);
       setLoading(false);
-      history.push(getModulesRoutes()[SiteModules.dashboard]);
+      history.push(routesDashboard.dashboards);
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       setShowAlert({
@@ -138,7 +138,7 @@ export function SignIn() {
                 }
               />
             </div>
-            <Link link={AuthRoutes.ForgotPassword} text="Esqueceu sua senha?" />
+            <Link link={routesAuth.forgotPassword} text="Esqueceu sua senha?" />
             <LoadingButton
               styles="bg-primary-600 hover:bg-primary-700 text-white font-bold py-2 rounded shadow-lg hover:shadow-xl transition duration-200"
               type="submit"

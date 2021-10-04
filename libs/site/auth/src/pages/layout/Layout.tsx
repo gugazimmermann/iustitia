@@ -1,4 +1,4 @@
-import { Header, Footer } from '../..';
+import { Footer, Header } from '../../components';
 import './Layout.css';
 
 interface LayoutProps {

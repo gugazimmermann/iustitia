@@ -1,5 +1,5 @@
 import { ProfilesInterface } from "@iustitia/interfaces";
-import { menuItems } from "@iustitia/site-modules";
+import { GetComponentMenu } from "@iustitia/components";
 import { MenuFooter, MenuItem, MenuTitle } from ".";
 
 interface MenuProps {
@@ -22,7 +22,7 @@ export function Menu({ profile, offices, setMenuOpen, menuOpen }: MenuProps) {
         <nav className="flex-1 px-2 pt-2 overflow-y-hidden hover:overflow-y-auto border-r">
           {profile.zip &&
             offices > 0 &&
-            menuItems().map((item, i) => <MenuItem key={i} item={item} />)}
+            GetComponentMenu().map((item, i) => <MenuItem key={i} item={item} />)}
         </nav>
 
         <MenuFooter />

@@ -75,6 +75,9 @@
     "api-subscriptions": {
       "tags": []
     },
+    "components": {
+      "tags": []
+    },
     "interfaces": {
       "tags": []
     },
@@ -94,6 +97,9 @@
     "landing-page-routes": {
       "tags": []
     },
+    "routes": {
+      "tags": []
+    },
     "site": {
       "tags": []
     },
@@ -110,7 +116,7 @@
     "site-layout": {
       "tags": []
     },
-    "site-modules": {
+    "site-not-found": {
       "tags": []
     },
     "site-schedule": {

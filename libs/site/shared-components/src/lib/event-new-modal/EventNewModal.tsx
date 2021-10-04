@@ -2,8 +2,6 @@ import { useEffect, useState } from "react";
 import { DateTime } from "luxon";
 import { useForm } from "react-hook-form";
 import TextareaAutosize from "react-textarea-autosize";
-import * as yup from "yup";
-import { yupResolver } from "@hookform/resolvers/yup";
 import {
   SeeEventBackgroundColor,
   SeeEventTextColor,
@@ -33,16 +31,13 @@ interface EventNewModalProps {
   action(event: EventInterface): void;
 }
 
-const schema = yup.object().shape({
-  title: yup.string().required(),
-});
-
 export function EventNewModal({
   setShowModal,
   action,
   day,
 }: EventNewModalProps) {
   const defaultValues: EventInterface = {
+    title: "",
     startDay: day?.toFormat("dd 'de' MMMM 'de' yyyy"),
     startTimeHours: "08",
     startTimeMin: "00",
@@ -57,7 +52,6 @@ export function EventNewModal({
     getValues,
     formState: { errors },
   } = useForm<EventInterface>({
-    resolver: yupResolver(schema),
     defaultValues,
   });
   const [showStartDayModal, setShowStartDayModal] = useState(false);

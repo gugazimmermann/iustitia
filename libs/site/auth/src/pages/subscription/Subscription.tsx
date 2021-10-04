@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { useHistory, useLocation, Redirect } from "react-router-dom";
 import { useForm } from "react-hook-form";
-import { AuthRoutes } from "@iustitia/site-modules";
 import {
   Alert,
   AlertInterface,
@@ -9,15 +8,19 @@ import {
 } from "@iustitia/site/shared-components";
 import { WARNING_TYPES } from "@iustitia/site/shared-utils";
 import { AuthServices } from "@iustitia/site/services";
-import { MercadoPago } from "./protocols";
-import { SignUpForm } from "../..";
 import {
+  AuthRoutesInterface,
   CardTokenInterface,
   CreateCardTokenInterface,
   IdentificationInterface,
   PlanInterface,
   SubscriptionForm,
 } from "@iustitia/interfaces";
+import { GetComponentRoutes, ComponentsEnum } from "@iustitia/components";
+import { MercadoPago } from "./protocols";
+import { SignUpForm } from "..";
+
+const routesAuth = GetComponentRoutes(ComponentsEnum.auth) as AuthRoutesInterface;
 
 const PUBLIC_KEY =
   process.env.NX_STAGE === "dev"
@@ -133,7 +136,7 @@ export function Subscription() {
         },
       });
       setLoading(false);
-      history.push(AuthRoutes.SignIn, { email: form.email });
+      history.push(routesAuth.signIn, { email: form.email });
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       setShowAlert({
@@ -147,7 +150,7 @@ export function Subscription() {
   };
 
   if (form === undefined || plan === undefined) {
-    return <Redirect to={AuthRoutes.SignUp} />;
+    return <Redirect to={routesAuth.signUp} />;
   } else {
     return (
       <main className="bg-white max-w-lg mx-auto p-8 md:p-12 my-10 rounded-lg shadow-2xl">

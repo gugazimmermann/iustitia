@@ -1,11 +1,12 @@
+import {SimpleProfilesListInterface} from "@iustitia/interfaces"
 import { CheckIcon } from "@iustitia/site/icons";
 import { getUserInitials } from "@iustitia/site/shared-utils";
 import { useCloseModal } from "../..";
 
 export interface AvatarModalContentListProps {
-  peopleList: PeopleServices.SimpleUserInterface[];
-  currentList: PeopleServices.SimpleUserInterface[];
-  handleSelect(p: PeopleServices.SimpleUserInterface): void;
+  peopleList: SimpleProfilesListInterface[];
+  currentList: SimpleProfilesListInterface[];
+  handleSelect(p: SimpleProfilesListInterface): void;
   open: boolean;
   setOpen(open: boolean): void;
 }

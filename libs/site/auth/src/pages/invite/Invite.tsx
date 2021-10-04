@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { useHistory, useParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
-import { AuthRoutes } from "@iustitia/site-modules";
 import {
   Alert,
   AlertInterface,
@@ -9,8 +8,11 @@ import {
 } from "@iustitia/site/shared-components";
 import { WARNING_TYPES } from "@iustitia/site/shared-utils";
 import { MembersServices } from "@iustitia/site/services";
-import { MembersInterface } from "@iustitia/interfaces";
-import { Title } from "../..";
+import { AuthRoutesInterface, MembersInterface } from "@iustitia/interfaces";
+import { GetComponentRoutes, ComponentsEnum } from "@iustitia/components";
+import { Title } from "../../components";
+
+const routesAuth = GetComponentRoutes(ComponentsEnum.auth) as AuthRoutesInterface;
 
 type Form = {
   code: string;
@@ -96,7 +98,7 @@ export function Invite() {
         password: form.newpassword,
       });
       setLoading(false);
-      history.push(AuthRoutes.SignIn, {
+      history.push(routesAuth.signIn, {
         inviteaccepted: true,
         email: invite?.email,
       });

@@ -1,9 +1,9 @@
-import { PeopleServices } from "@iustitia/site/services";
+import {SimpleProfilesListInterface} from "@iustitia/interfaces"
 import { getUserInitials } from "@iustitia/site/shared-utils";
 import { Tooltip } from "../..";
 
 export interface AvatarListProps {
-  toShow: PeopleServices.SimpleUserInterface[];
+  toShow: SimpleProfilesListInterface[];
   qtd: number;
 }
 
@@ -37,7 +37,7 @@ export function AvatarList({ toShow, qtd }: AvatarListProps) {
 }
 
 export interface ShowAvatarsProps {
-  toShow: PeopleServices.SimpleUserInterface[];
+  toShow: SimpleProfilesListInterface[];
   qtd: number;
   smallQtd: number;
 }

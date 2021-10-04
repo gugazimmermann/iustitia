@@ -1,12 +1,12 @@
 import { Express } from "express";
-import { GetModule, SiteModulesEnum } from "@iustitia/site-modules";
+import { GetComponent, ComponentsEnum } from "@iustitia/components";
 import { placeholderFunction } from "./controllers";
 
-const sitemodule = GetModule(SiteModulesEnum.dashboards);
-if (!sitemodule) throw new Error("Module not Found!")
+const component = GetComponent(ComponentsEnum.attachments);
+if (!component || !component?.name) throw new Error(`App Component not Found: ${ComponentsEnum.attachments}`);
 
 export function Dashboards(app: Express) {
-  app.get(`/api/${sitemodule.name}`, placeholderFunction);
+  app.get(`/api/${component?.name}`, placeholderFunction);
 }
 
 export default Dashboards;
