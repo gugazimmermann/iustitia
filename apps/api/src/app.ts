@@ -1,6 +1,6 @@
-import * as express from "express";
-import * as morgan from 'morgan';
-import * as cors from "cors";
+import express from "express";
+import morgan from 'morgan';
+import cors from "cors";
 import { database } from "@iustitia/api/database";
 import { mercadopagoRoutes } from "@iustitia/api/mercadopago";
 

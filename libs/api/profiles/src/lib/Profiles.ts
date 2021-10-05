@@ -1,11 +1,11 @@
 import { Express } from "express";
-import * as multer from 'multer';
+import multer from 'multer';
 import { verifyToken } from '@iustitia/api/auth'
 import { ModulesEnum } from "@iustitia/modules";
 import { getProfile, updateProfile } from "./controllers";
 
 export function Profiles(app: Express) {
-  const upload = multer()
+  const upload = multer();
   app.get(`/api/${ModulesEnum.profiles}`, [verifyToken], getProfile);
   app.put(`/api/${ModulesEnum.profiles}`, upload.single('avatar'), [verifyToken], updateProfile);
 }

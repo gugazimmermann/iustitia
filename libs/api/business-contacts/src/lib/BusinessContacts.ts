@@ -1,5 +1,5 @@
 import { Express } from "express";
-import * as multer from 'multer';
+import multer from 'multer';
 import { verifyToken } from '@iustitia/api/auth';
 import { ModulesEnum } from "@iustitia/modules";
 import {
