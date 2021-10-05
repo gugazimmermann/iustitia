@@ -1,42 +1,84 @@
 
-import { GetComponent, ComponentsEnum } from "@iustitia/components";
-import { PlanInterface, SubscriptionInterface, PaymentInterface, CreditCardInterface } from "@iustitia/interfaces";
+import { ModulesEnum } from "@iustitia/modules";
+import {SubscriptionInterface} from "@iustitia/api/subscriptions";
 import { errorHandler } from "@iustitia/site/shared-utils";
-import { api } from "../..";
+import api from "../api";
 
-const component = GetComponent(ComponentsEnum.subscriptions);
-if (!component || !component?.name) throw new Error(`App Component not Found: ${ComponentsEnum.subscriptions}`)
+export type SubscriptionRes = SubscriptionInterface
 
-export async function getPlans(): Promise<PlanInterface[] | Error> {
+export interface PlanRes {
+  id?: string;
+  preapprovalPlanId?: string;
+  collectorId?: number;
+  applicationId?: number;
+  reason?: string;
+  status?: string;
+  initPoint?: string;
+  frequency?: number;
+  frequencyType?: string;
+  transactionAmount?: number;
+  currencyId?: string;
+  type?: string;
+  updatedAt?: string;
+  createdAt?: string;
+  deletedAt?: string;
+}
+
+export interface PaymentRes {
+  id?: string;
+  userId?: string;
+  transactionAmount: number;
+  status: string;
+  paidDate: string;
+  updatedAt?: string;
+  createdAt?: string;
+  deletedAt?: string;
+}
+
+export interface CreditCardRes {
+  id?: string;
+  userId?: string;
+  name: string;
+  firstSixDigits: string;
+  lastFourDigits: string;
+  expirationMonth: string;
+  expirationYear: string;
+  status: boolean;
+  updatedAt?: string;
+  createdAt?: string;
+  deletedAt?: string;
+}
+
+export async function getPlans(): Promise<PlanRes[] | Error> {
   try {
-    const { data } = await api.get(`/api/${component}/plans`);
+    const { data } = await api.get(`/api/${ModulesEnum.subscriptions}/plans`);
     return data
   } catch (err) {
     return errorHandler(err)
   }
 };
 
-export async function getSubscription(): Promise<SubscriptionInterface | Error> {
+export async function getSubscription(): Promise<SubscriptionRes | Error> {
   try {
-    const { data } = await api.get(`/api/${component}/subscription`);
+    const { data } = await api.get(`/api/${ModulesEnum.subscriptions}/subscription`);
     return data
   } catch (err) {
     return errorHandler(err)
   }
 };
 
-export async function getPayments(): Promise<PaymentInterface[] | Error> {
+export async function getPayments(): Promise<PaymentRes[] | Error> {
   try {
-    const { data } = await api.get(`/api/${component}/payments`);
+    const { data } = await api.get(`/api/${ModulesEnum.subscriptions}/payments`);
     return data
   } catch (err) {
     return errorHandler(err)
   }
 };
 
-export async function getCreditcards(): Promise<CreditCardInterface[] | Error> {
+export async function getCreditcards(): Promise<CreditCardRes[] | Error> {
   try {
-    const { data } = await api.get(`/api/${component}/creditcards`);
+    const { data } = await api.get(`/api/${ModulesEnum.subscriptions}/creditcards`);
     return data
   } catch (err) {
     return errorHandler(err)

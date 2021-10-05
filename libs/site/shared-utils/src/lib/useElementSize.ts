@@ -26,6 +26,7 @@ function useElementSize<T extends HTMLElement = HTMLDivElement>(
 
   useEffect(() => {
     updateSize()
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   useEventListener('resize', updateSize)

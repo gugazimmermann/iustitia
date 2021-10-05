@@ -1,6 +1,6 @@
 import { Sequelize, DataTypes, Optional, Model } from "sequelize";
 
-interface BusinessContactsCompaniesAttributes {
+interface BCCompaniesAttributes {
   id: string;
   name: string;
   site: string;
@@ -17,7 +17,7 @@ interface BusinessContactsCompaniesAttributes {
   tenantId: string;
 }
 
-type BusinessContactsCompaniesCreationAttributes = Optional<BusinessContactsCompaniesAttributes,
+type BCCompaniesCreationAttributes = Optional<BCCompaniesAttributes,
   'id' |
   'site' |
   'email' |
@@ -32,13 +32,13 @@ type BusinessContactsCompaniesCreationAttributes = Optional<BusinessContactsComp
   'comments'
 >
 
-export interface BusinessContactsCompaniesInstance
-  extends Model<BusinessContactsCompaniesAttributes, BusinessContactsCompaniesCreationAttributes>,
-  BusinessContactsCompaniesAttributes {
+export interface BCCompaniesInstance
+  extends Model<BCCompaniesAttributes, BCCompaniesCreationAttributes>,
+  BCCompaniesAttributes {
   createdAt?: Date;
   updatedAt?: Date;
   deletedAt?: Date;
-  contacts?: {
+  contacts: {
     id: string;
     name: string;
     position: string;
@@ -46,7 +46,7 @@ export interface BusinessContactsCompaniesInstance
 }
 
 export default function businessContactsCompanies(sequelize: Sequelize) {
-  const BusinessContactsCompanies = sequelize.define<BusinessContactsCompaniesInstance>('business-contacts-companies', {
+  const BusinessContactsCompanies = sequelize.define<BCCompaniesInstance>('business-contacts-companies', {
     id: {
       type: DataTypes.UUID,
       defaultValue: DataTypes.UUIDV4,

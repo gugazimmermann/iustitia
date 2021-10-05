@@ -1,9 +1,8 @@
-import { AuthRoutesInterface } from "@iustitia/interfaces";
-import { GetComponentRoutes, ComponentsEnum } from "@iustitia/components";
+import { GetRoutes, ModulesEnum, AuthRoutesInterface } from "@iustitia/modules";
 import { PublicRoute } from "@iustitia/routes";
 import { Layout, SignIn, ForgotPassword, ChangePassword, SignUp, Plans, Subscription } from "../pages";
 
-const routes = GetComponentRoutes(ComponentsEnum.auth) as AuthRoutesInterface;
+const authRoutes = GetRoutes(ModulesEnum.auth) as AuthRoutesInterface;
 
 export function AuthRoutes() {
   return (
@@ -13,32 +12,32 @@ export function AuthRoutes() {
           <SignIn />
         </Layout>
       </PublicRoute>
-      <PublicRoute exact path={routes.signIn}>
+      <PublicRoute exact path={authRoutes.signIn}>
         <Layout>
           <SignIn />
         </Layout>
       </PublicRoute>
-      <PublicRoute exact path={routes.forgotPassword}>
+      <PublicRoute exact path={authRoutes.forgotPassword}>
         <Layout>
           <ForgotPassword />
         </Layout>
       </PublicRoute>
-      <PublicRoute exact path={`${routes.changePassword}/:urlcode?`}>
+      <PublicRoute exact path={`${authRoutes.changePassword}/:urlcode?`}>
         <Layout>
           <ChangePassword />
         </Layout>
       </PublicRoute>
-      <PublicRoute exact path={`${routes.signUp}`}>
+      <PublicRoute exact path={`${authRoutes.signUp}`}>
         <Layout>
           <SignUp />
         </Layout>
       </PublicRoute>
-      <PublicRoute exact path={`${routes.plans}`}>
+      <PublicRoute exact path={`${authRoutes.plans}`}>
         <Layout>
           <Plans />
         </Layout>
       </PublicRoute>
-      <PublicRoute exact path={`${routes.subscription}`}>
+      <PublicRoute exact path={`${authRoutes.subscription}`}>
         <Layout>
           <Subscription />
         </Layout>

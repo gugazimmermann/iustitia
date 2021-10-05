@@ -1,57 +1,52 @@
+import { ModulesEnum } from "@iustitia/modules";
+import { NotesInterface } from "@iustitia/api/notes";
 import { errorHandler } from "@iustitia/site/shared-utils";
-import {
-  ApiIdInterface,
-  ApiMessageInterface,
-  NotesInterface,
-  NotesFormDataInterface,
-  NotesGetAllInterface
-} from "@iustitia/interfaces";
-import { api, token } from "../..";
-import { GetComponent, ComponentsEnum } from "@iustitia/components";
+import api from "../api";
+import token from "../auth/token";
+import { ApiIdReq, ApiMessageRes } from "../interfaces";
 
-const component = GetComponent(ComponentsEnum.notes);
-if (!component || !component?.name) throw new Error(`App Component not Found: ${ComponentsEnum.notes}`)
+export type NotesRes = NotesInterface;
 
-export async function getAll(
-  { ownerId }: NotesGetAllInterface
-): Promise<NotesInterface[] | Error> {
+export interface NotesGetAllReq {
+  ownerId: string;
+}
+
+export interface NotesFormDataReq {
+  formData: NotesInterface;
+}
+
+export async function getAll({ ownerId }: NotesGetAllReq): Promise<NotesRes[] | Error> {
   try {
     const tenantId = token.getLocalTenantId();
-    const { data } = await api.get(`/api/${component?.name}/${tenantId}/${ownerId}`);
+    const { data } = await api.get(`/api/${ModulesEnum.notes}/${tenantId}/${ownerId}`);
     return data
   } catch (err) {
     return errorHandler(err)
   }
 };
 
-export async function create(
-  { formData }: NotesFormDataInterface
-): Promise<NotesInterface | Error> {
+export async function create({ formData }: NotesFormDataReq): Promise<NotesRes | Error> {
   try {
     formData.tenantId = token.getLocalTenantId();
-    const { data } = await api.post(`/api/${component?.name}`, formData);
+    const { data } = await api.post(`/api/${ModulesEnum.notes}`, formData);
     return data
   } catch (err) {
     return errorHandler(err)
   }
 };
 
-export async function update(
-  { formData }: NotesFormDataInterface
-): Promise<NotesInterface | Error> {
+export async function update({ formData }: NotesFormDataReq): Promise<NotesRes | Error> {
   try {
-    const { data } = await api.put(`/api/${component?.name}`, formData);
+    const { data } = await api.put(`/api/${ModulesEnum.notes}`, formData);
     return data
   } catch (err) {
     return errorHandler(err)
   }
 };
 
-export async function deleteOne(
-  { id }: ApiIdInterface
-): Promise<ApiMessageInterface | Error> {
+export async function deleteOne({ id }: ApiIdReq): Promise<ApiMessageRes | Error> {
   try {
-    return await api.delete(`/api/${component?.name}/${id}`);
+    return await api.delete(`/api/${ModulesEnum.notes}/${id}`);
   } catch (err) {
     return errorHandler(err)
   }

@@ -3,6 +3,26 @@ import * as AWS from 'aws-sdk';
 import * as sharp from 'sharp';
 import { database } from '@iustitia/api/database';
 import { validateEmail } from '@iustitia/site/shared-utils';
+import { SubscriptionInterface } from "@iustitia/api/subscriptions";
+
+export interface ProfilesInterface {
+  id?: string;
+  role: string;
+  isAdmin?: boolean;
+  isProfessional?: boolean;
+  avatar: string;
+  name: string;
+  email: string;
+  phone: string;
+  zip: string;
+  address: string;
+  number: string;
+  complement: string;
+  neighborhood: string;
+  city: string;
+  state: string;
+  subscription?: SubscriptionInterface;
+};
 
 const s3 = new AWS.S3();
 AWS.config.update({

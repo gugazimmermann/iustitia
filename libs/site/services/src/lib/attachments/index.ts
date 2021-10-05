@@ -1,29 +1,35 @@
-import { AttachmentsCreateInterface, AttachmentsGetAllInterface, AttachmentsInterface } from "@iustitia/interfaces"
-import { GetComponent, ComponentsEnum } from "@iustitia/components";
+import { ModulesEnum } from "@iustitia/modules";
+import { AttachmentsInterface } from "@iustitia/api/attachments";
 import { errorHandler } from "@iustitia/site/shared-utils";
-import { ApiIdInterface, ApiMessageInterface } from "@iustitia/interfaces";
-import { api, token } from "../..";
+import api from "../api";
+import token from "../auth/token";
+import { ApiIdReq, ApiMessageRes } from "../interfaces";
 
-const component = GetComponent(ComponentsEnum.attachments);
-if (!component || !component?.name) throw new Error(`App Component not Found: ${ComponentsEnum.attachments}`)
+export type AttachmentsRes = AttachmentsInterface;
 
-export async function getAll(
-  { ownerId }: AttachmentsGetAllInterface
-): Promise<AttachmentsInterface[] | Error> {
+export interface AttachmentsGetAllReq {
+  ownerId: string;
+}
+
+export interface AttachmentsCreateReq {
+  formData: FormData;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  onUploadProgress: any;
+}
+
+export async function getAll({ ownerId }: AttachmentsGetAllReq): Promise<AttachmentsRes[] | Error> {
   try {
     const tenantId = token.getLocalTenantId();
-    const { data } = await api.get(`/api/${component?.name}/${tenantId}/${ownerId}`);
+    const { data } = await api.get(`/api/${ModulesEnum.attachments}/${tenantId}/${ownerId}`);
     return data
   } catch (err) {
     return errorHandler(err)
   }
 };
 
-export async function create(
-  { formData, onUploadProgress }: AttachmentsCreateInterface
-): Promise<ApiMessageInterface | Error> {
+export async function create({ formData, onUploadProgress }: AttachmentsCreateReq): Promise<ApiMessageRes | Error> {
   try {
-    return api.post(`/api/${component?.name}`, formData, {
+    return api.post(`/api/${ModulesEnum.attachments}`, formData, {
       headers: { "Content-Type": "multipart/form-data" },
       onUploadProgress,
     });
@@ -32,11 +38,9 @@ export async function create(
   }
 }
 
-export async function deleteOne(
-  { id }: ApiIdInterface
-): Promise<ApiMessageInterface | Error> {
+export async function deleteOne({ id }: ApiIdReq): Promise<ApiMessageRes | Error> {
   try {
-    return await api.delete(`/api/${component?.name}/${id}`);
+    return await api.delete(`/api/${ModulesEnum.attachments}/${id}`);
   } catch (err) {
     return errorHandler(err)
   }

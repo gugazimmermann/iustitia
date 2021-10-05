@@ -1,14 +1,15 @@
 import { useEffect, useState } from "react";
 import { Redirect, Route, RouteProps } from "react-router-dom";
 import { AuthServices } from "@iustitia/site/services";
-import { AuthRoutesInterface, UserInterface } from "@iustitia/interfaces";
-import { GetComponentRoutes, ComponentsEnum } from "@iustitia/components";
+import { AuthRoutesInterface, GetRoutes, ModulesEnum } from "@iustitia/modules";
 
-const routes = GetComponentRoutes(ComponentsEnum.dashboards) as AuthRoutesInterface;
+type UserType = AuthServices.UserRes;
+
+const routes = GetRoutes(ModulesEnum.dashboards) as AuthRoutesInterface;
 
 export function ProtectedRoute({ children, ...rest }: RouteProps) {
   const [loading, setLoading] = useState(true);
-  const [user, setUser] = useState({} as UserInterface);
+  const [user, setUser] = useState({} as UserType);
 
   useEffect(() => {
     if (AuthServices.getUser()) {
@@ -20,7 +21,7 @@ export function ProtectedRoute({ children, ...rest }: RouteProps) {
 
   async function currentUser() {
     try {
-      const currentUser = (await AuthServices.getMe()) as UserInterface;
+      const currentUser = (await AuthServices.getMe()) as UserType;
       setUser(currentUser);
       setLoading(false);
     } catch (err) {

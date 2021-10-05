@@ -7,20 +7,23 @@ import {
   LoadingButton,
 } from "@iustitia/site/shared-components";
 import { WARNING_TYPES } from "@iustitia/site/shared-utils";
-import { AuthServices } from "@iustitia/site/services";
-import {
-  AuthRoutesInterface,
-  CardTokenInterface,
-  CreateCardTokenInterface,
-  IdentificationInterface,
-  PlanInterface,
-  SubscriptionForm,
-} from "@iustitia/interfaces";
-import { GetComponentRoutes, ComponentsEnum } from "@iustitia/components";
-import { MercadoPago } from "./protocols";
+import { AuthServices, SubscriptionsServices } from "@iustitia/site/services";
+import { GetRoutes, ModulesEnum, AuthRoutesInterface } from "@iustitia/modules";
+import { CardToken, CreateCardToken, Identification, MercadoPago } from "./protocols";
 import { SignUpForm } from "..";
 
-const routesAuth = GetComponentRoutes(ComponentsEnum.auth) as AuthRoutesInterface;
+type PlanType = SubscriptionsServices.PlanRes;
+
+const authRoutes = GetRoutes(ModulesEnum.auth) as AuthRoutesInterface;
+
+export interface SubscriptionForm {
+  name: string;
+  cardNumber: string;
+  cardExpiration: string;
+  securityCode: string;
+  documentType: string;
+  document: string;
+};
 
 const PUBLIC_KEY =
   process.env.NX_STAGE === "dev"
@@ -38,7 +41,7 @@ declare global {
 
 interface State {
   form: SignUpForm;
-  plan: PlanInterface;
+  plan: PlanType;
 }
 
 export function Subscription() {
@@ -61,7 +64,7 @@ export function Subscription() {
   });
   const [mercadoPago, setMercadoPago] = useState<MercadoPago>();
   const [identificationTypes, setIdentificationTypes] =
-    useState<IdentificationInterface[]>();
+    useState<Identification[]>();
   const [cardImg, setCardImg] = useState("");
 
   useEffect(() => {
@@ -91,7 +94,7 @@ export function Subscription() {
     }
   }
 
-  async function getCardToken(data: CreateCardTokenInterface) {
+  async function getCardToken(data: CreateCardToken) {
     if (mercadoPago) {
       try {
         return await mercadoPago.createCardToken({
@@ -112,7 +115,7 @@ export function Subscription() {
   const onSubmit = async (data: SubscriptionForm) => {
     setLoading(true);
     try {
-      const token: CardTokenInterface = await getCardToken({
+      const token: CardToken = await getCardToken({
         cardNumber: data.cardNumber.replace(/\D/g, ""),
         cardholderName: data.name,
         cardExpirationMonth: data.cardExpiration.split("/")[0],
@@ -136,7 +139,7 @@ export function Subscription() {
         },
       });
       setLoading(false);
-      history.push(routesAuth.signIn, { email: form.email });
+      history.push(authRoutes.signIn, { email: form.email });
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       setShowAlert({
@@ -150,7 +153,7 @@ export function Subscription() {
   };
 
   if (form === undefined || plan === undefined) {
-    return <Redirect to={routesAuth.signUp} />;
+    return <Redirect to={authRoutes.signUp} />;
   } else {
     return (
       <main className="bg-white max-w-lg mx-auto p-8 md:p-12 my-10 rounded-lg shadow-2xl">

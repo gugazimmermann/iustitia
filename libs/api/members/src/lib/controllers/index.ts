@@ -1,10 +1,18 @@
 import { Op } from "sequelize";
 import { Request, Response } from "express";
 import * as bcrypt from "bcryptjs";
-import { MembersInterface, ProfilesListInterface, SimpleProfilesListInterface } from "@iustitia/interfaces";
-import { database, MembersInstance, AuthUsersInstance } from '@iustitia/api/database';
+import { database, MembersInstance, AuthUsersInstance, AuthRolesInstance } from '@iustitia/api/database';
 import { InvitationEmail } from "@iustitia/api/email";
 import { validateEmail } from '@iustitia/site/shared-utils';
+
+export interface MembersInterface {
+  id?: string;
+  name: string;
+  email: string;
+  code?: string;
+  tenantId?: string;
+  updatedAt?: Date;
+}
 
 function dataToPeopleResult(data: MembersInstance): MembersInterface {
   return {
@@ -15,7 +23,18 @@ function dataToPeopleResult(data: MembersInstance): MembersInterface {
   }
 }
 
-function dataToProfileListResult(data: AuthUsersInstance): ProfilesListInterface {
+export interface MembersSimpleInterface {
+  id: string;
+  avatar: string;
+  name: string;
+  phone?: string;
+  email?: string;
+  role?: string;
+  active?: boolean;
+}
+
+
+function dataToProfileListResult(data: AuthUsersInstance): MembersSimpleInterface {
   return {
     id: data.id,
     avatar: data.profile.avatar,
@@ -27,7 +46,7 @@ function dataToProfileListResult(data: AuthUsersInstance): ProfilesListInterface
   }
 }
 
-function dataToSimpleProfileListResult(data: AuthUsersInstance): SimpleProfilesListInterface {
+function dataToSimpleProfileListResult(data: AuthUsersInstance): MembersSimpleInterface {
   return {
     id: data.id,
     name: data.profile.name,
@@ -40,7 +59,7 @@ export async function getAll(req, res): Promise<Response> {
   if (!tenantId) return res.status(400).send({ message: "Dados inválidos!" });
   try {
     const user = await database.AuthUsers.findOne({ where: { id: req.userId } });
-    if (user.tenant !== tenantId) return res.status(401).send({ message: "Sem permissão!" });
+    if (!user || user.tenant !== tenantId) return res.status(401).send({ message: "Sem permissão!" });
     const data = await database.AuthUsers.findAll({
       where: {
         tenant: user.tenant,
@@ -49,7 +68,7 @@ export async function getAll(req, res): Promise<Response> {
         },
       }, include: ["profile", "roles"]
     });
-    const resultData = [] as ProfilesListInterface[];
+    const resultData = [] as MembersSimpleInterface[];
     if (data.length > 0) data.forEach(d => resultData.push(dataToProfileListResult(d)));
     return res.status(200).send(resultData);
   } catch (err) {
@@ -62,14 +81,14 @@ export async function getOne(req, res): Promise<Response> {
   if (!tenantId || !id) return res.status(400).send({ message: "Dados inválidos!" });
   try {
     const user = await database.AuthUsers.findOne({ where: { id: req.userId } });
-    if (user.tenant !== tenantId) return res.status(401).send({ message: "Sem permissão!" });
+    if (!user || user.tenant !== tenantId) return res.status(401).send({ message: "Sem permissão!" });
     const data = await database.AuthUsers.findOne({
       where: {
         tenant: user.tenant, id,
       }, include: ["profile", "roles"]
     });
     ;
-    return res.status(200).send(dataToProfileListResult(data));
+    return res.status(200).send(dataToProfileListResult(data as AuthUsersInstance));
   } catch (err) {
     return res.status(500).send({ message: err.message });
   }
@@ -91,21 +110,22 @@ export async function create(req: Request, res: Response): Promise<Response> {
     }
     );
     const role = await database.AuthRoles.findOne({ where: { name: "User" } })
-    user.addRole(role);
+    if (user.addRole) user.addRole(role as AuthRolesInstance);
     await database.Profiles.create({
       name: invite.name,
       email: invite.email,
       userId: user.id
     });
-    const mainUser = database.AuthUsers.findOne({ where: { id: invite.userId }, include: "subscription" })
+    const mainUser = await database.AuthUsers.findOne({ where: { id: invite.userId }, include: "subscription" })
+    if (!mainUser) return res.status(404).send({ message: "Nenhum usuario encontrado!" });
     await database.Subscriptions.create({
-      reason: (await mainUser).subscription.reason,
-      frequency: (await mainUser).subscription.frequency,
-      frequencyType: (await mainUser).subscription.frequencyType,
-      transactionAmount: (await mainUser).subscription.transactionAmount,
+      reason: (mainUser).subscription.reason,
+      frequency: (mainUser).subscription.frequency,
+      frequencyType: (mainUser).subscription.frequencyType,
+      transactionAmount: (mainUser).subscription.transactionAmount,
       status: true,
-      type: (await mainUser).subscription.type,
-      planId: (await mainUser).subscription.planId,
+      type: (mainUser).subscription.type,
+      planId: (mainUser).subscription.planId,
       userId: user.id,
     });
     await invite.destroy();
@@ -121,7 +141,7 @@ export async function getList(req, res): Promise<Response> {
   if (!tenantId) return res.status(400).send({ message: "Dados inválidos!" });
   try {
     const user = await database.AuthUsers.findOne({ where: { id: req.userId } });
-    if (user.tenant !== tenantId) return res.status(401).send({ message: "Sem permissão!" });
+    if (!user || user.tenant !== tenantId) return res.status(401).send({ message: "Sem permissão!" });
     const data = await database.AuthUsers.findAll({
       where:
       {
@@ -137,7 +157,7 @@ export async function getList(req, res): Promise<Response> {
       ],
       order: [[database.Profiles, 'name', 'ASC']],
     });
-    const resultData = [] as SimpleProfilesListInterface[];
+    const resultData = [] as MembersSimpleInterface[];
     if (data.length > 0) data.forEach(d => resultData.push(dataToSimpleProfileListResult(d)));
     return res.status(200).send(resultData);
   } catch (err) {
@@ -150,7 +170,7 @@ export async function getInvites(req, res): Promise<Response> {
   if (!tenantId) return res.status(400).send({ message: "Dados inválidos!" });
   try {
     const user = await database.AuthUsers.findOne({ where: { id: req.userId } });
-    if (user.tenant !== tenantId) return res.status(401).send({ message: "Sem permissão!" });
+    if (!user || user.tenant !== tenantId) return res.status(401).send({ message: "Sem permissão!" });
     const data = await database.Members.findAll({
       where: { tenantId: user.tenant }
     });
@@ -167,6 +187,7 @@ export async function getInviteCode(req: Request, res: Response): Promise<Respon
   if (!tenantId || !code) return res.status(400).send({ message: "Dados inválidos!" });
   try {
     const data = await database.Members.findOne({ where: { tenantId: tenantId, code: code } });
+    if (!data) return res.status(400).send({ message: "nao encontrado!" });
     return res.status(200).send({ ...dataToPeopleResult(data), code: data.code });
   } catch (err) {
     return res.status(500).send({ message: err.message });
@@ -180,6 +201,7 @@ export async function createInvite(req, res): Promise<Response> {
   if (!body.name || !body.email || !validateEmail(body.email)) return res.status(400).send({ message: "Dados inválidos!" });
   try {
     const user = await database.AuthUsers.findOne({ where: { id: req.userId }, include: ["profile", "subscription"] });
+    if (!user) return res.status(404).send({ message: "Nao encontrado!" });
     if (user.subscription.type !== "professional") {
       const countPeoples = await database.Members.count({ where: { tenantId: user.tenant } });
       const countUsers = await database.AuthUsers.count({
@@ -214,7 +236,7 @@ export async function sendInvite(req, res): Promise<Response> {
   if (!tenantId || !id) return res.status(400).send({ message: "Dados inválidos!" });
   try {
     const user = await database.AuthUsers.findOne({ where: { id: req.userId }, include: "profile" });
-    if (user.tenant !== tenantId) return res.status(401).send({ message: "Sem permissão!" });
+    if (!user || user.tenant !== tenantId) return res.status(401).send({ message: "Sem permissão!" });
     const invite = await database.Members.findOne({ where: { id: id } });
     if (!invite) return res.status(404).send({ message: "Nenhum registro encontrado!" });
     const profile = await database.Profiles.findOne({ where: { email: invite.email } });
@@ -241,7 +263,7 @@ export async function deleteInvite(req, res): Promise<Response> {
     const data = await database.Members.findByPk(id);
     if (!data) return res.status(404).send({ message: "Nenhum registro encontrado!" });
     const user = await database.AuthUsers.findOne({ where: { id: req.userId } });
-    if (user.tenant !== data.tenantId) return res.status(401).send({ message: "Sem permissão!" });
+    if (!user || user.tenant !== data.tenantId) return res.status(401).send({ message: "Sem permissão!" });
     await database.Members.destroy({ where: { id: id } });
     return res.status(200).send({ message: "Registro deletado!" });
   } catch (err) {

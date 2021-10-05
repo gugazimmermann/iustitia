@@ -1,14 +1,11 @@
-import { GetComponent, ComponentsEnum } from "@iustitia/components";
-import { ApiMessageInterface } from "@iustitia/interfaces";
+import { ModulesEnum } from "@iustitia/modules";
 import { errorHandler } from "@iustitia/site/shared-utils";
-import { api } from "../..";
+import api from "../api";
+import { ApiMessageRes } from "../interfaces";
 
-const component = GetComponent(ComponentsEnum.financial);
-if (!component || !component?.name) throw new Error(`App Component not Found: ${ComponentsEnum.financial}`)
-
-export async function placeholderFunction(): Promise<ApiMessageInterface | Error> {
+export async function placeholderFunction(): Promise<ApiMessageRes | Error> {
   try {
-    const { data } = await api.get(`/api/${component?.name}`);
+    const { data } = await api.get(`/api/${ModulesEnum.financial}`);
     return data
   } catch (err) {
     return errorHandler(err)

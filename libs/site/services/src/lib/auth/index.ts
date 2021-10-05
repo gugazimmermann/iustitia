@@ -1,39 +1,75 @@
-import { ComponentsEnum, GetComponent } from "@iustitia/components";
-import {
-  ApiMessageInterface,
-  ChangePasswordInterface,
-  ForgotPasswordCodeInterface,
-  ForgotPasswordCodeResponseInterface,
-  ForgotPasswordInterface,
-  ForgotPasswordResponseInterface,
-  SignInInterface,
-  SignInResponseInterface,
-  SignUpInterface,
-  UserInterface
-} from "@iustitia/interfaces";
+import { ModulesEnum } from "@iustitia/modules";
 import { errorHandler } from "@iustitia/site/shared-utils";
 import api from "../api";
 import TokenService from "./token";
+import { ApiMessageRes } from "../interfaces";
 
-const component = GetComponent(ComponentsEnum.auth);
-if (!component || !component?.name) throw new Error(`App Component not Found: ${ComponentsEnum.auth}`)
+export interface SignUpReq {
+  name: string;
+  email: string;
+  password: string;
+  planId: string;
+  cardInfo?: {
+    id: string;
+    name: string;
+    expirationMonth: number;
+    expirationYear: number;
+    firstSixDigits: string;
+    lastFourDigits: string;
+  }
+}
 
-export async function signup(
-  { name, email, password, planId, cardInfo }: SignUpInterface
-): Promise<ApiMessageInterface | Error> {
+export interface SignInReq {
+  email: string,
+  password: string
+}
+
+export interface SignInRes {
+  accessToken: string;
+  refreshToken: string;
+  tenant: string;
+}
+
+export interface ForgotPasswordReq {
+  email: string;
+}
+
+export interface ForgotPasswordRes {
+  email: string;
+  date: string;
+}
+
+export interface ForgotPasswordCodeReq {
+  codeurl: string;
+}
+
+export interface ForgotPasswordCodeRes {
+  code: string;
+}
+
+export interface ChangePasswordReq {
+  codeNumber: string;
+  password: string;
+}
+
+export interface UserRes {
+  email: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export async function signup({ name, email, password, planId, cardInfo }: SignUpReq): Promise<ApiMessageRes | Error> {
   try {
-    const { data } = await api.post(`/api/${component?.name}/signup`, { name, email, password, planId, cardInfo });
+    const { data } = await api.post(`/api/${ModulesEnum.auth}/signup`, { name, email, password, planId, cardInfo });
     return data
   } catch (err) {
     return errorHandler(err)
   }
 };
 
-export async function signin(
-  { email, password }: SignInInterface
-): Promise<SignInResponseInterface | Error> {
+export async function signin({ email, password }: SignInReq): Promise<SignInRes | Error> {
   try {
-    const { data } = await api.post(`/api/${component?.name}/signin`, { email, password })
+    const { data } = await api.post(`/api/${ModulesEnum.auth}/signin`, { email, password })
     if (data?.accessToken) TokenService.setUser(data);
     return data;
   } catch (err) {
@@ -41,11 +77,9 @@ export async function signin(
   }
 };
 
-export async function forgotpassword(
-  { email }: ForgotPasswordInterface
-): Promise<ForgotPasswordResponseInterface | Error> {
+export async function forgotpassword({ email }: ForgotPasswordReq): Promise<ForgotPasswordRes | Error> {
   try {
-    const res = await api.post(`/api/${component?.name}/forgotpassword`, { email })
+    const res = await api.post(`/api/${ModulesEnum.auth}/forgotpassword`, { email })
     return {
       email: res.data.email,
       date: res.data.date
@@ -55,31 +89,27 @@ export async function forgotpassword(
   }
 };
 
-export async function getforgotpasswordcode(
-  { codeurl }: ForgotPasswordCodeInterface
-): Promise<ForgotPasswordCodeResponseInterface | Error> {
+export async function getforgotpasswordcode({ codeurl }: ForgotPasswordCodeReq): Promise<ForgotPasswordCodeRes | Error> {
   try {
-    const { data } = await api.post(`/api/${component?.name}/forgotpasswordcode`, { codeurl });
+    const { data } = await api.post(`/api/${ModulesEnum.auth}/forgotpasswordcode`, { codeurl });
     return data;
   } catch (err) {
     return errorHandler(err)
   }
 };
 
-export async function changepassword(
-  { codeNumber, password }: ChangePasswordInterface
-): Promise<void | Error> {
+export async function changepassword({ codeNumber, password }: ChangePasswordReq): Promise<void | Error> {
   const code = `${codeNumber}`.trim().replace(/ /g, "");
   try {
-    await api.post(`/api/${component?.name}/changepassword`, { code, password })
+    await api.post(`/api/${ModulesEnum.auth}/changepassword`, { code, password })
   } catch (err) {
     return errorHandler(err)
   }
 };
 
-export async function getMe(): Promise<UserInterface | Error> {
+export async function getMe(): Promise<UserRes | Error> {
   try {
-    const { data } = await api.get(`/api/${component?.name}/me`);
+    const { data } = await api.get(`/api/${ModulesEnum.auth}/me`);
     return data
   } catch (err) {
     return errorHandler(err)

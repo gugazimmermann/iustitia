@@ -1,12 +1,20 @@
-import { database, NotesInstance } from "@iustitia/api/database";
-import { NotesInterface } from "@iustitia/interfaces";
 import { Response } from "express";
 import { DateTime } from "luxon";
+import { database, NotesInstance } from "@iustitia/api/database";
+
+export interface NotesInterface {
+  id?: string;
+  date: string;
+  title: string;
+  content: string;
+  tenantId?: string;
+  ownerId?: string;
+}
 
 function dataToResult(data: NotesInstance): NotesInterface {
   return {
     id: data.id,
-    date: DateTime.fromJSDate(data.createdAt).toFormat("dd/MM/yyyy HH:mm"),
+    date: DateTime.fromJSDate(data.createdAt as Date).toFormat("dd/MM/yyyy HH:mm"),
     title: data.title,
     content: data.content
   }
@@ -17,7 +25,7 @@ export async function getAll(req, res): Promise<Response> {
   if (!tenantId || !ownerId) return res.status(400).send({ message: "Dados inválidos!" });
   try {
     const user = await database.AuthUsers.findOne({ where: { id: req.userId } });
-    if (user.tenant !== tenantId) return res.status(401).send({ message: "Sem permissão!" });
+    if (!user || user.tenant !== tenantId) return res.status(401).send({ message: "Sem permissão!" });
     const data = await database.Notes.findAll({ where: { ownerId }, order: [['createdAt', 'DESC']] });
     const resultData = [] as NotesInterface[];
     if (data.length > 0) data.forEach(d => resultData.push(dataToResult(d)));

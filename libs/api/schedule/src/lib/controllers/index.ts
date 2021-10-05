@@ -1,6 +1,18 @@
 import { Response } from "express";
-import { ScheduleEventsInterface } from "@iustitia/interfaces";
 import { database, ScheduleEventsInstance} from '@iustitia/api/database';
+
+export interface ScheduleEventsInterface {
+  id?: string;
+  startDate?: Date;
+  endDate?: Date;
+  fullDay?: boolean;
+  color?: string;
+  title?: string;
+  description?: string;
+  userId?: string;
+  officeId?: string;
+  tenantId?: string;
+}
 
 function dataToEventsResult(data: ScheduleEventsInstance): ScheduleEventsInterface {
   return {
@@ -19,7 +31,7 @@ export async function getOneEvent(req, res): Promise<Response> {
   if (!tenantId || !id) return res.status(400).send({ message: "Dados inválidos!" });
   try {
     const user = await database.AuthUsers.findOne({ where: { id: req.userId } });
-    if (user.tenant !== tenantId) return res.status(401).send({ message: "Sem permissão!" });
+    if (!user || user.tenant !== tenantId) return res.status(401).send({ message: "Sem permissão!" });
     const data = await database.ScheduleEvents.findByPk(id);
     return res.status(200).send(dataToEventsResult(data));
   } catch (err) {
@@ -32,7 +44,7 @@ export async function getAllEvents(req, res): Promise<Response> {
   if (!tenantId) return res.status(400).send({ message: "Dados inválidos!" });
   try {
     const user = await database.AuthUsers.findOne({ where: { id: req.userId } });
-    if (user.tenant !== tenantId) return res.status(401).send({ message: "Sem permissão!" });
+    if (!user || user.tenant !== tenantId) return res.status(401).send({ message: "Sem permissão!" });
     let data: ScheduleEventsInstance[] = [];
     const where = !officeId ? { where: { userId: user.id } } : { where: { officeId: officeId } }
     data = await database.ScheduleEvents.findAll(where);
@@ -75,7 +87,7 @@ export async function deleteOneEvent(req, res): Promise<Response> {
     const data = await database.ScheduleEvents.findByPk(id);
     if (!data) return res.status(404).send({ message: "Nenhum registro encontrado!" });
     const user = await database.AuthUsers.findOne({ where: { id: req.userId } });
-    if (user.tenant !== data.tenantId) return res.status(401).send({ message: "Sem permissão!" });
+    if (!user || user.tenant !== data.tenantId) return res.status(401).send({ message: "Sem permissão!" });
     await database.ScheduleEvents.destroy({ where: { id: id } });
     return res.status(200).send({ message: "Registro deletado!" });
   } catch (err) {

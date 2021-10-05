@@ -13,6 +13,7 @@
     "lib": ["es2017", "dom"],
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
+    "noImplicitAny": false,
     "baseUrl": ".",
     "paths": {
       "@iustitia/api/attachments": ["libs/api/attachments/src/index.ts"],
@@ -32,8 +33,6 @@
       "@iustitia/api/public": ["libs/api/public/src/index.ts"],
       "@iustitia/api/schedule": ["libs/api/schedule/src/index.ts"],
       "@iustitia/api/subscriptions": ["libs/api/subscriptions/src/index.ts"],
-      "@iustitia/components": ["libs/components/src/index.ts"],
-      "@iustitia/interfaces": ["libs/interfaces/src/index.ts"],
       "@iustitia/landing-page/components": [
         "libs/landing-page/components/src/index.ts"
       ],
@@ -41,7 +40,9 @@
       "@iustitia/landing-page/routes": [
         "libs/landing-page/routes/src/index.ts"
       ],
+      "@iustitia/modules": ["libs/modules/src/index.ts"],
       "@iustitia/routes": ["libs/routes/src/index.ts"],
+      "@iustitia/site/attachments": ["libs/site/attachments/src/index.ts"],
       "@iustitia/site/auth": ["libs/site/auth/src/index.ts"],
       "@iustitia/site/icons": ["libs/site/icons/src/index.ts"],
       "@iustitia/site/layout": ["libs/site/layout/src/index.ts"],

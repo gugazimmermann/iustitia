@@ -4,11 +4,10 @@ import { useForm } from "react-hook-form";
 import { Alert, AlertInterface, LoadingButton } from "@iustitia/site/shared-components";
 import { validateEmail, WARNING_TYPES } from "@iustitia/site/shared-utils";
 import { AuthServices } from "@iustitia/site/services";
-import { GetComponentRoutes, ComponentsEnum } from "@iustitia/components";
-import { AuthRoutesInterface } from "@iustitia/interfaces";
+import { GetRoutes, ModulesEnum, AuthRoutesInterface } from "@iustitia/modules";
 import { Link, Title } from "../../components";
 
-const routesAuth = GetComponentRoutes(ComponentsEnum.auth) as AuthRoutesInterface;
+const authRoutes = GetRoutes(ModulesEnum.auth) as AuthRoutesInterface;
 
 type Form = {
   email: string;
@@ -45,7 +44,7 @@ export function ForgotPassword() {
       const res = await AuthServices.forgotpassword({ email: form.email });
       if ("email" in res) {
         setLoading(false);
-        history.push(routesAuth.changePassword, {
+        history.push(authRoutes.changePassword, {
           email: res.email,
           date: res.date,
         });
@@ -88,7 +87,7 @@ export function ForgotPassword() {
               }
             />
           </div>
-          <Link link={routesAuth.signIn} text="Voltar para Entrar" />
+          <Link link={authRoutes.signIn} text="Voltar para Entrar" />
           <LoadingButton
             styles="bg-primary-600 hover:bg-primary-700 text-white font-bold py-2 rounded shadow-lg hover:shadow-xl transition duration-200"
             type="submit"

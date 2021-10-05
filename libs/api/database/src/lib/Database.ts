@@ -15,8 +15,8 @@ import profiles, { ProfilesInstance } from "./models/profiles";
 
 import places, { PlacesInstance } from "./models/places";
 
-import businessContactsPersons, { BusinessContactsPersonsInstance } from "./models/business-contacts-persons";
-import businessContactsCompanies, { BusinessContactsCompaniesInstance } from "./models/business-contacts-companies";
+import businessContactsPersons, { BCPersonsInstance } from "./models/business-contacts-persons";
+import businessContactsCompanies, { BCCompaniesInstance } from "./models/business-contacts-companies";
 
 import notes, { NotesInstance } from "./models/notes";
 
@@ -48,8 +48,8 @@ export interface IDatabase {
 
   Places: ModelCtor<PlacesInstance>;
 
-  BusinessContactsPersons: ModelCtor<BusinessContactsPersonsInstance>;
-  BusinessContactsCompanies: ModelCtor<BusinessContactsCompaniesInstance>;
+  BusinessContactsPersons: ModelCtor<BCPersonsInstance>;
+  BusinessContactsCompanies: ModelCtor<BCCompaniesInstance>;
 
   Notes: ModelCtor<NotesInstance>;
 

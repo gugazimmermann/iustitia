@@ -1,5 +1,3 @@
-export { default as api } from "./lib/api";
-export { default as token } from "./lib/auth/token";
 export * as AttachmentsServices from "./lib/attachments";
 export * as AuthServices from "./lib/auth";
 export * as BusinessContactsServices from "./lib/business-contacts";

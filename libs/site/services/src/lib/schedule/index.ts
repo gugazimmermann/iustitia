@@ -1,29 +1,34 @@
+import { ModulesEnum } from "@iustitia/modules";
+import { ScheduleEventsInterface } from "@iustitia/api/schedule";
 import { errorHandler } from "@iustitia/site/shared-utils";
-import { ApiIdInterface, ApiMessageInterface, ScheduleEventsInterface, ScheduleEventsGetAllInterface, ScheduleEventsFormDataInterface } from "@iustitia/interfaces";
-import { api, token } from "../.."
-import { GetComponent, ComponentsEnum } from "@iustitia/components";
+import api from "../api";
+import token from "../auth/token";
+import { ApiIdReq, ApiMessageRes } from "../interfaces";
 
-const component = GetComponent(ComponentsEnum.schedule);
-if (!component || !component?.name) throw new Error(`App Component not Found: ${ComponentsEnum.schedule}`)
+export type ScheduleEventsRes = ScheduleEventsInterface;
 
-export async function getOneEvent(
-  { id }: ApiIdInterface
-): Promise<ScheduleEventsInterface | Error> {
+export interface ScheduleEventsGetAllReq {
+  officeId?: string;
+}
+
+export interface ScheduleEventsFormDataReq {
+  formData: ScheduleEventsRes
+}
+
+export async function getOneEvent({ id }: ApiIdReq): Promise<ScheduleEventsRes | Error> {
   try {
     const tenantId = token.getLocalTenantId();
-    const { data } = await api.get(`/api/${component?.name}/events/${tenantId}/${id}`);
+    const { data } = await api.get(`/api/${ModulesEnum.schedule}/events/${tenantId}/${id}`);
     return data
   } catch (err) {
     return errorHandler(err)
   }
 };
 
-export async function getAllEvents(
-  { officeId }: ScheduleEventsGetAllInterface
-): Promise<ScheduleEventsInterface[] | Error> {
+export async function getAllEvents({ officeId }: ScheduleEventsGetAllReq): Promise<ScheduleEventsRes[] | Error> {
   try {
     const tenantId = token.getLocalTenantId();
-    const url = !officeId ? `/api/${component?.name}/events/${tenantId}` : `/api/${component?.name}/events/${tenantId}/office/${officeId}`;
+    const url = !officeId ? `/api/${ModulesEnum.schedule}/events/${tenantId}` : `/api/${ModulesEnum.schedule}/events/${tenantId}/office/${officeId}`;
     await api.get(url);
     const { data } = await api.get(url);
     return data
@@ -32,34 +37,28 @@ export async function getAllEvents(
   }
 };
 
-export async function createEvent(
-  { formData }: ScheduleEventsFormDataInterface
-): Promise<ScheduleEventsInterface | Error> {
+export async function createEvent({ formData }: ScheduleEventsFormDataReq): Promise<ScheduleEventsRes | Error> {
   try {
     formData.tenantId = token.getLocalTenantId();
-    const { data } = await api.post(`/api/${component?.name}/events`, formData);
+    const { data } = await api.post(`/api/${ModulesEnum.schedule}/events`, formData);
     return data
   } catch (err) {
     return errorHandler(err)
   }
 };
 
-export async function updateEvent(
-  { formData }: ScheduleEventsFormDataInterface
-): Promise<ScheduleEventsInterface | Error> {
+export async function updateEvent({ formData }: ScheduleEventsFormDataReq): Promise<ScheduleEventsRes | Error> {
   try {
-    const { data } = await api.put(`/api/${component?.name}/events`, formData);
+    const { data } = await api.put(`/api/${ModulesEnum.schedule}/events`, formData);
     return data
   } catch (err) {
     return errorHandler(err)
   }
 };
 
-export async function deleteOneEvent(
-  { id }: ApiIdInterface
-): Promise<ApiMessageInterface | Error> {
+export async function deleteOneEvent({ id }: ApiIdReq): Promise<ApiMessageRes | Error> {
   try {
-    return await api.delete(`/api/${component?.name}/events/${id}`);
+    return await api.delete(`/api/${ModulesEnum.schedule}/events/${id}`);
   } catch (err) {
     return errorHandler(err)
   }

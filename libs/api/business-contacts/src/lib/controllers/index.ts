@@ -2,9 +2,8 @@ import { Response } from "express";
 import * as AWS from 'aws-sdk';
 import * as sharp from 'sharp';
 import { validateEmail } from '@iustitia/site/shared-utils';
-import { AttachmentFileInterface, BusinessContactsCompaniesInterface, BusinessContactsPersonsInterface } from "@iustitia/interfaces";
-import {  BusinessContactsCompaniesInstance, BusinessContactsPersonsInstance, database } from "@iustitia/api/database";
-import { businessContactsPath } from "../BusinessContacts";
+import { BCCompaniesInstance, BCPersonsInstance, database } from "@iustitia/api/database";
+import { ModulesEnum } from "@iustitia/modules";
 
 const S3 = new AWS.S3();
 AWS.config.update({
@@ -13,7 +12,30 @@ AWS.config.update({
   region: "us-east-1"
 });
 
-function dataToPersonsResult(data: BusinessContactsPersonsInstance): BusinessContactsPersonsInterface {
+export interface BCPersonsInterface {
+  id?: string;
+  avatar?: string;
+  name: string;
+  email?: string;
+  phone?: string;
+  zip?: string;
+  address?: string;
+  number?: string;
+  complement?: string;
+  neighborhood?: string;
+  city?: string;
+  state?: string;
+  position?: string;
+  companyId?: string;
+  company?: string;
+  comments?: string;
+  type?: string;
+  userId?: string;
+  officeId?: string;
+  tenantId?: string;
+}
+
+function dataToPersonsResult(data: BCPersonsInstance): BCPersonsInterface {
   return {
     id: data.id,
     userId: data.userId,
@@ -36,7 +58,29 @@ function dataToPersonsResult(data: BusinessContactsPersonsInstance): BusinessCon
   }
 }
 
-function dataToCompaniesResult(data: BusinessContactsCompaniesInstance): BusinessContactsCompaniesInterface {
+export interface BCCompaniesInterface {
+  id?: string;
+  name: string;
+  site?: string;
+  email?: string;
+  phone?: string;
+  zip?: string;
+  address?: string;
+  number?: string;
+  complement?: string;
+  neighborhood?: string;
+  city?: string;
+  state?: string;
+  comments?: string;
+  contacts?: {
+    id: string;
+    name: string;
+    position: string;
+  }[];
+  tenantId?: string;
+}
+
+function dataToCompaniesResult(data: BCCompaniesInstance): BCCompaniesInterface {
   return {
     id: data.id,
     name: data.name,
@@ -58,13 +102,18 @@ function dataToCompaniesResult(data: BusinessContactsCompaniesInstance): Busines
 function avatarName(id: string, tenantId: string): string {
   const d = new Date();
   const now = `${d.getHours()}${d.getMinutes()}${d.getSeconds()}${d.getMilliseconds()}`
-  return `${tenantId}/${businessContactsPath}/${id.split("-").join("")}${now}.jpeg`
+  return `${tenantId}/${ModulesEnum.businessContacts}/${id.split("-").join("")}${now}.jpeg`
+}
+
+export interface AttachmentFileInterface extends File {
+  originalname: string;
+  buffer: Buffer;
 }
 
 async function sendAvatar(file: AttachmentFileInterface, fileName: string): Promise<AWS.S3.ManagedUpload.SendData> {
   const avatarFile = await sharp(file.buffer).resize(240, 240).jpeg({ quality: 90, mozjpeg: true }).toBuffer()
   const params = {
-    Bucket: process.env.NX_BUCKET_AVATAR,
+    Bucket: process.env.NX_BUCKET_AVATAR as string,
     Key: fileName,
     Body: avatarFile
   };
@@ -91,12 +140,12 @@ export async function getOnePerson(req, res): Promise<Response> {
   if (!tenantId || !id) return res.status(400).send({ message: "Dados inválidos!" });
   try {
     const user = await database.AuthUsers.findOne({ where: { id: req.userId } });
-    if (user.tenant !== tenantId) return res.status(401).send({ message: "Sem permissão!" });
+    if (!user || user.tenant !== tenantId) return res.status(401).send({ message: "Sem permissão!" });
     const data = await database.BusinessContactsPersons.findOne({
       where: { id },
       include: ["company"]
     });
-    return res.status(200).send(dataToPersonsResult(data));
+    return res.status(200).send(dataToPersonsResult(data as BCPersonsInstance));
   } catch (err) {
     return res.status(500).send({ message: err.message });
   }
@@ -107,9 +156,9 @@ export async function getAllPersons(req, res): Promise<Response> {
   if (!tenantId) return res.status(400).send({ message: "Dados inválidos!" });
   try {
     const user = await database.AuthUsers.findOne({ where: { id: req.userId } });
-    if (user.tenant !== tenantId) return res.status(401).send({ message: "Sem permissão!" });
+    if (!user || user.tenant !== tenantId) return res.status(401).send({ message: "Sem permissão!" });
     const data = await database.BusinessContactsPersons.findAll({ where: { tenantId } });
-    const resultData = [] as BusinessContactsPersonsInterface[];
+    const resultData = [] as BCPersonsInterface[];
     if (data.length > 0) data.forEach(d => resultData.push(dataToPersonsResult(d)));
     return res.status(200).send(resultData);
   } catch (err) {
@@ -159,7 +208,7 @@ export async function updatePerson(req, res): Promise<Response> {
     for (const key in body) if (body[key] === "") body[key] = null;
     data.update(body);
     if (req.file) {
-      if (data.avatar) await deleteFromBucket(data.avatar, process.env.NX_BUCKET_AVATAR)
+      if (data.avatar) await deleteFromBucket(data.avatar, process.env.NX_BUCKET_AVATAR as string)
       const fileName = avatarName(data.id, data.tenantId);
       await sendAvatar(req.file, fileName);
       data.update({ avatar: fileName });
@@ -177,13 +226,13 @@ export async function deleteOnePerson(req, res): Promise<Response> {
     const data = await database.BusinessContactsPersons.findByPk(id);
     if (!data) return res.status(404).send({ message: "Nenhum registro encontrado!" });
     const user = await database.AuthUsers.findOne({ where: { id: req.userId } });
-    if (user.tenant !== data.tenantId) return res.status(401).send({ message: "Sem permissão!" });
-    if (data.avatar) await deleteFromBucket(data.avatar, process.env.NX_BUCKET_AVATAR)
+    if (!user || user.tenant !== data.tenantId) return res.status(401).send({ message: "Sem permissão!" });
+    if (data.avatar) await deleteFromBucket(data.avatar, process.env.NX_BUCKET_AVATAR as string)
     await database.Notes.destroy({ where: { ownerId: id } });
     const attachments = await database.Attachments.findAll({ where: { ownerId: id } });
     if (attachments) {
       for (const attachment of attachments) {
-        await deleteFromBucket(attachment.link, process.env.NX_BUCKET_FILES)
+        await deleteFromBucket(attachment.link, process.env.NX_BUCKET_FILES as string)
         await database.Attachments.destroy({ where: { id: attachment.id } });
       }
     }
@@ -199,8 +248,9 @@ export async function getOneCompany(req, res): Promise<Response> {
   if (!tenantId || !id) return res.status(400).send({ message: "Dados inválidos!" });
   try {
     const user = await database.AuthUsers.findOne({ where: { id: req.userId } });
-    if (user.tenant !== tenantId) return res.status(401).send({ message: "Sem permissão!" });
+    if (!user || user.tenant !== tenantId) return res.status(401).send({ message: "Sem permissão!" });
     const data = await database.BusinessContactsCompanies.findByPk(id);
+    if (!data) return res.status(404).send({ message: "Nenhum registro encontrado!" });
     const contacts = await database.BusinessContactsPersons.findAll({ where: { companyId: data.id } });
     data.contacts = [];
     contacts.forEach(c =>
@@ -217,9 +267,9 @@ export async function getAllCompanies(req, res): Promise<Response> {
   if (!tenantId) return res.status(400).send({ message: "Dados inválidos!" });
   try {
     const user = await database.AuthUsers.findOne({ where: { id: req.userId } });
-    if (user.tenant !== tenantId) return res.status(401).send({ message: "Sem permissão!" });
+    if (!user || user.tenant !== tenantId) return res.status(401).send({ message: "Sem permissão!" });
     const data = await database.BusinessContactsCompanies.findAll({ where: { tenantId } });
-    const resultData = [] as BusinessContactsCompaniesInterface[];
+    const resultData = [] as BCCompaniesInterface[];
     if (data.length > 0) data.forEach(d => resultData.push(dataToCompaniesResult(d)));
     return res.status(200).send(resultData);
   } catch (err) {
@@ -260,7 +310,7 @@ export async function deleteOneCompany(req, res): Promise<Response> {
     const data = await database.BusinessContactsCompanies.findByPk(id);
     if (!data) return res.status(404).send({ message: "Nenhum registro encontrado!" });
     const user = await database.AuthUsers.findOne({ where: { id: req.userId } });
-    if (user.tenant !== data.tenantId) return res.status(401).send({ message: "Sem permissão!" });
+    if (!user || user.tenant !== data.tenantId) return res.status(401).send({ message: "Sem permissão!" });
     await database.BusinessContactsCompanies.destroy({ where: { id: id } });
     return res.status(200).send({ message: "Registro deletado!" });
   } catch (err) {

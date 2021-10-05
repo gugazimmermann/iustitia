@@ -1,16 +1,13 @@
 import { Express } from "express"
 import { verifyToken } from '@iustitia/api/auth'
-import { GetComponent, ComponentsEnum } from "@iustitia/components";
+import { ModulesEnum } from "@iustitia/modules";
 import {create, deleteOne, getAll, update} from "./controllers"
 
-const component = GetComponent(ComponentsEnum.attachments);
-if (!component || !component?.name) throw new Error(`App Component not Found: ${ComponentsEnum.attachments}`);
-
 export function Notes(app: Express) {
-  app.get(`/api/${component?.name}/:tenantId/:ownerId`, [verifyToken], getAll);
-  app.post(`/api/${component?.name}`, [verifyToken], create);
-  app.put(`/api/${component?.name}`, [verifyToken], update);
-  app.delete(`/api/${component?.name}/:id`, [verifyToken], deleteOne);
+  app.get(`/api/${ModulesEnum.notes}/:tenantId/:ownerId`, [verifyToken], getAll);
+  app.post(`/api/${ModulesEnum.notes}`, [verifyToken], create);
+  app.put(`/api/${ModulesEnum.notes}`, [verifyToken], update);
+  app.delete(`/api/${ModulesEnum.notes}/:id`, [verifyToken], deleteOne);
 }
 
 export default Notes;

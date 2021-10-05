@@ -31,10 +31,10 @@ export interface AuthUsersInstance
   createdAt?: Date;
   updatedAt?: Date;
   deletedAt?: Date;
-  roles?: AuthRolesInstance[];
-  profile?: ProfilesInstance;
-  subscription?: SubscriptionsInstance;
-  places?: PlacesInstance[];
+  roles: AuthRolesInstance[];
+  profile: ProfilesInstance;
+  subscription: SubscriptionsInstance;
+  places: PlacesInstance[];
 
   getRoles?: HasManyGetAssociationsMixin<AuthRolesInstance>;
   addRole?: HasManyAddAssociationMixin<AuthRolesInstance, number>;

@@ -1,69 +1,74 @@
+import { ModulesEnum } from "@iustitia/modules";
+import { PlacesInterface } from "@iustitia/api/places";
+import { MembersSimpleInterface } from "@iustitia/api/members";
 import { errorHandler } from "@iustitia/site/shared-utils";
-import {
-  ApiIdInterface,
-  ApiMessageInterface,
-  PlacesActiveInterface,
-  PlacesFormDataInterface,
-  PlacesInterface,
-  PlacesManagerInterface,
-  PlacesUsersInterface
-} from "@iustitia/interfaces";
-import { api, token } from "../..";
-import { GetComponent, ComponentsEnum } from "@iustitia/components";
+import api from "../api";
+import token from "../auth/token";
+import { ApiIdReq, ApiMessageRes } from "../interfaces";
 
-const component = GetComponent(ComponentsEnum.places);
-if (!component || !component?.name) throw new Error(`App Component not Found: ${ComponentsEnum.places}`)
+export type PlacesRes = PlacesInterface;
 
-export async function getAll(): Promise<PlacesInterface[] | Error> {
+export interface PlacesActiveReq {
+  active: boolean;
+  officeId: string;
+}
+
+export interface PlacesManagerRes {
+  officeId: string;
+  managersList: MembersSimpleInterface[];
+}
+
+export interface PlacesUsersRes {
+  officeId: string;
+  usersList: MembersSimpleInterface[];
+}
+
+export interface PlacesFormDataReq {
+  formData: PlacesInterface;
+}
+
+export async function getAll(): Promise<PlacesRes[] | Error> {
   try {
     const tenantId = token.getLocalTenantId();
-    const { data } = await api.get(`/api/${component?.name}/${tenantId}`);
+    const { data } = await api.get(`/api/${ModulesEnum.places}/${tenantId}`);
     return data
   } catch (err) {
     return errorHandler(err)
   }
 };
 
-export async function getOne(
-  { id }: ApiIdInterface
-): Promise<PlacesInterface | Error> {
+export async function getOne({ id }: ApiIdReq): Promise<PlacesRes | Error> {
   try {
     const tenantId = token.getLocalTenantId();
-    const { data } = await api.get(`/api/${component?.name}/${tenantId}/${id}`);
+    const { data } = await api.get(`/api/${ModulesEnum.places}/${tenantId}/${id}`);
     return data
   } catch (err) {
     return errorHandler(err)
   }
 };
 
-export async function create(
-  { formData }: PlacesFormDataInterface
-): Promise<PlacesInterface | Error> {
+export async function create({ formData }: PlacesFormDataReq): Promise<PlacesRes | Error> {
   try {
     formData.tenantId = token.getLocalTenantId();
-    const { data } = await api.post(`/api/${component?.name}`, formData);
+    const { data } = await api.post(`/api/${ModulesEnum.places}`, formData);
     return data
   } catch (err) {
     return errorHandler(err)
   }
 };
 
-export async function update(
-  { formData }: PlacesFormDataInterface
-): Promise<PlacesInterface | Error> {
+export async function update({ formData }: PlacesFormDataReq): Promise<PlacesRes | Error> {
   try {
-    const { data } = await api.put(`/api/${component?.name}`, formData);
+    const { data } = await api.put(`/api/${ModulesEnum.places}`, formData);
     return data
   } catch (err) {
     return errorHandler(err)
   }
 };
 
-export async function deleteOne(
-  { id }: ApiIdInterface
-): Promise<ApiMessageInterface | Error> {
+export async function deleteOne({ id }: ApiIdReq): Promise<ApiMessageRes | Error> {
   try {
-    return await api.delete(`/api/${component?.name}/${id}`);
+    return await api.delete(`/api/${ModulesEnum.places}/${id}`);
   } catch (err) {
     return errorHandler(err)
   }
@@ -72,43 +77,37 @@ export async function deleteOne(
 export async function count(): Promise<number | Error> {
   try {
     const tenantId = token.getLocalTenantId();
-    const { data } = await api.get(`/api/${component?.name}/count/${tenantId}`);
+    const { data } = await api.get(`/api/${ModulesEnum.places}/count/${tenantId}`);
     return data.offices;
   } catch (err) {
     return errorHandler(err)
   }
 };
 
-export async function active(
-  { active, officeId }: PlacesActiveInterface
-): Promise<PlacesInterface | Error> {
+export async function active({ active, officeId }: PlacesActiveReq): Promise<PlacesRes | Error> {
   try {
     const tenantId = token.getLocalTenantId();
-    const { data } = await api.post(`/api/${component?.name}/active/${tenantId}`, { active, officeId });
+    const { data } = await api.post(`/api/${ModulesEnum.places}/active/${tenantId}`, { active, officeId });
     return data
   } catch (err) {
     return errorHandler(err)
   }
 };
 
-export async function managers(
-  { officeId, managersList }: PlacesManagerInterface
-): Promise<PlacesInterface | Error> {
+export async function managers({ officeId, managersList }: PlacesManagerRes): Promise<PlacesRes | Error> {
   try {
     const tenantId = token.getLocalTenantId();
-    const { data } = await api.post(`/api/${component?.name}/managers/${tenantId}`, { officeId, managersList });
+    const { data } = await api.post(`/api/${ModulesEnum.places}/managers/${tenantId}`, { officeId, managersList });
     return data
   } catch (err) {
     return errorHandler(err)
   }
 };
 
-export async function users(
-  { officeId, usersList }: PlacesUsersInterface
-): Promise<PlacesInterface | Error> {
+export async function users({ officeId, usersList }: PlacesUsersRes): Promise<PlacesRes | Error> {
   try {
     const tenantId = token.getLocalTenantId();
-    const { data } = await api.post(`/api/${component?.name}/users/${tenantId}`, { officeId, usersList });
+    const { data } = await api.post(`/api/${ModulesEnum.places}/users/${tenantId}`, { officeId, usersList });
     return data
   } catch (err) {
     return errorHandler(err)

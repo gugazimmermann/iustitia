@@ -3,11 +3,10 @@ import { Link as RouterLink, useHistory } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { Alert, AlertInterface, LoadingButton } from "@iustitia/site/shared-components";
 import { validateEmail, WARNING_TYPES } from "@iustitia/site/shared-utils";
-import { GetComponentRoutes, ComponentsEnum } from "@iustitia/components";
-import { AuthRoutesInterface } from "@iustitia/interfaces";
+import { GetRoutes, ModulesEnum, AuthRoutesInterface } from "@iustitia/modules";
 import { Title } from "../../components";
 
-const routesAuth = GetComponentRoutes(ComponentsEnum.auth) as AuthRoutesInterface;
+const authRoutes = GetRoutes(ModulesEnum.auth) as AuthRoutesInterface;
 
 export type SignUpForm = {
   name: string;
@@ -56,7 +55,7 @@ export function SignUp() {
     }
     try {
       setLoading(false);
-      history.push(routesAuth.plans, { form });
+      history.push(authRoutes.plans, { form });
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       setShowAlert({

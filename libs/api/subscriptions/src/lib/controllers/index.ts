@@ -1,6 +1,21 @@
 import { Response } from "express";
 import { database } from '@iustitia/api/database';
 
+export interface SubscriptionInterface {
+  id?: string;
+  userId?: string;
+  planId: string;
+  reason: string;
+  frequency: number;
+  frequencyType: string;
+  transactionAmount: number;
+  status: boolean;
+  type?: string;
+  updatedAt?: string;
+  createdAt?: string;
+  deletedAt?: string;
+}
+
 export async function getPlans(req, res): Promise<Response> {
   try {
     const plans = await database.SubscriptionsPlans.findAll();

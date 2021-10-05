@@ -75,12 +75,6 @@
     "api-subscriptions": {
       "tags": []
     },
-    "components": {
-      "tags": []
-    },
-    "interfaces": {
-      "tags": []
-    },
     "landing-page": {
       "tags": []
     },
@@ -97,10 +91,16 @@
     "landing-page-routes": {
       "tags": []
     },
+    "modules": {
+      "tags": []
+    },
     "routes": {
       "tags": []
     },
     "site": {
+      "tags": []
+    },
+    "site-attachments": {
       "tags": []
     },
     "site-auth": {

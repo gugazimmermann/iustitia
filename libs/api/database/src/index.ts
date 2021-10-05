@@ -14,8 +14,8 @@ export { ProfilesInstance } from "./lib/models/profiles";
 
 export { PlacesInstance } from "./lib/models/places";
 
-export { BusinessContactsPersonsInstance } from "./lib/models/business-contacts-persons";
-export { BusinessContactsCompaniesInstance } from "./lib/models/business-contacts-companies";
+export { BCPersonsInstance } from "./lib/models/business-contacts-persons";
+export { BCCompaniesInstance } from "./lib/models/business-contacts-companies";
 
 export { NotesInstance } from "./lib/models/notes";
 

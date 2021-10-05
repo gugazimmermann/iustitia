@@ -1,8 +1,7 @@
 import { Link } from "react-router-dom";
-import { AuthRoutesInterface } from "@iustitia/interfaces";
-import { GetComponentRoutes, ComponentsEnum } from "@iustitia/components";
+import { GetRoutes, ModulesEnum, AuthRoutesInterface } from "@iustitia/modules";
 
-const routes = GetComponentRoutes(ComponentsEnum.auth) as AuthRoutesInterface;
+const authRoutes = GetRoutes(ModulesEnum.auth) as AuthRoutesInterface;
 
 export function NotFound() {
   return (
@@ -35,7 +34,7 @@ export function NotFound() {
               A página que você está procurando não existe.
             </p>
             <p className="text-base font-normal text-gray-600">
-              <Link to={routes.signIn}>Clique aqui para retornar para página inicial</Link>
+              <Link to={authRoutes.signIn}>Clique aqui para retornar para página inicial</Link>
             </p>
           </div>
         </div>

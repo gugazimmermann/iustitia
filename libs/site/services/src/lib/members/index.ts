@@ -1,48 +1,57 @@
-import { GetComponent, ComponentsEnum } from "@iustitia/components";
-import {
-  ApiIdInterface,
-  ApiMessageInterface,
-  MembersCreateInterface,
-  MembersCreateInviteInterface,
-  MembersInterface,
-  MembersInviteCodeInterface,
-  MembersSimpleInterface
-} from "@iustitia/interfaces";
+import { ModulesEnum } from "@iustitia/modules";
+import { MembersInterface, MembersSimpleInterface} from "@iustitia/api/members";
 import { errorHandler } from "@iustitia/site/shared-utils";
-import { api, token } from "../..";
+import api from "../api";
+import token from "../auth/token";
+import { ApiIdReq, ApiMessageRes } from "../interfaces";
 
-const component = GetComponent(ComponentsEnum.members);
-if (!component || !component?.name) throw new Error(`App Component not Found: ${ComponentsEnum.members}`)
+export type MembersRes = MembersInterface;
 
+export type MembersSimpleRes = MembersSimpleInterface;
 
-export async function getAll(): Promise<MembersSimpleInterface[] | Error> {
+export interface MembersCreateReq {
+  tenantId: string;
+  code: string;
+  password: string;
+}
+
+export interface MembersInviteCodeReq {
+  tenantId: string;
+  code: string;
+}
+
+export interface MembersCreateInviteReq {
+  formData: {
+    name: string;
+    email: string,
+    tenantId?: string
+  }
+}
+
+export async function getAll(): Promise<MembersSimpleRes[] | Error> {
   try {
     const tenantId = token.getLocalTenantId();
-    const { data } = await api.get(`/api/${component?.name}/${tenantId}`);
+    const { data } = await api.get(`/api/${ModulesEnum.members}/${tenantId}`);
     return data
   } catch (err) {
     return errorHandler(err)
   }
 };
 
-export async function getOne(
-  { id }: ApiIdInterface
-): Promise<MembersSimpleInterface | Error> {
+export async function getOne({ id }: ApiIdReq): Promise<MembersSimpleRes | Error> {
   try {
     const tenantId = token.getLocalTenantId();
-    const { data } = await api.get(`/api/${component?.name}/${tenantId}/${id}`);
+    const { data } = await api.get(`/api/${ModulesEnum.members}/${tenantId}/${id}`);
     return data
   } catch (err) {
     return errorHandler(err)
   }
 };
 
-export async function create(
-  { tenantId, code, password }: MembersCreateInterface
-): Promise<ApiMessageInterface | Error> {
+export async function create({ tenantId, code, password }: MembersCreateReq): Promise<ApiMessageRes | Error> {
   try {
     const clearCode = +(code as string).toString().trim().replace(/ /g, "");
-    const { data } = await api.post(`/api/${component?.name}/${tenantId}`, { code: clearCode, password });
+    const { data } = await api.post(`/api/${ModulesEnum.members}/${tenantId}`, { code: clearCode, password });
     return data
   } catch (err) {
     console.log(err)
@@ -51,57 +60,49 @@ export async function create(
   }
 };
 
-export async function getInvites(): Promise<MembersInterface[] | Error> {
+export async function getInvites(): Promise<MembersRes[] | Error> {
   try {
     const tenantId = token.getLocalTenantId();
-    const { data } = await api.get(`/api/${component?.name}/invites/${tenantId}`);
+    const { data } = await api.get(`/api/${ModulesEnum.members}/invites/${tenantId}`);
     return data
   } catch (err) {
     return errorHandler(err)
   }
 };
 
-export async function getInviteCode(
-  { tenantId, code }: MembersInviteCodeInterface
-): Promise<MembersInterface | Error> {
+export async function getInviteCode({ tenantId, code }: MembersInviteCodeReq): Promise<MembersRes | Error> {
   try {
-    const { data } = await api.get(`/api/${component?.name}/invites/code/${tenantId}/${code}`);
+    const { data } = await api.get(`/api/${ModulesEnum.members}/invites/code/${tenantId}/${code}`);
     return data
   } catch (err) {
     return errorHandler(err)
   }
 };
 
-export async function createInvite(
-  { formData }: MembersCreateInviteInterface
-): Promise<MembersInterface | Error> {
+export async function createInvite({ formData }: MembersCreateInviteReq): Promise<MembersRes | Error> {
   try {
     const tenantId = token.getLocalTenantId();
     formData.tenantId = tenantId;
-    const { data } = await api.post(`/api/${component?.name}/invites/${tenantId}`, formData);
+    const { data } = await api.post(`/api/${ModulesEnum.members}/invites/${tenantId}`, formData);
     return data
   } catch (err) {
     return errorHandler(err)
   }
 };
 
-export async function sendInvite(
-  { id }: ApiIdInterface
-): Promise<MembersInterface | Error> {
+export async function sendInvite({ id }: ApiIdReq): Promise<MembersRes | Error> {
   try {
     const tenantId = token.getLocalTenantId();
-    const { data } = await api.post(`/api/${component?.name}/invites/send/${tenantId}/${id}`);
+    const { data } = await api.post(`/api/${ModulesEnum.members}/invites/send/${tenantId}/${id}`);
     return data
   } catch (err) {
     return errorHandler(err)
   }
 };
 
-export async function deleteInvite(
-  { id }: ApiIdInterface
-): Promise<ApiMessageInterface | Error> {
+export async function deleteInvite({ id }: ApiIdReq): Promise<ApiMessageRes | Error> {
   try {
-    return await api.delete(`/api/${component?.name}/invites/${id}`);
+    return await api.delete(`/api/${ModulesEnum.members}/invites/${id}`);
   } catch (err) {
     return errorHandler(err)
   }

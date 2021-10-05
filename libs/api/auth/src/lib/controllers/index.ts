@@ -4,23 +4,21 @@ import * as bcrypt from "bcryptjs";
 import { v4 as uuidv4 } from 'uuid';
 import { DateTime } from "luxon";
 import * as mercadopago from 'mercadopago';
-import { database } from '@iustitia/api/database';
+import { AuthRolesInstance, database } from '@iustitia/api/database';
 import { ForgotPasswordEmail } from '@iustitia/api/email';
 import { validateEmail } from "@iustitia/site/shared-utils";
 import config from "../config";
-import { GetComponentRoutes, ComponentsEnum } from "@iustitia/components";
-import { AuthRoutesInterface } from '@iustitia/interfaces';
+import { AuthRoutesInterface, GetRoutes, ModulesEnum } from '@iustitia/modules';
 
-const routes = GetComponentRoutes(
-  ComponentsEnum.auth
-) as AuthRoutesInterface;
+const route = GetRoutes(ModulesEnum.auth) as AuthRoutesInterface;
+if (!route) throw new Error(`Route not fount for: ${ModulesEnum.auth}`);
 
 const ACCESS_TOKEN =
   process.env.NX_STAGE === "dev"
     ? process.env.NX_MERCADOPAGO_ACCESS_TOKEN_TEST
     : process.env.NX_MERCADOPAGO_ACCESS_TOKEN;
 
-mercadopago.configure({ access_token: ACCESS_TOKEN });
+mercadopago.configure({ access_token: ACCESS_TOKEN as string });
 
 async function createToken(userId: string): Promise<string> {
   const expiredAt = new Date();
@@ -43,14 +41,16 @@ export async function signup(req: Request, res: Response): Promise<Response> {
   }
   try {
     const userPlan = await database.SubscriptionsPlans.findByPk(req.body.planId);
+    if (!userPlan) return res.status(401).send({ message: "Plano inválido!" });
     if (userPlan.transactionAmount !== 0 && !req.body?.cardInfo) {
       return res.status(400).send({ message: "Dados inválidos!" });
     }
     const userData = { email: req.body.email, password: bcrypt.hashSync(req.body.password, 8), active: true };
     const user = await database.AuthUsers.create(userData);
+
     const role = await database.AuthRoles.findOne({ where: { name: "Admin"}})
     await user.update({ tenant: user.id });
-    user.addRole(role);
+    if (user.addRole) user.addRole(role as AuthRolesInstance);
     await database.Profiles.create({
       name: req.body.name,
       email: userData.email,
@@ -145,7 +145,7 @@ export async function forgotPassword(req: Request, res: Response): Promise<Respo
     const dt = DateTime.now();
     const expiryDate = dt.plus({ hours: 1 });
     const forgotPasswordParams = {
-      route: routes.changePassword,
+      route: route.changePassword,
       email: req.body.email,
       date: expiryDate.toFormat("dd/MM/yyyy HH:mm:ss"),
       code: +Math.random().toString().substring(2, 6),

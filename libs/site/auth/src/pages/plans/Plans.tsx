@@ -3,13 +3,14 @@ import { useHistory, useLocation, Redirect } from "react-router-dom";
 import { Alert, AlertInterface } from "@iustitia/site/shared-components";
 import { WARNING_TYPES } from "@iustitia/site/shared-utils";
 import { AuthServices, SubscriptionsServices } from "@iustitia/site/services";
-import { AuthRoutesInterface, PlanInterface } from "@iustitia/interfaces";
 import { PlanBasicIcon, PlanProfessionalIcon } from "@iustitia/site/icons";
-import { GetComponentRoutes, ComponentsEnum } from "@iustitia/components";
+import { GetRoutes, ModulesEnum, AuthRoutesInterface } from "@iustitia/modules";
 import { BasicFeatures, ProfessionalFeatures } from "./features";
 import { SignUpForm } from "..";
 
-const routesAuth = GetComponentRoutes(ComponentsEnum.auth) as AuthRoutesInterface;
+type PlanType = SubscriptionsServices.PlanRes;
+
+const authRoutes = GetRoutes(ModulesEnum.auth) as AuthRoutesInterface;
 
 interface State {
   form: SignUpForm;
@@ -26,14 +27,14 @@ export function Plans() {
     type: WARNING_TYPES.NONE,
     time: 3000,
   });
-  const [plans, setPlans] = useState<PlanInterface[]>([]);
-  const [plan, setPlan] = useState<PlanInterface>();
+  const [plans, setPlans] = useState<PlanType[]>([]);
+  const [plan, setPlan] = useState<PlanType>();
   const [selectedPlan, setSelectedPlan] = useState("");
 
   useEffect(() => {
     async function Plans() {
       try {
-        const data = (await SubscriptionsServices.getPlans()) as PlanInterface[];
+        const data = (await SubscriptionsServices.getPlans()) as PlanType[];
         const freePlan = data.find((p) => p.transactionAmount === 0);
         setSelectedPlan(freePlan?.id || "");
         setPlan(freePlan);
@@ -53,7 +54,7 @@ export function Plans() {
     if (userPlan) setPlan(userPlan);
   }
 
-  function planIcon(p: PlanInterface | undefined) {
+  function planIcon(p: PlanType | undefined) {
     if (
       (p?.reason as string).toLowerCase().includes("profissional") ||
       (p?.reason as string).toLowerCase().includes("gratuito")
@@ -64,7 +65,7 @@ export function Plans() {
     }
   }
 
-  function planFeatures(p: PlanInterface | undefined) {
+  function planFeatures(p: PlanType | undefined) {
     if (
       (p?.reason as string).toLowerCase().includes("profissional") ||
       (p?.reason as string).toLowerCase().includes("gratuito")
@@ -75,7 +76,7 @@ export function Plans() {
     }
   }
 
-  function planMsg(p: PlanInterface | undefined) {
+  function planMsg(p: PlanType | undefined) {
     if (
       !(p?.reason as string).toLowerCase().includes("profissional") &&
       !(p?.reason as string).toLowerCase().includes("gratuito")
@@ -106,7 +107,7 @@ export function Plans() {
 
   async function handleFoward() {
     if (plan?.transactionAmount !== 0) {
-      history.push(routesAuth.subscription, { form, plan: plan });
+      history.push(authRoutes.subscription, { form, plan: plan });
     } else {
       try {
         await AuthServices.signup({
@@ -115,7 +116,7 @@ export function Plans() {
           password: form.password,
           planId: plan.id as string,
         });
-        history.push(routesAuth.signIn, { email: form.email });
+        history.push(authRoutes.signIn, { email: form.email });
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } catch (err: any) {
         setShowAlert({
@@ -129,7 +130,7 @@ export function Plans() {
   }
 
   if (form === undefined) {
-    return <Redirect to={routesAuth.signUp} />;
+    return <Redirect to={authRoutes.signUp} />;
   } else {
     return (
       <main className="bg-white max-w-lg mx-auto p-6 py-8 md:p-12 my-10 rounded-lg shadow-2xl">

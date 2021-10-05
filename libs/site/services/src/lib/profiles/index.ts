@@ -1,13 +1,12 @@
-import { ProfilesInterface } from "@iustitia/interfaces";
+import {ModulesEnum} from "@iustitia/modules";
+import {ProfilesInterface} from "@iustitia/api/profiles";
 import { errorHandler } from "@iustitia/site/shared-utils";
-import { ApiFormDataInterface } from "@iustitia/interfaces";
-import { api } from "../..";
-import { GetComponent, ComponentsEnum } from "@iustitia/components";
+import api from "../api";
+import { ApiFormDataReq } from "../interfaces";
 
-const component = GetComponent(ComponentsEnum.profiles);
-if (!component || !component?.name) throw new Error(`App Component not Found: ${ComponentsEnum.profiles}`)
+export type ProfilesRes = ProfilesInterface;
 
-function seeUserParams(profile: ProfilesInterface): ProfilesInterface {
+function seeUserParams(profile: ProfilesRes): ProfilesRes {
   profile.isAdmin = profile.role === "Admin" ? true : false;
   if (profile.subscription)
     profile.isProfessional =
@@ -15,21 +14,18 @@ function seeUserParams(profile: ProfilesInterface): ProfilesInterface {
   return profile
 }
 
-export async function getOne(): Promise<ProfilesInterface | Error> {
+export async function getOne(): Promise<ProfilesRes | Error> {
   try {
-    const { data } = await api.get(`/api/${component?.name}`);
+    const { data } = await api.get(`/api/${ModulesEnum.profiles}`);
     return seeUserParams(data)
   } catch (err) {
     return errorHandler(err)
   }
 };
 
-
-export async function update(
-  { formData }: ApiFormDataInterface
-): Promise<ProfilesInterface | Error> {
+export async function update({ formData }: ApiFormDataReq): Promise<ProfilesRes | Error> {
   try {
-    const { data } = await api.put(`/api/${component?.name}`, formData);
+    const { data } = await api.put(`/api/${ModulesEnum.profiles}`, formData);
     return seeUserParams(data)
   } catch (err) {
     return errorHandler(err)

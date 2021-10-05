@@ -366,48 +366,6 @@
         }
       }
     },
-    "components": {
-      "root": "libs/components",
-      "sourceRoot": "libs/components/src",
-      "projectType": "library",
-      "targets": {
-        "lint": {
-          "executor": "@nrwl/linter:eslint",
-          "options": {
-            "lintFilePatterns": ["libs/components/**/*.{ts,tsx,js,jsx}"]
-          }
-        },
-        "test": {
-          "executor": "@nrwl/jest:jest",
-          "outputs": ["coverage/libs/components"],
-          "options": {
-            "jestConfig": "libs/components/jest.config.js",
-            "passWithNoTests": true
-          }
-        }
-      }
-    },
-    "interfaces": {
-      "root": "libs/interfaces",
-      "sourceRoot": "libs/interfaces/src",
-      "projectType": "library",
-      "targets": {
-        "lint": {
-          "executor": "@nrwl/linter:eslint",
-          "options": {
-            "lintFilePatterns": ["libs/interfaces/**/*.{ts,tsx,js,jsx}"]
-          }
-        },
-        "test": {
-          "executor": "@nrwl/jest:jest",
-          "outputs": ["coverage/libs/interfaces"],
-          "options": {
-            "jestConfig": "libs/interfaces/jest.config.js",
-            "passWithNoTests": true
-          }
-        }
-      }
-    },
     "landing-page": {
       "root": "apps/landing-page",
       "sourceRoot": "apps/landing-page/src",
@@ -575,6 +533,27 @@
         }
       }
     },
+    "modules": {
+      "root": "libs/modules",
+      "sourceRoot": "libs/modules/src",
+      "projectType": "library",
+      "targets": {
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["libs/modules/**/*.ts"]
+          }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/modules"],
+          "options": {
+            "jestConfig": "libs/modules/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
     "routes": {
       "root": "libs/routes",
       "sourceRoot": "libs/routes/src",
@@ -665,6 +644,27 @@
           "outputs": ["coverage/apps/site"],
           "options": {
             "jestConfig": "apps/site/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "site-attachments": {
+      "root": "libs/site/attachments",
+      "sourceRoot": "libs/site/attachments/src",
+      "projectType": "library",
+      "targets": {
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["libs/site/attachments/**/*.{ts,tsx,js,jsx}"]
+          }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/site/attachments"],
+          "options": {
+            "jestConfig": "libs/site/attachments/jest.config.js",
             "passWithNoTests": true
           }
         }

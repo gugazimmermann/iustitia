@@ -8,11 +8,12 @@ import {
 } from "@iustitia/site/shared-components";
 import { WARNING_TYPES } from "@iustitia/site/shared-utils";
 import { MembersServices } from "@iustitia/site/services";
-import { AuthRoutesInterface, MembersInterface } from "@iustitia/interfaces";
-import { GetComponentRoutes, ComponentsEnum } from "@iustitia/components";
+import { GetRoutes, ModulesEnum, AuthRoutesInterface } from "@iustitia/modules";
 import { Title } from "../../components";
 
-const routesAuth = GetComponentRoutes(ComponentsEnum.auth) as AuthRoutesInterface;
+type MembersType = MembersServices.MembersRes;
+
+const authRoutes = GetRoutes(ModulesEnum.auth) as AuthRoutesInterface;
 
 type Form = {
   code: string;
@@ -30,7 +31,7 @@ export function Invite() {
   const { tenantId, code } = useParams<useParamsProps>();
   const [codeUrl, setCodeUrl] = useState(code);
   const [tenantIdUrl, setTenantIdUrl] = useState(tenantId);
-  const [invite, setInvite] = useState<MembersInterface>();
+  const [invite, setInvite] = useState<MembersType>();
 
   const {
     register,
@@ -64,7 +65,7 @@ export function Invite() {
       const data = (await MembersServices.getInviteCode({
         tenantId: tenantIdUrl,
         code: codeUrl,
-      })) as MembersInterface;
+      })) as MembersType;
       setInvite(data);
       setLoading(false);
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -98,7 +99,7 @@ export function Invite() {
         password: form.newpassword,
       });
       setLoading(false);
-      history.push(routesAuth.signIn, {
+      history.push(authRoutes.signIn, {
         inviteaccepted: true,
         email: invite?.email,
       });

@@ -8,13 +8,10 @@ import {
 } from "@iustitia/site/shared-components";
 import { WARNING_TYPES } from "@iustitia/site/shared-utils";
 import { AuthServices } from "@iustitia/site/services";
-import { GetComponentRoutes, ComponentsEnum } from "@iustitia/components";
-import { AuthRoutesInterface } from "@iustitia/interfaces";
+import { GetRoutes, ModulesEnum, AuthRoutesInterface } from "@iustitia/modules";
 import { Link, Title } from "../../components";
 
-const routesAuth = GetComponentRoutes(
-  ComponentsEnum.auth
-) as AuthRoutesInterface;
+const authRoutes = GetRoutes(ModulesEnum.auth) as AuthRoutesInterface;
 
 interface State {
   email: string;
@@ -130,7 +127,7 @@ export function ChangePassword() {
         password: form.newpassword,
       });
       setLoading(false);
-      history.push(routesAuth.signIn, { changePassword: true });
+      history.push(authRoutes.signIn, { changePassword: true });
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       setShowAlert({
@@ -206,7 +203,7 @@ export function ChangePassword() {
               }
             />
           </div>
-          <Link link={routesAuth.signIn} text="Voltar para Entrar" />
+          <Link link={authRoutes.signIn} text="Voltar para Entrar" />
           <LoadingButton
             styles="bg-primary-600 hover:bg-primary-700 text-white font-bold py-2 rounded shadow-lg hover:shadow-xl transition duration-200"
             type="submit"
