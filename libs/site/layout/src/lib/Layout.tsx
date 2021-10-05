@@ -13,9 +13,10 @@ import {
   Callout,
 } from "@iustitia/site/shared-components";
 import { WARNING_TYPES } from "@iustitia/site/shared-utils";
-import { ProfilesInterface } from "@iustitia/interfaces";
 import { PlacesServices, ProfilesServices } from "@iustitia/site/services";
 import { Nav, Menu } from "./components";
+
+type ProfilesType = ProfilesServices.ProfilesRes;
 
 interface LayoutProps {
   children: ReactNode;
@@ -31,7 +32,7 @@ export function Layout({ children }: LayoutProps) {
   const [menuOpen, setMenuOpen] = useState(true);
   const [navOpen, setNavOpen] = useState(false);
   const [notificationOpen, setNotificationOpen] = useState(false);
-  const [profile, setProfile] = useState({} as ProfilesInterface);
+  const [profile, setProfile] = useState({} as ProfilesType);
   const [offices, setOffices] = useState<number>(0);
 
   useEffect(() => {
@@ -44,7 +45,7 @@ export function Layout({ children }: LayoutProps) {
 
   async function whoIAm() {
     try {
-      const data = (await ProfilesServices.getOne()) as ProfilesInterface;
+      const data = (await ProfilesServices.getOne()) as ProfilesType;
       setProfile(data);
       freePlanMsg(data);
     } catch (err) {
@@ -67,7 +68,7 @@ export function Layout({ children }: LayoutProps) {
     return Math.ceil(finish.toObject().days as number);
   }
 
-  function freePlanMsg(profile: ProfilesInterface) {
+  function freePlanMsg(profile: ProfilesType) {
     if (
       profile.subscription &&
       profile.subscription.planId === process.env.NX_FREE_PLAN

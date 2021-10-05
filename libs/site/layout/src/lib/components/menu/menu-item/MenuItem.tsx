@@ -1,4 +1,4 @@
-import { MenuItemInterface } from "@iustitia/interfaces";
+import { MenuItemInterface } from "@iustitia/modules";
 import { MenuArrowIcon } from "@iustitia/site/icons";
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";

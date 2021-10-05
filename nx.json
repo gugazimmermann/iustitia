@@ -39,9 +39,6 @@
     "api-business-contacts": {
       "tags": []
     },
-    "api-dashboards": {
-      "tags": []
-    },
     "api-database": {
       "tags": []
     },
@@ -104,6 +101,9 @@
       "tags": []
     },
     "site-auth": {
+      "tags": []
+    },
+    "site-dashboards": {
       "tags": []
     },
     "site-e2e": {

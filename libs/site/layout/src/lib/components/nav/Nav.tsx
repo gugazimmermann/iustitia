@@ -1,3 +1,4 @@
+import { ProfilesServices } from "@iustitia/site/services";
 import { useEffect, useRef } from "react";
 import {
   NavAvatar,
@@ -6,8 +7,9 @@ import {
   NavMenuButton,
   NavMobileButton,
 } from ".";
-import { ProfileInterface, OfficeInterface } from "../../Layout";
 import NavNotification from "./nav-notification/NavNotification";
+
+type ProfilesType = ProfilesServices.ProfilesRes;
 
 export interface NavProps {
   setMenuOpen(menuOpen: boolean): void;
@@ -16,7 +18,7 @@ export interface NavProps {
   navOpen: boolean;
   setNotificationOpen(notificationOpen: boolean): void;
   notificationOpen: boolean;
-  profile: ProfileInterface;
+  profile: ProfilesType;
   offices: number;
 }
 
@@ -45,7 +47,7 @@ export function Nav({
     };
   }, [navOpen, setNavOpen]);
 
-  function showNavItems(profile: ProfileInterface) {
+  function showNavItems(profile: ProfilesType) {
     return (
       <>
         {profile.zip && offices > 0 && (

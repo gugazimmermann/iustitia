@@ -1,3 +1,4 @@
+import { ModulesEnum } from "@iustitia/modules";
 import axios, { AxiosInstance } from "axios";
 import TokenService from "./auth/token";
 
@@ -37,7 +38,7 @@ api.interceptors.response.use((res) => {
       if (err.response.status === 401 && !originalConfig._retry) {
         originalConfig._retry = true;
         try {
-          const rs = await api.post("/auth/refreshtoken", {
+          const rs = await api.post(`/api/${ModulesEnum.auth}/refreshtoken`, {
             refreshToken: TokenService.getLocalRefreshToken(),
           });
           const { accessToken } = rs.data;

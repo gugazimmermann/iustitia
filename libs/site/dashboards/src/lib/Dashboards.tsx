@@ -1,21 +1,24 @@
 import { useState, useEffect } from "react";
 import { useHistory, useParams } from "react-router-dom";
-import { SiteRoutes as Routes } from "@iustitia/react-routes";
 import {
   Header,
   InfoCard,
   INFOCARDSICONS,
-  PeopleIcon,
 } from "@iustitia/site/shared-components";
-import { OfficeServices } from "@iustitia/site/services";
+import { PlacesServices } from "@iustitia/site/services";
 
-type OfficeInterface = OfficeServices.OfficeInterface;
+import { GetRoutes, ModulesEnum, DashboardsRoutesInterface } from "@iustitia/modules";
+import { PeopleIcon } from "@iustitia/site/icons";
 
-export function DashboardOffices() {
+const dashboardsRoutes = GetRoutes(ModulesEnum.dashboards) as DashboardsRoutesInterface;
+
+type PlacesType = PlacesServices.PlacesRes;
+
+export function Dashboards() {
   const history = useHistory();
   const { id } = useParams<{ id: string }>();
-  const [offices, setOffices] = useState<OfficeInterface[]>();
-  const [selectedOffice, setSelectedOffice] = useState({} as OfficeInterface);
+  const [offices, setOffices] = useState<PlacesType[]>();
+  const [selectedOffice, setSelectedOffice] = useState({} as PlacesType);
 
   useEffect(() => {
     if (id) getOffice(id);
@@ -24,7 +27,7 @@ export function DashboardOffices() {
 
   async function getOffice(id: string) {
     try {
-      const office = (await OfficeServices.getOne(id)) as OfficeInterface;
+      const office = (await PlacesServices.getOne({ id })) as PlacesType;
       setSelectedOffice(office);
     } catch (err) {
       console.log(err);
@@ -33,7 +36,7 @@ export function DashboardOffices() {
 
   async function getOffices() {
     try {
-      const data = (await OfficeServices.getAll()) as OfficeInterface[];
+      const data = (await PlacesServices.getAll()) as PlacesType[];
       setOffices(data);
       if (data.length === 1) setSelectedOffice(data[0]);
     } catch (err) {
@@ -48,9 +51,9 @@ export function DashboardOffices() {
         className={`rounded-md focus:ring-0 focus:ring-opacity-75 text-gray-900 focus:ring-primary-500 border-gray-300`}
         onChange={(e) => {
           if (e.target.value) {
-            history.push(`${Routes.DashboardEscritorios}/${e.target.value}`);
+            history.push(`${dashboardsRoutes.places}/${e.target.value}`);
           } else {
-            history.push(Routes.Dashboard);
+            history.push(dashboardsRoutes.dashboards);
           }
         }}
       >
@@ -529,7 +532,7 @@ export function DashboardOffices() {
               <p className="px-2 py-2 cursor-pointer">Contatos</p>
             </nav>
             <div className="flex-1 overflow-y-auto">
-              <p className="cursor-pointer flex items-center justify-between w-full px-4 py-2 bg-white hover:bg-gray-200">
+              <div className="cursor-pointer flex items-center justify-between w-full px-4 py-2 bg-white hover:bg-gray-200">
                 <div className="flex items-center space-x-2">
                   <div className="avatar avatar-xs">
                     <img
@@ -554,8 +557,8 @@ export function DashboardOffices() {
                     clipRule="evenodd"
                   />
                 </svg>
-              </p>
-              <p className="cursor-pointer flex items-center justify-between w-full px-4 py-2 bg-gray-100 hover:bg-gray-200">
+              </div>
+              <div className="cursor-pointer flex items-center justify-between w-full px-4 py-2 bg-gray-100 hover:bg-gray-200">
                 <div className="flex items-center space-x-2">
                   <div className="avatar avatar-xs">
                     <img
@@ -580,8 +583,8 @@ export function DashboardOffices() {
                     clipRule="evenodd"
                   />
                 </svg>
-              </p>
-              <p className="cursor-pointer flex items-center justify-between w-full px-4 py-2 bg-white hover:bg-gray-200">
+              </div>
+              <div className="cursor-pointer flex items-center justify-between w-full px-4 py-2 bg-white hover:bg-gray-200">
                 <div className="flex items-center space-x-2">
                   <div className="avatar avatar-xs">
                     <img
@@ -606,8 +609,8 @@ export function DashboardOffices() {
                     clipRule="evenodd"
                   />
                 </svg>
-              </p>
-              <p className="cursor-pointer flex items-center justify-between w-full px-4 py-2 bg-gray-100 hover:bg-gray-200">
+              </div>
+              <div className="cursor-pointer flex items-center justify-between w-full px-4 py-2 bg-gray-100 hover:bg-gray-200">
                 <div className="flex items-center space-x-2">
                   <div className="avatar avatar-xs">
                     <img
@@ -632,9 +635,9 @@ export function DashboardOffices() {
                     clipRule="evenodd"
                   />
                 </svg>
-              </p>
+              </div>
             </div>
-            <p className="flex justify-between px-4 py-3 text-sm bg-primary-300 rounded-b cursor-pointer">
+            <div className="flex justify-between px-4 py-3 text-sm bg-primary-300 rounded-b cursor-pointer">
               <span>Mais Informacoes</span>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -648,7 +651,7 @@ export function DashboardOffices() {
                   clipRule="evenodd"
                 />
               </svg>
-            </p>
+            </div>
           </div>
         </section>
       </div>
@@ -658,4 +661,4 @@ export function DashboardOffices() {
   );
 }
 
-export default DashboardOffices;
+export default Dashboards;

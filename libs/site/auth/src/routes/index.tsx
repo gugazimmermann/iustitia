@@ -22,22 +22,22 @@ export function AuthRoutes() {
           <ForgotPassword />
         </Layout>
       </PublicRoute>
-      <PublicRoute exact path={`${authRoutes.changePassword}/:urlcode?`}>
+      <PublicRoute exact path={authRoutes.changePassword}>
         <Layout>
           <ChangePassword />
         </Layout>
       </PublicRoute>
-      <PublicRoute exact path={`${authRoutes.signUp}`}>
+      <PublicRoute exact path={authRoutes.signUp}>
         <Layout>
           <SignUp />
         </Layout>
       </PublicRoute>
-      <PublicRoute exact path={`${authRoutes.plans}`}>
+      <PublicRoute exact path={authRoutes.plans}>
         <Layout>
           <Plans />
         </Layout>
       </PublicRoute>
-      <PublicRoute exact path={`${authRoutes.subscription}`}>
+      <PublicRoute exact path={authRoutes.subscription}>
         <Layout>
           <Subscription />
         </Layout>

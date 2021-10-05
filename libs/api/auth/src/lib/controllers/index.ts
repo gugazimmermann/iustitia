@@ -88,7 +88,7 @@ export async function signup(req: Request, res: Response): Promise<Response> {
           userId: user.id,
         });
       }
-      return user.id;
+      return;
     });
     return res.status(201).send({ message: "Usuário cadastrado com sucesso!" });
   } catch (err) {

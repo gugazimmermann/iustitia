@@ -1,5 +1,5 @@
+import { MenuSubItemInterface } from "@iustitia/modules";
 import { NavLink } from "react-router-dom";
-import { MenuSubItemInterface } from "@iustitia/site-modules";
 
 interface MenuItemProps {
   subitem: MenuSubItemInterface;

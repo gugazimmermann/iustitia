@@ -22,7 +22,6 @@
       "@iustitia/api/business-contacts": [
         "libs/api/business-contacts/src/index.ts"
       ],
-      "@iustitia/api/dashboards": ["libs/api/dashboards/src/index.ts"],
       "@iustitia/api/database": ["libs/api/database/src/index.ts"],
       "@iustitia/api/email": ["libs/api/email/src/index.ts"],
       "@iustitia/api/financial": ["libs/api/financial/src/index.ts"],
@@ -45,6 +44,7 @@
       "@iustitia/routes": ["libs/routes/src/index.ts"],
       "@iustitia/site/attachments": ["libs/site/attachments/src/index.ts"],
       "@iustitia/site/auth": ["libs/site/auth/src/index.ts"],
+      "@iustitia/site/dashboards": ["libs/site/dashboards/src/index.ts"],
       "@iustitia/site/icons": ["libs/site/icons/src/index.ts"],
       "@iustitia/site/layout": ["libs/site/layout/src/index.ts"],
       "@iustitia/site/not-found": ["libs/site/not-found/src/index.ts"],

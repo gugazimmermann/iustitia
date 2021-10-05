@@ -1,12 +1,17 @@
 import { useEffect, useRef, useState } from "react";
 import { Link, useHistory } from "react-router-dom";
-import { SiteRoutes } from "@iustitia/react-routes";
 import { getUserInitials } from "@iustitia/site/shared-utils";
-import { AuthServices } from "@iustitia/site/services";
-import { ProfilesInterface } from "@iustitia/interfaces";
-import { AuthRoutes } from "@iustitia/site-modules";
+import { AuthServices, ProfilesServices } from "@iustitia/site/services";
+import { GetRoutes, ModulesEnum, DashboardsRoutesInterface, AuthRoutesInterface, ProfilesRoutesInterface, SubscriptionsRoutesInterface } from "@iustitia/modules";
+
+const authRoutes = GetRoutes(ModulesEnum.auth) as AuthRoutesInterface;
+const profilesRoutes = GetRoutes(ModulesEnum.profiles) as ProfilesRoutesInterface;
+const subscriptionsRoutes = GetRoutes(ModulesEnum.subscriptions) as SubscriptionsRoutesInterface;
+
+type ProfilesType = ProfilesServices.ProfilesRes;
+
 export interface NavAvatarProps {
-  profile: ProfilesInterface;
+  profile: ProfilesType;
 }
 
 export function NavAvatar({ profile }: NavAvatarProps) {
@@ -29,10 +34,10 @@ export function NavAvatar({ profile }: NavAvatarProps) {
 
   const handleLogout = () => {
     AuthServices.logout();
-    history.push(AuthRoutes.SignIn);
+    history.push(authRoutes.signIn);
   };
 
-  function avatarButton(profile: ProfilesInterface) {
+  function avatarButton(profile: ProfilesType) {
     if (!profile.avatar) {
       return (
         <button
@@ -60,7 +65,7 @@ export function NavAvatar({ profile }: NavAvatarProps) {
     );
   }
 
-  function NavLink({ name, route }: { name: string; route: SiteRoutes }) {
+  function NavLink({ name, route }: { name: string; route: string }) {
     return (
       <Link
         to={route}
@@ -81,9 +86,9 @@ export function NavAvatar({ profile }: NavAvatarProps) {
           !open ? `hidden` : ``
         }`}
       >
-        <NavLink route={SiteRoutes.Profile} name="Seu Perfil" />
+        <NavLink route={profilesRoutes.profile} name="Seu Perfil" />
         {profile.isAdmin && (
-          <NavLink route={SiteRoutes.Subscriptions} name="Assinatura" />
+          <NavLink route={subscriptionsRoutes.subscription} name="Assinatura" />
         )}
         <div
           onClick={() => handleLogout()}

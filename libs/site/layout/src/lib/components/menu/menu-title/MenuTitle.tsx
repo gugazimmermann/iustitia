@@ -1,6 +1,8 @@
 import { Link } from "react-router-dom";
-import { SiteRoutes } from "@iustitia/react-routes";
 import { MenuArrowIcon } from "@iustitia/site/icons";
+import { DashboardsRoutesInterface, GetRoutes, ModulesEnum } from "@iustitia/modules";
+
+const dashboardsRoutes = GetRoutes(ModulesEnum.dashboards) as DashboardsRoutesInterface;
 
 export interface MenuTitleProps {
   setMenuOpen(menuOpen: boolean): void;
@@ -11,7 +13,7 @@ export function MenuTitle({ setMenuOpen, menuOpen }: MenuTitleProps) {
   return (
     <div className="border-b h-14 flex items-center">
       <Link
-        to={SiteRoutes.Dashboard}
+        to={dashboardsRoutes.dashboards}
         className="text-3xl text-center font-bold tracking-wider text-primary-900 flex-grow"
       >
         {process.env.NX_APP_TITLE}
