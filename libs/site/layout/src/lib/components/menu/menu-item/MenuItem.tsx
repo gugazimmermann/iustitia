@@ -1,7 +1,7 @@
-import { MenuItemInterface } from "@iustitia/modules";
-import { MenuArrowIcon } from "@iustitia/site/icons";
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
+import { MenuItemInterface } from "@iustitia/modules";
+import { BusinessContactsIcon, DashboardIcon, FinancialIcon, MembersIcon, MenuArrowIcon, PlacesIcon, ScheduleIcon } from "@iustitia/site/icons";
 import { MenuLink } from "..";
 
 interface MenuItemProps {
@@ -20,6 +20,32 @@ export function MenuItem({ item }: MenuItemProps) {
     if (activePath) setActive(true);
   }, [pathname, subItems]);
 
+  function menuIcons(icon: string): JSX.Element {
+    switch (icon) {
+      case "DashboardIcon": {
+        return <DashboardIcon styles="w-6 h-6" stroke={2} />;
+      }
+      case "PlacesIcon": {
+        return <PlacesIcon styles="w-6 h-6" stroke={2} />;
+      }
+      case "MembersIcon": {
+        return <MembersIcon styles="w-6 h-6" stroke={2} />;
+      }
+      case "BusinessContactsIcon": {
+        return <BusinessContactsIcon styles="w-6 h-6" stroke={2} />;
+      }
+      case "ScheduleIcon": {
+        return <ScheduleIcon styles="w-6 h-6" stroke={2} />;
+      }
+      case "FinancialIcon": {
+        return <FinancialIcon styles="w-6 h-6" stroke={2} />;
+      }
+      default: {
+        return <DashboardIcon styles="w-6 h-6" stroke={2} />;
+      }
+    }
+  }
+
   return (
     <>
       <div
@@ -30,7 +56,7 @@ export function MenuItem({ item }: MenuItemProps) {
             : `text-gray-900 hover:bg-primary-100`
         }`}
       >
-        {icon}
+        {menuIcons(icon)}
         <span className="ml-2 text-sm">{name}</span>
         <span className="ml-auto">
           <MenuArrowIcon

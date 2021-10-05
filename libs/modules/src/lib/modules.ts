@@ -73,7 +73,7 @@ export const Modules: ModulesInterface[] = [
     menu: [
       {
         name: "Escritórios",
-        icon: "DashboardIcon",
+        icon: "PlacesIcon",
         subItems: [
           {
             name: "Escritórios",
@@ -96,7 +96,7 @@ export const Modules: ModulesInterface[] = [
     menu: [
       {
         name: "Colaboradores",
-        icon: "DashboardIcon",
+        icon: "MembersIcon",
         subItems: [
           {
             name: "Colaboradores",
@@ -127,7 +127,7 @@ export const Modules: ModulesInterface[] = [
     menu: [
       {
         name: "Cadastros",
-        icon: "DashboardIcon",
+        icon: "BusinessContactsIcon",
         subItems: [
           {
             name: "Clientes",
@@ -172,7 +172,7 @@ export const Modules: ModulesInterface[] = [
     menu: [
       {
         name: "Agenda",
-        icon: "DashboardIcon",
+        icon: "ScheduleIcon",
         subItems: [
           {
             name: "Calendário",
@@ -199,7 +199,7 @@ export const Modules: ModulesInterface[] = [
     menu: [
       {
         name: "Financeiro",
-        icon: "DashboardIcon",
+        icon: "FinancialIcon",
         subItems: [
           {
             name: "Fluxo de Caixa",
