@@ -1,6 +1,6 @@
 import { Sequelize, DataTypes, Optional, Model } from "sequelize";
 
-interface SubscriptionsCreditcardsAttributes {
+interface CreditcardsAttributes {
   id: string;
   name: string;
   firstSixDigits: string;
@@ -11,18 +11,18 @@ interface SubscriptionsCreditcardsAttributes {
   userId: string;
 }
 
-type SubscriptionsCreditcardsCreationAttributes = Optional<SubscriptionsCreditcardsAttributes, 'id'>
+type CreditcardsCreationAttributes = Optional<CreditcardsAttributes, 'id'>
 
-export interface SubscriptionsCreditcardsInstance
-  extends Model<SubscriptionsCreditcardsAttributes, SubscriptionsCreditcardsCreationAttributes>,
-  SubscriptionsCreditcardsAttributes {
+export interface CreditcardsInstance
+  extends Model<CreditcardsAttributes, CreditcardsCreationAttributes>,
+  CreditcardsAttributes {
   createdAt?: Date;
   updatedAt?: Date;
   deletedAt?: Date;
 }
 
-export default function subscriptionsCreditcards(sequelize: Sequelize) {
-  const SubscriptionsCreditcards = sequelize.define<SubscriptionsCreditcardsInstance>('subscriptions-creditcards', {
+export default function creditcards(sequelize: Sequelize) {
+  const Creditcards = sequelize.define<CreditcardsInstance>('creditcards', {
     id: {
       type: DataTypes.UUID,
       defaultValue: DataTypes.UUIDV4,
@@ -43,7 +43,7 @@ export default function subscriptionsCreditcards(sequelize: Sequelize) {
     timestamps: true,
   });
 
-  return SubscriptionsCreditcards;
+  return Creditcards;
 }
 
 

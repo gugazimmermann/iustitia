@@ -1,6 +1,6 @@
 import { Sequelize, DataTypes, Optional, Model } from "sequelize";
 
-export interface MembersAttributes {
+interface MembersAttributes {
   id: string;
   name: string;
   email: string;
@@ -9,7 +9,7 @@ export interface MembersAttributes {
   tenantId: string;
 }
 
-export type MembersCreationAttributes = Optional<MembersAttributes, 'id'>
+type MembersCreationAttributes = Optional<MembersAttributes, 'id'>
 
 export interface MembersInstance
   extends Model<MembersAttributes, MembersCreationAttributes>,

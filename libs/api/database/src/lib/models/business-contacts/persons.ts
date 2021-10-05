@@ -1,7 +1,7 @@
 import { Sequelize, DataTypes, Optional, Model } from "sequelize";
-import { BCCompaniesInstance } from "./business-contacts-companies";
+import { CompaniesInstance } from "./companies";
 
-interface BCPersonsAttributes {
+interface PersonsAttributes {
   id: string;
   avatar: string;
   name: string;
@@ -22,7 +22,7 @@ interface BCPersonsAttributes {
   tenantId: string;
 }
 
-type BCPersonsCreationAttributes = Optional<BCPersonsAttributes,
+type PersonsCreationAttributes = Optional<PersonsAttributes,
   'id' |
   'avatar' |
   'email' |
@@ -41,17 +41,17 @@ type BCPersonsCreationAttributes = Optional<BCPersonsAttributes,
   'officeId'
 >
 
-export interface BCPersonsInstance
-  extends Model<BCPersonsAttributes, BCPersonsCreationAttributes>,
-  BCPersonsAttributes {
+export interface PersonsInstance
+  extends Model<PersonsAttributes, PersonsCreationAttributes>,
+  PersonsAttributes {
   createdAt?: Date;
   updatedAt?: Date;
   deletedAt?: Date;
-  company?: BCCompaniesInstance;
+  company?: CompaniesInstance;
 }
 
-export default function businessContactsPersons(sequelize: Sequelize) {
-  const BusinessContactsPersons = sequelize.define<BCPersonsInstance>('business-contacts-persons', {
+export default function persons(sequelize: Sequelize) {
+  const Persons = sequelize.define<PersonsInstance>('persons', {
     id: {
       type: DataTypes.UUID,
       defaultValue: DataTypes.UUIDV4,
@@ -82,7 +82,7 @@ export default function businessContactsPersons(sequelize: Sequelize) {
     timestamps: true,
   });
 
-  return BusinessContactsPersons;
+  return Persons;
 }
 
 

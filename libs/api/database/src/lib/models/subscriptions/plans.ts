@@ -1,6 +1,6 @@
 import { Sequelize, DataTypes, Optional, Model } from "sequelize";
 
-interface SubscriptionsPlansAttributes {
+interface PlansAttributes {
   id: string;
   preapprovalPlanId: string;
   collectorId: number;
@@ -15,18 +15,18 @@ interface SubscriptionsPlansAttributes {
   type: string;
 }
 
-type SubscriptionsPlansCreationAttributes = Optional<SubscriptionsPlansAttributes, 'id'>
+type PlansCreationAttributes = Optional<PlansAttributes, 'id'>
 
-export interface SubscriptionsPlansInstance
-  extends Model<SubscriptionsPlansAttributes, SubscriptionsPlansCreationAttributes>,
-  SubscriptionsPlansAttributes {
+export interface PlansInstance
+  extends Model<PlansAttributes, PlansCreationAttributes>,
+  PlansAttributes {
   createdAt?: Date;
   updatedAt?: Date;
   deletedAt?: Date;
 }
 
-export default function subscriptionsPlans(sequelize: Sequelize) {
-  const SubscriptionsPlans = sequelize.define<SubscriptionsPlansInstance>('subscriptions-plans', {
+export default function plans(sequelize: Sequelize) {
+  const Plans = sequelize.define<PlansInstance>('plans', {
     id: {
       type: DataTypes.UUID,
       defaultValue: DataTypes.UUIDV4,
@@ -51,7 +51,7 @@ export default function subscriptionsPlans(sequelize: Sequelize) {
     timestamps: true,
   });
 
-  return SubscriptionsPlans;
+  return Plans;
 }
 
 

@@ -1,23 +1,23 @@
 import { Sequelize, DataTypes, Optional, Model } from "sequelize";
 
-interface AuthRefreshTokenAttributes {
+interface RefreshTokenAttributes {
   id: number;
   token: string;
   expiryDate: Date;
   userId: string;
 }
 
-type AuthRefreshTokenCreationAttributes = Optional<AuthRefreshTokenAttributes, 'id'>
+type RefreshTokenCreationAttributes = Optional<RefreshTokenAttributes, 'id'>
 
-export interface AuthRefreshTokenInstance
-  extends Model<AuthRefreshTokenAttributes, AuthRefreshTokenCreationAttributes>,
-  AuthRefreshTokenAttributes {
+export interface RefreshTokenInstance
+  extends Model<RefreshTokenAttributes, RefreshTokenCreationAttributes>,
+  RefreshTokenAttributes {
   createdAt?: Date;
   updatedAt?: Date;
 }
 
-export default function authRefreshToken(sequelize: Sequelize) {
-  const AuthRefreshToken = sequelize.define<AuthRefreshTokenInstance>("auth-refresh-token", {
+export default function refreshToken(sequelize: Sequelize) {
+  const RefreshToken = sequelize.define<RefreshTokenInstance>("refreshToken", {
     id: {
       type: DataTypes.INTEGER,
       autoIncrement: true,
@@ -39,5 +39,5 @@ export default function authRefreshToken(sequelize: Sequelize) {
     },
   });
 
-  return AuthRefreshToken;
+  return RefreshToken;
 }

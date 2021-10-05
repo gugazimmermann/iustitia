@@ -1,20 +1,19 @@
 import { Sequelize, DataTypes, Optional, Model } from "sequelize";
 
-export interface AttachmentsAttributes {
+interface AttachmentsAttributes {
   id: string;
   name: string;
   link: string;
   ownerId: string;
 }
 
-export type AttachmentsCreationAttributes = Optional<AttachmentsAttributes, 'id'>
+type AttachmentsCreationAttributes = Optional<AttachmentsAttributes, 'id'>
 
 export interface AttachmentsInstance
   extends Model<AttachmentsAttributes, AttachmentsCreationAttributes>,
   AttachmentsAttributes {
   createdAt?: Date;
   updatedAt?: Date;
-  deletedAt?: Date;
 }
 
 export default function attachments(sequelize: Sequelize) {

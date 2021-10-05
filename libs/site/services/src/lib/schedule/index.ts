@@ -1,11 +1,11 @@
 import { ModulesEnum } from "@iustitia/modules";
-import { ScheduleEventsInterface } from "@iustitia/api/schedule";
+import { EventsInterface } from "@iustitia/api/schedule";
 import { errorHandler } from "@iustitia/site/shared-utils";
 import api from "../api";
 import token from "../auth/token";
 import { ApiIdReq, ApiMessageRes } from "../interfaces";
 
-export type ScheduleEventsRes = ScheduleEventsInterface;
+export type ScheduleEventsRes = EventsInterface;
 
 export interface ScheduleEventsGetAllReq {
   officeId?: string;

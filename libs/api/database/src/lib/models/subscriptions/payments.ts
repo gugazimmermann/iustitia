@@ -1,6 +1,6 @@
 import { Sequelize, DataTypes, Optional, Model } from "sequelize";
 
-interface SubscriptionsPaymentsAttributes {
+interface PaymentsAttributes {
   id: string;
   transactionAmount: number;
   status: string;
@@ -10,18 +10,18 @@ interface SubscriptionsPaymentsAttributes {
   userId: string;
 }
 
-type SubscriptionsPaymentsCreationAttributes = Optional<SubscriptionsPaymentsAttributes, 'id'>
+type PaymentsCreationAttributes = Optional<PaymentsAttributes, 'id'>
 
-export interface SubscriptionsPaymentsInstance
-  extends Model<SubscriptionsPaymentsAttributes, SubscriptionsPaymentsCreationAttributes>,
-  SubscriptionsPaymentsAttributes {
+export interface PaymentsInstance
+  extends Model<PaymentsAttributes, PaymentsCreationAttributes>,
+  PaymentsAttributes {
   createdAt?: Date;
   updatedAt?: Date;
   deletedAt?: Date;
 }
 
-export default function subscriptionsPayments(sequelize: Sequelize) {
-  const SubscriptionsPayments = sequelize.define<SubscriptionsPaymentsInstance>('subscriptions-payments', {
+export default function payments(sequelize: Sequelize) {
+  const Payments = sequelize.define<PaymentsInstance>('payments', {
     id: {
       type: DataTypes.UUID,
       defaultValue: DataTypes.UUIDV4,
@@ -41,7 +41,7 @@ export default function subscriptionsPayments(sequelize: Sequelize) {
     timestamps: true,
   });
 
-  return SubscriptionsPayments;
+  return Payments;
 }
 
 

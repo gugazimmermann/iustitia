@@ -1,9 +1,9 @@
 import { Sequelize, DataTypes, Optional, Model } from "sequelize";
 
-export interface ProfilesAttributes {
+interface CompaniesAttributes {
   id: string;
-  avatar: string;
   name: string;
+  site: string;
   email: string;
   phone: string;
   zip: string;
@@ -13,21 +13,40 @@ export interface ProfilesAttributes {
   neighborhood: string;
   city: string;
   state: string;
-  userId: string;
+  comments: string;
+  tenantId: string;
 }
 
-export type ProfilesCreationAttributes = Optional<ProfilesAttributes, 'id' | 'avatar' | 'phone' | 'zip' | 'address' | 'number' | 'complement' | 'neighborhood' | 'city' | 'state'>
+type CompaniesCreationAttributes = Optional<CompaniesAttributes,
+  'id' |
+  'site' |
+  'email' |
+  'phone' |
+  'zip' |
+  'address' |
+  'number' |
+  'complement' |
+  'neighborhood' |
+  'city' |
+  'state' |
+  'comments'
+>
 
-export interface ProfilesInstance
-  extends Model<ProfilesAttributes, ProfilesCreationAttributes>,
-  ProfilesAttributes {
+export interface CompaniesInstance
+  extends Model<CompaniesAttributes, CompaniesCreationAttributes>,
+  CompaniesAttributes {
   createdAt?: Date;
   updatedAt?: Date;
   deletedAt?: Date;
+  contacts: {
+    id: string;
+    name: string;
+    position: string;
+  }[];
 }
 
-export default function profiles(sequelize: Sequelize) {
-  const Profiles = sequelize.define<ProfilesInstance>('profiles', {
+export default function companies(sequelize: Sequelize) {
+  const Companies = sequelize.define<CompaniesInstance>('companies', {
     id: {
       type: DataTypes.UUID,
       defaultValue: DataTypes.UUIDV4,
@@ -36,10 +55,10 @@ export default function profiles(sequelize: Sequelize) {
       unique: true,
       primaryKey: true,
     },
-    avatar: { type: DataTypes.TEXT, allowNull: true },
     name: { type: DataTypes.TEXT, allowNull: false },
+    site: { type: DataTypes.TEXT, allowNull: true },
+    email: { type: DataTypes.TEXT, allowNull: true },
     phone: { type: DataTypes.TEXT, allowNull: true },
-    email: { type: DataTypes.TEXT, allowNull: false },
     zip: { type: DataTypes.TEXT, allowNull: true },
     address: { type: DataTypes.TEXT, allowNull: true },
     number: { type: DataTypes.TEXT, allowNull: true },
@@ -47,13 +66,12 @@ export default function profiles(sequelize: Sequelize) {
     neighborhood: { type: DataTypes.TEXT, allowNull: true },
     city: { type: DataTypes.TEXT, allowNull: true },
     state: { type: DataTypes.TEXT, allowNull: true },
-    userId: { type: DataTypes.UUID, allowNull: false },
+    comments: { type: DataTypes.TEXT, allowNull: true },
+    tenantId: { type: DataTypes.UUID, allowNull: true },
   }, {
     paranoid: true,
     timestamps: true,
   });
 
-  return Profiles;
+  return Companies;
 }
-
-

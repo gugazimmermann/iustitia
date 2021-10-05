@@ -1,6 +1,6 @@
 import { Sequelize, DataTypes, Optional, Model } from "sequelize";
 
-interface ScheduleEventsAttributes {
+interface EventsAttributes {
   id: string;
   startDate: Date;
   endDate: Date;
@@ -13,23 +13,23 @@ interface ScheduleEventsAttributes {
   tenantId: string;
 }
 
-type ScheduleEventsCreationAttributes = Optional<ScheduleEventsAttributes,
+type EventsCreationAttributes = Optional<EventsAttributes,
   'id' |
   'description' |
   'userId' |
   'officeId'
 >
 
-export interface ScheduleEventsInstance
-  extends Model<ScheduleEventsAttributes, ScheduleEventsCreationAttributes>,
-  ScheduleEventsAttributes {
+export interface EventsInstance
+  extends Model<EventsAttributes, EventsCreationAttributes>,
+  EventsAttributes {
   createdAt?: Date;
   updatedAt?: Date;
   deletedAt?: Date;
 }
 
-export default function scheduleEvents(sequelize: Sequelize) {
-  const ScheduleEvents = sequelize.define<ScheduleEventsInstance>('schedule-events', {
+export default function events(sequelize: Sequelize) {
+  const Events = sequelize.define<EventsInstance>('events', {
     id: {
       type: DataTypes.UUID,
       defaultValue: DataTypes.UUIDV4,
@@ -52,5 +52,5 @@ export default function scheduleEvents(sequelize: Sequelize) {
     timestamps: true,
   });
 
-  return ScheduleEvents;
+  return Events;
 }

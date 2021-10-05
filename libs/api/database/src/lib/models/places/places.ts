@@ -1,5 +1,5 @@
 import { Sequelize, DataTypes, Optional, Model, HasManyAddAssociationsMixin, HasManyRemoveAssociationsMixin, HasManyGetAssociationsMixin } from "sequelize";
-import { AuthUsersInstance } from "./auth-users";
+import { UsersInstance } from "../auth/users";
 
 interface PlacesAttributes {
   id: string;
@@ -25,16 +25,16 @@ export interface PlacesInstance
   createdAt?: Date;
   updatedAt?: Date;
   deletedAt?: Date;
-  managersOffice: AuthUsersInstance[];
-  usersOffice: AuthUsersInstance[];
+  managersOffice?: UsersInstance[];
+  usersOffice?: UsersInstance[];
 
-  getManagersOffice: HasManyGetAssociationsMixin<AuthUsersInstance>;
-  addManagersOffice: HasManyAddAssociationsMixin<AuthUsersInstance, string>;
-  removeManagersOffice: HasManyRemoveAssociationsMixin<AuthUsersInstance, string>;
+  getManagersOffice?: HasManyGetAssociationsMixin<UsersInstance>;
+  addManagersOffice?: HasManyAddAssociationsMixin<UsersInstance, string>;
+  removeManagersOffice?: HasManyRemoveAssociationsMixin<UsersInstance, string>;
 
-  getUsersOffice: HasManyGetAssociationsMixin<AuthUsersInstance>;
-  addUsersOffice: HasManyAddAssociationsMixin<AuthUsersInstance, string>;
-  removeUsersOffice: HasManyRemoveAssociationsMixin<AuthUsersInstance, string>;
+  getUsersOffice?: HasManyGetAssociationsMixin<UsersInstance>;
+  addUsersOffice?: HasManyAddAssociationsMixin<UsersInstance, string>;
+  removeUsersOffice?: HasManyRemoveAssociationsMixin<UsersInstance, string>;
 }
 
 export default function places(sequelize: Sequelize) {

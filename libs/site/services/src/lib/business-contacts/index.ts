@@ -1,13 +1,13 @@
 import { ModulesEnum } from "@iustitia/modules";
-import { BCCompaniesInterface, BCPersonsInterface } from "@iustitia/api/business-contacts";
+import { CompaniesInterface, PersonsInterface } from "@iustitia/api/business-contacts";
 import { errorHandler } from "@iustitia/site/shared-utils";
 import api from "../api";
 import token from "../auth/token";
 import { ApiFormDataReq, ApiIdReq, ApiMessageRes } from "../interfaces";
 
-export type BCPersonsRes = BCPersonsInterface
+export type BCPersonsRes = PersonsInterface
 
-export type BCCompaniesRes = BCCompaniesInterface
+export type BCCompaniesRes = CompaniesInterface
 
 export interface BCFormDataCompaniesReq {
   formData: BCCompaniesRes;

@@ -1,6 +1,6 @@
 import { Sequelize, DataTypes, Optional, Model } from "sequelize";
 
-interface AuthForgotPasswordAttributes {
+interface ForgotPasswordAttributes {
   id: number;
   email: string;
   code: number;
@@ -8,17 +8,17 @@ interface AuthForgotPasswordAttributes {
   expiryDate: Date;
 }
 
-type AuthForgotPasswordCreationAttributes = Optional<AuthForgotPasswordAttributes, 'id'>
+type ForgotPasswordCreationAttributes = Optional<ForgotPasswordAttributes, 'id'>
 
-export interface AuthForgotPasswordInstance
-  extends Model<AuthForgotPasswordAttributes, AuthForgotPasswordCreationAttributes>,
-  AuthForgotPasswordAttributes {
+export interface ForgotPasswordInstance
+  extends Model<ForgotPasswordAttributes, ForgotPasswordCreationAttributes>,
+  ForgotPasswordAttributes {
   createdAt?: Date;
   updatedAt?: Date;
 }
 
-export default function authForgotPassword(sequelize: Sequelize) {
-  const AuthForgotPassword = sequelize.define<AuthForgotPasswordInstance>("auth-forgot-password", {
+export default function forgotPassword(sequelize: Sequelize) {
+  const ForgotPassword = sequelize.define<ForgotPasswordInstance>("forgotPassword", {
     id: {
       type: DataTypes.INTEGER,
       autoIncrement: true,
@@ -44,5 +44,5 @@ export default function authForgotPassword(sequelize: Sequelize) {
     }
   });
 
-  return AuthForgotPassword;
+  return ForgotPassword;
 }

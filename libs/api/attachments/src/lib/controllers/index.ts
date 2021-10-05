@@ -63,7 +63,7 @@ export async function getAll(req, res) {
   const { tenantId, ownerId } = req.params;
   if (!tenantId || !ownerId) return res.status(400).send({ message: "Dados inválidos!" });
   try {
-    const user = await database.AuthUsers.findOne({ where: { id: req.userId } });
+    const user = await database.Users.findOne({ where: { id: req.userId } });
     if (!user || user.tenant !== tenantId) return res.status(401).send({ message: "Sem permissão!" });
     const data = await database.Attachments.findAll({ where: { ownerId }, order: [['createdAt', 'DESC']] });
     const resultData = [] as AttachmentsInterface[];
@@ -78,7 +78,7 @@ export async function create(req, res) {
   const { body } = req;
   if (!body.ownerId) return res.status(400).send({ message: "Dados inválidos!" });
   try {
-    const user = await database.AuthUsers.findOne({ where: { id: req.userId } });
+    const user = await database.Users.findOne({ where: { id: req.userId } });
     if (!user) return res.status(401).send({ message: "Sem permissão!" });
     if (req.files && req.files.length > 0) {
       for (const file of req.files) {

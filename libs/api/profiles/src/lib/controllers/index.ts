@@ -81,10 +81,11 @@ export async function updateProfile(req, res): Promise<Response> {
       await s3.upload(params).promise();
       profile.update({ avatar: fileName });
     }
-    const user = await database.AuthUsers.findOne({
+    const user = await database.Users.findOne({
       where: { id: req.userId },
       include: ["subscription", "profile", "roles"],
     });
+    if (!user || !user.roles || !user.profile || !user.subscription) return res.status(404).send({ message: "Perfil não encontrado!" });
     return res.status(200).send({
       role: user?.roles[0].name,
       avatar: user?.profile.avatar,
@@ -113,11 +114,11 @@ export async function updateProfile(req, res): Promise<Response> {
 
 export async function getProfile(req, res): Promise<Response> {
   try {
-    const user = await database.AuthUsers.findOne({
+    const user = await database.Users.findOne({
       where: { id: req.userId },
       include: ["subscription", "profile", "roles"],
     });
-    if (!user || !user.profile || !user.subscription) {
+    if (!user || !user.roles || !user.profile || !user.subscription) {
       return res.status(404).send({ message: "Perfil não encontrado!" });
     }
     return res.status(200).send({

@@ -1,7 +1,7 @@
 import { Op } from "sequelize";
 import { Request, Response } from "express";
 import * as bcrypt from "bcryptjs";
-import { database, MembersInstance, AuthUsersInstance, AuthRolesInstance } from '@iustitia/api/database';
+import { database, MembersInstance, UsersInstance, RolesInstance } from '@iustitia/api/database';
 import { InvitationEmail } from "@iustitia/api/email";
 import { validateEmail } from '@iustitia/site/shared-utils';
 
@@ -25,7 +25,7 @@ function dataToPeopleResult(data: MembersInstance): MembersInterface {
 
 export interface MembersSimpleInterface {
   id: string;
-  avatar: string;
+  avatar?: string;
   name: string;
   phone?: string;
   email?: string;
@@ -34,33 +34,39 @@ export interface MembersSimpleInterface {
 }
 
 
-function dataToProfileListResult(data: AuthUsersInstance): MembersSimpleInterface {
-  return {
-    id: data.id,
-    avatar: data.profile.avatar,
-    name: data.profile.name,
-    phone: data.profile.phone,
-    email: data.profile.email,
-    role: data.roles[0].name,
-    active: data.active,
+function dataToProfileListResult(data: UsersInstance): MembersSimpleInterface | undefined {
+  if (data.profile && data.roles && data.roles.length) {
+    return {
+      id: data.id,
+      avatar: data.profile.avatar,
+      name: data.profile.name,
+      phone: data.profile.phone,
+      email: data.profile.email,
+      role: data.roles[0].name,
+      active: data.active,
+    }
   }
+  return undefined;
 }
 
-function dataToSimpleProfileListResult(data: AuthUsersInstance): MembersSimpleInterface {
-  return {
-    id: data.id,
-    name: data.profile.name,
-    avatar: data.profile.avatar,
+function dataToSimpleProfileListResult(data: UsersInstance): MembersSimpleInterface | undefined {
+  if (data.profile) {
+    return {
+      id: data.id,
+      name: data.profile.name,
+      avatar: data.profile.avatar,
+    }
   }
+  return undefined;
 }
 
 export async function getAll(req, res): Promise<Response> {
   const { tenantId } = req.params;
   if (!tenantId) return res.status(400).send({ message: "Dados inválidos!" });
   try {
-    const user = await database.AuthUsers.findOne({ where: { id: req.userId } });
+    const user = await database.Users.findOne({ where: { id: req.userId } });
     if (!user || user.tenant !== tenantId) return res.status(401).send({ message: "Sem permissão!" });
-    const data = await database.AuthUsers.findAll({
+    const data = await database.Users.findAll({
       where: {
         tenant: user.tenant,
         id: {
@@ -69,7 +75,12 @@ export async function getAll(req, res): Promise<Response> {
       }, include: ["profile", "roles"]
     });
     const resultData = [] as MembersSimpleInterface[];
-    if (data.length > 0) data.forEach(d => resultData.push(dataToProfileListResult(d)));
+    if (data.length > 0) {
+      data.forEach(d => {
+        const r = dataToProfileListResult(d);
+        if (r) resultData.push(r)
+      });
+    }
     return res.status(200).send(resultData);
   } catch (err) {
     return res.status(500).send({ message: err.message });
@@ -80,15 +91,15 @@ export async function getOne(req, res): Promise<Response> {
   const { tenantId, id } = req.params;
   if (!tenantId || !id) return res.status(400).send({ message: "Dados inválidos!" });
   try {
-    const user = await database.AuthUsers.findOne({ where: { id: req.userId } });
+    const user = await database.Users.findOne({ where: { id: req.userId } });
     if (!user || user.tenant !== tenantId) return res.status(401).send({ message: "Sem permissão!" });
-    const data = await database.AuthUsers.findOne({
+    const data = await database.Users.findOne({
       where: {
         tenant: user.tenant, id,
       }, include: ["profile", "roles"]
     });
     ;
-    return res.status(200).send(dataToProfileListResult(data as AuthUsersInstance));
+    return res.status(200).send(dataToProfileListResult(data as UsersInstance));
   } catch (err) {
     return res.status(500).send({ message: err.message });
   }
@@ -102,30 +113,31 @@ export async function create(req: Request, res: Response): Promise<Response> {
   try {
     const invite = await database.Members.findOne({ where: { tenantId, code } });
     if (!invite) return res.status(404).send({ message: "Nenhum registro encontrado!" });
-    const user = await database.AuthUsers.create({
+    const user = await database.Users.create({
       email: invite.email,
       password: bcrypt.hashSync(req.body.password, 8),
       tenant: tenantId,
       active: true
     }
     );
-    const role = await database.AuthRoles.findOne({ where: { name: "User" } })
-    if (user.addRole) user.addRole(role as AuthRolesInstance);
+    const role = await database.Roles.findOne({ where: { name: "User" } })
+    if (user.addRole) user.addRole(role as RolesInstance);
     await database.Profiles.create({
       name: invite.name,
       email: invite.email,
       userId: user.id
     });
-    const mainUser = await database.AuthUsers.findOne({ where: { id: invite.userId }, include: "subscription" })
+    const mainUser = await database.Users.findOne({ where: { id: invite.userId }, include: "subscription" })
     if (!mainUser) return res.status(404).send({ message: "Nenhum usuario encontrado!" });
+    if (!mainUser.subscription)  return res.status(404).send({ message: "Nenhuma assinatura encontrado!" });
     await database.Subscriptions.create({
-      reason: (mainUser).subscription.reason,
-      frequency: (mainUser).subscription.frequency,
-      frequencyType: (mainUser).subscription.frequencyType,
-      transactionAmount: (mainUser).subscription.transactionAmount,
+      reason: mainUser.subscription.reason,
+      frequency: mainUser.subscription.frequency,
+      frequencyType: mainUser.subscription.frequencyType,
+      transactionAmount: mainUser.subscription.transactionAmount,
       status: true,
-      type: (mainUser).subscription.type,
-      planId: (mainUser).subscription.planId,
+      type: mainUser.subscription.type,
+      planId: mainUser.subscription.planId,
       userId: user.id,
     });
     await invite.destroy();
@@ -140,9 +152,9 @@ export async function getList(req, res): Promise<Response> {
   const { tenantId } = req.params;
   if (!tenantId) return res.status(400).send({ message: "Dados inválidos!" });
   try {
-    const user = await database.AuthUsers.findOne({ where: { id: req.userId } });
+    const user = await database.Users.findOne({ where: { id: req.userId } });
     if (!user || user.tenant !== tenantId) return res.status(401).send({ message: "Sem permissão!" });
-    const data = await database.AuthUsers.findAll({
+    const data = await database.Users.findAll({
       where:
       {
         tenant: user.tenant,
@@ -158,7 +170,12 @@ export async function getList(req, res): Promise<Response> {
       order: [[database.Profiles, 'name', 'ASC']],
     });
     const resultData = [] as MembersSimpleInterface[];
-    if (data.length > 0) data.forEach(d => resultData.push(dataToSimpleProfileListResult(d)));
+    if (data.length > 0) {
+      data.forEach(d => {
+        const r = dataToSimpleProfileListResult(d);
+        if (r) resultData.push(r)
+      });
+    }
     return res.status(200).send(resultData);
   } catch (err) {
     return res.status(500).send({ message: err.message });
@@ -169,7 +186,7 @@ export async function getInvites(req, res): Promise<Response> {
   const { tenantId } = req.params;
   if (!tenantId) return res.status(400).send({ message: "Dados inválidos!" });
   try {
-    const user = await database.AuthUsers.findOne({ where: { id: req.userId } });
+    const user = await database.Users.findOne({ where: { id: req.userId } });
     if (!user || user.tenant !== tenantId) return res.status(401).send({ message: "Sem permissão!" });
     const data = await database.Members.findAll({
       where: { tenantId: user.tenant }
@@ -200,11 +217,11 @@ export async function createInvite(req, res): Promise<Response> {
   const { body } = req;
   if (!body.name || !body.email || !validateEmail(body.email)) return res.status(400).send({ message: "Dados inválidos!" });
   try {
-    const user = await database.AuthUsers.findOne({ where: { id: req.userId }, include: ["profile", "subscription"] });
-    if (!user) return res.status(404).send({ message: "Nao encontrado!" });
+    const user = await database.Users.findOne({ where: { id: req.userId }, include: ["profile", "subscription"] });
+    if (!user || !user.subscription || !user.profile) return res.status(404).send({ message: "Nao encontrado!" });
     if (user.subscription.type !== "professional") {
       const countPeoples = await database.Members.count({ where: { tenantId: user.tenant } });
-      const countUsers = await database.AuthUsers.count({
+      const countUsers = await database.Users.count({
         where: {
           tenant: user.tenant,
           id: {
@@ -235,8 +252,9 @@ export async function sendInvite(req, res): Promise<Response> {
   const { tenantId, id } = req.params;
   if (!tenantId || !id) return res.status(400).send({ message: "Dados inválidos!" });
   try {
-    const user = await database.AuthUsers.findOne({ where: { id: req.userId }, include: "profile" });
+    const user = await database.Users.findOne({ where: { id: req.userId }, include: "profile" });
     if (!user || user.tenant !== tenantId) return res.status(401).send({ message: "Sem permissão!" });
+    if (!user.profile) return res.status(404).send({ message: "Nenhum perfil encontrado!" });
     const invite = await database.Members.findOne({ where: { id: id } });
     if (!invite) return res.status(404).send({ message: "Nenhum registro encontrado!" });
     const profile = await database.Profiles.findOne({ where: { email: invite.email } });
@@ -262,7 +280,7 @@ export async function deleteInvite(req, res): Promise<Response> {
   try {
     const data = await database.Members.findByPk(id);
     if (!data) return res.status(404).send({ message: "Nenhum registro encontrado!" });
-    const user = await database.AuthUsers.findOne({ where: { id: req.userId } });
+    const user = await database.Users.findOne({ where: { id: req.userId } });
     if (!user || user.tenant !== data.tenantId) return res.status(401).send({ message: "Sem permissão!" });
     await database.Members.destroy({ where: { id: id } });
     return res.status(200).send({ message: "Registro deletado!" });

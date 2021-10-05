@@ -1,24 +1,17 @@
 export { default as database } from "./lib/Database";
-export { AuthUsersInstance } from "./lib/models/auth-users";
-export { AuthRolesInstance } from "./lib/models/auth-roles";
-export { AuthRefreshTokenInstance } from "./lib/models/auth-refresh-token";
-
-export { SubscriptionsInstance } from "./lib/models/subscriptions";
-export { SubscriptionsPlansInstance } from "./lib/models/subscriptions-plans";
-export { SubscriptionsPaymentsInstance } from "./lib/models/subscriptions-payments";
-export { SubscriptionsCreditcardsInstance } from "./lib/models/subscriptions-creditcards";
-
-export { MembersInstance } from "./lib/models/members";
-
-export { ProfilesInstance } from "./lib/models/profiles";
-
-export { PlacesInstance } from "./lib/models/places";
-
-export { BCPersonsInstance } from "./lib/models/business-contacts-persons";
-export { BCCompaniesInstance } from "./lib/models/business-contacts-companies";
-
-export { NotesInstance } from "./lib/models/notes";
-
-export { AttachmentsInstance } from "./lib/models/attchment";
-
-export { ScheduleEventsInstance } from "./lib/models/schedule-events";
+export { AttachmentsInstance } from "./lib/models/attachments/attachment";
+export { ForgotPasswordInstance } from "./lib/models/auth/forgot-password";
+export { RefreshTokenInstance } from "./lib/models/auth/refresh-token";
+export { RolesInstance } from "./lib/models/auth/roles";
+export { UsersInstance } from "./lib/models/auth/users";
+export { CompaniesInstance } from "./lib/models/business-contacts/companies";
+export { PersonsInstance } from "./lib/models/business-contacts/persons";
+export { MembersInstance } from "./lib/models/members/members";
+export { NotesInstance } from "./lib/models/notes/notes";
+export { PlacesInstance } from "./lib/models/places/places";
+export { ProfilesInstance } from "./lib/models/profiles/profiles";
+export { EventsInstance } from "./lib/models/schedule/events";
+export { CreditcardsInstance } from "./lib/models/subscriptions/creditcards";
+export { PaymentsInstance } from "./lib/models/subscriptions/payments";
+export { PlansInstance } from "./lib/models/subscriptions/plans";
+export { SubscriptionsInstance } from "./lib/models/subscriptions/subscriptions";

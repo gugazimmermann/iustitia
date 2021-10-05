@@ -14,7 +14,6 @@ export interface NotesInstance
   NotesAttributes {
   createdAt?: Date;
   updatedAt?: Date;
-  deletedAt?: Date;
 }
 
 export default function notes(sequelize: Sequelize) {

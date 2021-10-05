@@ -18,7 +18,7 @@ export interface SubscriptionInterface {
 
 export async function getPlans(req, res): Promise<Response> {
   try {
-    const plans = await database.SubscriptionsPlans.findAll();
+    const plans = await database.Plans.findAll();
     return res.status(200).send(plans);
   } catch (err) {
     return res.status(500).send({ message: err.message });
@@ -36,7 +36,7 @@ export async function getSubscription(req, res): Promise<Response> {
 
 export async function getPayments(req, res): Promise<Response> {
   try {
-    const payments = await database.SubscriptionsPayments.findAll({
+    const payments = await database.Payments.findAll({
       where: { userId: req.userId }, order: [
         ['paidDate', 'DESC']
       ]
@@ -49,7 +49,7 @@ export async function getPayments(req, res): Promise<Response> {
 
 export async function getCreditcards(req, res): Promise<Response> {
   try {
-    const creditcards = await database.SubscriptionsCreditcards.findAll({ where: { userId: req.userId } });
+    const creditcards = await database.Creditcards.findAll({ where: { userId: req.userId } });
     return res.status(200).send(creditcards);
   } catch (err) {
     return res.status(500).send({ message: err.message });

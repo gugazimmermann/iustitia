@@ -24,7 +24,7 @@ export async function getAll(req, res): Promise<Response> {
   const { tenantId, ownerId } = req.params;
   if (!tenantId || !ownerId) return res.status(400).send({ message: "Dados inválidos!" });
   try {
-    const user = await database.AuthUsers.findOne({ where: { id: req.userId } });
+    const user = await database.Users.findOne({ where: { id: req.userId } });
     if (!user || user.tenant !== tenantId) return res.status(401).send({ message: "Sem permissão!" });
     const data = await database.Notes.findAll({ where: { ownerId }, order: [['createdAt', 'DESC']] });
     const resultData = [] as NotesInterface[];
