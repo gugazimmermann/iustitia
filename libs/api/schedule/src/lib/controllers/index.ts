@@ -33,6 +33,7 @@ export async function getOneEvent(req, res): Promise<Response> {
     const user = await database.AuthUsers.findOne({ where: { id: req.userId } });
     if (!user || user.tenant !== tenantId) return res.status(401).send({ message: "Sem permissão!" });
     const data = await database.ScheduleEvents.findByPk(id);
+    if (!data) return res.status(404).send({ message: "Nao Encontrado!" });
     return res.status(200).send(dataToEventsResult(data));
   } catch (err) {
     return res.status(500).send({ message: err.message });

@@ -1,11 +1,13 @@
-import { SimpleProfilesListInterface } from "@iustitia/interfaces";
+import { MembersServices } from "@iustitia/site/services";
 import { AvatarModalContent, useCloseModal } from "../..";
+
+type MembersSimpleType = MembersServices.MembersSimpleRes;
 
 export interface AvatarModalProps {
   title: string;
-  peopleList: SimpleProfilesListInterface[];
-  currentList: SimpleProfilesListInterface[];
-  handleSelect(p: SimpleProfilesListInterface): void;
+  peopleList: MembersSimpleType[];
+  currentList: MembersSimpleType[];
+  handleSelect(p: MembersSimpleType): void;
   cancel(): void;
   submit(): void;
   submitText: string;

@@ -1,13 +1,15 @@
-import { SimpleProfilesListInterface } from "@iustitia/interfaces";
-import { SelectorIcon } from "@iustitia/site/icons";
 import { useState } from "react";
+import { SelectorIcon } from "@iustitia/site/icons";
+import { MembersServices } from "@iustitia/site/services";
 import { AvatarModalContentList, ShowAvatars } from "../..";
+
+type MembersSimpleType = MembersServices.MembersSimpleRes;
 
 export interface AvatarModalContentProps {
   title: string;
-  peopleList: SimpleProfilesListInterface[];
-  currentList: SimpleProfilesListInterface[];
-  handleSelect(p: SimpleProfilesListInterface): void;
+  peopleList: MembersSimpleType[];
+  currentList: MembersSimpleType[];
+  handleSelect(p: MembersSimpleType): void;
 }
 
 export function AvatarModalContent({

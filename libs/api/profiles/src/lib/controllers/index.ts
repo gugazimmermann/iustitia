@@ -1,6 +1,6 @@
 import { Response } from "express";
 import * as AWS from 'aws-sdk';
-import * as sharp from 'sharp';
+import sharp from 'sharp';
 import { database } from '@iustitia/api/database';
 import { validateEmail } from '@iustitia/site/shared-utils';
 import { SubscriptionInterface } from "@iustitia/api/subscriptions";
@@ -49,11 +49,12 @@ export async function updateProfile(req, res): Promise<Response> {
   body.userId = req.userId
   try {
     const profile = await database.Profiles.findOne({ where: { userId: req.userId } });
+    if (!profile) return res.status(404).send({ message: "Perfil não encontrado!" });
     profile.update(body)
     if (req.file) {
       if (profile.avatar) {
         const currentObject = {
-          Bucket: process.env.NX_BUCKET_AVATAR,
+          Bucket: process.env.NX_BUCKET_AVATAR as string,
           Key: profile.avatar
         }
         const currentAvatar = await s3.headObject(currentObject).promise().then(() => true,
@@ -73,7 +74,7 @@ export async function updateProfile(req, res): Promise<Response> {
       const now = `${d.getHours()}${d.getMinutes()}${d.getSeconds()}${d.getMilliseconds()}`
       const fileName = `${req.userId.split("-").join("")}${now}.jpeg`
       const params = {
-        Bucket: process.env.NX_BUCKET_AVATAR,
+        Bucket: process.env.NX_BUCKET_AVATAR as string,
         Key: fileName,
         Body: avatarFile
       };
@@ -85,24 +86,24 @@ export async function updateProfile(req, res): Promise<Response> {
       include: ["subscription", "profile", "roles"],
     });
     return res.status(200).send({
-      role: user.roles[0].name,
-      avatar: user.profile.avatar,
-      name: user.profile.name,
-      email: user.profile.email,
-      phone: user.profile.phone,
-      zip: user.profile.zip,
-      address: user.profile.address,
-      number: user.profile.number,
-      complement: user.profile.complement,
-      neighborhood: user.profile.neighborhood,
-      city: user.profile.city,
-      state: user.profile.state,
+      role: user?.roles[0].name,
+      avatar: user?.profile.avatar,
+      name: user?.profile.name,
+      email: user?.profile.email,
+      phone: user?.profile.phone,
+      zip: user?.profile.zip,
+      address: user?.profile.address,
+      number: user?.profile.number,
+      complement: user?.profile.complement,
+      neighborhood: user?.profile.neighborhood,
+      city: user?.profile.city,
+      state: user?.profile.state,
       subscription: {
-        planId: user.subscription.planId,
-        type: user.subscription.type,
-        reason: user.subscription.reason,
-        frequency: user.subscription.frequency,
-        createdAt: user.subscription.createdAt,
+        planId: user?.subscription.planId,
+        type: user?.subscription.type,
+        reason: user?.subscription.reason,
+        frequency: user?.subscription.frequency,
+        createdAt: user?.subscription.createdAt,
       }
     });
   } catch (err) {

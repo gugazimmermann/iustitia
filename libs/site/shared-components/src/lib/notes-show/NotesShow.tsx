@@ -1,11 +1,12 @@
-import { NotesInterface } from "@iustitia/interfaces";
+import { NotesServices } from "@iustitia/site/services";
 import { PenIcon, TrashIcon } from "@iustitia/site/icons";
 
+type NotesType = NotesServices.NotesRes;
 export interface NoteShowProps {
-  note: NotesInterface;
+  note: NotesType;
   loading: boolean;
-  setEditNote(editNote: NotesInterface): void;
-  setSelectedNote(selectedNote: NotesInterface): void;
+  setEditNote(editNote: NotesType): void;
+  setSelectedNote(selectedNote: NotesType): void;
 }
 
 export function NoteShow({ note, loading, setEditNote, setSelectedNote }: NoteShowProps) {

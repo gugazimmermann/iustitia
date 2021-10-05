@@ -5,7 +5,7 @@ export default function getDaysToShow(
   selectedDate: DateTime,
   pediod: "week" | "month",
 ) {
-  let daysToShow = [];
+  let daysToShow: DateTime[] = [];
   let end = selectedDate.startOf(pediod);
   end = pediod === "month" ? end.plus({ months: 1 }) : end.plus({ weeks: 1 });
   const dateTimeInternval = InternvalOfDays(

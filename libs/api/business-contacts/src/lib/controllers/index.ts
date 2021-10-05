@@ -1,6 +1,6 @@
 import { Response } from "express";
 import * as AWS from 'aws-sdk';
-import * as sharp from 'sharp';
+import sharp from 'sharp';
 import { validateEmail } from '@iustitia/site/shared-utils';
 import { BCCompaniesInstance, BCPersonsInstance, database } from "@iustitia/api/database";
 import { ModulesEnum } from "@iustitia/modules";

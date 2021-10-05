@@ -1,9 +1,11 @@
-import {SimpleProfilesListInterface} from "@iustitia/interfaces"
+import { MembersServices } from "@iustitia/site/services";
 import { getUserInitials } from "@iustitia/site/shared-utils";
 import { Tooltip } from "../..";
 
+type MembersSimpleType = MembersServices.MembersSimpleRes;
+
 export interface AvatarListProps {
-  toShow: SimpleProfilesListInterface[];
+  toShow: MembersSimpleType[];
   qtd: number;
 }
 
@@ -37,7 +39,7 @@ export function AvatarList({ toShow, qtd }: AvatarListProps) {
 }
 
 export interface ShowAvatarsProps {
-  toShow: SimpleProfilesListInterface[];
+  toShow: MembersSimpleType[];
   qtd: number;
   smallQtd: number;
 }

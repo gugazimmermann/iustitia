@@ -10,7 +10,7 @@ export const DefaultColors = [
 ];
 export const DefaultVariants = [100, 200, 300, 400, 500, 600, 700, 800, 900];
 
-const colorEvents = [];
+const colorEvents: string[] = [];
 for (const color of DefaultColors) {
   for (const variant of DefaultVariants) {
     colorEvents.push(`${color}-${variant}`);

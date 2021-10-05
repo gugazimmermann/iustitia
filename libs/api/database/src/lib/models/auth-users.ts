@@ -36,17 +36,17 @@ export interface AuthUsersInstance
   subscription: SubscriptionsInstance;
   places: PlacesInstance[];
 
-  getRoles?: HasManyGetAssociationsMixin<AuthRolesInstance>;
-  addRole?: HasManyAddAssociationMixin<AuthRolesInstance, number>;
-  hasRole?: HasManyHasAssociationMixin<AuthRolesInstance, number>;
-  countRoles?: HasManyCountAssociationsMixin;
-  createRole?: HasManyCreateAssociationMixin<AuthRolesInstance>;
+  getRoles: HasManyGetAssociationsMixin<AuthRolesInstance>;
+  addRole: HasManyAddAssociationMixin<AuthRolesInstance, number>;
+  hasRole: HasManyHasAssociationMixin<AuthRolesInstance, number>;
+  countRoles: HasManyCountAssociationsMixin;
+  createRole: HasManyCreateAssociationMixin<AuthRolesInstance>;
 
-  getPlaces?: HasManyGetAssociationsMixin<PlacesInstance>;
-  addPlace?: HasManyAddAssociationMixin<PlacesInstance, number>;
-  hasPlaces?: HasManyHasAssociationMixin<PlacesInstance, number>;
-  countPlaces?: HasManyCountAssociationsMixin;
-  createPlace?: HasManyCreateAssociationMixin<PlacesInstance>;
+  getPlaces: HasManyGetAssociationsMixin<PlacesInstance>;
+  addPlace: HasManyAddAssociationMixin<PlacesInstance, number>;
+  hasPlaces: HasManyHasAssociationMixin<PlacesInstance, number>;
+  countPlaces: HasManyCountAssociationsMixin;
+  createPlace: HasManyCreateAssociationMixin<PlacesInstance>;
 
   associations: {
     profiles: Association<AuthUsersInstance, ProfilesInstance>;
