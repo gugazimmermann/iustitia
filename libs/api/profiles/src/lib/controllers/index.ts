@@ -77,7 +77,7 @@ export async function updateProfile(req, res): Promise<Response> {
   }
   body.userId = req.userId
   try {
-    const response = await database.Sequelize.transaction(async () => {
+    await database.Sequelize.transaction(async () => {
       const profile = await database.Profiles.findOne({ where: { userId: body.userId } });
       if (!profile) return res.status(404).send({ message: "Perfil não encontrado!" });
       await profile.update(body);
@@ -89,9 +89,8 @@ export async function updateProfile(req, res): Promise<Response> {
       }
       const user = await getUserById(body.userId);
       if (!user) return res.status(404).send({ message: "Perfil não encontrado!" });
-      return user;
+      return res.status(200).send({ message: "Perfil atualizado com sucesso!" });
     });
-    return res.status(200).send(dataToProfilesResult(response));
   } catch (err) {
     return res.status(500).send({ message: err.message });
   }

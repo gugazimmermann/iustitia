@@ -1,4 +1,4 @@
-import { GetMenu, ModulesEnum } from "@iustitia/modules";
+import { GetMenu } from "@iustitia/modules";
 import { ProfilesServices } from "@iustitia/site/services";
 import { MenuFooter, MenuItem, MenuTitle } from ".";
 
@@ -6,11 +6,12 @@ type ProfilesType = ProfilesServices.ProfilesRes;
 
 interface MenuProps {
   profile: ProfilesType;
+  offices: number;
   setMenuOpen(menuOpen: boolean): void;
   menuOpen: boolean;
 }
 
-export function Menu({ profile, setMenuOpen, menuOpen }: MenuProps) {
+export function Menu({ profile, offices, setMenuOpen, menuOpen }: MenuProps) {
   return (
     <aside
       className={`flex-shrink-0 w-64 bg-white ${
@@ -25,7 +26,7 @@ export function Menu({ profile, setMenuOpen, menuOpen }: MenuProps) {
             if (item.name === "Escritórios") {
               return <MenuItem key={i} item={item} />;
             }
-            if (item.name !== "Escritórios" && profile.zip) {
+            if (item.name !== "Escritórios" && profile.zip && offices) {
               return <MenuItem key={i} item={item} />;
             }
             return null;

@@ -8,6 +8,7 @@ import {
   Alert,
   AlertInterface,
   Header,
+  AvatarCropper,
 } from "@iustitia/site/shared-components";
 import {
   getAddressFromCEP,
@@ -79,19 +80,17 @@ export function Profiles({ profile, setProfile }: ProfileProps) {
   const avatarRegister = register("avatar");
   const [selectedFile, setSelectedFile] = useState<File>();
   const [preview, setPreview] = useState<string | undefined>("");
+
+  const [showAvatarModal, setShowAvatarModal] = useState(false);
+  const [blob, setBlob] = useState<Blob>();
+  const [inputImg, setInputImg] = useState<string>();
+
   const [validZip, setValidZip] = useState(!!defaultValues.zip);
 
   useEffect(() => {
-    if (!selectedFile) {
-      if (profile?.avatar) {
-        setPreview(`${process.env.NX_BUCKET_AVATAR_URL}${profile?.avatar}`);
-      }
-      return;
-    }
-    const objectUrl = URL.createObjectURL(selectedFile);
-    setPreview(objectUrl);
-    return () => URL.revokeObjectURL(objectUrl);
-  }, [profile?.avatar, selectedFile]);
+    if (profile?.avatar)
+      setPreview(`${process.env.NX_BUCKET_AVATAR_URL}${profile?.avatar}`);
+  }, [profile?.avatar]);
 
   const onSelectFile = (e: ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files || e.target.files.length === 0) {
@@ -109,7 +108,24 @@ export function Profiles({ profile, setProfile }: ProfileProps) {
       return;
     }
     clearErrors("avatar");
-    setSelectedFile(file);
+    const reader = new FileReader();
+    reader.addEventListener(
+      "load",
+      () => {
+        setInputImg(reader.result as string);
+        setShowAvatarModal(true);
+      },
+      false
+    );
+    if (file) {
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const getBlob = (blob: Blob) => {
+    const blobURL = URL.createObjectURL(blob);
+    setPreview(blobURL);
+    setBlob(blob);
   };
 
   async function fetchCEP(zip: string) {
@@ -160,13 +176,14 @@ export function Profiles({ profile, setProfile }: ProfileProps) {
       if (key !== "avatar") {
         formData.append(key, value as string);
       } else {
-        if (data.avatar.length) {
-          formData.append("avatar", data.avatar[0]);
+        if (data.avatar.length && blob) {
+          formData.append("avatar", blob);
         }
       }
     });
     try {
-      const profileData = await ProfilesServices.update({ formData });
+      await ProfilesServices.update({ formData });
+      const profileData = await ProfilesServices.getOne();
       if (profileData && setProfile) {
         setProfile(profileData as ProfilesType);
         setShowAlert({
@@ -458,6 +475,13 @@ export function Profiles({ profile, setProfile }: ProfileProps) {
                       <p className="text-red-500">{errors.avatar.message}</p>
                     )}
                   </div>
+                  {showAvatarModal && (
+                    <AvatarCropper
+                      setShow={setShowAvatarModal}
+                      getBlob={getBlob}
+                      inputImg={inputImg as string}
+                    />
+                  )}
                   <div className="col-span-full flex justify-center">
                     <LoadingButton
                       styles="w-full md:w-64 px-2 py-2 text-sm text-white rounded-md bg-primary-500 hover:bg-primary-900 focus:outline-none focus:ring focus:ring-primary-500 focus:ring-offset-1 focus:ring-offset-white"

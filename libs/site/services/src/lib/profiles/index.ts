@@ -2,7 +2,7 @@ import {ModulesEnum} from "@iustitia/modules";
 import {ProfilesInterface} from "@iustitia/api/profiles";
 import { errorHandler } from "@iustitia/site/shared-utils";
 import api from "../api";
-import { ApiFormDataReq } from "../interfaces";
+import { ApiFormDataReq, ApiMessageRes } from "../interfaces";
 
 export type ProfilesRes = ProfilesInterface;
 
@@ -15,7 +15,7 @@ export async function getOne(): Promise<ProfilesRes | Error> {
   }
 };
 
-export async function update({ formData }: ApiFormDataReq): Promise<ProfilesRes | Error> {
+export async function update({ formData }: ApiFormDataReq): Promise<ApiMessageRes | Error> {
   try {
     const { data } = await api.put(`/api/${ModulesEnum.profiles}`, formData);
     return data;

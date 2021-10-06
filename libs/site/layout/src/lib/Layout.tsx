@@ -90,6 +90,7 @@ export function Layout({ children }: LayoutProps) {
     <div className="flex h-screen antialiased text-gray-900 bg-gray-100">
       <Menu
         profile={profile}
+        offices={offices}
         setMenuOpen={setMenuOpen}
         menuOpen={menuOpen}
       />
@@ -108,14 +109,19 @@ export function Layout({ children }: LayoutProps) {
         <main className="h-full bg-gray-50">
           {showAlert.show && <Alert alert={showAlert} />}
           {(!profile.zip || offices === 0) && (
-            <Callout type={WARNING_TYPES.NONE} title="Complete o(s) dado(s) abaixo para liberar o sistema." />
+            <Callout
+              type={WARNING_TYPES.NONE}
+              title="Complete o(s) dado(s) abaixo para liberar o sistema."
+            />
           )}
           {!profile.zip && (
             <Callout
               type={WARNING_TYPES.ERROR}
               title="Seu Perfil está"
               emphasis="Incompleto"
-              content={`Acesse seu Perfil clicando ${profile.avatar && `em sua foto`} no canto superior direito.`}
+              content={`Acesse seu Perfil clicando ${
+                profile.avatar && `em sua foto`
+              } no canto superior direito.`}
             />
           )}
           {offices === 0 && (

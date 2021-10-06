@@ -1,3 +1,4 @@
+export * from "./lib/avatar-cropper/AvatarCropper";
 export * from "./lib/add-button/AddButton";
 export * from "./lib/alert/Alert";
 export * from "./lib/breadcrumb/Breadcrumb";
