@@ -35,7 +35,6 @@ export function Nav({
   const divRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const checkIfClickedOutside = (e: { target: any }) => {
       if (navOpen && divRef.current && !divRef.current.contains(e.target)) {
         setNavOpen(false);
@@ -60,7 +59,7 @@ export function Nav({
               openState={notificationOpen}
             />
             <NavItem item="Search" icon={NAVICONS.SEARCH} alert={false} />
-            {profile?.role === "Admin" && (
+            {profile?.isAdmin && (
               <NavItem item="Settings" icon={NAVICONS.SETTINGS} alert={false} />
             )}
           </div>

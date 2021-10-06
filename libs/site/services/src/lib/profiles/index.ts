@@ -6,18 +6,10 @@ import { ApiFormDataReq } from "../interfaces";
 
 export type ProfilesRes = ProfilesInterface;
 
-function seeUserParams(profile: ProfilesRes): ProfilesRes {
-  profile.isAdmin = profile.role === "Admin" ? true : false;
-  if (profile.subscription)
-    profile.isProfessional =
-      profile.subscription?.type === "professional" ? true : false;
-  return profile
-}
-
 export async function getOne(): Promise<ProfilesRes | Error> {
   try {
     const { data } = await api.get(`/api/${ModulesEnum.profiles}`);
-    return seeUserParams(data)
+    return data;
   } catch (err) {
     return errorHandler(err)
   }
@@ -26,7 +18,7 @@ export async function getOne(): Promise<ProfilesRes | Error> {
 export async function update({ formData }: ApiFormDataReq): Promise<ProfilesRes | Error> {
   try {
     const { data } = await api.put(`/api/${ModulesEnum.profiles}`, formData);
-    return seeUserParams(data)
+    return data;
   } catch (err) {
     return errorHandler(err)
   }

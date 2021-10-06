@@ -29,15 +29,18 @@ export type IProfileForm = Omit<ProfilesType, "avatar"> & {
   avatar: FileList;
 };
 
-const schema = yup.object().shape({
+const schema = yup.object({
   name: yup.string().required(),
   email: yup.string().email().required(),
   phone: yup.string().required(),
   zip: yup.string().required().min(10).max(10),
   address: yup.string().required(),
+  number: yup.string(),
+  complement: yup.string(),
   neighborhood: yup.string().required(),
   city: yup.string().required(),
   state: yup.string().required(),
+  avatar: yup.mixed(),
 });
 
 export function Profiles({ profile, setProfile }: ProfileProps) {
@@ -61,7 +64,8 @@ export function Profiles({ profile, setProfile }: ProfileProps) {
     setError,
     clearErrors,
     formState: { errors },
-  } = useForm<IProfileForm>({
+  } = useForm({
+    resolver: yupResolver(schema),
     defaultValues,
   });
 
@@ -123,7 +127,6 @@ export function Profiles({ profile, setProfile }: ProfileProps) {
         setValue("city", data.cidade);
         clearErrors("city");
       }
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       setShowAlert({
         show: true,
@@ -162,11 +165,9 @@ export function Profiles({ profile, setProfile }: ProfileProps) {
         }
       }
     });
-
     try {
       const profileData = await ProfilesServices.update({ formData });
       if (profileData && setProfile) {
-        console.log(profileData);
         setProfile(profileData as ProfilesType);
         setShowAlert({
           show: true,
@@ -176,7 +177,6 @@ export function Profiles({ profile, setProfile }: ProfileProps) {
         });
         setLoading(false);
       }
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       setLoading(false);
       setShowAlert({

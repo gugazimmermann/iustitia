@@ -40,7 +40,6 @@ export function Layout({ children }: LayoutProps) {
     if (width <= 640) setMenuOpen(false);
     whoIAm();
     countOffices();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   async function whoIAm() {
@@ -74,7 +73,7 @@ export function Layout({ children }: LayoutProps) {
       profile.subscription.planId === process.env.NX_FREE_PLAN
     ) {
       const days = subscriptionEndDate(
-        profile.subscription.createdAt as string,
+        profile.subscription.createdAt,
         profile.subscription.frequency as number
       );
       setShowAlert({
@@ -108,25 +107,24 @@ export function Layout({ children }: LayoutProps) {
         {/* md:max-w-screen-lg */}
         <main className="h-full bg-gray-50">
           {showAlert.show && <Alert alert={showAlert} />}
+          {(!profile.zip || offices === 0) && (
+            <Callout type={WARNING_TYPES.NONE} title="Complete o(s) dado(s) abaixo para liberar o sistema." />
+          )}
           {!profile.zip && (
             <Callout
-              type={WARNING_TYPES.WARNING}
+              type={WARNING_TYPES.ERROR}
               title="Seu Perfil está"
               emphasis="Incompleto"
-              content="Acesse seu Perfil clicando no canto superior direito."
+              content={`Acesse seu Perfil clicando ${profile.avatar && `em sua foto`} no canto superior direito.`}
             />
           )}
-
           {offices === 0 && (
             <Callout
               type={WARNING_TYPES.WARNING}
               title="Nenhum Escritório Cadastrado"
-              content={`Acesse Escritórios clicando ${
-                profile.avatar && `em sua foto`
-              } no canto superior direito.`}
+              content={`Acesse Escritórios clicando no menu ao lateral.`}
             />
           )}
-
           {profile.email &&
             Children.map(children, (child) => {
               if (isValidElement(child)) {
