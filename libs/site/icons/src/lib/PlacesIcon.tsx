@@ -9,8 +9,8 @@ export function PlacesIcon({ styles, stroke }: IconProps) {
       strokeWidth={stroke}
       stroke="currentColor"
       fill="none"
-      stroke-linecap="round"
-      stroke-linejoin="round"
+      strokeLinecap="round"
+      strokeLinejoin="round"
     >
       <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
       <line x1="3" y1="21" x2="21" y2="21"></line>

@@ -36,6 +36,9 @@
     "api-auth": {
       "tags": []
     },
+    "api-dashboards": {
+      "tags": []
+    },
     "api-business-contacts": {
       "tags": []
     },
@@ -117,6 +120,9 @@
       "tags": []
     },
     "site-not-found": {
+      "tags": []
+    },
+    "site-profiles": {
       "tags": []
     },
     "site-schedule": {

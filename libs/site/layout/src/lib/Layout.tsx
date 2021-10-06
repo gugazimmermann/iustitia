@@ -91,7 +91,6 @@ export function Layout({ children }: LayoutProps) {
     <div className="flex h-screen antialiased text-gray-900 bg-gray-100">
       <Menu
         profile={profile}
-        offices={offices}
         setMenuOpen={setMenuOpen}
         menuOpen={menuOpen}
       />

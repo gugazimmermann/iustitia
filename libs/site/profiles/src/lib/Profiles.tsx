@@ -7,7 +7,6 @@ import {
   LoadingButton,
   Alert,
   AlertInterface,
-  UploadCloudIcon,
   Header,
 } from "@iustitia/site/shared-components";
 import {
@@ -16,17 +15,17 @@ import {
   validateEmail,
   WARNING_TYPES,
 } from "@iustitia/site/shared-utils";
-import { ProfileServices } from "@iustitia/site/services";
+import { UploadCloudIcon } from "@iustitia/site/icons";
+import { ProfilesServices } from "@iustitia/site/services";
 
-export const ProfileModule = ProfileServices.ProfileModule;
-export type ProfileInterface = ProfileServices.ProfileInterface;
+type ProfilesType = ProfilesServices.ProfilesRes;
 
 interface ProfileProps {
-  profile?: ProfileInterface;
-  setProfile?(profile: ProfileInterface): void;
+  profile?: ProfilesType;
+  setProfile?(profile: ProfilesType): void;
 }
 
-export type IProfileForm = Omit<ProfileInterface, "avatar"> & {
+export type IProfileForm = Omit<ProfilesType, "avatar"> & {
   avatar: FileList;
 };
 
@@ -41,7 +40,7 @@ const schema = yup.object().shape({
   state: yup.string().required(),
 });
 
-export function Profile({ profile, setProfile }: ProfileProps) {
+export function Profiles({ profile, setProfile }: ProfileProps) {
   const defaultValues = {
     name: profile?.name || "",
     email: profile?.email || "",
@@ -63,7 +62,6 @@ export function Profile({ profile, setProfile }: ProfileProps) {
     clearErrors,
     formState: { errors },
   } = useForm<IProfileForm>({
-    resolver: yupResolver(schema),
     defaultValues,
   });
 
@@ -166,10 +164,10 @@ export function Profile({ profile, setProfile }: ProfileProps) {
     });
 
     try {
-      const profileData = await ProfileServices.update(formData);
+      const profileData = await ProfilesServices.update({ formData });
       if (profileData && setProfile) {
         console.log(profileData);
-        setProfile(profileData as ProfileInterface);
+        setProfile(profileData as ProfilesType);
         setShowAlert({
           show: true,
           message: "Perfil Alerado com Sucesso!",
@@ -478,4 +476,4 @@ export function Profile({ profile, setProfile }: ProfileProps) {
   );
 }
 
-export default Profile;
+export default Profiles;

@@ -1,9 +1,9 @@
 module.exports = {
-  displayName: "site-profile",
+  displayName: "site-profiles",
   preset: "../../../jest.preset.js",
   transform: {
     "^.+\\.[tj]sx?$": "babel-jest",
   },
   moduleFileExtensions: ["ts", "tsx", "js", "jsx"],
-  coverageDirectory: "../../../coverage/libs/site/profile",
+  coverageDirectory: "../../../coverage/libs/site/profiles",
 };
