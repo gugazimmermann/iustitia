@@ -10,7 +10,7 @@ import {
 import { WARNING_TYPES } from "@iustitia/site/shared-utils";
 import {
   ContactServices,
-  OfficeServices,
+  PlaceServices,
   CompanyService,
   NoteServices,
   AttchmentServices
@@ -19,7 +19,7 @@ import { Details, Form, List } from "./components";
 
 export const { route, singular, parents, plural } = ContactServices.ContactModule;
 export type ContactInterface = ContactServices.ContactInterface;
-export type OfficeInterface = OfficeServices.OfficeInterface;
+export type PlaceInterface = PlaceServices.PlaceInterface;
 export type CompanyInterface = CompanyService.CompanyInterface;
 export type NoteInterface = NoteServices.NoteInterface;
 export type AttachmentInterface = AttchmentServices.AttachmentInterface;
@@ -45,14 +45,14 @@ export function Contacts() {
   const [dataList, setDataList] = useState([] as ContactInterface[]);
   const [showDataList, setShowDataList] = useState([] as ContactInterface[]);
   const [selected, setSelected] = useState({} as ContactInterface);
-  const [offices, setOffices] = useState<OfficeInterface[]>();
+  const [places, setPlaces] = useState<PlaceInterface[]>();
   const [companies, setCompanies] = useState<CompanyInterface[]>();
   const [selectedType, setSelectedType] = useState<string>("Personal");
   const [searchParam, setSearchParam] = useState<string>();
   const [sort, setSort] = useState("ASC");
 
   useEffect(() => {
-    seeOffices();
+    seePlaces();
     seeCompanies();
     if (pathname.includes("add")) {
       setBack(true);
@@ -92,10 +92,10 @@ export function Contacts() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedType]);
 
-  async function seeOffices() {
+  async function seePlaces() {
     try {
-      const offices = (await OfficeServices.getAll()) as OfficeInterface[];
-      if (offices.length) setOffices(offices);
+      const places = (await PlaceServices.getAll()) as PlaceInterface[];
+      if (places.length) setPlaces(places);
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       setShowAlert({
@@ -210,8 +210,8 @@ export function Contacts() {
       >
         <option value={"All"}>Geral</option>
         <option value={"Personal"}>Pessoal</option>
-        {offices &&
-          offices.map((o, i) => (
+        {places &&
+          places.map((o, i) => (
             <option key={i} value={o.id}>
               {o.name}
             </option>
@@ -371,12 +371,12 @@ export function Contacts() {
                 />
               )}
               {showDetails && (
-                <Details data={selected} offices={offices} edit={handleEdit} />
+                <Details data={selected} places={places} edit={handleEdit} />
               )}
               {showCreate && (
                 <Form
                   loading={loading}
-                  offices={offices}
+                  places={places}
                   companies={companies}
                   create={handleCreate}
                 />
@@ -385,7 +385,7 @@ export function Contacts() {
                 <Form
                   loading={loading}
                   data={selected}
-                  offices={offices}
+                  places={places}
                   companies={companies}
                   update={handleUpate}
                 />

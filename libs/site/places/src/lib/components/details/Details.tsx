@@ -9,23 +9,24 @@ import {
   LoadingButton,
 } from "@iustitia/site/shared-components";
 import { WARNING_TYPES } from "@iustitia/site/shared-utils";
-import { SiteRoutes } from "@iustitia/react-routes";
-import { OfficeServices, PeopleServices } from "@iustitia/site/services";
-import { SimpleUserInterface } from "@iustitia/site/people";
-import { ProfileInterface } from "@iustitia/site/dashboard";
-import {
-  OfficeInterface,
-  OfficeModule,
-  convertProfileToSimpleProfile,
-} from "../../Offices";
+import { GetModule, ModulesEnum, ModulesInterface, GetRoutes, PlacesRoutesInterface, DashboardsRoutesInterface } from "@iustitia/modules";
+import { convertProfileToSimpleProfile } from "@iustitia/site/places";
+import { PlacesServices, MembersServices } from "@iustitia/site/services";
+
+const placesModule = GetModule(ModulesEnum.places) as ModulesInterface;
+const placesRoutes = GetRoutes(ModulesEnum.places) as PlacesRoutesInterface;
+const dashboardsRoutes = GetRoutes(ModulesEnum.dashboards) as DashboardsRoutesInterface;
+
+type PlacesType = PlacesServices.PlacesRes;
+type ProfilesListType = PlacesServices.ProfilesListRes;
+type MembersSimpleType = MembersServices.MembersSimpleRes;
 
 export interface DetailsProps {
   loading: boolean;
   setLoading(loading: boolean): void;
   setShowAlert(showAlert: AlertInterface): void;
-  data: OfficeInterface;
-  setData(data: OfficeInterface): void;
-  route: SiteRoutes;
+  data: PlacesType;
+  setData(data: PlacesType): void;
   setConfirm(confirm: boolean): void;
 }
 
@@ -35,26 +36,25 @@ export function Details({
   setShowAlert,
   data,
   setData,
-  route,
   setConfirm,
 }: DetailsProps) {
   const history = useHistory();
   const [confirmInative, setConfirmInative] = useState(false);
-  const [peopleList, setPeopleList] = useState<SimpleUserInterface[]>([]);
+  const [peopleList, setPeopleList] = useState<MembersSimpleType[]>([]);
   const [showManagersModal, setShowManagersModal] = useState(false);
   const [selectedManagers, setSelectedManagers] = useState<
-    SimpleUserInterface[]
+    MembersSimpleType[]
   >([]);
   const [showUsersModal, setShowUsersModal] = useState(false);
-  const [selectedUsers, setSelectedUsers] = useState<SimpleUserInterface[]>([]);
+  const [selectedUsers, setSelectedUsers] = useState<MembersSimpleType[]>([]);
 
   async function handleActive() {
     setLoading(true);
     try {
-      const res = (await OfficeServices.active({
+      const res = (await PlacesServices.active({
         active: !data.active,
-        officeId: data.id as string,
-      })) as OfficeInterface;
+        placeId: data.id as string,
+      })) as PlacesType;
       setData(res);
       setLoading(false);
 
@@ -78,7 +78,7 @@ export function Details({
   async function getListOfPeople() {
     setLoading(true);
     try {
-      const res = (await PeopleServices.list()) as SimpleUserInterface[];
+      const res = (await MembersServices.getAll()) as MembersSimpleType[];
       setPeopleList(res);
       setLoading(false);
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -94,22 +94,22 @@ export function Details({
   }
 
   useEffect(() => {
-    if (data.managersOffice) addDataManagersToSelected(data.managersOffice);
-    if (data.usersOffice) addDataUsersToSelected(data.usersOffice);
+    if (data.managersPlace) addDataManagersToSelected(data.managersPlace);
+    if (data.usersPlace) addDataUsersToSelected(data.usersPlace);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [data.managersOffice]);
+  }, [data.managersPlace]);
 
-  function addDataManagersToSelected(managersOffice: ProfileInterface[]) {
-    const managers = convertProfileToSimpleProfile(managersOffice);
+  function addDataManagersToSelected(managersPlace: ProfilesListType[]) {
+    const managers = convertProfileToSimpleProfile(managersPlace);
     setSelectedManagers(managers);
   }
 
-  function addDataUsersToSelected(usersOffice: ProfileInterface[]) {
-    const users = convertProfileToSimpleProfile(usersOffice);
+  function addDataUsersToSelected(usersPlace: ProfilesListType[]) {
+    const users = convertProfileToSimpleProfile(usersPlace);
     setSelectedUsers(users);
   }
 
-  function handleSelectManager(manager: SimpleUserInterface) {
+  function handleSelectManager(manager: MembersSimpleType) {
     let managersList = selectedManagers.slice(0);
     if (managersList.some((m) => m.id === manager.id))
       managersList = managersList.filter((m) => m.id !== manager.id);
@@ -117,7 +117,7 @@ export function Details({
     setSelectedManagers(managersList);
   }
 
-  function handleSelectUser(user: SimpleUserInterface) {
+  function handleSelectUser(user: MembersSimpleType) {
     let usersList = selectedUsers.slice(0);
     if (usersList.some((u) => u.id === user.id))
       usersList = usersList.filter((u) => u.id !== user.id);
@@ -128,10 +128,10 @@ export function Details({
   async function handleSendManagers() {
     setLoading(true);
     try {
-      const res = (await OfficeServices.managers(
-        data.id as string,
-        selectedManagers
-      )) as OfficeInterface;
+      const res = (await PlacesServices.managers({
+        placeId: data.id as string,
+        managersList: selectedManagers
+      })) as PlacesType;
       setData(res);
       setLoading(false);
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -149,10 +149,10 @@ export function Details({
   async function handleSendUsers() {
     setLoading(true);
     try {
-      const res = (await OfficeServices.users(
-        data.id as string,
-        selectedUsers
-      )) as OfficeInterface;
+      const res = (await PlacesServices.users({
+        placeId: data.id as string,
+        usersList: selectedUsers
+      })) as PlacesType;
       setData(res);
       setLoading(false);
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -178,12 +178,12 @@ export function Details({
   }
 
   function handleModalCancelManagers() {
-    addDataManagersToSelected(data.managersOffice as ProfileInterface[]);
+    addDataManagersToSelected(data.managersPlace as ProfilesListType[]);
     setShowManagersModal(false);
   }
 
   function handleModalCancelUsers() {
-    addDataUsersToSelected(data.usersOffice as ProfileInterface[]);
+    addDataUsersToSelected(data.usersPlace as ProfilesListType[]);
     setShowUsersModal(false);
   }
 
@@ -194,7 +194,7 @@ export function Details({
           <button
             type="button"
             onClick={() =>
-              history.push(`${SiteRoutes.Dashboard}/escritorios/${data?.id}`)
+              history.push(`${dashboardsRoutes.places}/escritorios/${data?.id}`)
             }
             className="px-2 py-1 text-xs text-white rounded-md bg-primary-500 hover:bg-primary-900 focus:ring-primary-500"
           >
@@ -202,7 +202,7 @@ export function Details({
           </button>
           <button
             type="button"
-            onClick={() => history.push(`${route}/edit/${data?.id}`)}
+            onClick={() => history.push(`${placesRoutes.update}/${data?.id}`)}
             className="px-2 py-1 text-xs text-white rounded-md bg-green-500 hover:bg-green-900 focus:ring-green-500"
           >
             Financeiro
@@ -211,7 +211,7 @@ export function Details({
         <div className="flex space-x-2  justify-center md:justify-end">
           <button
             type="button"
-            onClick={() => history.push(`${route}/edit/${data?.id}`)}
+            onClick={() => history.push(`${placesRoutes.update}/${data?.id}`)}
             className="px-2 py-1 text-xs text-white rounded-md bg-yellow-500 hover:bg-yellow-900 focus:ring-yellow-500"
           >
             Editar
@@ -358,7 +358,7 @@ export function Details({
           type={WARNING_TYPES.WARNING}
           title={`Tornar ${data.name} ${data.active ? `inativo` : `ativo`}?`}
           content={`Você tem certeza que quer tonar o ${
-            OfficeModule.singular
+            placesModule.singular
           } ${data.name} ${data.active ? `inativo` : `ativo`}?`}
           buttonText={`Sim, tornar ${data.active ? `inativo` : `ativo`}`}
           action={handleActive}

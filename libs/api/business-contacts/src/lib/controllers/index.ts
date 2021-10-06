@@ -31,7 +31,7 @@ export interface PersonsInterface {
   comments?: string;
   type?: string;
   userId?: string;
-  officeId?: string;
+  placeId?: string;
   tenantId?: string;
 }
 
@@ -39,7 +39,7 @@ function dataToPersonsResult(data: PersonsInstance): PersonsInterface {
   return {
     id: data.id,
     userId: data.userId,
-    officeId: data.officeId,
+    placeId: data.placeId,
     avatar: data.avatar,
     name: data.name,
     email: data.email,
@@ -171,7 +171,7 @@ export async function createPerson(req, res): Promise<Response> {
   if (!body.type || !body.name || !body.tenantId) return res.status(400).send({ message: "Dados inválidos!" });
   if (body.email && !validateEmail(body.email)) return res.status(400).send({ message: "Dados inválidos!" });
   if (body.type === "Personal") body.userId = req.userId;
-  if (body.type !== "All" && body.type !== "Personal") body.officeId = body.type;
+  if (body.type !== "All" && body.type !== "Personal") body.placeId = body.type;
   try {
     for (const key in body) if (body[key] === "") body[key] = null;
     const data = await database.Persons.create(body);
@@ -192,15 +192,15 @@ export async function updatePerson(req, res): Promise<Response> {
   if (body.email && !validateEmail(body.email)) return res.status(400).send({ message: "Dados inválidos!" });
   if (body.type === "All") {
     body.userId = null;
-    body.officeId = null;
+    body.placeId = null;
   }
   if (body.type === "Personal") {
     body.userId = req.userId;
-    body.officeId = null;
+    body.placeId = null;
   }
   if (body.type !== "All" && body.type !== "Personal") {
     body.userId = null;
-    body.officeId = body.type;
+    body.placeId = body.type;
   }
   try {
     const data = await database.Persons.findByPk(body.id);

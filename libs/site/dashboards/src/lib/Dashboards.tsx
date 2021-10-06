@@ -17,37 +17,37 @@ type PlacesType = PlacesServices.PlacesRes;
 export function Dashboards() {
   const history = useHistory();
   const { id } = useParams<{ id: string }>();
-  const [offices, setOffices] = useState<PlacesType[]>();
-  const [selectedOffice, setSelectedOffice] = useState({} as PlacesType);
+  const [places, setPlaces] = useState<PlacesType[]>();
+  const [selectedPlace, setSelectedPlace] = useState({} as PlacesType);
 
   useEffect(() => {
-    if (id) getOffice(id);
-    else getOffices();
+    if (id) getPlace(id);
+    else getPlaces();
   }, [id]);
 
-  async function getOffice(id: string) {
+  async function getPlace(id: string) {
     try {
-      const office = (await PlacesServices.getOne({ id })) as PlacesType;
-      setSelectedOffice(office);
+      const place = (await PlacesServices.getOne({ id })) as PlacesType;
+      setSelectedPlace(place);
     } catch (err) {
       console.log(err);
     }
   }
 
-  async function getOffices() {
+  async function getPlaces() {
     try {
       const data = (await PlacesServices.getAll()) as PlacesType[];
-      setOffices(data);
-      if (data.length === 1) setSelectedOffice(data[0]);
+      setPlaces(data);
+      if (data.length === 1) setSelectedPlace(data[0]);
     } catch (err) {
       console.log(err);
     }
   }
 
-  const selectOffices = () => {
+  const selectPlaces = () => {
     return (
       <select
-        id="offices"
+        id="places"
         className={`rounded-md focus:ring-0 focus:ring-opacity-75 text-gray-900 focus:ring-primary-500 border-gray-300`}
         onChange={(e) => {
           if (e.target.value) {
@@ -57,29 +57,29 @@ export function Dashboards() {
           }
         }}
       >
-        {offices && offices.length > 1 ? (
+        {places && places.length > 1 ? (
           <>
             <option value="">TODOS</option>
-            {offices.map((office, i) => (
-              <option key={i} value={office.id}>
-                {office.name}
+            {places.map((place, i) => (
+              <option key={i} value={place.id}>
+                {place.name}
               </option>
             ))}
           </>
         ) : (
-          offices &&
-          offices[0]?.name && <option value="">{offices[0].name}</option>
+          places &&
+          places[0]?.name && <option value="">{places[0].name}</option>
         )}
       </select>
     );
   };
 
-  return (offices && offices?.length > 0) || selectedOffice ? (
+  return (places && places?.length > 0) || selectedPlace ? (
     <div className="mb-10 container mx-auto">
       <Header
         before={["Dashboards"]}
-        main={selectedOffice.name ? `${selectedOffice.name}` : `Escritórios`}
-        select={offices && offices.length > 1 ? selectOffices : undefined}
+        main={selectedPlace.name ? `${selectedPlace.name}` : `Escritórios`}
+        select={places && places.length > 1 ? selectPlaces : undefined}
       />
 
       <div className="p-4 flex flex-col space-y-4">
@@ -227,8 +227,8 @@ export function Dashboards() {
           <div className="flex flex-col items-center justify-center bg-white rounded-md shadow">
             <PeopleIcon styles="w-12 h-12 text-primary-400" stroke={2} />
             <h2 className="title-font  text-3xl text-gray-900">
-              {selectedOffice
-                ? `${selectedOffice.managersOffice?.length}`
+              {selectedPlace
+                ? `${selectedPlace.managersPlace?.length}`
                 : `0`}
             </h2>
             <p className="leading-relaxed">Responsáveis</p>
@@ -237,7 +237,7 @@ export function Dashboards() {
           <div className="p-4 flex flex-col items-center justify-center bg-white rounded-md shadow">
             <PeopleIcon styles="w-12 h-12 text-primary-400" stroke={2} />
             <h2 className="title-font  text-3xl text-gray-900">
-              {selectedOffice ? `${selectedOffice.usersOffice?.length}` : `0`}
+              {selectedPlace ? `${selectedPlace.usersPlace?.length}` : `0`}
             </h2>
             <p className="leading-relaxed">Usuários</p>
           </div>

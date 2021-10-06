@@ -89,11 +89,11 @@ export async function updateProfile(req, res): Promise<Response> {
       }
       const user = await getUserById(body.userId);
       if (!user) return res.status(404).send({ message: "Perfil não encontrado!" });
-      return res.status(200).send({ message: "Perfil atualizado com sucesso!" });
     });
   } catch (err) {
     return res.status(500).send({ message: err.message });
   }
+  return res.status(200).send({ message: "Perfil atualizado com sucesso!" });
 }
 
 export async function getProfile(req, res): Promise<Response> {

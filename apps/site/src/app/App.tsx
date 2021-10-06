@@ -5,6 +5,7 @@ import {
   DashboardsRoutesInterface,
   GetRoutes,
   ModulesEnum,
+  PlacesRoutesInterface,
   ProfilesRoutesInterface,
 } from "@iustitia/modules";
 import {
@@ -20,6 +21,7 @@ import {
 import { Layout } from "@iustitia/site/layout";
 import { Dashboards } from "@iustitia/site/dashboards";
 import { Profiles } from "@iustitia/site/profiles";
+import { Places } from "@iustitia/site/places";
 import { NotFound } from "@iustitia/site/not-found";
 
 const authRoutes = GetRoutes(ModulesEnum.auth) as AuthRoutesInterface;
@@ -29,6 +31,9 @@ const dashboardsRoutes = GetRoutes(
 const profilesRoutes = GetRoutes(
   ModulesEnum.profiles
 ) as ProfilesRoutesInterface;
+const placesRoutes = GetRoutes(
+  ModulesEnum.places
+) as PlacesRoutesInterface;
 
 export const App = () => {
   return (
@@ -91,6 +96,28 @@ export const App = () => {
           <Profiles />
         </Layout>
       </ProtectedRoute>
+
+      <ProtectedRoute exact path={placesRoutes.list}>
+        <Layout>
+          <Places />
+        </Layout>
+      </ProtectedRoute>
+      <ProtectedRoute exact path={placesRoutes.details}>
+        <Layout>
+          <Places />
+        </Layout>
+      </ProtectedRoute>
+      <ProtectedRoute exact path={placesRoutes.add}>
+        <Layout>
+          <Places />
+        </Layout>
+      </ProtectedRoute>
+      <ProtectedRoute exact path={placesRoutes.update}>
+        <Layout>
+          <Places />
+        </Layout>
+      </ProtectedRoute>
+
 
       <Route path="*">
         <NotFound />

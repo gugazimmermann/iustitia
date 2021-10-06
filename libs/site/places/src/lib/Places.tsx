@@ -10,27 +10,42 @@ import {
   SearchField,
 } from "@iustitia/site/shared-components";
 import { Sort, WARNING_TYPES } from "@iustitia/site/shared-utils";
-import { PeopleServices } from "@iustitia/site/services";
-import { OfficeServices } from "@iustitia/site/services";
-import { ProfileInterface } from "@iustitia/site/dashboard";
+
+import {
+  MembersServices,
+  PlacesServices,
+  ProfilesServices,
+} from "@iustitia/site/services";
+import {
+  GetRoutes,
+  GetModule,
+  ModulesEnum,
+  ModulesInterface,
+  PlacesRoutesInterface,
+} from "@iustitia/modules";
 import { Details, Form, List } from "./components";
 
-export const OfficeModule = OfficeServices.OfficeModule;
-export type OfficeInterface = OfficeServices.OfficeInterface;
+const placesModule = GetModule(ModulesEnum.places) as ModulesInterface;
+const placesRoutes = GetRoutes(ModulesEnum.places) as PlacesRoutesInterface;
 
-export function convertProfileToSimpleProfile(profiles: ProfileInterface[]) {
-  const simpleProfiles: PeopleServices.SimpleUserInterface[] = [];
+type PlacesType = PlacesServices.PlacesRes;
+type ProfilesListType = PlacesServices.ProfilesListRes;
+type ProfilesType = ProfilesServices.ProfilesRes;
+type MembersSimpleType = MembersServices.MembersSimpleRes;
+
+export function convertProfileToSimpleProfile(profiles: ProfilesListType[]) {
+  const simpleProfiles: MembersSimpleType[] = [];
   for (const profile of profiles)
-    simpleProfiles.push(profile as unknown as PeopleServices.SimpleUserInterface);
+    simpleProfiles.push(profile as unknown as MembersSimpleType);
   return simpleProfiles;
 }
 
-interface OfficesProps {
-  profile?: ProfileInterface;
-  setOffices?(countOffices: number): void;
+interface PlacesProps {
+  profile?: ProfilesType;
+  setPlaces?(countPlaces: number): void;
 }
 
-export function Offices({ profile, setOffices }: OfficesProps) {
+export function Places({ profile, setPlaces }: PlacesProps) {
   const history = useHistory();
   const { pathname } = useLocation();
   let { id } = useParams<{ id: string }>();
@@ -45,9 +60,9 @@ export function Offices({ profile, setOffices }: OfficesProps) {
   const [whatToShow, setWhatToShow] = useState<
     "list" | "details" | "update" | "create"
   >();
-  const [dataList, setDataList] = useState([] as OfficeInterface[]);
-  const [showDataList, setShowDataList] = useState([] as OfficeInterface[]);
-  const [selected, setSelected] = useState({} as OfficeInterface);
+  const [dataList, setDataList] = useState([] as PlacesType[]);
+  const [showDataList, setShowDataList] = useState([] as PlacesType[]);
+  const [selected, setSelected] = useState({} as PlacesType);
   const [confirm, setConfirm] = useState(false);
   const [searchParam, setSearchParam] = useState<string>();
   const [sort, setSort] = useState<"ASC" | "DESC">("ASC");
@@ -78,9 +93,9 @@ export function Offices({ profile, setOffices }: OfficesProps) {
   async function getDataList() {
     setLoading(true);
     try {
-      let data = (await OfficeServices.getAll()) as OfficeInterface[];
-      if (setOffices) setOffices(data.length);
-      if (!profile?.isAdmin) data = data.filter(d => d.active)
+      let data = (await PlacesServices.getAll()) as PlacesType[];
+      if (setPlaces) setPlaces(data.length);
+      if (!profile?.isAdmin) data = data.filter((d) => d.active);
       setDataList(data);
       const sortedData = Sort(data.slice(0), sort);
       setShowDataList(sortedData);
@@ -100,7 +115,7 @@ export function Offices({ profile, setOffices }: OfficesProps) {
   async function getSelected(id: string) {
     setLoading(true);
     try {
-      const data = (await OfficeServices.getOne(id)) as OfficeInterface;
+      const data = (await PlacesServices.getOne({ id })) as PlacesType;
       setSelected(data);
       setLoading(false);
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -112,23 +127,25 @@ export function Offices({ profile, setOffices }: OfficesProps) {
         type: WARNING_TYPES.ERROR,
         time: 3000,
       });
-      history.push(OfficeModule.route);
+      history.push(placesRoutes.list);
     }
   }
 
-  async function handleCreate(data: OfficeInterface) {
+  async function handleCreate(data: PlacesType) {
     setLoading(true);
     try {
-      const newOffice = (await OfficeServices.create(data)) as OfficeInterface;
+      const newPlace = (await PlacesServices.create({
+        formData: data,
+      })) as PlacesType;
       setShowAlert({
         show: true,
-        message: `${OfficeModule.singular} cadastrado com sucesso!`,
+        message: `${placesModule.singular} cadastrado com sucesso!`,
         type: WARNING_TYPES.SUCCESS,
         time: 3000,
       });
       await getDataList();
-      id = newOffice.id as string;
-      history.push(`${OfficeModule.route}/${newOffice.id}`);
+      id = newPlace.id as string;
+      history.push(`${placesRoutes.details}/${newPlace.id}`);
       setLoading(false);
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
@@ -142,18 +159,18 @@ export function Offices({ profile, setOffices }: OfficesProps) {
     }
   }
 
-  async function handleUpate(data: OfficeInterface) {
+  async function handleUpate(data: PlacesType) {
     setLoading(true);
     try {
-      await OfficeServices.update(data);
+      await PlacesServices.update({ formData: data });
       setShowAlert({
         show: true,
-        message: `${OfficeModule.singular} alterado com sucesso!`,
+        message: `${placesModule.singular} alterado com sucesso!`,
         type: WARNING_TYPES.WARNING,
         time: 3000,
       });
       reloadList();
-      history.push(OfficeModule.route);
+      history.push(placesRoutes.list);
       setLoading(false);
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
@@ -171,10 +188,10 @@ export function Offices({ profile, setOffices }: OfficesProps) {
     if (selected.id) {
       setLoading(true);
       try {
-        await OfficeServices.deleteOne(selected.id);
+        await PlacesServices.deleteOne({ id: selected.id });
         setShowAlert({
           show: true,
-          message: `${OfficeModule.singular} removido com sucesso!`,
+          message: `${placesModule.singular} removido com sucesso!`,
           type: WARNING_TYPES.ERROR,
           time: 3000,
         });
@@ -203,7 +220,7 @@ export function Offices({ profile, setOffices }: OfficesProps) {
     const data = dataList.length ? dataList.slice(0) : [];
     if (searchParam) {
       const res = data.filter((d) =>
-        d.name.toLocaleLowerCase().includes(searchParam.toLocaleLowerCase())
+        (d.name as string).toLocaleLowerCase().includes(searchParam.toLocaleLowerCase())
       );
       setShowDataList(res);
     } else {
@@ -220,7 +237,7 @@ export function Offices({ profile, setOffices }: OfficesProps) {
     return (
       <AddButton
         back={whatToShow !== "list"}
-        route={OfficeModule.route}
+        route={placesRoutes.list}
         reload={reloadList}
         isProfessional={profile?.isProfessional && profile.isAdmin}
       />
@@ -230,8 +247,8 @@ export function Offices({ profile, setOffices }: OfficesProps) {
   return (
     <div className="container mx-auto">
       <Header
-        before={OfficeModule.parents}
-        main={OfficeModule.plural}
+        before={[""]}
+        main={placesModule.plural}
         search={createSearch}
         button={createButton}
         back={whatToShow !== "list"}
@@ -251,7 +268,6 @@ export function Offices({ profile, setOffices }: OfficesProps) {
               setShowAlert={setShowAlert}
               data={selected}
               setData={setSelected}
-              route={OfficeModule.route}
               setConfirm={setConfirm}
             />
           )}
@@ -265,14 +281,14 @@ export function Offices({ profile, setOffices }: OfficesProps) {
             <ConfirmationModal
               setConfirm={setConfirm}
               type={WARNING_TYPES.ERROR}
-              title={`Excluir ${OfficeModule.singular}: ${selected.name}?`}
-              content={`Você tem certeza que quer excluir o ${OfficeModule.singular} ${selected.name}? Todos os dados desse ${OfficeModule.singular} serão perdidos. Essa ação não poderá ser desfeita.`}
+              title={`Excluir ${placesModule.singular}: ${selected.name}?`}
+              content={`Você tem certeza que quer excluir o ${placesModule.singular} ${selected.name}? Todos os dados desse ${placesModule.singular} serão perdidos. Essa ação não poderá ser desfeita.`}
               action={handleDelete}
             />
           )}
           {!profile?.isProfessional && (
             <BasicPlanMsg
-              message={`Somente 1 ${OfficeModule.singular} permitido no Plano Básico`}
+              message={`Somente 1 ${placesModule.singular} permitido no Plano Básico`}
             />
           )}
         </div>
@@ -281,4 +297,4 @@ export function Offices({ profile, setOffices }: OfficesProps) {
   );
 }
 
-export default Offices;
+export default Places;

@@ -33,13 +33,13 @@ export function Layout({ children }: LayoutProps) {
   const [navOpen, setNavOpen] = useState(false);
   const [notificationOpen, setNotificationOpen] = useState(false);
   const [profile, setProfile] = useState({} as ProfilesType);
-  const [offices, setOffices] = useState<number>(0);
+  const [places, setPlaces] = useState<number>(0);
 
   useEffect(() => {
     const { innerWidth: width } = window;
     if (width <= 640) setMenuOpen(false);
     whoIAm();
-    countOffices();
+    countPlaces();
   }, []);
 
   async function whoIAm() {
@@ -52,10 +52,10 @@ export function Layout({ children }: LayoutProps) {
     }
   }
 
-  async function countOffices() {
+  async function countPlaces() {
     try {
-      const countOffices = (await PlacesServices.count()) as number;
-      setOffices(countOffices);
+      const countPlaces = (await PlacesServices.count()) as number;
+      setPlaces(countPlaces);
     } catch (err) {
       console.error(err);
     }
@@ -90,7 +90,7 @@ export function Layout({ children }: LayoutProps) {
     <div className="flex h-screen antialiased text-gray-900 bg-gray-100">
       <Menu
         profile={profile}
-        offices={offices}
+        places={places}
         setMenuOpen={setMenuOpen}
         menuOpen={menuOpen}
       />
@@ -103,12 +103,12 @@ export function Layout({ children }: LayoutProps) {
           setNotificationOpen={setNotificationOpen}
           notificationOpen={notificationOpen}
           profile={profile}
-          offices={offices}
+          places={places}
         />
         {/* md:max-w-screen-lg */}
         <main className="h-full bg-gray-50">
           {showAlert.show && <Alert alert={showAlert} />}
-          {(!profile.zip || offices === 0) && (
+          {(!profile.zip || places === 0) && (
             <Callout
               type={WARNING_TYPES.NONE}
               title="Complete o(s) dado(s) abaixo para liberar o sistema."
@@ -124,7 +124,7 @@ export function Layout({ children }: LayoutProps) {
               } no canto superior direito.`}
             />
           )}
-          {offices === 0 && (
+          {places === 0 && (
             <Callout
               type={WARNING_TYPES.WARNING}
               title="Nenhum Escritório Cadastrado"
@@ -137,8 +137,8 @@ export function Layout({ children }: LayoutProps) {
                 return cloneElement(child, {
                   profile,
                   setProfile,
-                  offices,
-                  setOffices,
+                  places,
+                  setPlaces,
                 });
               }
               return child;

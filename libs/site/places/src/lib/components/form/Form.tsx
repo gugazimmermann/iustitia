@@ -5,32 +5,47 @@ import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import {getAddressFromCEP, validateEmail } from "@iustitia/site/shared-utils";
 import { LoadingButton } from "@iustitia/site/shared-components";
-import { OfficeInterface, OfficeModule } from "../../Offices";
+import { GetModule, ModulesEnum, ModulesInterface } from "@iustitia/modules";
+import { PlacesServices } from "@iustitia/site/services";
+
+const placesModule = GetModule(ModulesEnum.places) as ModulesInterface;
+
+type PlacesType = PlacesServices.PlacesRes;
 
 export interface FormProps {
   loading: boolean;
-  data?: OfficeInterface;
-  create?(data: OfficeInterface): void;
-  update?(data: OfficeInterface): void;
+  data?: PlacesType;
+  create?(data: PlacesType): void;
+  update?(data: PlacesType): void;
 }
 
-const schema = yup.object().shape({
+const schema = yup.object({
   name: yup.string().required(),
+  email: yup.string(),
+  phone: yup.string(),
+  zip: yup.string(),
+  address: yup.string(),
+  number: yup.string(),
+  complement: yup.string(),
+  neighborhood: yup.string(),
+  city: yup.string(),
+  state: yup.string(),
+  active: yup.boolean()
 });
 
 export function Form({ loading, data, create, update }: FormProps) {
-  const defaultValues: OfficeInterface = {
+  const defaultValues = {
     name: data?.name || "",
-    email: data?.email || "",
-    phone: data?.phone || "",
-    zip: data?.zip || "",
-    address: data?.address || "",
-    number: data?.number || "",
-    complement: data?.complement || "",
-    neighborhood: data?.neighborhood || "",
-    city: data?.city || "",
-    state: data?.state || "",
-    active: data?.active || true
+    email: data?.email,
+    phone: data?.phone,
+    zip: data?.zip,
+    address: data?.address,
+    number: data?.number,
+    complement: data?.complement,
+    neighborhood: data?.neighborhood,
+    city: data?.city,
+    state: data?.state,
+    active: data?.active
   };
   const {
     control,
@@ -41,7 +56,7 @@ export function Form({ loading, data, create, update }: FormProps) {
     setError,
     clearErrors,
     formState: { errors },
-  } = useForm<OfficeInterface>({
+  } = useForm({
     resolver: yupResolver(schema),
     defaultValues,
   });
@@ -73,7 +88,7 @@ export function Form({ loading, data, create, update }: FormProps) {
     }
   }
 
-  async function onSubmit(formData: OfficeInterface) {
+  async function onSubmit(formData: PlacesType) {
     if (!formData.zip || !validZip) {
       setError("zip", { type: "manual" });
       return;
@@ -321,8 +336,8 @@ export function Form({ loading, data, create, update }: FormProps) {
               type="submit"
               text={
                 create
-                  ? `Cadastrar ${OfficeModule.singular}`
-                  : `Editar ${OfficeModule.singular}`
+                  ? `Cadastrar ${placesModule.singular}`
+                  : `Editar ${placesModule.singular}`
               }
               loading={loading}
             />

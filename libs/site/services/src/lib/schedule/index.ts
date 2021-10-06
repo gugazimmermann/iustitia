@@ -8,7 +8,7 @@ import { ApiIdReq, ApiMessageRes } from "../interfaces";
 export type ScheduleEventsRes = EventsInterface;
 
 export interface ScheduleEventsGetAllReq {
-  officeId?: string;
+  placeId?: string;
 }
 
 export interface ScheduleEventsFormDataReq {
@@ -25,10 +25,10 @@ export async function getOneEvent({ id }: ApiIdReq): Promise<ScheduleEventsRes |
   }
 };
 
-export async function getAllEvents({ officeId }: ScheduleEventsGetAllReq): Promise<ScheduleEventsRes[] | Error> {
+export async function getAllEvents({ placeId }: ScheduleEventsGetAllReq): Promise<ScheduleEventsRes[] | Error> {
   try {
     const tenantId = token.getLocalTenantId();
-    const url = !officeId ? `/api/${ModulesEnum.schedule}/events/${tenantId}` : `/api/${ModulesEnum.schedule}/events/${tenantId}/office/${officeId}`;
+    const url = !placeId ? `/api/${ModulesEnum.schedule}/events/${tenantId}` : `/api/${ModulesEnum.schedule}/events/${tenantId}/place/${placeId}`;
     await api.get(url);
     const { data } = await api.get(url);
     return data

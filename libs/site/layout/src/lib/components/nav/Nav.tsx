@@ -19,7 +19,7 @@ export interface NavProps {
   setNotificationOpen(notificationOpen: boolean): void;
   notificationOpen: boolean;
   profile: ProfilesType;
-  offices: number;
+  places: number;
 }
 
 export function Nav({
@@ -30,7 +30,7 @@ export function Nav({
   setNotificationOpen,
   notificationOpen,
   profile,
-  offices,
+  places,
 }: NavProps) {
   const divRef = useRef<HTMLDivElement>(null);
 
@@ -49,7 +49,7 @@ export function Nav({
   function showNavItems(profile: ProfilesType) {
     return (
       <>
-        {profile.zip && offices > 0 && (
+        {profile.zip && places > 0 && (
           <div className="pt-1 space-x-2">
             <NavItem
               item="Notification"

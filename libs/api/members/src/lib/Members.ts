@@ -17,7 +17,7 @@ export function Members(app: Express) {
   app.get(`/api/${ModulesEnum.members}/:tenantId`, [verifyToken], getAll);
   app.get(`/api/${ModulesEnum.members}/:tenantId/:id`, [verifyToken], getOne);
   app.post(`/api/${ModulesEnum.members}/:tenantId`, [verifyToken], create);
-  // used in offices to select users and managers
+  // used in places to select users and managers
   app.get(`/api/${ModulesEnum.members}/list/:tenantId`, [verifyToken], getList);
 
   app.get(`/api/${ModulesEnum.members}/invites/:tenantId`, [verifyToken], getInvites);

@@ -93,27 +93,6 @@
         }
       }
     },
-    "api-dashboards": {
-      "root": "libs/api/dashboards",
-      "sourceRoot": "libs/api/dashboards/src",
-      "projectType": "library",
-      "targets": {
-        "lint": {
-          "executor": "@nrwl/linter:eslint",
-          "options": {
-            "lintFilePatterns": ["libs/api/dashboards/**/*.ts"]
-          }
-        },
-        "test": {
-          "executor": "@nrwl/jest:jest",
-          "outputs": ["coverage/libs/api/dashboards"],
-          "options": {
-            "jestConfig": "libs/api/dashboards/jest.config.js",
-            "passWithNoTests": true
-          }
-        }
-      }
-    },
     "api-business-contacts": {
       "root": "libs/api/business-contacts",
       "sourceRoot": "libs/api/business-contacts/src",
@@ -130,6 +109,27 @@
           "outputs": ["coverage/libs/api/business-contacts"],
           "options": {
             "jestConfig": "libs/api/business-contacts/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "api-dashboards": {
+      "root": "libs/api/dashboards",
+      "sourceRoot": "libs/api/dashboards/src",
+      "projectType": "library",
+      "targets": {
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["libs/api/dashboards/**/*.ts"]
+          }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/api/dashboards"],
+          "options": {
+            "jestConfig": "libs/api/dashboards/jest.config.js",
             "passWithNoTests": true
           }
         }
@@ -795,6 +795,27 @@
           "outputs": ["coverage/libs/site/not-found"],
           "options": {
             "jestConfig": "libs/site/not-found/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "site-places": {
+      "root": "libs/site/places",
+      "sourceRoot": "libs/site/places/src",
+      "projectType": "library",
+      "targets": {
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["libs/site/places/**/*.{ts,tsx,js,jsx}"]
+          }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/site/places"],
+          "options": {
+            "jestConfig": "libs/site/places/jest.config.js",
             "passWithNoTests": true
           }
         }

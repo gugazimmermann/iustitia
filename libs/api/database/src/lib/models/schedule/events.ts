@@ -9,7 +9,7 @@ interface EventsAttributes {
   title: string;
   description: string;
   userId: string;
-  officeId: string;
+  placeId: string;
   tenantId: string;
 }
 
@@ -17,7 +17,7 @@ type EventsCreationAttributes = Optional<EventsAttributes,
   'id' |
   'description' |
   'userId' |
-  'officeId'
+  'placeId'
 >
 
 export interface EventsInstance
@@ -45,7 +45,7 @@ export default function events(sequelize: Sequelize) {
     title: { type: DataTypes.TEXT, allowNull: true },
     description: { type: DataTypes.TEXT, allowNull: true },
     userId: { type: DataTypes.UUID, allowNull: true },
-    officeId: { type: DataTypes.UUID, allowNull: true },
+    placeId: { type: DataTypes.UUID, allowNull: true },
     tenantId: { type: DataTypes.UUID, allowNull: true },
   }, {
     paranoid: true,

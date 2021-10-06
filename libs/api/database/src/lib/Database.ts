@@ -77,10 +77,10 @@ database.Users.hasMany(database.Payments);
 
 database.Users.hasOne(database.Profiles);
 
-database.Users.belongsToMany(database.Places, { as: 'officeManagers', through: { model: "office_managers" } });
-database.Places.belongsToMany(database.Users, { as: 'managersOffice', through: { model: "office_managers" } });
-database.Users.belongsToMany(database.Places, { as: 'officeUsers', through: { model: "office_users" } });
-database.Places.belongsToMany(database.Users, { as: 'usersOffice', through: { model: "office_users" } });
+database.Users.belongsToMany(database.Places, { as: 'placeManagers', through: { model: "place_managers" } });
+database.Places.belongsToMany(database.Users, { as: 'managersPlace', through: { model: "place_managers" } });
+database.Users.belongsToMany(database.Places, { as: 'placeUsers', through: { model: "place_users" } });
+database.Places.belongsToMany(database.Users, { as: 'usersPlace', through: { model: "place_users" } });
 
 database.Users.hasMany(database.Persons);
 database.Places.hasMany(database.Persons);

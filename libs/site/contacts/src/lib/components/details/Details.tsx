@@ -13,7 +13,7 @@ import {
   AlertInterface,
 } from "@iustitia/site/shared-components";
 import { SiteRoutes } from "@iustitia/react-routes";
-import { ContactInterface, OfficeInterface, NoteInterface, AttachmentInterface } from "../../Contacts";
+import { ContactInterface, PlaceInterface, NoteInterface, AttachmentInterface } from "../../Contacts";
 import {
   NoteServices,
   AttchmentServices
@@ -21,11 +21,11 @@ import {
 
 export interface DetailsProps {
   data: ContactInterface;
-  offices?: OfficeInterface[];
+  places?: PlaceInterface[];
   edit(): void;
 }
 
-export function Details({ data, offices, edit }: DetailsProps) {
+export function Details({ data, places, edit }: DetailsProps) {
   const [loading, setLoading] = useState(false);
   const [showAlert, setShowAlert] = useState<AlertInterface>({
     show: false,
@@ -258,7 +258,7 @@ export function Details({ data, offices, edit }: DetailsProps) {
             <p className="col-span-9">
               {data.userId && `Pessoal`}
               {data.officeId &&
-                offices?.find((o) => o.id === data.officeId)?.name}
+                places?.find((o) => o.id === data.officeId)?.name}
               {!data.userId && !data.officeId && `Geral`}
             </p>
           </div>

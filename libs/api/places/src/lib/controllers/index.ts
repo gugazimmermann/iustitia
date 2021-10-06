@@ -40,8 +40,8 @@ export interface PlacesInterface {
   state?: string;
   active?: boolean;
   tenantId?: string;
-  managersOffice?: ProfilesListInterface[];
-  usersOffice?: ProfilesListInterface[];
+  managersPlace?: ProfilesListInterface[];
+  usersPlace?: ProfilesListInterface[];
 }
 
 function dataToResult(data: PlacesInstance): PlacesInterface {
@@ -58,18 +58,18 @@ function dataToResult(data: PlacesInstance): PlacesInterface {
     city: data.city,
     state: data.state,
     active: data.active,
-    managersOffice: (data.managersOffice) && data.managersOffice.map(m => userDataToResult(m)),
-    usersOffice: (data.usersOffice) && data.usersOffice.map(u => userDataToResult(u))
+    managersPlace: (data.managersPlace) && data.managersPlace.map(m => userDataToResult(m)),
+    usersPlace: (data.usersPlace) && data.usersPlace.map(u => userDataToResult(u))
   }
 }
 
-async function findOfficeById(id: string): Promise<PlacesInstance | Error | null> {
+async function findPlaceById(id: string): Promise<PlacesInstance | Error | null> {
   try {
     return await database.Places.findOne({
       where: { id },
       include: [
         {
-          association: "managersOffice",
+          association: "managersPlace",
           attributes: ['id'],
           where: { active: true },
           required: false,
@@ -81,7 +81,7 @@ async function findOfficeById(id: string): Promise<PlacesInstance | Error | null
           ],
         },
         {
-          association: "usersOffice",
+          association: "usersPlace",
           attributes: ['id'],
           where: { active: true },
           required: false,
@@ -111,7 +111,7 @@ export async function getAll(req, res): Promise<Response> {
       include: [
 
         {
-          association: "managersOffice",
+          association: "managersPlace",
           as: "managers",
           attributes: ['id'],
           where: { active: true },
@@ -124,7 +124,7 @@ export async function getAll(req, res): Promise<Response> {
           ],
         },
         {
-          association: "usersOffice",
+          association: "usersPlace",
           as: "users",
           attributes: ['id'],
           where: { active: true },
@@ -152,7 +152,7 @@ export async function getOne(req, res): Promise<Response> {
   try {
     const user = await database.Users.findOne({ where: { id: req.userId } });
     if (!user || user.tenant !== tenantId) return res.status(401).send({ message: "Sem permissão!" });
-    const data = await findOfficeById(id)
+    const data = await findPlaceById(id)
     return res.status(200).send(dataToResult(data as PlacesInstance));
   } catch (err) {
     return res.status(500).send({ message: err.message });
@@ -207,7 +207,7 @@ export async function count(req, res): Promise<Response> {
     const user = await database.Users.findOne({ where: { id: req.userId } });
     if (!user || user.tenant !== tenantId) return res.status(401).send({ message: "Sem permissão!" });
     const data = await database.Places.count({ where: { tenantId } });
-    return res.status(200).send({ offices: data });
+    return res.status(200).send({ places: data });
   } catch (err) {
     return res.status(500).send({ message: err.message });
   }
@@ -217,16 +217,16 @@ export async function active(req, res): Promise<Response> {
   const { tenantId } = req.params;
   if (!tenantId) return res.status(400).send({ message: "Dados inválidos!" });
   const { body } = req;
-  if (!body.officeId || typeof body.active !== "boolean") return res.status(400).send({ message: "Dados inválidos!" });
+  if (!body.placeId || typeof body.active !== "boolean") return res.status(400).send({ message: "Dados inválidos!" });
   const user = await database.Users.findOne({ where: { id: req.userId } });
   if (!user || user.tenant !== tenantId) return res.status(401).send({ message: "Sem permissão!" });
   try {
-    const data = await database.Places.findByPk(body.officeId);
+    const data = await database.Places.findByPk(body.placeId);
     if (!data) return res.status(404).send({ message: "Nenhum registro encontrado!" });
     data.active = body.active;
     await data.update(body);
-    const savedOffice = (await findOfficeById(data.id as string)) as PlacesInstance;
-    return res.status(200).send(dataToResult(savedOffice));
+    const savedPlace = (await findPlaceById(data.id as string)) as PlacesInstance;
+    return res.status(200).send(dataToResult(savedPlace));
   } catch (err) {
     return res.status(500).send({ message: err.message });
   }
@@ -236,20 +236,20 @@ export async function managers(req, res): Promise<Response> {
   const { tenantId } = req.params;
   if (!tenantId) return res.status(400).send({ message: "Dados inválidos!" });
   const { body } = req;
-  if (!body.officeId || !body.managersList) return res.status(400).send({ message: "Dados inválidos!" });
+  if (!body.placeId || !body.managersList) return res.status(400).send({ message: "Dados inválidos!" });
   const user = await database.Users.findOne({ where: { id: req.userId } });
   if (!user || user.tenant !== tenantId) return res.status(401).send({ message: "Sem permissão!" });
   try {
-    const office = (await findOfficeById(body.officeId as string)) as PlacesInstance;
-    if (!office) return res.status(404).send({ message: "Nenhum registro encontrado!" });
-    if (office.managersOffice) {
-      const exintingIds: string[] = office.managersOffice.map((m) => m.id)
-      if (office.removeManagersOffice) await office.removeManagersOffice(exintingIds);
+    const place = (await findPlaceById(body.placeId as string)) as PlacesInstance;
+    if (!place) return res.status(404).send({ message: "Nenhum registro encontrado!" });
+    if (place.managersPlace) {
+      const exintingIds: string[] = place.managersPlace.map((m) => m.id)
+      if (place.removeManagersPlace) await place.removeManagersPlace(exintingIds);
     }
     const userIds: string[] = body.managersList.map((m: ProfilesListInterface) => m.id)
-    if (userIds && office.addManagersOffice) await office.addManagersOffice(userIds)
-    const savedOffice = (await findOfficeById(office.id as string)) as PlacesInstance;
-    return res.status(200).send(dataToResult(savedOffice));
+    if (userIds && place.addManagersPlace) await place.addManagersPlace(userIds)
+    const savedPlace = (await findPlaceById(place.id as string)) as PlacesInstance;
+    return res.status(200).send(dataToResult(savedPlace));
   } catch (err) {
     return res.status(500).send({ message: err.message });
   }
@@ -259,20 +259,20 @@ export async function users(req, res): Promise<Response> {
   const { tenantId } = req.params;
   if (!tenantId) return res.status(400).send({ message: "Dados inválidos!" });
   const { body } = req;
-  if (!body.officeId || !body.usersList) return res.status(400).send({ message: "Dados inválidos!" });
+  if (!body.placeId || !body.usersList) return res.status(400).send({ message: "Dados inválidos!" });
   const user = await database.Users.findOne({ where: { id: req.userId } });
   if (!user || user.tenant !== tenantId) return res.status(401).send({ message: "Sem permissão!" });
   try {
-    const office = (await findOfficeById(body.officeId as string)) as PlacesInstance;
-    if (!office) return res.status(404).send({ message: "Nenhum registro encontrado!" });
-    if (office.usersOffice) {
-      const exintingIds: string[] = office.usersOffice.map((u) => u.id)
-      if (office.removeUsersOffice) await office.removeUsersOffice(exintingIds);
+    const place = (await findPlaceById(body.placeId as string)) as PlacesInstance;
+    if (!place) return res.status(404).send({ message: "Nenhum registro encontrado!" });
+    if (place.usersPlace) {
+      const exintingIds: string[] = place.usersPlace.map((u) => u.id)
+      if (place.removeUsersPlace) await place.removeUsersPlace(exintingIds);
     }
     const userIds: string[] = body.usersList.map((u: ProfilesListInterface) => u.id)
-    if (userIds && office.addUsersOffice) await office.addUsersOffice(userIds)
-    const savedOffice = (await findOfficeById(office.id as string)) as PlacesInstance;
-    return res.status(200).send(dataToResult(savedOffice));
+    if (userIds && place.addUsersPlace) await place.addUsersPlace(userIds)
+    const savedPlace = (await findPlaceById(place.id as string)) as PlacesInstance;
+    return res.status(200).send(dataToResult(savedPlace));
   } catch (err) {
     return res.status(500).send({ message: err.message });
   }

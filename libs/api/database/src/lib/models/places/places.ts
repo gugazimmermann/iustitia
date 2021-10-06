@@ -25,16 +25,16 @@ export interface PlacesInstance
   createdAt?: Date;
   updatedAt?: Date;
   deletedAt?: Date;
-  managersOffice?: UsersInstance[];
-  usersOffice?: UsersInstance[];
+  managersPlace?: UsersInstance[];
+  usersPlace?: UsersInstance[];
 
-  getManagersOffice?: HasManyGetAssociationsMixin<UsersInstance>;
-  addManagersOffice?: HasManyAddAssociationsMixin<UsersInstance, string>;
-  removeManagersOffice?: HasManyRemoveAssociationsMixin<UsersInstance, string>;
+  getManagersPlace?: HasManyGetAssociationsMixin<UsersInstance>;
+  addManagersPlace?: HasManyAddAssociationsMixin<UsersInstance, string>;
+  removeManagersPlace?: HasManyRemoveAssociationsMixin<UsersInstance, string>;
 
-  getUsersOffice?: HasManyGetAssociationsMixin<UsersInstance>;
-  addUsersOffice?: HasManyAddAssociationsMixin<UsersInstance, string>;
-  removeUsersOffice?: HasManyRemoveAssociationsMixin<UsersInstance, string>;
+  getUsersPlace?: HasManyGetAssociationsMixin<UsersInstance>;
+  addUsersPlace?: HasManyAddAssociationsMixin<UsersInstance, string>;
+  removeUsersPlace?: HasManyRemoveAssociationsMixin<UsersInstance, string>;
 }
 
 export default function places(sequelize: Sequelize) {

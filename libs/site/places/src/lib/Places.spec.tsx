@@ -1,10 +1,10 @@
 import { render } from "@testing-library/react";
 
-import Offices from "./Offices";
+import SitePlaces from "./SitePlaces";
 
-describe("Offices", () => {
+describe("SitePlaces", () => {
   it("should render successfully", () => {
-    const { baseElement } = render(<Offices />);
+    const { baseElement } = render(<SitePlaces />);
     expect(baseElement).toBeTruthy();
   });
 });

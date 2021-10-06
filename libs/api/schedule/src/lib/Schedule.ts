@@ -5,7 +5,7 @@ import { createEvent, deleteOneEvent, getAllEvents, getOneEvent, updateEvent } f
 
 export function Schedule(app: Express) {
   app.get(`/api/${ModulesEnum.schedule}/events/:tenantId`, [verifyToken], getAllEvents);
-  app.get(`/api/${ModulesEnum.schedule}/events/:tenantId/office/:officeid`, [verifyToken], getAllEvents);
+  app.get(`/api/${ModulesEnum.schedule}/events/:tenantId/place/:placeid`, [verifyToken], getAllEvents);
   app.get(`/api/${ModulesEnum.schedule}/events/:tenantId/:id`, [verifyToken], getOneEvent);
   app.post(`/api/${ModulesEnum.schedule}/events`, [verifyToken], createEvent);
   app.put(`/api/${ModulesEnum.schedule}/events`, [verifyToken], updateEvent);

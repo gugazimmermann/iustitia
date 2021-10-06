@@ -36,10 +36,10 @@
     "api-auth": {
       "tags": []
     },
-    "api-dashboards": {
+    "api-business-contacts": {
       "tags": []
     },
-    "api-business-contacts": {
+    "api-dashboards": {
       "tags": []
     },
     "api-database": {
@@ -120,6 +120,9 @@
       "tags": []
     },
     "site-not-found": {
+      "tags": []
+    },
+    "site-places": {
       "tags": []
     },
     "site-profiles": {

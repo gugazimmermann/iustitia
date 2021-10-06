@@ -18,7 +18,7 @@ interface PersonsAttributes {
   position: string;
   companyId: string;
   userId: string;
-  officeId: string;
+  placeId: string;
   tenantId: string;
 }
 
@@ -38,7 +38,7 @@ type PersonsCreationAttributes = Optional<PersonsAttributes,
   'position' |
   'companyId' |
   'userId' |
-  'officeId'
+  'placeId'
 >
 
 export interface PersonsInstance
@@ -75,7 +75,7 @@ export default function persons(sequelize: Sequelize) {
     position: { type: DataTypes.TEXT, allowNull: true },
     companyId: { type: DataTypes.UUID, allowNull: true },
     userId: { type: DataTypes.UUID, allowNull: true },
-    officeId: { type: DataTypes.UUID, allowNull: true },
+    placeId: { type: DataTypes.UUID, allowNull: true },
     tenantId: { type: DataTypes.UUID, allowNull: true },
   }, {
     paranoid: true,

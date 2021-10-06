@@ -6,12 +6,12 @@ type ProfilesType = ProfilesServices.ProfilesRes;
 
 interface MenuProps {
   profile: ProfilesType;
-  offices: number;
+  places: number;
   setMenuOpen(menuOpen: boolean): void;
   menuOpen: boolean;
 }
 
-export function Menu({ profile, offices, setMenuOpen, menuOpen }: MenuProps) {
+export function Menu({ profile, places, setMenuOpen, menuOpen }: MenuProps) {
   return (
     <aside
       className={`flex-shrink-0 w-64 bg-white ${
@@ -26,7 +26,7 @@ export function Menu({ profile, offices, setMenuOpen, menuOpen }: MenuProps) {
             if (item.name === "Escritórios") {
               return <MenuItem key={i} item={item} />;
             }
-            if (item.name !== "Escritórios" && profile.zip && offices) {
+            if (item.name !== "Escritórios" && profile.zip && places) {
               return <MenuItem key={i} item={item} />;
             }
             return null;

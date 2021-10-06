@@ -1,5 +1,5 @@
 import { ModulesEnum } from "@iustitia/modules";
-import { PlacesInterface } from "@iustitia/api/places";
+import { PlacesInterface, ProfilesListInterface } from "@iustitia/api/places";
 import { MembersSimpleInterface } from "@iustitia/api/members";
 import { errorHandler } from "@iustitia/site/shared-utils";
 import api from "../api";
@@ -7,19 +7,20 @@ import token from "../auth/token";
 import { ApiIdReq, ApiMessageRes } from "../interfaces";
 
 export type PlacesRes = PlacesInterface;
+export type ProfilesListRes = ProfilesListInterface;
 
 export interface PlacesActiveReq {
   active: boolean;
-  officeId: string;
+  placeId: string;
 }
 
 export interface PlacesManagerRes {
-  officeId: string;
+  placeId: string;
   managersList: MembersSimpleInterface[];
 }
 
 export interface PlacesUsersRes {
-  officeId: string;
+  placeId: string;
   usersList: MembersSimpleInterface[];
 }
 
@@ -78,36 +79,36 @@ export async function count(): Promise<number | Error> {
   try {
     const tenantId = token.getLocalTenantId();
     const { data } = await api.get(`/api/${ModulesEnum.places}/count/${tenantId}`);
-    return data.offices;
+    return data.places;
   } catch (err) {
     return errorHandler(err)
   }
 };
 
-export async function active({ active, officeId }: PlacesActiveReq): Promise<PlacesRes | Error> {
+export async function active({ active, placeId }: PlacesActiveReq): Promise<PlacesRes | Error> {
   try {
     const tenantId = token.getLocalTenantId();
-    const { data } = await api.post(`/api/${ModulesEnum.places}/active/${tenantId}`, { active, officeId });
+    const { data } = await api.post(`/api/${ModulesEnum.places}/active/${tenantId}`, { active, placeId });
     return data
   } catch (err) {
     return errorHandler(err)
   }
 };
 
-export async function managers({ officeId, managersList }: PlacesManagerRes): Promise<PlacesRes | Error> {
+export async function managers({ placeId, managersList }: PlacesManagerRes): Promise<PlacesRes | Error> {
   try {
     const tenantId = token.getLocalTenantId();
-    const { data } = await api.post(`/api/${ModulesEnum.places}/managers/${tenantId}`, { officeId, managersList });
+    const { data } = await api.post(`/api/${ModulesEnum.places}/managers/${tenantId}`, { placeId, managersList });
     return data
   } catch (err) {
     return errorHandler(err)
   }
 };
 
-export async function users({ officeId, usersList }: PlacesUsersRes): Promise<PlacesRes | Error> {
+export async function users({ placeId, usersList }: PlacesUsersRes): Promise<PlacesRes | Error> {
   try {
     const tenantId = token.getLocalTenantId();
-    const { data } = await api.post(`/api/${ModulesEnum.places}/users/${tenantId}`, { officeId, usersList });
+    const { data } = await api.post(`/api/${ModulesEnum.places}/users/${tenantId}`, { placeId, usersList });
     return data
   } catch (err) {
     return errorHandler(err)

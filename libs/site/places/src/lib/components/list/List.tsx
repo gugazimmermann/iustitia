@@ -7,11 +7,17 @@ import {
   ShowAvatars,
 } from "@iustitia/site/shared-components";
 import { WARNING_TYPES } from "@iustitia/site/shared-utils";
-import { ProfileServices } from "@iustitia/site/services";
-import { convertProfileToSimpleProfile, OfficeInterface, OfficeModule } from "../../Offices";
+import { GetModule, GetRoutes, ModulesEnum, ModulesInterface, PlacesRoutesInterface } from "@iustitia/modules";
+import { convertProfileToSimpleProfile } from "@iustitia/site/places";
+import { PlacesServices } from "@iustitia/site/services";
+
+const placesModule = GetModule(ModulesEnum.places) as ModulesInterface;
+const placesRoutes = GetRoutes(ModulesEnum.places) as PlacesRoutesInterface;
+type PlacesType = PlacesServices.PlacesRes;
+type ProfilesListType = PlacesServices.ProfilesListRes;
 
 export interface ListProps {
-  dataList: OfficeInterface[];
+  dataList: PlacesType[];
   sort: string;
   setSort(order: "ASC" | "DESC"): void;
 }
@@ -32,7 +38,7 @@ export function List({
   ];
 
   return dataList.length === 0 ? (
-    <Callout title={`Nenhum ${OfficeModule.singular}Cadastrado`} type={WARNING_TYPES.INFO} />
+    <Callout title={`Nenhum ${placesModule.singular}Cadastrado`} type={WARNING_TYPES.INFO} />
   ) : (
     <div className=" overflow-x-auto">
       <table className="w-full table">
@@ -43,7 +49,7 @@ export function List({
               <tr
                 key={i}
                 className="border-b border-gray-200 hover:bg-gray-100 cursor-pointer"
-                onClick={() => history.push(`${OfficeModule.route}/${data.id}`)}
+                onClick={() => history.push(`${placesRoutes.details}/${data.id}`)}
               >
                 <td className="py-3 px-3 text-left whitespace-nowrap">
                   <span className="font-medium">{data.name}</span>
@@ -57,7 +63,7 @@ export function List({
                   <div className="flex items-center justify-start">
                     {
                       <ShowAvatars
-                      toShow={convertProfileToSimpleProfile(data.managersOffice as ProfileServices.ProfileInterface[])}
+                      toShow={convertProfileToSimpleProfile(data.managersPlace as ProfilesListType[])}
                         qtd={8}
                         smallQtd={3}
                       />
@@ -68,7 +74,7 @@ export function List({
                   <div className="flex items-center justify-start">
                     {
                       <ShowAvatars
-                      toShow={convertProfileToSimpleProfile(data.usersOffice as ProfileServices.ProfileInterface[])}
+                      toShow={convertProfileToSimpleProfile(data.usersPlace as ProfilesListType[])}
                         qtd={8}
                         smallQtd={3}
                       />
@@ -76,7 +82,7 @@ export function List({
                   </div>
                 </td>
                 <td className="text-center hidden sm:table-cell">
-                  <ActiveBadge status={data.active} />
+                  <ActiveBadge status={data.active as boolean} />
                 </td>
               </tr>
             ))}

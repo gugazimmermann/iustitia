@@ -13,13 +13,13 @@ import {
   LoadingButton,
   UploadCloudIcon,
 } from "@iustitia/site/shared-components";
-import { CompanyInterface, ContactInterface, OfficeInterface, singular } from "../../Contacts";
+import { CompanyInterface, ContactInterface, PlaceInterface, singular } from "../../Contacts";
 
 
 export interface FormProps {
   loading: boolean;
   data?: ContactInterface;
-  offices?: OfficeInterface[];
+  places?: PlaceInterface[];
   companies?: CompanyInterface[];
   create?(data: FormData): void;
   update?(data: FormData): void;
@@ -29,7 +29,7 @@ const schema = yup.object().shape({
   name: yup.string().required(),
 });
 
-export function Form({ loading, data, offices, companies, create, update }: FormProps) {
+export function Form({ loading, data, places, companies, create, update }: FormProps) {
   const defaultValues: ContactInterface = {
     type: "Personal",
     name: data?.name || "",
@@ -202,8 +202,8 @@ export function Form({ loading, data, offices, companies, create, update }: Form
             >
               <option value={"All"}>Geral</option>
               <option value={"Personal"}>Pessoal</option>
-              {offices &&
-                offices.map((o, i) => (
+              {places &&
+                places.map((o, i) => (
                   <option key={i} value={o.id}>
                     {o.name}
                   </option>

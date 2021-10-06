@@ -10,7 +10,7 @@ export interface EventsInterface {
   title?: string;
   description?: string;
   userId?: string;
-  officeId?: string;
+  placeId?: string;
   tenantId?: string;
 }
 
@@ -41,13 +41,13 @@ export async function getOneEvent(req, res): Promise<Response> {
 }
 
 export async function getAllEvents(req, res): Promise<Response> {
-  const { tenantId, officeId } = req.params;
+  const { tenantId, placeId } = req.params;
   if (!tenantId) return res.status(400).send({ message: "Dados inválidos!" });
   try {
     const user = await database.Users.findOne({ where: { id: req.userId } });
     if (!user || user.tenant !== tenantId) return res.status(401).send({ message: "Sem permissão!" });
     let data: EventsInstance[] = [];
-    const where = !officeId ? { where: { userId: user.id } } : { where: { officeId: officeId } }
+    const where = !placeId ? { where: { userId: user.id } } : { where: { placeId: placeId } }
     data = await database.Events.findAll(where);
     const resultData = [] as EventsInterface[];
     if (data.length > 0) data.forEach(d => resultData.push(dataToEventsResult(d)));
