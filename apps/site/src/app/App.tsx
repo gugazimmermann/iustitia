@@ -4,6 +4,7 @@ import {
   AuthRoutesInterface,
   DashboardsRoutesInterface,
   GetRoutes,
+  MembersRoutesInterface,
   ModulesEnum,
   PlacesRoutesInterface,
   ProfilesRoutesInterface,
@@ -22,18 +23,14 @@ import { Layout } from "@iustitia/site/layout";
 import { Dashboards } from "@iustitia/site/dashboards";
 import { Profiles } from "@iustitia/site/profiles";
 import { Places } from "@iustitia/site/places";
+import { Members } from "@iustitia/site/members";
 import { NotFound } from "@iustitia/site/not-found";
 
 const authRoutes = GetRoutes(ModulesEnum.auth) as AuthRoutesInterface;
-const dashboardsRoutes = GetRoutes(
-  ModulesEnum.dashboards
-) as DashboardsRoutesInterface;
-const profilesRoutes = GetRoutes(
-  ModulesEnum.profiles
-) as ProfilesRoutesInterface;
-const placesRoutes = GetRoutes(
-  ModulesEnum.places
-) as PlacesRoutesInterface;
+const dashboardsRoutes = GetRoutes(ModulesEnum.dashboards) as DashboardsRoutesInterface;
+const profilesRoutes = GetRoutes(ModulesEnum.profiles) as ProfilesRoutesInterface;
+const placesRoutes = GetRoutes(ModulesEnum.places) as PlacesRoutesInterface;
+const membersRoutes = GetRoutes(ModulesEnum.members) as MembersRoutesInterface;
 
 export const App = () => {
   return (
@@ -53,7 +50,7 @@ export const App = () => {
           <ForgotPassword />
         </AuthLayout>
       </PublicRoute>
-      <PublicRoute exact path={authRoutes.changePassword}>
+      <PublicRoute exact path={`${authRoutes.changePassword}/:urlcode?`}>
         <AuthLayout>
           <ChangePassword />
         </AuthLayout>
@@ -80,12 +77,12 @@ export const App = () => {
         </Layout>
       </ProtectedRoute>
 
-      <ProtectedRoute exact path={dashboardsRoutes.places}>
+      <ProtectedRoute exact path={`${dashboardsRoutes.places}/:id?`}>
         <Layout>
           <Dashboards />
         </Layout>
       </ProtectedRoute>
-      <ProtectedRoute exact path={dashboardsRoutes.process}>
+      <ProtectedRoute exact path={`${dashboardsRoutes.process}/:id?`}>
         <Layout>
           <Dashboards />
         </Layout>
@@ -102,22 +99,42 @@ export const App = () => {
           <Places />
         </Layout>
       </ProtectedRoute>
-      <ProtectedRoute exact path={placesRoutes.details}>
+      <ProtectedRoute exact path={`${placesRoutes.details}/:id`}>
         <Layout>
           <Places />
         </Layout>
       </ProtectedRoute>
-      <ProtectedRoute exact path={placesRoutes.add}>
+      <ProtectedRoute exact path={`${placesRoutes.add}/:id`}>
         <Layout>
           <Places />
         </Layout>
       </ProtectedRoute>
-      <ProtectedRoute exact path={placesRoutes.update}>
+      <ProtectedRoute exact path={`${placesRoutes.update}/:id`}>
         <Layout>
           <Places />
         </Layout>
       </ProtectedRoute>
 
+      <ProtectedRoute exact path={membersRoutes.list}>
+        <Layout>
+          <Members />
+        </Layout>
+      </ProtectedRoute>
+      <ProtectedRoute exact path={`${membersRoutes.details}/:id`}>
+        <Layout>
+          <Members />
+        </Layout>
+      </ProtectedRoute>
+      <ProtectedRoute exact path={`${membersRoutes.add}/:id`}>
+        <Layout>
+          <Members />
+        </Layout>
+      </ProtectedRoute>
+      <ProtectedRoute exact path={`${membersRoutes.update}/:id`}>
+        <Layout>
+          <Members />
+        </Layout>
+      </ProtectedRoute>
 
       <Route path="*">
         <NotFound />

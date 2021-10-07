@@ -9,7 +9,7 @@ export const Modules: ModulesInterface[] = [
     routes: {
       signIn: "/entrar",
       forgotPassword: "/esqueceu-senha",
-      changePassword: "/mudar-senha/:urlcode?",
+      changePassword: "/mudar-senha",
       signUp: "/cadastrar",
       plans: "/planos",
       subscription: "/assinar",
@@ -22,8 +22,8 @@ export const Modules: ModulesInterface[] = [
     plural: "Relatórios",
     routes: {
       dashboards: "/relatorios",
-      places: "/relatorios/escritorios/:id?",
-      process: "/relatorios/processos/:id?",
+      places: "/relatorios/escritorios",
+      process: "/relatorios/processos",
     },
     menu: [
       {
@@ -67,8 +67,8 @@ export const Modules: ModulesInterface[] = [
     routes: {
       list: "/escritorios",
       add: "/escritorios/adicionar",
-      update: "/escritorios/alterar/:id",
-      details: "/escritorios/:id?",
+      update: "/escritorios/alterar",
+      details: "/escritorios",
     },
     menu: [
       {

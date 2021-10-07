@@ -5,7 +5,7 @@ type MembersSimpleType = MembersServices.MembersSimpleRes;
 
 export interface AvatarModalProps {
   title: string;
-  peopleList: MembersSimpleType[];
+  membersList: MembersSimpleType[];
   currentList: MembersSimpleType[];
   handleSelect(p: MembersSimpleType): void;
   cancel(): void;
@@ -17,7 +17,7 @@ export interface AvatarModalProps {
 
 export function AvatarModal({
   title,
-  peopleList,
+  membersList,
   currentList,
   handleSelect,
   cancel,
@@ -39,7 +39,7 @@ export function AvatarModal({
           <div className="flex flex-col mx-auto ">
             <AvatarModalContent
               title={title}
-              peopleList={peopleList}
+              membersList={membersList}
               currentList={currentList}
               handleSelect={handleSelect}
             />

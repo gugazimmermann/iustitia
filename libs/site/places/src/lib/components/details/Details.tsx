@@ -10,8 +10,8 @@ import {
 } from "@iustitia/site/shared-components";
 import { WARNING_TYPES } from "@iustitia/site/shared-utils";
 import { GetModule, ModulesEnum, ModulesInterface, GetRoutes, PlacesRoutesInterface, DashboardsRoutesInterface } from "@iustitia/modules";
-import { convertProfileToSimpleProfile } from "@iustitia/site/places";
 import { PlacesServices, MembersServices } from "@iustitia/site/services";
+import { convertProfileToSimpleProfile } from "../../Places";
 
 const placesModule = GetModule(ModulesEnum.places) as ModulesInterface;
 const placesRoutes = GetRoutes(ModulesEnum.places) as PlacesRoutesInterface;
@@ -40,7 +40,7 @@ export function Details({
 }: DetailsProps) {
   const history = useHistory();
   const [confirmInative, setConfirmInative] = useState(false);
-  const [peopleList, setPeopleList] = useState<MembersSimpleType[]>([]);
+  const [membersList, setMembersList] = useState<MembersSimpleType[]>([]);
   const [showManagersModal, setShowManagersModal] = useState(false);
   const [selectedManagers, setSelectedManagers] = useState<
     MembersSimpleType[]
@@ -71,15 +71,15 @@ export function Details({
   }
 
   useEffect(() => {
-    getListOfPeople();
+    getListOfMembers();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  async function getListOfPeople() {
+  async function getListOfMembers() {
     setLoading(true);
     try {
       const res = (await MembersServices.getAll()) as MembersSimpleType[];
-      setPeopleList(res);
+      setMembersList(res);
       setLoading(false);
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
@@ -329,7 +329,7 @@ export function Details({
       {showManagersModal && (
         <AvatarModal
           title="Selecione os Responsáveis"
-          peopleList={peopleList}
+          membersList={membersList}
           currentList={selectedManagers}
           handleSelect={handleSelectManager}
           cancel={handleModalCancelManagers}
@@ -342,7 +342,7 @@ export function Details({
       {showUsersModal && (
         <AvatarModal
           title="Selecione os Usuários"
-          peopleList={peopleList}
+          membersList={membersList}
           currentList={selectedUsers}
           handleSelect={handleSelectUser}
           cancel={handleModalCancelUsers}

@@ -48,6 +48,7 @@
       "@iustitia/site/dashboards": ["libs/site/dashboards/src/index.ts"],
       "@iustitia/site/icons": ["libs/site/icons/src/index.ts"],
       "@iustitia/site/layout": ["libs/site/layout/src/index.ts"],
+      "@iustitia/site/members": ["libs/site/members/src/index.ts"],
       "@iustitia/site/not-found": ["libs/site/not-found/src/index.ts"],
       "@iustitia/site/places": ["libs/site/places/src/index.ts"],
       "@iustitia/site/profiles": ["libs/site/profiles/src/index.ts"],

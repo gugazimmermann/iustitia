@@ -7,14 +7,14 @@ type MembersSimpleType = MembersServices.MembersSimpleRes;
 
 export interface AvatarModalContentProps {
   title: string;
-  peopleList: MembersSimpleType[];
+  membersList: MembersSimpleType[];
   currentList: MembersSimpleType[];
   handleSelect(p: MembersSimpleType): void;
 }
 
 export function AvatarModalContent({
   title,
-  peopleList,
+  membersList,
   currentList,
   handleSelect,
 }: AvatarModalContentProps) {
@@ -41,7 +41,7 @@ export function AvatarModalContent({
             </button>
             {listOpen && (
               <AvatarModalContentList
-                peopleList={peopleList}
+                membersList={membersList}
                 currentList={currentList}
                 handleSelect={handleSelect}
                 open={listOpen}

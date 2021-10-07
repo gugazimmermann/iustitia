@@ -10,19 +10,31 @@ import {
   SearchField,
 } from "@iustitia/site/shared-components";
 import { Sort, WARNING_TYPES } from "@iustitia/site/shared-utils";
-import { PeopleServices } from "@iustitia/site/services";
-import { ProfileServices } from "@iustitia/site/services";
 import { List, Form, ListInvites } from "./components";
+import {
+  GetModule,
+  ModulesEnum,
+  ModulesInterface,
+  GetRoutes,
+  MembersRoutesInterface,
+} from "@iustitia/modules";
+import {
+  ProfilesServices,
+  MembersServices,
+} from "@iustitia/site/services";
 
-export const PeopleModule = PeopleServices.PeopleModule;
-export type PeopleInterface = PeopleServices.PeopleInterface;
-export type SimpleUserInterface = PeopleServices.SimpleUserInterface;
+const membersModule = GetModule(ModulesEnum.members) as ModulesInterface;
+const membersRoutes = GetRoutes(ModulesEnum.members) as MembersRoutesInterface;
 
-interface PeopleProps {
-  profile?: ProfileServices.ProfileInterface;
+type MembersType = MembersServices.MembersRes;
+type MembersSimpleType = MembersServices.MembersSimpleRes;
+type ProfilesType = ProfilesServices.ProfilesRes;
+
+interface MembersProps {
+  profile?: ProfilesType;
 }
 
-export function People({ profile }: PeopleProps) {
+export function Members({ profile }: MembersProps) {
   const history = useHistory();
   const { pathname } = useLocation();
   const { id } = useParams<{ id: string }>();
@@ -34,13 +46,13 @@ export function People({ profile }: PeopleProps) {
     time: 3000,
   });
   const [whatToShow, setWhatToShow] = useState<"list" | "create">();
-  const [dataList, setDataList] = useState([] as SimpleUserInterface[]);
-  const [dataListInvite, setDataListInvite] = useState([] as PeopleInterface[]);
-  const [showDataList, setShowDataList] = useState([] as SimpleUserInterface[]);
+  const [dataList, setDataList] = useState([] as MembersSimpleType[]);
+  const [dataListInvite, setDataListInvite] = useState([] as MembersType[]);
+  const [showDataList, setShowDataList] = useState([] as MembersSimpleType[]);
   const [searchParam, setSearchParam] = useState<string>();
   const [sort, setSort] = useState<"ASC" | "DESC">("ASC");
 
-  const [selectedInvite, setSelectedInvite] = useState({} as PeopleInterface);
+  const [selectedInvite, setSelectedInvite] = useState({} as MembersType);
   const [sendInviteConfirm, setSendInviteConfirm] = useState(false);
   const [deleteInviteConfirm, setDeleteInviteConfirm] = useState(false);
 
@@ -62,12 +74,11 @@ export function People({ profile }: PeopleProps) {
   async function getDataList() {
     setLoading(true);
     try {
-      const data = (await PeopleServices.getAll()) as SimpleUserInterface[];
+      const data = (await MembersServices.getAll()) as MembersSimpleType[];
       setDataList(data);
       const sortedData = Sort(data.slice(0), sort);
       setShowDataList(sortedData);
-      const datainvites =
-        (await PeopleServices.getInvites()) as SimpleUserInterface[];
+      const datainvites = (await MembersServices.getInvites()) as MembersType[];
       setDataListInvite(datainvites);
       setLoading(false);
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -104,17 +115,17 @@ export function People({ profile }: PeopleProps) {
   async function handleCreateInvite(data: { name: string; email: string }) {
     setLoading(true);
     try {
-      const newInvite = (await PeopleServices.createInvite(
-        data
-      )) as PeopleInterface;
+      const newInvite = (await MembersServices.createInvite({
+        formData: data,
+      })) as MembersType;
       setShowAlert({
         show: true,
-        message: `${PeopleModule.singular} cadastrada com sucesso!`,
+        message: `${membersModule.singular} cadastrada com sucesso!`,
         type: WARNING_TYPES.SUCCESS,
         time: 3000,
       });
       await getDataList();
-      history.push(PeopleModule.route);
+      history.push(membersRoutes.list);
       setLoading(false);
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
@@ -131,7 +142,7 @@ export function People({ profile }: PeopleProps) {
   async function handleInviteReSend() {
     setLoading(true);
     try {
-      await PeopleServices.sendInvite(selectedInvite.id as string);
+      await MembersServices.sendInvite({ id: selectedInvite.id as string });
       await getDataList();
       setShowAlert({
         show: true,
@@ -156,7 +167,7 @@ export function People({ profile }: PeopleProps) {
     if (selectedInvite.id) {
       setLoading(true);
       try {
-        await PeopleServices.deleteInvite(selectedInvite.id);
+        await MembersServices.deleteInvite({ id: selectedInvite.id });
         setShowAlert({
           show: true,
           message: "Convite removido com sucesso!",
@@ -186,7 +197,7 @@ export function People({ profile }: PeopleProps) {
     return (
       <AddButton
         back={whatToShow !== "list"}
-        route={PeopleModule.route}
+        route={membersRoutes.add}
         reload={reloadList}
         isProfessional={profile?.isProfessional}
       />
@@ -196,8 +207,8 @@ export function People({ profile }: PeopleProps) {
   return (
     <div className="container mx-auto">
       <Header
-        before={PeopleModule.parents}
-        main={PeopleModule.plural}
+        before={[]}
+        main={membersModule.plural}
         search={createSearch}
         button={createButton}
         back={whatToShow !== "list"}
@@ -243,7 +254,7 @@ export function People({ profile }: PeopleProps) {
           )}
           {!profile?.isProfessional && (
             <BasicPlanMsg
-              message={`Somente 1 ${PeopleModule.singular} permitido no Plano Básico`}
+              message={`Somente 1 ${membersModule.singular} permitido no Plano Básico`}
             />
           )}
         </div>
@@ -252,4 +263,4 @@ export function People({ profile }: PeopleProps) {
   );
 }
 
-export default People;
+export default Members;

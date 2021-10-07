@@ -779,6 +779,27 @@
         }
       }
     },
+    "site-members": {
+      "root": "libs/site/members",
+      "sourceRoot": "libs/site/members/src",
+      "projectType": "library",
+      "targets": {
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["libs/site/members/**/*.{ts,tsx,js,jsx}"]
+          }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/site/members"],
+          "options": {
+            "jestConfig": "libs/site/members/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
     "site-not-found": {
       "root": "libs/site/not-found",
       "sourceRoot": "libs/site/not-found/src",

@@ -6,7 +6,7 @@ import { useCloseModal } from "../..";
 type MembersSimpleType = MembersServices.MembersSimpleRes;
 
 export interface AvatarModalContentListProps {
-  peopleList: MembersSimpleType[];
+  membersList: MembersSimpleType[];
   currentList: MembersSimpleType[];
   handleSelect(p: MembersSimpleType): void;
   open: boolean;
@@ -14,7 +14,7 @@ export interface AvatarModalContentListProps {
 }
 
 export function AvatarModalContentList({
-  peopleList,
+  membersList,
   currentList,
   handleSelect,
   open,
@@ -27,7 +27,7 @@ export function AvatarModalContentList({
       className="absolute z-30 -mt-5 w-full rounded-md bg-white shadow-lg"
     >
       <ul className="max-h-56 rounded-md py-1 text-base ring-1 ring-black ring-opacity-5 overflow-auto focus:outline-none sm:text-sm">
-        {peopleList.map((p, i) => (
+        {membersList.map((p, i) => (
           <li
             key={i}
             className="text-gray-900 cursor-default hover:bg-indigo-500 hover:text-white select-none relative py-2 pl-3 pr-9"

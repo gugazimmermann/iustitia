@@ -9,8 +9,9 @@ export interface FormProps {
   create?(data: { name: string; email: string }): void;
 }
 
-const schema = yup.object().shape({
+const schema = yup.object({
   name: yup.string().required(),
+  email: yup.string().required(),
 });
 
 export function Form({ loading, create }: FormProps) {
@@ -24,7 +25,7 @@ export function Form({ loading, create }: FormProps) {
     handleSubmit,
     setError,
     formState: { errors },
-  } = useForm<typeof defaultValues>({
+  } = useForm({
     resolver: yupResolver(schema),
     defaultValues,
   });

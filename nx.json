@@ -119,6 +119,9 @@
     "site-layout": {
       "tags": []
     },
+    "site-members": {
+      "tags": []
+    },
     "site-not-found": {
       "tags": []
     },

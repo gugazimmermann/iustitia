@@ -14,7 +14,7 @@ export interface MembersInterface {
   updatedAt?: Date;
 }
 
-function dataToPeopleResult(data: MembersInstance): MembersInterface {
+function dataToMembersResult(data: MembersInstance): MembersInterface {
   return {
     id: data.id,
     name: data.name,
@@ -192,7 +192,7 @@ export async function getInvites(req, res): Promise<Response> {
       where: { tenantId: user.tenant }
     });
     const resultData = [] as MembersInterface[];
-    if (data.length > 0) data.forEach(d => resultData.push(dataToPeopleResult(d)));
+    if (data.length > 0) data.forEach(d => resultData.push(dataToMembersResult(d)));
     return res.status(200).send(resultData);
   } catch (err) {
     return res.status(500).send({ message: err.message });
@@ -205,7 +205,7 @@ export async function getInviteCode(req: Request, res: Response): Promise<Respon
   try {
     const data = await database.Members.findOne({ where: { tenantId: tenantId, code: code } });
     if (!data) return res.status(400).send({ message: "nao encontrado!" });
-    return res.status(200).send({ ...dataToPeopleResult(data), code: data.code });
+    return res.status(200).send({ ...dataToMembersResult(data), code: data.code });
   } catch (err) {
     return res.status(500).send({ message: err.message });
   }
@@ -220,7 +220,7 @@ export async function createInvite(req, res): Promise<Response> {
     const user = await database.Users.findOne({ where: { id: req.userId }, include: ["profile", "subscription"] });
     if (!user || !user.subscription || !user.profile) return res.status(404).send({ message: "Nao encontrado!" });
     if (user.subscription.type !== "professional") {
-      const countPeoples = await database.Members.count({ where: { tenantId: user.tenant } });
+      const countMembers = await database.Members.count({ where: { tenantId: user.tenant } });
       const countUsers = await database.Users.count({
         where: {
           tenant: user.tenant,
@@ -229,20 +229,20 @@ export async function createInvite(req, res): Promise<Response> {
           },
         }
       });
-      if (countPeoples > 0 || countUsers > 0) return res.status(401).send({ message: "Plano sem permissão!" });
+      if (countMembers > 0 || countUsers > 0) return res.status(401).send({ message: "Plano sem permissão!" });
     }
     const seeEmail = await database.Members.findOne({ where: { email: body.email } });
     if (seeEmail) return res.status(401).send({ message: "Convite já criado, tente enviar novamente!" });
-    const people = {
+    const member = {
       name: body.name,
       email: body.email,
       code: Math.random().toString().substring(2, 8),
       userId: user.id,
       tenantId: user.tenant
     }
-    const data = await database.Members.create(people);
-    await InvitationEmail({ ...people, user: user.profile.name });
-    return res.status(201).send(dataToPeopleResult(data));
+    const data = await database.Members.create(member);
+    await InvitationEmail({ ...member, user: user.profile.name });
+    return res.status(201).send(dataToMembersResult(data));
   } catch (err) {
     return res.status(500).send({ message: err.message });
   }

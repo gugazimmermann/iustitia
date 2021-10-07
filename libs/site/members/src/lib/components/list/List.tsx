@@ -7,10 +7,16 @@ import {
   RoleBadge,
 } from "@iustitia/site/shared-components";
 import { getUserInitials, WARNING_TYPES } from "@iustitia/site/shared-utils";
-import { SimpleUserInterface, PeopleModule } from "../../People";
+import { MembersServices } from "@iustitia/site/services";
+import { GetModule, ModulesEnum, ModulesInterface, GetRoutes, MembersRoutesInterface } from "@iustitia/modules";
+
+const membersModule = GetModule(ModulesEnum.members) as ModulesInterface;
+const membersRoutes = GetRoutes(ModulesEnum.members) as MembersRoutesInterface;
+
+type MembersSimpleType = MembersServices.MembersSimpleRes;
 
 export interface ListProps {
-  dataList: SimpleUserInterface[];
+  dataList: MembersSimpleType[];
   sort: string;
   setSort(order: "ASC" | "DESC"): void;
 }
@@ -29,7 +35,7 @@ export function List({ dataList, sort, setSort }: ListProps) {
 
   return dataList.length === 0 ? (
     <Callout
-      title={`Nenhuma ${PeopleModule.singular} Cadastrada`}
+      title={`Nenhuma ${membersModule.singular} Cadastrada`}
       type={WARNING_TYPES.INFO}
     />
   ) : (
@@ -42,7 +48,7 @@ export function List({ dataList, sort, setSort }: ListProps) {
               <tr
                 key={i}
                 className="border-b border-gray-200 hover:bg-gray-100 cursor-pointer"
-                onClick={() => history.push(`${PeopleModule.route}/${data.id}`)}
+                onClick={() => history.push(`${membersRoutes.details}/${data.id}`)}
               >
                 <td className="py-3 px-3 text-left">
                   {data.avatar ? (
@@ -71,10 +77,10 @@ export function List({ dataList, sort, setSort }: ListProps) {
                   )}
                 </td>
                 <td className="text-center hidden sm:table-cell">
-                  <RoleBadge role={data.role} />
+                  <RoleBadge role={data.role as string} />
                 </td>
                 <td className="text-center hidden sm:table-cell">
-                  <ActiveBadge status={data.active} />
+                  <ActiveBadge status={data.active as boolean} />
                 </td>
               </tr>
             ))}

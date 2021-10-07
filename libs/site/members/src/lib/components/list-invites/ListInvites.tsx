@@ -1,12 +1,15 @@
 import { useHistory } from "react-router-dom";
-import { Callout, MailIcon, TrashIcon } from "@iustitia/site/shared-components";
-import { PeopleInterface } from "../../People";
+import { Callout } from "@iustitia/site/shared-components";
 import { DateTime } from "luxon";
 import { WARNING_TYPES } from "@iustitia/site/shared-utils";
+import { MailIcon, TrashIcon } from "@iustitia/site/icons";
+import { MembersServices } from "@iustitia/site/services";
+
+type MembersType = MembersServices.MembersRes;
 
 export interface ListInvitesProps {
-  dataList: PeopleInterface[];
-  setSelected(selected: PeopleInterface): void;
+  dataList: MembersType[];
+  setSelected(selected: MembersType): void;
   setSendConfirm(confirm: boolean): void;
   setDeleteConfirm(confirm: boolean): void;
 }
