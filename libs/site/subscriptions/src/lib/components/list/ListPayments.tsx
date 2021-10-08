@@ -1,8 +1,10 @@
 import { DateTime } from "luxon";
-import { PaymentInterface } from "../../Subscriptions";
+import { SubscriptionsServices } from "@iustitia/site/services";
+
+type PaymentType = SubscriptionsServices.PaymentRes;
 
 export interface ListPaymentsProps {
-  payments: PaymentInterface[];
+  payments: PaymentType[];
 }
 
 export function ListPayments({ payments }: ListPaymentsProps) {

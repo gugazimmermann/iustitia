@@ -8,6 +8,7 @@ import {
   ModulesEnum,
   PlacesRoutesInterface,
   ProfilesRoutesInterface,
+  SubscriptionsRoutesInterface,
 } from "@iustitia/modules";
 import {
   Layout as AuthLayout,
@@ -22,6 +23,7 @@ import {
 import { Layout } from "@iustitia/site/layout";
 import { Dashboards } from "@iustitia/site/dashboards";
 import { Profiles } from "@iustitia/site/profiles";
+import { Subscriptions } from "@iustitia/site/subscriptions";
 import { Places } from "@iustitia/site/places";
 import { Members } from "@iustitia/site/members";
 import { NotFound } from "@iustitia/site/not-found";
@@ -29,6 +31,7 @@ import { NotFound } from "@iustitia/site/not-found";
 const authRoutes = GetRoutes(ModulesEnum.auth) as AuthRoutesInterface;
 const dashboardsRoutes = GetRoutes(ModulesEnum.dashboards) as DashboardsRoutesInterface;
 const profilesRoutes = GetRoutes(ModulesEnum.profiles) as ProfilesRoutesInterface;
+const subscriptionsRoutes = GetRoutes(ModulesEnum.subscriptions) as SubscriptionsRoutesInterface;
 const placesRoutes = GetRoutes(ModulesEnum.places) as PlacesRoutesInterface;
 const membersRoutes = GetRoutes(ModulesEnum.members) as MembersRoutesInterface;
 
@@ -97,6 +100,12 @@ export const App = () => {
       <ProtectedRoute exact path={profilesRoutes.profile}>
         <Layout>
           <Profiles />
+        </Layout>
+      </ProtectedRoute>
+
+      <ProtectedRoute exact path={subscriptionsRoutes.subscription}>
+        <Layout>
+          <Subscriptions />
         </Layout>
       </ProtectedRoute>
 

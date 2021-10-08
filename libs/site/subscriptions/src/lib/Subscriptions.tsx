@@ -1,16 +1,30 @@
 import { useState, useEffect } from "react";
 import { DateTime } from "luxon";
-import { Alert, AlertInterface, Header } from "@iustitia/site/shared-components";
+import {
+  Alert,
+  AlertInterface,
+  Header,
+} from "@iustitia/site/shared-components";
 import ListPayments from "./components/list/ListPayments";
 import ListCreditCards from "./components/list/ListCreditCards";
 import { WARNING_TYPES } from "@iustitia/site/shared-utils";
-import { SubscriptionServices } from "@iustitia/site/services";
+import {
+  GetModule,
+  GetRoutes,
+  ModulesEnum,
+  ModulesInterface,
+  SubscriptionsRoutesInterface,
+} from "@iustitia/modules";
+import { SubscriptionsServices } from "@iustitia/site/services";
 
-export const { route, singular, parents, plural } = SubscriptionServices.SubscriptionModule;
-export type SubscriptionInterface = SubscriptionServices.SubscriptionInterface;
-export type CreditCardInterface = SubscriptionServices.CreditCardInterface;
-export type PaymentInterface = SubscriptionServices.PaymentInterface;
+const membersModule = GetModule(ModulesEnum.subscriptions) as ModulesInterface;
+const membersRoutes = GetRoutes(
+  ModulesEnum.subscriptions
+) as SubscriptionsRoutesInterface;
 
+type SubscriptionsType = SubscriptionsServices.SubscriptionRes;
+type PaymentType = SubscriptionsServices.PaymentRes;
+type CreditCardType = SubscriptionsServices.CreditCardRes;
 
 export function Subscriptions() {
   const [showAlert, setShowAlert] = useState<AlertInterface>({
@@ -19,9 +33,9 @@ export function Subscriptions() {
     type: WARNING_TYPES.NONE,
     time: 3000,
   });
-  const [subscription, setSubscription] = useState({} as SubscriptionInterface);
-  const [payments, setPayments] = useState([] as PaymentInterface[]);
-  const [creditCards, setCreditCards] = useState([] as CreditCardInterface[]);
+  const [subscription, setSubscription] = useState({} as SubscriptionsType);
+  const [payments, setPayments] = useState([] as PaymentType[]);
+  const [creditCards, setCreditCards] = useState([] as CreditCardType[]);
   const [list, setList] = useState(true);
   const [back, setBack] = useState(false);
 
@@ -61,15 +75,17 @@ export function Subscriptions() {
 
   async function populateData() {
     try {
-      const dataSubscription = (await SubscriptionServices.getSubscription()) as SubscriptionInterface;
-        delete dataSubscription.id;
-        delete dataSubscription.userId;
-        delete dataSubscription.updatedAt;
-        delete dataSubscription.createdAt;
-        delete dataSubscription.deletedAt;
-        setSubscription(dataSubscription);
+      const dataSubscription =
+        (await SubscriptionsServices.getSubscription()) as SubscriptionsType;
+      delete dataSubscription.id;
+      delete dataSubscription.userId;
+      delete dataSubscription.updatedAt;
+      delete dataSubscription.createdAt;
+      delete dataSubscription.deletedAt;
+      setSubscription(dataSubscription);
 
-      const resPayment = (await SubscriptionServices.getPayments()) as PaymentInterface[];
+      const resPayment =
+        (await SubscriptionsServices.getPayments()) as PaymentType[];
       const dataPayment = resPayment.map((p) => {
         delete p.id;
         delete p.userId;
@@ -93,7 +109,8 @@ export function Subscriptions() {
       }
       setPayments(dataPayment);
 
-      const resCreditCards = (await SubscriptionServices.getCreditcards()) as CreditCardInterface[];
+      const resCreditCards =
+        (await SubscriptionsServices.getCreditcards()) as CreditCardType[];
       const dataCreditCards = resCreditCards.map((c) => {
         delete c.id;
         delete c.userId;
@@ -126,12 +143,12 @@ export function Subscriptions() {
       <div className="overflow-x-auto">
         <div className="flex items-center justify-center overflow-hidden p-2">
           <div className="w-full">
-              {list && (
-                <>
-                  <ListPayments payments={payments} />
-                  <ListCreditCards creditCards={creditCards} />
-                </>
-              )}
+            {list && (
+              <>
+                <ListPayments payments={payments} />
+                <ListCreditCards creditCards={creditCards} />
+              </>
+            )}
           </div>
         </div>
       </div>

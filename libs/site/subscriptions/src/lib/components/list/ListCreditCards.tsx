@@ -1,12 +1,10 @@
-import {
-  CloseIcon,
-  CreditCardIcon,
-  TrashIcon,
-} from "@iustitia/site/shared-components";
-import { CreditCardInterface } from "../../Subscriptions";
+import { CloseIcon, CreditCardIcon, TrashIcon } from "@iustitia/site/icons";
+import { SubscriptionsServices } from "@iustitia/site/services";
+
+type CreditCardType = SubscriptionsServices.CreditCardRes;
 
 export interface ListCreditCardsProps {
-  creditCards: CreditCardInterface[];
+  creditCards: CreditCardType[];
 }
 
 export function ListCreditCards({ creditCards }: ListCreditCardsProps) {
