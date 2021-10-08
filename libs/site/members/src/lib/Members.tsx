@@ -78,8 +78,8 @@ export function Members({ profile }: MembersProps) {
       setDataList(data);
       const sortedData = Sort(data.slice(0), sort);
       setShowDataList(sortedData);
-      const datainvites = (await MembersServices.getInvites()) as MembersType[];
-      setDataListInvite(datainvites);
+      const dataInvites = (await MembersServices.getInvites()) as MembersType[];
+      setDataListInvite(dataInvites);
       setLoading(false);
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {

@@ -5,7 +5,7 @@ import { AuthRoutesInterface, GetRoutes, ModulesEnum } from "@iustitia/modules";
 
 type UserType = AuthServices.UserRes;
 
-const routes = GetRoutes(ModulesEnum.dashboards) as AuthRoutesInterface;
+const auth = GetRoutes(ModulesEnum.auth) as AuthRoutesInterface;
 
 export function ProtectedRoute({ children, ...rest }: RouteProps) {
   const [loading, setLoading] = useState(true);
@@ -36,7 +36,7 @@ export function ProtectedRoute({ children, ...rest }: RouteProps) {
       {loading ? null : user.email ? (
         <Route {...rest} render={() => children} />
       ) : (
-        <Redirect to={routes.signIn} />
+        <Redirect to={auth.signIn} />
       )}
     </div>
   );

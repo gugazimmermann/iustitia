@@ -23,7 +23,7 @@ interface UsersAttributes {
   active: boolean;
 }
 
-type UsersCreationAttributes = Optional<UsersAttributes, 'id' | 'tenant'>
+export type UsersCreationAttributes = Optional<UsersAttributes, 'id' | 'tenant'>
 
 export interface UsersInstance
   extends Model<UsersAttributes, UsersCreationAttributes>,

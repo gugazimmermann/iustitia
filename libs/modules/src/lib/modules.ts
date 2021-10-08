@@ -90,8 +90,9 @@ export const Modules: ModulesInterface[] = [
     routes: {
       list: "/colaboradores",
       add: "/colaboradores/adicionar",
-      update: "/colaboradores/alterar/:id",
-      details: "/colaboradores/:id?",
+      update: "/colaboradores/alterar",
+      details: "/colaboradores",
+      invite: "/convite"
     },
     menu: [
       {

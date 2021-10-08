@@ -1,9 +1,9 @@
 import { Op } from "sequelize";
 import { Request, Response } from "express";
-import * as bcrypt from "bcryptjs";
-import { database, MembersInstance, UsersInstance, RolesInstance } from '@iustitia/api/database';
+import { database, MembersInstance, UsersInstance } from '@iustitia/api/database';
 import { InvitationEmail } from "@iustitia/api/email";
 import { validateEmail } from '@iustitia/site/shared-utils';
+import { createUser } from "@iustitia/api/auth";
 
 export interface MembersInterface {
   id?: string;
@@ -111,37 +111,31 @@ export async function create(req: Request, res: Response): Promise<Response> {
   const { code, password } = req.body;
   if (!code || !password) return res.status(400).send({ message: "Dados inválidos!" });
   try {
-    const invite = await database.Members.findOne({ where: { tenantId, code } });
-    if (!invite) return res.status(404).send({ message: "Nenhum registro encontrado!" });
-    const user = await database.Users.create({
-      email: invite.email,
-      password: bcrypt.hashSync(req.body.password, 8),
-      tenant: tenantId,
-      active: true
-    }
-    );
-    const role = await database.Roles.findOne({ where: { name: "User" } })
-    if (user.addRole) user.addRole(role as RolesInstance);
-    await database.Profiles.create({
-      name: invite.name,
-      email: invite.email,
-      userId: user.id
+    await database.Sequelize.transaction(async () => {
+      const invite = await database.Members.findOne({ where: { tenantId, code } });
+      if (!invite) return res.status(404).send({ message: "Nenhum registro encontrado!" });
+      const mainUser = await database.Users.findOne({ where: { id: invite.userId }, include: "subscription" })
+      if (!mainUser || !mainUser.subscription) return res.status(404).send({ message: "Nenhum usuário encontrado!" });
+      await createUser({
+        name: invite.name,
+        email: invite.email,
+        password: req.body.password,
+        tenant: tenantId,
+        roleName: "User",
+        subscription: {
+          reason: mainUser.subscription.reason,
+          frequency: mainUser.subscription.frequency,
+          frequencyType: mainUser.subscription.frequencyType,
+          transactionAmount: mainUser.subscription.transactionAmount,
+          status: true,
+          type: mainUser.subscription.type,
+          planId: mainUser.subscription.planId,
+        }
+      });
+      await invite.destroy();
+      await invite.save();
+      return;
     });
-    const mainUser = await database.Users.findOne({ where: { id: invite.userId }, include: "subscription" })
-    if (!mainUser) return res.status(404).send({ message: "Nenhum usuario encontrado!" });
-    if (!mainUser.subscription)  return res.status(404).send({ message: "Nenhuma assinatura encontrado!" });
-    await database.Subscriptions.create({
-      reason: mainUser.subscription.reason,
-      frequency: mainUser.subscription.frequency,
-      frequencyType: mainUser.subscription.frequencyType,
-      transactionAmount: mainUser.subscription.transactionAmount,
-      status: true,
-      type: mainUser.subscription.type,
-      planId: mainUser.subscription.planId,
-      userId: user.id,
-    });
-    await invite.destroy();
-    await invite.save();
     return res.status(201).send({ message: "Usuário cadastrado com sucesso!" });
   } catch (err) {
     return res.status(500).send({ message: err.message });

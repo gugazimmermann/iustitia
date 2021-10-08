@@ -4,11 +4,12 @@ import * as bcrypt from "bcryptjs";
 import { v4 as uuidv4 } from 'uuid';
 import { DateTime } from "luxon";
 import * as mercadopago from 'mercadopago';
-import { RolesInstance, database } from '@iustitia/api/database';
+import {  database } from '@iustitia/api/database';
 import { ForgotPasswordEmail } from '@iustitia/api/email';
 import { validateEmail } from "@iustitia/site/shared-utils";
 import config from "../config";
 import { AuthRoutesInterface, GetRoutes, ModulesEnum } from '@iustitia/modules';
+import { createUser, createUserPayment } from '../functions';
 
 const route = GetRoutes(ModulesEnum.auth) as AuthRoutesInterface;
 
@@ -46,22 +47,21 @@ export async function signup(req: Request, res: Response): Promise<Response> {
       if (userPlan.transactionAmount !== 0 && !req.body?.cardInfo) {
         return res.status(400).send({ message: "Dados inválidos!" });
       }
-      const userData = { email: req.body.email, password: bcrypt.hashSync(req.body.password, 8), active: true };
-      const user = await database.Users.create(userData);
-      await user.update({ tenant: user.id });
-      const role = await database.Roles.findOne({ where: { name: "Admin" } });
-      if (role && user.addRole) await user.addRole(role as RolesInstance);
-      await database.Profiles.create({ name: req.body.name, email: userData.email, userId: user.id });
-      const subscription = await database.Subscriptions.create({
-        reason: userPlan.reason,
-        frequency: userPlan.frequency,
-        frequencyType: userPlan.frequencyType,
-        transactionAmount: userPlan.transactionAmount,
-        status: true,
-        type: userPlan.type,
-        planId: userPlan.id,
-        userId: user.id,
-      });
+      const { user, subscription } = await createUser({
+        name: req.body.name,
+        email: req.body?.email,
+        password: req.body?.password,
+        roleName: "Admin",
+        subscription: {
+          reason: userPlan.reason,
+          frequency: userPlan.frequency,
+          frequencyType: userPlan.frequencyType,
+          transactionAmount: userPlan.transactionAmount,
+          status: true,
+          type: userPlan.type,
+          planId: userPlan.id,
+        }
+      })
       if (userPlan.transactionAmount !== 0) {
         const { cardInfo } = req.body;
         // const preapproval = await mercadopago.preapproval.create({
@@ -70,23 +70,20 @@ export async function signup(req: Request, res: Response): Promise<Response> {
         //   "payer_email": user.email
         // });
         // console.log(preapproval)
-        const creditcard = await database.Creditcards.create({
-          name: cardInfo.name,
-          firstSixDigits: cardInfo.firstSixDigits,
-          lastFourDigits: cardInfo.lastFourDigits,
-          expirationMonth: cardInfo.expirationMonth,
-          expirationYear: cardInfo.expirationYear,
-          status: true,
+        createUserPayment({
           userId: user.id,
-        });
-        await database.Payments.create({
-          transactionAmount: userPlan.transactionAmount,
-          status: "Paid",
-          paidDate: new Date(),
+          cardInfo: {
+            name: cardInfo.name as string,
+            firstSixDigits: cardInfo.firstSixDigits as string,
+            lastFourDigits: cardInfo.lastFourDigits as string,
+            expirationMonth: cardInfo.expirationMonth as string,
+            expirationYear: cardInfo.expirationYear as string,
+            status: true,
+            userId: user.id as string,
+          },
           subscriptionId: subscription.id,
-          creditcardId: creditcard.id,
-          userId: user.id,
-        });
+          transactionAmount: userPlan.transactionAmount,
+        })
       }
       return;
     });

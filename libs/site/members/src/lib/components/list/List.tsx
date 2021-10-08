@@ -35,7 +35,7 @@ export function List({ dataList, sort, setSort }: ListProps) {
 
   return dataList.length === 0 ? (
     <Callout
-      title={`Nenhuma ${membersModule.singular} Cadastrada`}
+      title={`Nenhuma ${membersModule.singular} Cadastrado`}
       type={WARNING_TYPES.INFO}
     />
   ) : (

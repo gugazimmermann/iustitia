@@ -11,7 +11,7 @@ interface CreditcardsAttributes {
   userId: string;
 }
 
-type CreditcardsCreationAttributes = Optional<CreditcardsAttributes, 'id'>
+export type CreditcardsCreationAttributes = Optional<CreditcardsAttributes, 'id'>
 
 export interface CreditcardsInstance
   extends Model<CreditcardsAttributes, CreditcardsCreationAttributes>,

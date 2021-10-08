@@ -71,6 +71,12 @@ export const App = () => {
         </AuthLayout>
       </PublicRoute>
 
+      <PublicRoute exact path={`${membersRoutes.invite}/:tenantId?/:code?`}>
+        <AuthLayout>
+          <Invite />
+        </AuthLayout>
+      </PublicRoute>
+
       <ProtectedRoute exact path={dashboardsRoutes.dashboards}>
         <Layout>
           <Dashboards />

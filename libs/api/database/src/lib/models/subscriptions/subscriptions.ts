@@ -12,7 +12,7 @@ interface SubscriptionsAttributes {
   userId: string;
 }
 
-type SubscriptionsCreationAttributes = Optional<SubscriptionsAttributes, 'id'>
+export type SubscriptionsCreationAttributes = Optional<SubscriptionsAttributes, 'id'>
 
 export interface SubscriptionsInstance
   extends Model<SubscriptionsAttributes, SubscriptionsCreationAttributes>,

@@ -60,6 +60,7 @@ export interface MembersRoutesInterface {
   add: string;
   update: string;
   details: string;
+  invite: string;
 }
 
 export interface BusinessContactsRoutesInterface {

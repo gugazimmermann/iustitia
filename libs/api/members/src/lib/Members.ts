@@ -14,17 +14,16 @@ import {
 } from './controllers';
 
 export function Members(app: Express) {
-  app.get(`/api/${ModulesEnum.members}/:tenantId`, [verifyToken], getAll);
-  app.get(`/api/${ModulesEnum.members}/:tenantId/:id`, [verifyToken], getOne);
-  app.post(`/api/${ModulesEnum.members}/:tenantId`, [verifyToken], create);
-  // used in places to select users and managers
-  app.get(`/api/${ModulesEnum.members}/list/:tenantId`, [verifyToken], getList);
-
   app.get(`/api/${ModulesEnum.members}/invites/:tenantId`, [verifyToken], getInvites);
   app.get(`/api/${ModulesEnum.members}/invites/code/:tenantId/:code`, getInviteCode);
   app.post(`/api/${ModulesEnum.members}/invites/:tenantId`, [verifyToken], createInvite);
   app.post(`/api/${ModulesEnum.members}/invites/send/:tenantId/:id`, [verifyToken], sendInvite);
   app.delete(`/api/${ModulesEnum.members}/invites/:id`, [verifyToken], deleteInvite);
+  app.get(`/api/${ModulesEnum.members}/list/:tenantId`, [verifyToken], getList);
+
+  app.get(`/api/${ModulesEnum.members}/:tenantId`, [verifyToken], getAll);
+  app.get(`/api/${ModulesEnum.members}/:tenantId/:id`, [verifyToken], getOne);
+  app.post(`/api/${ModulesEnum.members}/:tenantId`, create);
 }
 
 export default Members;
