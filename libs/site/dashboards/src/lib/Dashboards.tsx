@@ -7,10 +7,16 @@ import {
 } from "@iustitia/site/shared-components";
 import { PlacesServices } from "@iustitia/site/services";
 
-import { GetRoutes, ModulesEnum, DashboardsRoutesInterface } from "@iustitia/modules";
+import {
+  GetRoutes,
+  ModulesEnum,
+  DashboardsRoutesInterface,
+} from "@iustitia/modules";
 import { PeopleIcon } from "@iustitia/site/icons";
 
-const dashboardsRoutes = GetRoutes(ModulesEnum.dashboards) as DashboardsRoutesInterface;
+const dashboardsRoutes = GetRoutes(
+  ModulesEnum.dashboards
+) as DashboardsRoutesInterface;
 
 type PlacesType = PlacesServices.PlacesRes;
 
@@ -36,9 +42,10 @@ export function Dashboards() {
 
   async function getPlaces() {
     try {
-      const data = (await PlacesServices.getAll()) as PlacesType[];
+      const dataPlaces = (await PlacesServices.getAll()) as PlacesType[];
+      const data = dataPlaces.filter((p) => p.active === true);
       setPlaces(data);
-      if (data.length === 1) setSelectedPlace(data[0]);
+      setSelectedPlace({} as PlacesType);
     } catch (err) {
       console.log(err);
     }
@@ -227,9 +234,7 @@ export function Dashboards() {
           <div className="flex flex-col items-center justify-center bg-white rounded-md shadow">
             <PeopleIcon styles="w-12 h-12 text-primary-400" stroke={2} />
             <h2 className="title-font  text-3xl text-gray-900">
-              {selectedPlace
-                ? `${selectedPlace.managersPlace?.length}`
-                : `0`}
+              {selectedPlace && selectedPlace.managersPlace ? `${selectedPlace.managersPlace?.length}` : `0`}
             </h2>
             <p className="leading-relaxed">Responsáveis</p>
           </div>
@@ -237,7 +242,7 @@ export function Dashboards() {
           <div className="p-4 flex flex-col items-center justify-center bg-white rounded-md shadow">
             <PeopleIcon styles="w-12 h-12 text-primary-400" stroke={2} />
             <h2 className="title-font  text-3xl text-gray-900">
-              {selectedPlace ? `${selectedPlace.usersPlace?.length}` : `0`}
+              {selectedPlace && selectedPlace.usersPlace ? `${selectedPlace.usersPlace?.length}` : `0`}
             </h2>
             <p className="leading-relaxed">Usuários</p>
           </div>

@@ -194,7 +194,7 @@ export function Details({
           <button
             type="button"
             onClick={() =>
-              history.push(`${dashboardsRoutes.places}/escritorios/${data?.id}`)
+              history.push(`${dashboardsRoutes.places}/${data?.id}`)
             }
             className="px-2 py-1 text-xs text-white rounded-md bg-primary-500 hover:bg-primary-900 focus:ring-primary-500"
           >

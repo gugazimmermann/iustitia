@@ -21,10 +21,8 @@ export function Header({
 }: HeaderProps) {
   return (
     <div className="flex flex-col md:flex-row space-y-2 md:space-y-0 items-center justify-between w-full px-4 py-2 lg:py-4 border-b">
-      <div className="md:space-x-4">
-        <Breadcrumb before={before} main={main} hide={hide} select={select} />
-        {select && select()}
-      </div>
+      <Breadcrumb before={before} main={main} hide={hide} select={select} />
+      {select && select()}
       {search && search()}
       {button && button(back as boolean)}
     </div>
