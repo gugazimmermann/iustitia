@@ -68,9 +68,9 @@ export function Places({ profile, setPlaces }: PlacesProps) {
   const [sort, setSort] = useState<"ASC" | "DESC">("ASC");
 
   useEffect(() => {
-    if (pathname.includes("add")) {
+    if (pathname.includes("adicionar")) {
       setWhatToShow("create");
-    } else if (pathname.includes("edit")) {
+    } else if (pathname.includes("alterar")) {
       getSelected(id);
       setWhatToShow("update");
     } else {
@@ -237,7 +237,8 @@ export function Places({ profile, setPlaces }: PlacesProps) {
     return (
       <AddButton
         back={whatToShow !== "list"}
-        route={placesRoutes.list}
+        backRoute={placesRoutes.list}
+        addRoute={placesRoutes.add}
         reload={reloadList}
         isProfessional={profile?.isProfessional && profile.isAdmin}
       />

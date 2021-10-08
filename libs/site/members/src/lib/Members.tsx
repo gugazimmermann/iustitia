@@ -57,7 +57,7 @@ export function Members({ profile }: MembersProps) {
   const [deleteInviteConfirm, setDeleteInviteConfirm] = useState(false);
 
   useEffect(() => {
-    if (pathname.includes("add")) {
+    if (pathname.includes("adicionar")) {
       setWhatToShow("create");
     } else {
       getDataList();
@@ -197,7 +197,8 @@ export function Members({ profile }: MembersProps) {
     return (
       <AddButton
         back={whatToShow !== "list"}
-        route={membersRoutes.add}
+        backRoute={membersRoutes.list}
+        addRoute={membersRoutes.add}
         reload={reloadList}
         isProfessional={profile?.isProfessional}
       />

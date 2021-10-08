@@ -2,25 +2,26 @@ import { useHistory } from "react-router-dom";
 
 export interface AddButtonProps {
   back: boolean;
-  route: string | undefined;
+  backRoute: string | undefined;
+  addRoute: string | undefined;
   reload(): void;
   isProfessional?: boolean;
 }
 
-export function AddButton({ back, route, reload, isProfessional }: AddButtonProps) {
+export function AddButton({ back, backRoute, addRoute, reload, isProfessional }: AddButtonProps) {
   const history = useHistory();
 
   return (
     <button
       onClick={() => {
         if (back) {
-          if (route) {
-            history.push(route);
+          if (backRoute) {
+            history.push(backRoute);
           } else {
             reload();
           }
         } else {
-          history.push(`${route}/add`);
+          history.push(`${addRoute}`);
         }
       }}
       className={`px-4 py-2 text-sm text-white rounded-md ${
