@@ -5,14 +5,17 @@ import {
   AlertInterface,
   ConfirmationModal,
   Header,
-  SearchIcon,
 } from "@iustitia/site/shared-components";
 import { WARNING_TYPES } from "@iustitia/site/shared-utils";
-import { CompanyService } from "@iustitia/site/services";
 import { List, Details, Form } from "./components";
+import { GetModule, ModulesEnum, ModulesInterface, GetRoutes, BCRoutesInterface } from "@iustitia/modules";
+import { SearchIcon } from "@iustitia/site/icons";
+import { BusinessContactsServices } from "@iustitia/site/services";
 
-export const { route, singular, parents, plural } = CompanyService.CompanyModule;
-export type CompanyInterface = CompanyService.CompanyInterface;
+const BCModule = GetModule(ModulesEnum.businessContacts) as ModulesInterface;
+const BCRoutes = GetRoutes(ModulesEnum.businessContacts) as BCRoutesInterface;
+
+type BCCompaniesType = BusinessContactsServices.BCCompaniesRes;
 
 export function Companies() {
   const history = useHistory();
@@ -33,25 +36,25 @@ export function Companies() {
   const [back, setBack] = useState(false);
   const [confirm, setConfirm] = useState(false);
   const [dataList, setDataList] = useState(
-    [] as CompanyInterface[]
+    [] as BCCompaniesType[]
   );
   const [showDataList, setShowDataList] = useState(
-    [] as CompanyInterface[]
+    [] as BCCompaniesType[]
   );
   const [selected, setSelected] = useState(
-    {} as CompanyInterface
+    {} as BCCompaniesType
   );
   const [searchParam, setSearchParam] = useState<string>();
   const [sort, setSort] = useState("ASC");
 
   useEffect(() => {
-    if (pathname.includes("add")) {
+    if (pathname.includes("adicionar")) {
       setBack(true);
       setShowList(false);
       setShowDetails(false);
       setShowUpdade(false);
       setShowCreate(true);
-    } else if (pathname.includes("edit")) {
+    } else if (pathname.includes("alterar")) {
       getSelected(id);
       setBack(true);
       setShowList(false);
@@ -75,15 +78,12 @@ export function Companies() {
         setShowCreate(false);
       }
     }
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id, pathname]);
 
   async function getSelected(id: string) {
     try {
-      const data = await CompanyService.getOne(id);
+      const data = await BusinessContactsServices.getOneCompany({id});
       setSelected(data);
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       setShowAlert({
         show: true,
@@ -91,7 +91,7 @@ export function Companies() {
         type: WARNING_TYPES.ERROR,
         time: 3000,
       })
-      history.push(route);
+      history.push(BCRoutes.listCompanies);
       console.log(err);
     }
   }
@@ -107,10 +107,9 @@ export function Companies() {
 
   useEffect(() => {
     handleSort();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sort]);
 
-  function handleSort(data?: CompanyInterface[]) {
+  function handleSort(data?: BCCompaniesType[]) {
     const sortData = data ? data : dataList.slice(0);
     if (sortData) {
       if (sort === "ASC")
@@ -153,7 +152,7 @@ export function Companies() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchParam]);
 
-  function handleSearch(data: CompanyInterface[], param: string) {
+  function handleSearch(data: BCCompaniesType[], param: string) {
     const res = data.filter((d) =>
       d.name?.toLocaleLowerCase().includes(param.toLocaleLowerCase())
     );
@@ -165,13 +164,13 @@ export function Companies() {
       <button
         onClick={() => {
           if (back) {
-            if (location.pathname !== route) {
-              history.push(route);
+            if (location.pathname !== BCRoutes.listCompanies) {
+              history.push(BCRoutes.listCompanies);
             } else {
               reloadList();
             }
           } else {
-            history.push(`${route}/add`);
+            history.push(`${BCRoutes.addCompany}`);
           }
         }}
         className={`px-4 py-2 text-sm text-white rounded-md ${
@@ -180,7 +179,7 @@ export function Companies() {
             : `bg-secondary-500 hover:bg-secondary-700 `
         }`}
       >
-        {back ? "Listagem" : `Adicionar ${singular}`}
+        {back ? "Listagem" : `Adicionar ${BCModule.singular}`}
       </button>
     );
   };
@@ -188,10 +187,9 @@ export function Companies() {
   async function getDataList() {
     try {
       const data =
-        (await CompanyService.getAll()) as CompanyInterface[];
+        (await BusinessContactsServices.getAllCompanies()) as BCCompaniesType[];
       setDataList(data);
       handleSort(data);
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       setShowAlert({
         show: true,
@@ -204,23 +202,22 @@ export function Companies() {
   }
 
   function handleEdit() {
-    history.push(`${route}/edit/${selected?.id}`);
+    history.push(`${BCRoutes.updateCompany}/${selected?.id}`);
   }
 
-  async function handleCreate(data: CompanyInterface) {
+  async function handleCreate(data: BCCompaniesType) {
     setLoading(true);
     try {
-      await CompanyService.create(data);
+      await BusinessContactsServices.createCompany({formData: data});
       setShowAlert({
         show: true,
-        message: `${singular} cadastrada com sucesso.`,
+        message: `${BCModule.singular} cadastrada com sucesso.`,
         type: WARNING_TYPES.SUCCESS,
         time: 3000,
       })
       reloadList();
-      history.push(route);
+      history.push(BCRoutes.listCompanies);
       setLoading(false);
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       setLoading(false);
       setShowAlert({
@@ -233,20 +230,19 @@ export function Companies() {
     }
   }
 
-  async function handleUpate(data: CompanyInterface) {
+  async function handleUpate(data: BCCompaniesType) {
     setLoading(true);
     try {
-      await CompanyService.update(data);
+      await BusinessContactsServices.updateCompany({formData: data});
       setShowAlert({
         show: true,
-        message: `${singular} alterada com sucesso.`,
+        message: `${BCModule.singular} alterada com sucesso.`,
         type: WARNING_TYPES.INFO,
         time: 3000,
       })
       reloadList();
-      history.push(route);
+      history.push(BCRoutes.listCompanies);
       setLoading(false);
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       setLoading(false);
       setShowAlert({
@@ -263,16 +259,15 @@ export function Companies() {
     if (selected.id) {
       setLoading(true);
       try {
-        await CompanyService.deleteOne(selected.id);
+        await BusinessContactsServices.deleteOneCompany({id: selected.id});
         setShowAlert({
           show: true,
-          message: `${singular} removida com sucesso.`,
+          message: `${BCModule.singular} removida com sucesso.`,
           type: WARNING_TYPES.WARNING,
           time: 3000,
         })
         reloadList();
         setLoading(false);
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } catch (err: any) {
         setLoading(false);
         setShowAlert({
@@ -289,8 +284,8 @@ export function Companies() {
   return (
     <>
       <Header
-        before={parents}
-        main={plural}
+        before={[""]}
+        main={BCModule.plural}
         search={showList ? createSearch : undefined}
         button={createButton}
         back={back}
@@ -318,8 +313,8 @@ export function Companies() {
                 <ConfirmationModal
                   setConfirm={setConfirm}
                   type={WARNING_TYPES.ERROR}
-                  title={`Excluir ${singular}: ${selected.name}?`}
-                  content={`Você tem certeza que quer excluir a ${singular} ${selected.name}? Todos os dados dessa ${singular} serão perdidos. Essa ação não poderá ser desfeita.`}
+                  title={`Excluir ${BCModule.singular}: ${selected.name}?`}
+                  content={`Você tem certeza que quer excluir a ${BCModule.singular} ${selected.name}? Todos os dados dessa ${BCModule.singular} serão perdidos. Essa ação não poderá ser desfeita.`}
                   action={handleDelete}
                 />
               )}

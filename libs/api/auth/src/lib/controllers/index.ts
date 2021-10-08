@@ -9,7 +9,7 @@ import { ForgotPasswordEmail } from '@iustitia/api/email';
 import { validateEmail } from "@iustitia/site/shared-utils";
 import config from "../config";
 import { AuthRoutesInterface, GetRoutes, ModulesEnum } from '@iustitia/modules';
-import { createUser, createUserPayment } from '../functions';
+import { createToken, createUser, createUserPayment, verifyExpiration } from '../functions';
 
 const route = GetRoutes(ModulesEnum.auth) as AuthRoutesInterface;
 
@@ -20,26 +20,10 @@ const ACCESS_TOKEN =
 
 mercadopago.configure({ access_token: ACCESS_TOKEN as string });
 
-async function createToken(userId: string): Promise<string> {
-  const expiredAt = new Date();
-  expiredAt.setSeconds(expiredAt.getSeconds() + config.jwtRefreshExpiration);
-  const refreshToken = await database.RefreshToken.create({
-    token: uuidv4(),
-    expiryDate: expiredAt,
-    userId: userId,
-  });
-  return refreshToken.token;
-};
-
-function verifyExpiration(expiryDate: Date): boolean {
-  return expiryDate.getTime() < new Date().getTime();
-};
-
 export async function signup(req: Request, res: Response): Promise<Response> {
   if (!req.body?.name || !req.body?.password || !req.body?.email || !validateEmail(req.body.email) || !req.body?.planId) {
     return res.status(400).send({ message: "Dados inválidos!" });
   }
-
   try {
     await database.Sequelize.transaction(async () => {
       const userPlan = await database.Plans.findByPk(req.body.planId);
@@ -104,10 +88,7 @@ export async function signin(req: Request, res: Response): Promise<Response> {
     });
     if (!user) return res.status(404).send({ message: "Email ou senha inválidos!" });
     if (!user.active) return res.status(401).send({ message: "Cadastro Inativo!" });
-    const passwordIsValid = bcrypt.compareSync(
-      req.body.password,
-      user.password
-    );
+    const passwordIsValid = bcrypt.compareSync(req.body.password, user.password);
     if (!passwordIsValid) {
       return res.status(404).send({ message: "Email ou senha inválidos!" });
     }

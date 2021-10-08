@@ -6,21 +6,38 @@ import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { formatSite, getAddressFromCEP, validateEmail } from "@iustitia/site/shared-utils";
 import { LoadingButton } from "@iustitia/site/shared-components";
-import { CompanyInterface, singular } from "../../Companies";
+import { GetModule, ModulesEnum, ModulesInterface, GetRoutes, BCRoutesInterface } from "@iustitia/modules";
+import { BusinessContactsServices } from "@iustitia/site/services";
+
+const BCModule = GetModule(ModulesEnum.businessContacts) as ModulesInterface;
+const BCRoutes = GetRoutes(ModulesEnum.businessContacts) as BCRoutesInterface;
+
+type BCCompaniesType = BusinessContactsServices.BCCompaniesRes;
 
 export interface FormProps {
   loading: boolean;
-  data?: CompanyInterface;
-  create?(data: CompanyInterface): void;
-  update?(data: CompanyInterface): void;
+  data?: BCCompaniesType;
+  create?(data: BCCompaniesType): void;
+  update?(data: BCCompaniesType): void;
 }
 
-const schema = yup.object().shape({
+const schema = yup.object({
   name: yup.string().required(),
+  site: yup.string(),
+  email: yup.string(),
+  phone: yup.string(),
+  zip: yup.string(),
+  address: yup.string(),
+  number: yup.string(),
+  complement: yup.string(),
+  neighborhood: yup.string(),
+  city: yup.string(),
+  state: yup.string(),
+  comments: yup.string(),
 });
 
 export function Form({ loading, data, create, update }: FormProps) {
-  const defaultValues: CompanyInterface = {
+  const defaultValues: BCCompaniesType = {
     name: data?.name || "",
     site: data?.site || "",
     email: data?.email || "",
@@ -42,7 +59,7 @@ export function Form({ loading, data, create, update }: FormProps) {
     setError,
     clearErrors,
     formState: { errors },
-  } = useForm<CompanyInterface>({
+  } = useForm({
     resolver: yupResolver(schema),
     defaultValues,
   });
@@ -90,7 +107,7 @@ export function Form({ loading, data, create, update }: FormProps) {
     }
   }
 
-  async function onSubmit(formData: CompanyInterface) {
+  async function onSubmit(formData: BCCompaniesType) {
     if (formData.zip && !validZip) {
       setError("zip", { type: "manual" });
       return;
@@ -370,8 +387,8 @@ export function Form({ loading, data, create, update }: FormProps) {
               type="submit"
               text={
                 create
-                  ? `Cadastrar ${singular}`
-                  : `Editar ${singular}`
+                  ? `Cadastrar ${BCModule.singular}`
+                  : `Editar ${BCModule.singular}`
               }
               loading={loading}
             />

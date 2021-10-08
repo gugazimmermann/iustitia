@@ -1,10 +1,14 @@
 import { Link } from "react-router-dom";
-import { SiteRoutes } from "@iustitia/react-routes";
 import { FormatAddress } from "@iustitia/site/shared-components";
-import { CompanyInterface } from "../../Companies";
+import { ModulesEnum, GetRoutes, BCRoutesInterface } from "@iustitia/modules";
+import { BusinessContactsServices } from "@iustitia/site/services";
+
+const BCRoutes = GetRoutes(ModulesEnum.businessContacts) as BCRoutesInterface;
+
+type BCCompaniesType = BusinessContactsServices.BCCompaniesRes;
 
 export interface DetailsProps {
-  data: CompanyInterface;
+  data: BCCompaniesType;
   edit(): void;
 }
 
@@ -88,7 +92,7 @@ export function Details({ data, edit }: DetailsProps) {
                 return (
                   <Link
                     key={i}
-                    to={`${SiteRoutes.Contacts}/${c.id}`}
+                    to={`${BCRoutes.detailsPerson}/${c.id}`}
                     className="underline"
                   >
                     {c.name}{" "}{data.name && c.position && ` - `}{" "}{c.position}

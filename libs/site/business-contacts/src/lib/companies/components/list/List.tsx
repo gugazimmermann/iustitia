@@ -1,18 +1,18 @@
+import { GetModule, ModulesEnum, ModulesInterface, GetRoutes, BCRoutesInterface } from "@iustitia/modules";
+import { ArrowDownIcon, ArrowUpIcon, EyeIcon, PenIcon, TrashIcon } from "@iustitia/site/icons";
+import { BusinessContactsServices } from "@iustitia/site/services";
 import { useHistory } from "react-router-dom";
-import {
-  ArrowDownIcon,
-  ArrowUpIcon,
-  EyeIcon,
-  PenIcon,
-  TrashIcon,
-} from "@iustitia/site/shared-components";
-import { CompanyInterface, route } from "../../Companies";
+
+const BCModule = GetModule(ModulesEnum.businessContacts) as ModulesInterface;
+const BCRoutes = GetRoutes(ModulesEnum.businessContacts) as BCRoutesInterface;
+
+type BCCompaniesType = BusinessContactsServices.BCCompaniesRes;
 
 export interface ListProps {
-  dataList: CompanyInterface[];
+  dataList: BCCompaniesType[];
   sort: string;
   setSort(order: "ASC" | "DESC"): void;
-  setSelected(selected: CompanyInterface): void;
+  setSelected(selected: BCCompaniesType): void;
   setConfirm(confirm: boolean): void;
 }
 
@@ -25,7 +25,7 @@ export function List({
 }: ListProps) {
   const history = useHistory();
 
-  function formatAddress(data: CompanyInterface) {
+  function formatAddress(data: BCCompaniesType) {
     if (data.city || data.state) {
       let res = data.city && data.city;
       res = data.city && data.state && res + " | ";
@@ -89,7 +89,7 @@ export function List({
                     <div className="w-5 mr-3 transform hover:text-purple-500 hover:scale-110">
                       <div
                         onClick={() =>
-                          history.push(`${route}/${data.id}`)
+                          history.push(`${BCRoutes.detailsCompany}/${data.id}`)
                         }
                         className="w-5 mr-3 transform hover:text-purple-500 hover:scale-110"
                       >
@@ -98,7 +98,7 @@ export function List({
                     </div>
                     <div
                       onClick={() =>
-                        history.push(`${route}/edit/${data.id}`)
+                        history.push(`${BCRoutes.updateCompany}/${data.id}`)
                       }
                       className="w-5 mr-3 transform hover:text-purple-500 hover:scale-110"
                     >

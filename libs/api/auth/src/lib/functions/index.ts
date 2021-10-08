@@ -1,4 +1,5 @@
 import * as bcrypt from "bcryptjs";
+import { v4 as uuidv4 } from 'uuid';
 import {
   UsersInstance,
   SubscriptionsInstance,
@@ -7,6 +8,22 @@ import {
   CreditcardsCreationAttributes,
   SubscriptionsCreationAttributes
 } from "@iustitia/api/database";
+import config from "../config";
+
+export async function createToken(userId: string): Promise<string> {
+  const expiredAt = new Date();
+  expiredAt.setSeconds(expiredAt.getSeconds() + config.jwtRefreshExpiration);
+  const refreshToken = await database.RefreshToken.create({
+    token: uuidv4(),
+    expiryDate: expiredAt,
+    userId: userId,
+  });
+  return refreshToken.token;
+};
+
+export function verifyExpiration(expiryDate: Date): boolean {
+  return expiryDate.getTime() < new Date().getTime();
+};
 
 export type CreateUserSubscriptionInterface = Omit<SubscriptionsCreationAttributes, 'userId'>
 
