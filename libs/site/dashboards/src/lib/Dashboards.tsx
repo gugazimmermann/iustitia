@@ -479,7 +479,7 @@ export function Dashboards() {
               <div className="flex items-center justify-center space-x-2">
                 <div className="rounded-full w-16 h-16">
                   <img
-                    src="https://iustitia-io-avatars.s3.amazonaws.com/45ae093eae54441f8556bab9910e466815457571.jpeg"
+                    src="https://avatars.githubusercontent.com/u/48167381?s=160&v=4"
                     alt="Guga"
                     className="rounded-full w-16 h-16"
                   />
@@ -536,7 +536,7 @@ export function Dashboards() {
                 <div className="flex items-center space-x-2">
                   <div className="avatar avatar-xs">
                     <img
-                      src="https://iustitia-io-avatars.s3.amazonaws.com/45ae093eae54441f8556bab9910e466815457571.jpeg"
+                      src="https://avatars.githubusercontent.com/u/48167381?s=160&v=4"
                       alt="Cliente"
                       className="rounded-full w-8 h-8"
                     />
@@ -562,7 +562,7 @@ export function Dashboards() {
                 <div className="flex items-center space-x-2">
                   <div className="avatar avatar-xs">
                     <img
-                      src="https://iustitia-io-avatars.s3.amazonaws.com/45ae093eae54441f8556bab9910e466815457571.jpeg"
+                      src="https://avatars.githubusercontent.com/u/48167381?s=160&v=4"
                       alt="Cliente"
                       className="rounded-full w-8 h-8"
                     />
@@ -588,7 +588,7 @@ export function Dashboards() {
                 <div className="flex items-center space-x-2">
                   <div className="avatar avatar-xs">
                     <img
-                      src="https://iustitia-io-avatars.s3.amazonaws.com/45ae093eae54441f8556bab9910e466815457571.jpeg"
+                      src="https://avatars.githubusercontent.com/u/48167381?s=160&v=4"
                       alt="Cliente"
                       className="rounded-full w-8 h-8"
                     />
@@ -614,7 +614,7 @@ export function Dashboards() {
                 <div className="flex items-center space-x-2">
                   <div className="avatar avatar-xs">
                     <img
-                      src="https://iustitia-io-avatars.s3.amazonaws.com/45ae093eae54441f8556bab9910e466815457571.jpeg"
+                      src="https://avatars.githubusercontent.com/u/48167381?s=160&v=4"
                       alt="Cliente"
                       className="rounded-full w-8 h-8"
                     />

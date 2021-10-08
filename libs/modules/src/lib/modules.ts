@@ -32,11 +32,11 @@ export const Modules: ModulesInterface[] = [
         subItems: [
           {
             name: "Escritórios",
-            link: "relatorio/escritorios",
+            link: "/relatorios/escritorios",
           },
           {
             name: "Processos",
-            link: "relatorio/processos",
+            link: "/relatorios/processos",
           },
         ],
       },
