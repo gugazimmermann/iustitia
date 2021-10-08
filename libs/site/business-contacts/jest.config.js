@@ -1,9 +1,9 @@
 module.exports = {
-  displayName: "site-contacts",
+  displayName: "site-business-contacts",
   preset: "../../../jest.preset.js",
   transform: {
     "^.+\\.[tj]sx?$": "babel-jest",
   },
   moduleFileExtensions: ["ts", "tsx", "js", "jsx"],
-  coverageDirectory: "../../../coverage/libs/site/contacts",
+  coverageDirectory: "../../../coverage/libs/site/business-contacts",
 };

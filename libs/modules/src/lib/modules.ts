@@ -116,14 +116,22 @@ export const Modules: ModulesInterface[] = [
     singular: "Cadastro",
     plural: "Cadastros",
     routes: {
-      listPersons: "/cadastros/pessoas",
-      addPerson: "/cadastros/pessoas/adicionar",
-      updatePerson: "/cadastros/pessoas/alterar/:id",
-      detailsPerson: "/cadastros/pessoas/:id?",
+      listPersons: "/cadastros/clientes",
+      addPerson: "/cadastros/clientes/adicionar",
+      updatePerson: "/cadastros/clientes/alterar",
+      detailsPerson: "/cadastros/clientes?",
+      listContacts: "/cadastros/contatos",
+      addContact: "/cadastros/contatos/adicionar",
+      updateContact: "/cadastros/contatos/alterar",
+      detailsContact: "/cadastros/contatos?",
+      listSuppliers: "/cadastros/fornecedores",
+      addSupplier: "/cadastros/fornecedores/adicionar",
+      updateSupplier: "/cadastros/fornecedores/alterar",
+      detailsSupplier: "/cadastros/fornecedores?",
       listCompanies: "/cadastros/empresas",
       addCompany: "/cadastros/empresas/adicionar",
-      updateCompany: "/cadastros/empresas/alterar/:id",
-      detailsCompany: "/cadastros/empresas/:id?",
+      updateCompany: "/cadastros/empresas/alterar",
+      detailsCompany: "/cadastros/empresas?",
     },
     menu: [
       {
@@ -194,8 +202,8 @@ export const Modules: ModulesInterface[] = [
     routes: {
       list: "/financeiro",
       add: "/financeiro/adicionar",
-      update: "/financeiro/alterar/:id",
-      details: "/financeiro/:id?",
+      update: "/financeiro/alterar",
+      details: "/financeiro?",
     },
     menu: [
       {

@@ -1,20 +1,18 @@
 import { useHistory } from "react-router-dom";
-import {
-  ArrowDownIcon,
-  ArrowUpIcon,
-  EyeIcon,
-  PenIcon,
-  TrashIcon,
-} from "@iustitia/site/shared-components";
 import { formatAddress, getUserInitials } from "@iustitia/site/shared-utils";
-import { ContactServices} from "@iustitia/site/services";
-import { ContactInterface, route } from "../../Contacts";
+import { GetModule, ModulesEnum, GetRoutes, BCRoutesInterface } from "@iustitia/modules";
+import { ArrowDownIcon, ArrowUpIcon, EyeIcon, PenIcon, TrashIcon } from "@iustitia/site/icons";
+import { BusinessContactsServices } from "@iustitia/site/services";
+
+const BCRoutes = GetRoutes(ModulesEnum.businessContacts) as BCRoutesInterface;
+
+type BCPersonsType = BusinessContactsServices.BCPersonsRes;
 
 export interface ListProps {
-  dataList: ContactInterface[];
+  dataList: BCPersonsType[];
   sort: string;
   setSort(order: "ASC" | "DESC"): void;
-  setSelected(delected: ContactInterface): void;
+  setSelected(delected: BCPersonsType): void;
   setConfirm(confirm: boolean): void;
 }
 
@@ -95,7 +93,7 @@ export function List({
                     <div className="w-5 mr-3 transform hover:text-purple-500 hover:scale-110">
                       <div
                         onClick={() =>
-                          history.push(`${route}/${data.id}`)
+                          history.push(`${BCRoutes.listPersons}/${data.id}`)
                         }
                         className="w-5 mr-3 transform hover:text-purple-500 hover:scale-110"
                       >
@@ -104,7 +102,7 @@ export function List({
                     </div>
                     <div
                       onClick={() =>
-                        history.push(`${route}/edit/${data.id}`)
+                        history.push(`${BCRoutes.updatePerson}/${data.id}`)
                       }
                       className="w-5 mr-3 transform hover:text-purple-500 hover:scale-110"
                     >

@@ -13,7 +13,6 @@ export interface AttachmentsGetAllReq {
 
 export interface AttachmentsCreateReq {
   formData: FormData;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onUploadProgress: any;
 }
 

@@ -45,6 +45,9 @@
       "@iustitia/routes": ["libs/routes/src/index.ts"],
       "@iustitia/site/attachments": ["libs/site/attachments/src/index.ts"],
       "@iustitia/site/auth": ["libs/site/auth/src/index.ts"],
+      "@iustitia/site/business-contacts": [
+        "libs/site/business-contacts/src/index.ts"
+      ],
       "@iustitia/site/dashboards": ["libs/site/dashboards/src/index.ts"],
       "@iustitia/site/icons": ["libs/site/icons/src/index.ts"],
       "@iustitia/site/layout": ["libs/site/layout/src/index.ts"],

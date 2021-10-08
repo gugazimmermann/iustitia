@@ -19,7 +19,7 @@ export interface ModulesInterface {
   | ProfilesRoutesInterface
   | PlacesRoutesInterface
   | MembersRoutesInterface
-  | BusinessContactsRoutesInterface
+  | BCRoutesInterface
   | ScheduleRoutesInterface
   | FinancialRoutesInterface
   menu: MenuItemInterface[];
@@ -63,11 +63,19 @@ export interface MembersRoutesInterface {
   invite: string;
 }
 
-export interface BusinessContactsRoutesInterface {
+export interface BCRoutesInterface {
   listPersons: string;
   addPerson: string;
   updatePerson: string;
   detailsPerson: string;
+  listContacts: string;
+  addContact: string;
+  updateContact: string;
+  detailsContact: string;
+  listSuppliers: string;
+  addSupplier: string;
+  updateSupplier: string;
+  detailsSupplier: string;
   listCompanies: string;
   addCompany: string;
   updateCompany: string;

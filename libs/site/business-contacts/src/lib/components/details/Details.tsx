@@ -12,16 +12,21 @@ import {
   ConfirmationModal,
   AlertInterface,
 } from "@iustitia/site/shared-components";
-import { SiteRoutes } from "@iustitia/react-routes";
-import { ContactInterface, PlaceInterface, NoteInterface, AttachmentInterface } from "../../Contacts";
-import {
-  NoteServices,
-  AttchmentServices
-} from "@iustitia/site/services";
+import { GetModule, ModulesEnum, ModulesInterface, GetRoutes, BCRoutesInterface } from "@iustitia/modules";
+import { AttachmentsServices, BusinessContactsServices, NotesServices, PlacesServices } from "@iustitia/site/services";
+
+const BCModule = GetModule(ModulesEnum.businessContacts) as ModulesInterface;
+const BCRoutes = GetRoutes(ModulesEnum.businessContacts) as BCRoutesInterface;
+
+type BCPersonsType = BusinessContactsServices.BCPersonsRes;
+type BCCompaniesType = BusinessContactsServices.BCCompaniesRes;
+type PlacesType = PlacesServices.PlacesRes;
+type NotesType = NotesServices.NotesRes;
+type AttachmentsType = AttachmentsServices.AttachmentsRes;
 
 export interface DetailsProps {
-  data: ContactInterface;
-  places?: PlaceInterface[];
+  data: BCPersonsType;
+  places?: PlacesType[];
   edit(): void;
 }
 
@@ -34,17 +39,17 @@ export function Details({ data, places, edit }: DetailsProps) {
     time: 3000,
   });
 
-  const [notesList, setNotesList] = useState<NoteInterface[]>();
+  const [notesList, setNotesList] = useState<NotesType[]>();
   const [showNoteModal, setShowNoteModal] = useState(false);
-  const [editNote, setEditNote] = useState<NoteInterface>();
-  const [selectedNote, setSelectedNote] = useState<NoteInterface>();
+  const [editNote, setEditNote] = useState<NotesType>();
+  const [selectedNote, setSelectedNote] = useState<NotesType>();
   const [confirmNote, setConfirmNote] = useState(false);
 
-  const [attList, setAttList] = useState<AttachmentInterface[]>();
+  const [attList, setAttList] = useState<AttachmentsType[]>();
   const [showAttModal, setShowAttModal] = useState(false);
   const [attUploadProgress, setAttUploadProgress] = useState<number>();
   const [selectedAttchment, setSelectedAttchment] =
-    useState<AttachmentInterface>();
+    useState<AttachmentsType>();
   const [confirmAttchment, setConfirmAttchment] = useState(false);
 
   useEffect(() => {
@@ -57,9 +62,8 @@ export function Details({ data, places, edit }: DetailsProps) {
 
   async function getAllNotes(id: string) {
     try {
-      const notes = await NoteServices.getAll(id);
-      setNotesList(notes as NoteServices.NoteInterface[]);
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const notes = await NotesServices.getAll({ownerId: id});
+      setNotesList(notes as NotesType[]);
     } catch (err: any) {
       setShowAlert({
         show: true,
@@ -72,9 +76,8 @@ export function Details({ data, places, edit }: DetailsProps) {
 
   async function getAllAttachments(id: string) {
     try {
-      const atts = await AttchmentServices.getAll(id);
-      setAttList(atts as AttchmentServices.AttachmentInterface[]);
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const atts = await AttachmentsServices.getAll({ownerId: id});
+      setAttList(atts as AttachmentsType[]);
     } catch (err: any) {
       setShowAlert({
         show: true,
@@ -85,7 +88,7 @@ export function Details({ data, places, edit }: DetailsProps) {
     }
   }
 
-  async function receiveNoteFromModal(note: NoteServices.NoteInterface) {
+  async function receiveNoteFromModal(note: NotesType) {
     if (!editNote?.id) {
       createNote(note);
     } else {
@@ -93,14 +96,13 @@ export function Details({ data, places, edit }: DetailsProps) {
     }
   }
 
-  async function createNote(note:  NoteServices.NoteInterface) {
+  async function createNote(note:  NotesType) {
     setLoading(true);
     try {
       const ownerId = data.id as string;
-      await NoteServices.create({ ...note, ownerId });
+      await NotesServices.create({ formData: {...note, ownerId} });
       await getAllNotes(ownerId);
       setLoading(false);
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       setLoading(false);
       setShowAlert({
@@ -112,13 +114,12 @@ export function Details({ data, places, edit }: DetailsProps) {
     }
   }
 
-  async function updateNote(note: NoteServices.NoteInterface) {
+  async function updateNote(note: NotesType) {
     setLoading(true);
     try {
-      await NoteServices.update({ ...editNote, ...note });
+      await NotesServices.update({formData: { ...editNote, ...note }});
       await getAllNotes(data.id as string);
       setLoading(false);
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       setLoading(false);
       setShowAlert({
@@ -145,16 +146,14 @@ export function Details({ data, places, edit }: DetailsProps) {
         formData.append("attachments", file, file.name);
       }
       formData.append("ownerId", data?.id as string);
-      await AttchmentServices.create(
-        formData,
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        (event: any) => {
-          setAttUploadProgress(Math.round((100 * event.loaded) / event.total));
-        }
-      );
+    await AttachmentsServices.create({
+      formData,
+      onUploadProgress: (event: any) => {
+        setAttUploadProgress(Math.round((100 * event.loaded) / event.total));
+      }
+    });
       getAllAttachments(data?.id as string);
       setLoading(false);
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       setLoading(false);
       setShowAlert({
@@ -178,10 +177,9 @@ export function Details({ data, places, edit }: DetailsProps) {
   async function deleteOneNote() {
     setLoading(true);
     try {
-      await NoteServices.deleteOne(selectedNote?.id as string);
+      await NotesServices.deleteOne({id: selectedNote?.id as string});
       getAllNotes(data?.id as string);
       setLoading(false);
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       setLoading(false);
       setShowAlert({
@@ -196,12 +194,9 @@ export function Details({ data, places, edit }: DetailsProps) {
   async function deleteOneAttachment() {
     setLoading(true);
     try {
-      await AttchmentServices.deleteOne(
-        selectedAttchment?.id as string
-      );
+      await AttachmentsServices.deleteOne({id: selectedAttchment?.id as string});
       getAllAttachments(data?.id as string);
       setLoading(false);
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       setLoading(false);
       setShowAlert({
@@ -257,9 +252,9 @@ export function Details({ data, places, edit }: DetailsProps) {
             <p className="col-span-3 font-bold">Contato de</p>
             <p className="col-span-9">
               {data.userId && `Pessoal`}
-              {data.officeId &&
-                places?.find((o) => o.id === data.officeId)?.name}
-              {!data.userId && !data.officeId && `Geral`}
+              {data.placeId &&
+                places?.find((o) => o.id === data.placeId)?.name}
+              {!data.userId && !data.placeId && `Geral`}
             </p>
           </div>
           {data.phone && (
@@ -308,7 +303,7 @@ export function Details({ data, places, edit }: DetailsProps) {
               <p className="col-span-9">
                 {data.position} {data.position && data.company && `em`}{" "}
                 <Link
-                  to={`${SiteRoutes.Companies}/${data.companyId}`}
+                  to={`${BCRoutes.detailsCompany}/${data.companyId}`}
                   className="underline"
                 >
                   {data.company}

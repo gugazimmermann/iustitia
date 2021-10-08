@@ -691,6 +691,29 @@
         }
       }
     },
+    "site-business-contacts": {
+      "root": "libs/site/business-contacts",
+      "sourceRoot": "libs/site/business-contacts/src",
+      "projectType": "library",
+      "targets": {
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": [
+              "libs/site/business-contacts/**/*.{ts,tsx,js,jsx}"
+            ]
+          }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/site/business-contacts"],
+          "options": {
+            "jestConfig": "libs/site/business-contacts/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
     "site-dashboards": {
       "root": "libs/site/dashboards",
       "sourceRoot": "libs/site/dashboards/src",

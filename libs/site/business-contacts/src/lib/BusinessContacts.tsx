@@ -5,26 +5,30 @@ import {
   AlertInterface,
   ConfirmationModal,
   Header,
-  SearchIcon,
 } from "@iustitia/site/shared-components";
 import { WARNING_TYPES } from "@iustitia/site/shared-utils";
+import { SearchIcon } from "@iustitia/site/icons";
 import {
-  ContactServices,
-  PlaceServices,
-  CompanyService,
-  NoteServices,
-  AttchmentServices
+  BusinessContactsServices,
+  PlacesServices,
 } from "@iustitia/site/services";
+import {
+  GetModule,
+  ModulesEnum,
+  ModulesInterface,
+  GetRoutes,
+  BCRoutesInterface,
+} from "@iustitia/modules";
 import { Details, Form, List } from "./components";
 
-export const { route, singular, parents, plural } = ContactServices.ContactModule;
-export type ContactInterface = ContactServices.ContactInterface;
-export type PlaceInterface = PlaceServices.PlaceInterface;
-export type CompanyInterface = CompanyService.CompanyInterface;
-export type NoteInterface = NoteServices.NoteInterface;
-export type AttachmentInterface = AttchmentServices.AttachmentInterface;
+const BCModule = GetModule(ModulesEnum.businessContacts) as ModulesInterface;
+const BCRoutes = GetRoutes(ModulesEnum.businessContacts) as BCRoutesInterface;
 
-export function Contacts() {
+type BCPersonsType = BusinessContactsServices.BCPersonsRes;
+type BCCompaniesType = BusinessContactsServices.BCCompaniesRes;
+type PlacesType = PlacesServices.PlacesRes;
+
+export function BusinessContacts() {
   const history = useHistory();
   const location = useLocation();
   const { pathname } = useLocation();
@@ -42,11 +46,11 @@ export function Contacts() {
   });
   const [back, setBack] = useState(false);
   const [confirm, setConfirm] = useState(false);
-  const [dataList, setDataList] = useState([] as ContactInterface[]);
-  const [showDataList, setShowDataList] = useState([] as ContactInterface[]);
-  const [selected, setSelected] = useState({} as ContactInterface);
-  const [places, setPlaces] = useState<PlaceInterface[]>();
-  const [companies, setCompanies] = useState<CompanyInterface[]>();
+  const [dataList, setDataList] = useState([] as BCPersonsType[]);
+  const [showDataList, setShowDataList] = useState([] as BCPersonsType[]);
+  const [selected, setSelected] = useState({} as BCPersonsType);
+  const [places, setPlaces] = useState<PlacesType[]>();
+  const [companies, setCompanies] = useState<BCCompaniesType[]>();
   const [selectedType, setSelectedType] = useState<string>("Personal");
   const [searchParam, setSearchParam] = useState<string>();
   const [sort, setSort] = useState("ASC");
@@ -54,13 +58,13 @@ export function Contacts() {
   useEffect(() => {
     seePlaces();
     seeCompanies();
-    if (pathname.includes("add")) {
+    if (pathname.includes("adicionar")) {
       setBack(true);
       setShowList(false);
       setShowDetails(false);
       setShowUpdade(false);
       setShowCreate(true);
-    } else if (pathname.includes("edit")) {
+    } else if (pathname.includes("alterar")) {
       getSelected(id);
       setBack(true);
       setShowList(false);
@@ -94,7 +98,7 @@ export function Contacts() {
 
   async function seePlaces() {
     try {
-      const places = (await PlaceServices.getAll()) as PlaceInterface[];
+      const places = (await PlacesServices.getAll()) as PlacesType[];
       if (places.length) setPlaces(places);
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
@@ -103,15 +107,15 @@ export function Contacts() {
         message: err.message as string,
         type: WARNING_TYPES.ERROR,
         time: 3000,
-      })
+      });
     }
   }
 
   async function seeCompanies() {
     try {
-      const companies = await CompanyService.getAll();
-      if ((companies as CompanyInterface[]).length)
-        setCompanies(companies as CompanyInterface[]);
+      const companies = await BusinessContactsServices.getAllPersons();
+      if ((companies as BCCompaniesType[]).length)
+        setCompanies(companies as BCCompaniesType[]);
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       setShowAlert({
@@ -119,13 +123,13 @@ export function Contacts() {
         message: err.message as string,
         type: WARNING_TYPES.ERROR,
         time: 3000,
-      })
+      });
     }
   }
 
   async function getSelected(id: string) {
     try {
-      const data = await ContactServices.getOne(id);
+      const data = await BusinessContactsServices.getOnePerson({ id });
       setSelected(data);
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
@@ -134,8 +138,8 @@ export function Contacts() {
         message: err.message as string,
         type: WARNING_TYPES.ERROR,
         time: 3000,
-      })
-      history.push(route);
+      });
+      history.push(BCRoutes.listPersons);
     }
   }
 
@@ -153,7 +157,7 @@ export function Contacts() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sort]);
 
-  function handleSort(data?: ContactInterface[]) {
+  function handleSort(data?: BCPersonsType[]) {
     const sortData = data ? data : dataList.slice(0);
     if (sortData) {
       if (sort === "ASC")
@@ -196,7 +200,7 @@ export function Contacts() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchParam]);
 
-  function handleSearch(data: ContactInterface[], param: string) {
+  function handleSearch(data: BCPersonsType[], param: string) {
     const res = data.filter((d) => d.name?.includes(param));
     setShowDataList(res);
   }
@@ -225,13 +229,13 @@ export function Contacts() {
       <button
         onClick={() => {
           if (back) {
-            if (location.pathname !== route) {
-              history.push(route);
+            if (location.pathname !== BCRoutes.listPersons) {
+              history.push(BCRoutes.listPersons);
             } else {
               reloadList();
             }
           } else {
-            history.push(`${route}/add`);
+            history.push(`${BCRoutes.addPerson}`);
           }
         }}
         className={`px-4 py-2 text-sm text-white rounded-md ${
@@ -240,19 +244,20 @@ export function Contacts() {
             : `bg-secondary-500 hover:bg-secondary-700 `
         }`}
       >
-        {back ? "Listagem" : `Adicionar ${singular}`}
+        {back ? "Listagem" : `Adicionar ${BCModule.singular}`}
       </button>
     );
   };
 
   async function getDataList(selectedType: string) {
     try {
-      const allData = (await ContactServices.getAll()) as ContactInterface[];
-      let data: ContactInterface[] = [];
+      const allData =
+        (await BusinessContactsServices.getAllPersons()) as BCPersonsType[];
+      let data: BCPersonsType[] = [];
       if (selectedType === "All") data = allData;
       if (selectedType === "Personal") data = allData.filter((d) => d.userId);
       if (selectedType !== "All" && selectedType !== "Personal")
-        data = allData.filter((d) => d.officeId === selectedType);
+        data = allData.filter((d) => d.placeId === selectedType);
       setDataList(data);
       handleSort(data);
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -262,26 +267,26 @@ export function Contacts() {
         message: err.message as string,
         type: WARNING_TYPES.ERROR,
         time: 3000,
-      })
+      });
     }
   }
 
   function handleEdit() {
-    history.push(`${route}/edit/${selected?.id}`);
+    history.push(`${BCRoutes.updatePerson}/${selected?.id}`);
   }
 
   async function handleCreate(data: FormData) {
     setLoading(true);
     try {
-      await ContactServices.create(data);
+      await BusinessContactsServices.createPerson({ formData: data });
       reloadList();
-      history.push(route);
+      history.push(BCRoutes.listPersons);
       setShowAlert({
         show: true,
-        message: `${singular} cadastrado com sucesso.`,
+        message: `${BCModule.singular} cadastrado com sucesso.`,
         type: WARNING_TYPES.SUCCESS,
         time: 3000,
-      })
+      });
       setLoading(false);
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
@@ -291,22 +296,22 @@ export function Contacts() {
         message: err.message as string,
         type: WARNING_TYPES.ERROR,
         time: 3000,
-      })
+      });
     }
   }
 
   async function handleUpate(data: FormData) {
     setLoading(true);
     try {
-      await ContactServices.update(data);
+      await BusinessContactsServices.updatePerson({ formData: data });
       reloadList();
-      history.push(route);
+      history.push(BCRoutes.listPersons);
       setShowAlert({
         show: true,
-        message: `${singular} alterado com sucesso.`,
+        message: `${BCModule.singular} alterado com sucesso.`,
         type: WARNING_TYPES.INFO,
         time: 3000,
-      })
+      });
       setLoading(false);
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
@@ -316,7 +321,7 @@ export function Contacts() {
         message: err.message as string,
         type: WARNING_TYPES.ERROR,
         time: 3000,
-      })
+      });
     }
   }
 
@@ -324,14 +329,14 @@ export function Contacts() {
     if (selected.id) {
       setLoading(true);
       try {
-        await ContactServices.deleteOne(selected.id);
+        await BusinessContactsServices.deleteOnePerson({id: selected.id});
         reloadList();
         setShowAlert({
           show: true,
-          message: `${singular} removido com sucesso.`,
+          message: `${BCModule.singular} removido com sucesso.`,
           type: WARNING_TYPES.WARNING,
           time: 3000,
-        })
+        });
         setLoading(false);
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } catch (err: any) {
@@ -341,7 +346,7 @@ export function Contacts() {
           message: err.message as string,
           type: WARNING_TYPES.ERROR,
           time: 3000,
-        })
+        });
       }
     }
   }
@@ -349,8 +354,8 @@ export function Contacts() {
   return (
     <>
       <Header
-        before={parents}
-        main={plural}
+        before={[""]}
+        main={BCModule.singular}
         select={showList ? createSelect : undefined}
         search={createSearch}
         button={createButton}
@@ -360,7 +365,9 @@ export function Contacts() {
         <div className="flex items-center justify-center overflow-hidden p-2">
           <div className="w-full">
             <div className="bg-white shadow-sm rounded">
-              {showAlert.show && <Alert alert={showAlert} setAlert={setShowAlert} />}
+              {showAlert.show && (
+                <Alert alert={showAlert} setAlert={setShowAlert} />
+              )}
               {showList && (
                 <List
                   dataList={showDataList}
@@ -394,8 +401,8 @@ export function Contacts() {
                 <ConfirmationModal
                   setConfirm={setConfirm}
                   type={WARNING_TYPES.ERROR}
-                  title={`Excluir ${singular}: ${selected.name}?`}
-                  content={`Você tem certeza que quer excluir o ${singular} ${selected.name}? Todos os dados desse ${singular} serão perdidos. Essa ação não poderá ser desfeita.`}
+                  title={`Excluir ${BCModule.singular}: ${selected.name}?`}
+                  content={`Você tem certeza que quer excluir o ${BCModule.singular} ${selected.name}? Todos os dados desse ${BCModule.singular} serão perdidos. Essa ação não poderá ser desfeita.`}
                   action={handleDelete}
                 />
               )}
@@ -407,4 +414,4 @@ export function Contacts() {
   );
 }
 
-export default Contacts;
+export default BusinessContacts;

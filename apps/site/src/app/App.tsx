@@ -2,6 +2,7 @@ import { Route, Switch } from "react-router";
 import { PublicRoute, ProtectedRoute } from "@iustitia/routes";
 import {
   AuthRoutesInterface,
+  BCRoutesInterface,
   DashboardsRoutesInterface,
   GetRoutes,
   MembersRoutesInterface,
@@ -26,6 +27,7 @@ import { Profiles } from "@iustitia/site/profiles";
 import { Subscriptions } from "@iustitia/site/subscriptions";
 import { Places } from "@iustitia/site/places";
 import { Members } from "@iustitia/site/members";
+import { BusinessContacts } from "@iustitia/site/business-contacts";
 import { NotFound } from "@iustitia/site/not-found";
 
 const authRoutes = GetRoutes(ModulesEnum.auth) as AuthRoutesInterface;
@@ -34,6 +36,7 @@ const profilesRoutes = GetRoutes(ModulesEnum.profiles) as ProfilesRoutesInterfac
 const subscriptionsRoutes = GetRoutes(ModulesEnum.subscriptions) as SubscriptionsRoutesInterface;
 const placesRoutes = GetRoutes(ModulesEnum.places) as PlacesRoutesInterface;
 const membersRoutes = GetRoutes(ModulesEnum.members) as MembersRoutesInterface;
+const businessContactsRoutes = GetRoutes(ModulesEnum.businessContacts) as BCRoutesInterface;
 
 export const App = () => {
   return (
@@ -119,7 +122,7 @@ export const App = () => {
           <Places />
         </Layout>
       </ProtectedRoute>
-      <ProtectedRoute exact path={`${placesRoutes.add}/:id`}>
+      <ProtectedRoute exact path={`${placesRoutes.add}`}>
         <Layout>
           <Places />
         </Layout>
@@ -140,7 +143,7 @@ export const App = () => {
           <Members />
         </Layout>
       </ProtectedRoute>
-      <ProtectedRoute exact path={`${membersRoutes.add}/:id`}>
+      <ProtectedRoute exact path={`${membersRoutes.add}`}>
         <Layout>
           <Members />
         </Layout>
@@ -148,6 +151,87 @@ export const App = () => {
       <ProtectedRoute exact path={`${membersRoutes.update}/:id`}>
         <Layout>
           <Members />
+        </Layout>
+      </ProtectedRoute>
+
+      <ProtectedRoute exact path={businessContactsRoutes.listPersons}>
+        <Layout>
+          <BusinessContacts />
+        </Layout>
+      </ProtectedRoute>
+      <ProtectedRoute exact path={`${businessContactsRoutes.detailsPerson}/:id`}>
+        <Layout>
+          <BusinessContacts />
+        </Layout>
+      </ProtectedRoute>
+      <ProtectedRoute exact path={`${businessContactsRoutes.addPerson}`}>
+        <Layout>
+          <BusinessContacts />
+        </Layout>
+      </ProtectedRoute>
+      <ProtectedRoute exact path={`${businessContactsRoutes.updatePerson}/:id`}>
+        <Layout>
+          <BusinessContacts />
+        </Layout>
+      </ProtectedRoute>
+      <ProtectedRoute exact path={businessContactsRoutes.listContacts}>
+        <Layout>
+          <BusinessContacts />
+        </Layout>
+      </ProtectedRoute>
+      <ProtectedRoute exact path={`${businessContactsRoutes.detailsContact}/:id`}>
+        <Layout>
+          <BusinessContacts />
+        </Layout>
+      </ProtectedRoute>
+      <ProtectedRoute exact path={`${businessContactsRoutes.addContact}`}>
+        <Layout>
+          <BusinessContacts />
+        </Layout>
+      </ProtectedRoute>
+      <ProtectedRoute exact path={`${businessContactsRoutes.updateContact}/:id`}>
+        <Layout>
+          <BusinessContacts />
+        </Layout>
+      </ProtectedRoute>
+      <ProtectedRoute exact path={businessContactsRoutes.listSuppliers}>
+        <Layout>
+          <BusinessContacts />
+        </Layout>
+      </ProtectedRoute>
+      <ProtectedRoute exact path={`${businessContactsRoutes.detailsSupplier}/:id`}>
+        <Layout>
+          <BusinessContacts />
+        </Layout>
+      </ProtectedRoute>
+      <ProtectedRoute exact path={`${businessContactsRoutes.addSupplier}`}>
+        <Layout>
+          <BusinessContacts />
+        </Layout>
+      </ProtectedRoute>
+      <ProtectedRoute exact path={`${businessContactsRoutes.updateSupplier}/:id`}>
+        <Layout>
+          <BusinessContacts />
+        </Layout>
+      </ProtectedRoute>
+      <ProtectedRoute exact path={businessContactsRoutes.listCompanies}>
+        <Layout>
+          <BusinessContacts />
+        </Layout>
+      </ProtectedRoute>
+      <ProtectedRoute exact path={`${businessContactsRoutes.detailsCompany}/:id`}>
+        <Layout>
+          <BusinessContacts />
+        </Layout>
+      </ProtectedRoute>
+      <ProtectedRoute exact path={`${businessContactsRoutes.addCompany}`}>
+        <Layout>
+          <BusinessContacts />
+        </Layout>
+      </ProtectedRoute>
+      <ProtectedRoute exact path={`${businessContactsRoutes.updateCompany}/:id`}>
+        <Layout>
+          <BusinessContacts />
         </Layout>
       </ProtectedRoute>
 

@@ -9,28 +9,47 @@ import {
   getUserInitials,
   validateEmail,
 } from "@iustitia/site/shared-utils";
-import {
-  LoadingButton,
-  UploadCloudIcon,
-} from "@iustitia/site/shared-components";
-import { CompanyInterface, ContactInterface, PlaceInterface, singular } from "../../Contacts";
+import {LoadingButton} from "@iustitia/site/shared-components";
+import { GetModule, ModulesEnum, ModulesInterface, GetRoutes, BCRoutesInterface } from "@iustitia/modules";
+import { UploadCloudIcon } from "@iustitia/site/icons";
+import { BusinessContactsServices, PlacesServices } from "@iustitia/site/services";
 
+const BCModule = GetModule(ModulesEnum.businessContacts) as ModulesInterface;
+const BCRoutes = GetRoutes(ModulesEnum.businessContacts) as BCRoutesInterface;
+
+type BCPersonsType = BusinessContactsServices.BCPersonsRes;
+type BCCompaniesType = BusinessContactsServices.BCCompaniesRes;
+type PlacesType = PlacesServices.PlacesRes;
 
 export interface FormProps {
   loading: boolean;
-  data?: ContactInterface;
-  places?: PlaceInterface[];
-  companies?: CompanyInterface[];
+  data?: BCPersonsType;
+  places?: PlacesType[];
+  companies?: BCCompaniesType[];
   create?(data: FormData): void;
   update?(data: FormData): void;
 }
 
-const schema = yup.object().shape({
+const schema = yup.object({
   name: yup.string().required(),
+  type: yup.string(),
+  avatar: yup.mixed(),
+  email: yup.string(),
+  phone: yup.string(),
+  zip: yup.string(),
+  address: yup.string(),
+  number: yup.string(),
+  complement: yup.string(),
+  neighborhood: yup.string(),
+  city: yup.string(),
+  state: yup.string(),
+  position: yup.string(),
+  companyId: yup.string(),
+  comments: yup.string(),
 });
 
 export function Form({ loading, data, places, companies, create, update }: FormProps) {
-  const defaultValues: ContactInterface = {
+  const defaultValues: BCPersonsType = {
     type: "Personal",
     name: data?.name || "",
     email: data?.email || "",
@@ -55,7 +74,7 @@ export function Form({ loading, data, places, companies, create, update }: FormP
     setError,
     clearErrors,
     formState: { errors },
-  } = useForm<ContactInterface>({
+  } = useForm({
     resolver: yupResolver(schema),
     defaultValues,
   });
@@ -81,8 +100,8 @@ export function Form({ loading, data, places, companies, create, update }: FormP
       setValue("companyId", data?.companyId);
       setValue("comments", data?.comments);
       if (data?.userId) setValue("type", "Personal");
-      if (data?.officeId) setValue("type", data.officeId);
-      if (!data?.userId && !data?.officeId) setValue("type", "All")
+      if (data?.placeId) setValue("type", data.placeId);
+      if (!data?.userId && !data?.placeId) setValue("type", "All")
     }
   }, [data, setValue]);
 
@@ -149,7 +168,7 @@ export function Form({ loading, data, places, companies, create, update }: FormP
     setSelectedFile(file);
   };
 
-  async function onSubmit(dataFromForm: ContactInterface) {
+  async function onSubmit(dataFromForm: BCPersonsType) {
     if (dataFromForm.zip && !validZip) {
       setError("zip", { type: "manual" });
       return;
@@ -520,8 +539,8 @@ export function Form({ loading, data, places, companies, create, update }: FormP
               type="submit"
               text={
                 create
-                  ? `Cadastrar ${singular}`
-                  : `Editar ${singular}`
+                  ? `Cadastrar ${BCModule.singular}`
+                  : `Editar ${BCModule.singular}`
               }
               loading={loading}
             />
