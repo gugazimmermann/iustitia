@@ -12,11 +12,7 @@ export function ProtectedRoute({ children, ...rest }: RouteProps) {
   const [user, setUser] = useState({} as UserType);
 
   useEffect(() => {
-    if (AuthServices.getUser()) {
-      currentUser();
-    } else {
-      setLoading(false);
-    }
+    currentUser();
   }, []);
 
   async function currentUser() {
@@ -27,7 +23,6 @@ export function ProtectedRoute({ children, ...rest }: RouteProps) {
     } catch (err) {
       AuthServices.logout();
       setLoading(false);
-      console.log(err);
     }
   }
 

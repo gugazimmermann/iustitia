@@ -6,14 +6,14 @@ interface TitleProps {
 
 export function Title({ title, subtitle, plan }: TitleProps) {
   return (
-    <section>
-      <h3 className="font-bold text-gray-700 text-2xl">{title}</h3>
+    <div className="mb-4 md:mb-6 md:mx-auto text-center">
+      <h1 className="text-2xl font-bold text-gray-700">{title}</h1>
       {subtitle && (
         <p className="text-gray-600 pt-2">
           {subtitle} {plan && <span className="font-bold">{plan}</span>}
         </p>
       )}
-    </section>
+    </div>
   );
 }
 

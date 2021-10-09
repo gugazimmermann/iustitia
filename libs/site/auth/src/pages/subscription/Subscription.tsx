@@ -9,8 +9,14 @@ import {
 import { WARNING_TYPES } from "@iustitia/site/shared-utils";
 import { AuthServices, SubscriptionsServices } from "@iustitia/site/services";
 import { GetRoutes, ModulesEnum, AuthRoutesInterface } from "@iustitia/modules";
-import { CardToken, CreateCardToken, Identification, MercadoPago } from "./protocols";
+import {
+  CardToken,
+  CreateCardToken,
+  Identification,
+  MercadoPago,
+} from "./protocols";
 import { SignUpForm } from "..";
+import { Title } from "../../components";
 
 type PlanType = SubscriptionsServices.PlanRes;
 
@@ -23,7 +29,7 @@ export interface SubscriptionForm {
   securityCode: string;
   documentType: string;
   document: string;
-};
+}
 
 const PUBLIC_KEY =
   process.env.NX_STAGE === "dev"
@@ -156,14 +162,10 @@ export function Subscription() {
     return <Redirect to={authRoutes.signUp} />;
   } else {
     return (
-      <main className="bg-white max-w-lg mx-auto p-8 md:p-12 my-10 rounded-lg shadow-2xl">
+      <main className="bg-white max-w-lg mx-auto p-4 md:p-6 my-10 rounded-lg shadow-2xl">
+        <Title title="Pagamento da Assinatura" />
         {showAlert.show && <Alert alert={showAlert} setAlert={setShowAlert} />}
         <section>
-          <div className="mb-4 md:mb-6 md:mx-auto text-center">
-            <h1 className="mb-2 text-2xl font-bold text-gray-700">
-              Pagamento da Assinatura
-            </h1>
-          </div>
           <div className="flex flex-col md:flex-row items-center justify-between mb-4">
             <p className="text-base font-bold uppercase text-center">
               {plan?.reason}

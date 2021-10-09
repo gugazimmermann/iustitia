@@ -116,14 +116,14 @@ export function Invite() {
   };
 
   return (
-    <main className="bg-white max-w-lg mx-auto p-8 md:p-12 my-10 rounded-lg shadow-2xl">
+    <main className="bg-white max-w-lg mx-auto p-4 md:p-6 my-10 rounded-lg shadow-2xl">
       <Title title="Convite" />
       {showAlert.show && <Alert alert={showAlert} setAlert={setShowAlert} />}
       <section className="mt-5">
         <form className="flex flex-col" onSubmit={handleSubmit(onSubmit)}>
-          <div className="mb-6 rounded">
+          <div className="mb-2 rounded">
             <label
-              className="block text-gray-700 text-sm font-bold mb-2 ml-3"
+              className="block text-gray-700 text-sm font-bold mb-1 ml-2"
               htmlFor="code"
             >
               Código
@@ -134,14 +134,14 @@ export function Invite() {
               disabled={!!codeUrl}
               {...register("code", { required: true })}
               className={
-                `bg-gray-200 rounded w-full text-gray-700 focus:outline-none border-b-4 border-gray-300 transition duration-500 px-3 pb-3 ` +
+                `bg-gray-200 rounded w-full text-gray-700 focus:outline-none border-b-4 border-gray-300 transition duration-500 px-2 pb-1 ` +
                 (errors.code ? `border-red-600 ` : `focus:border-primary-600`)
               }
             />
           </div>
-          <div className="mb-6 rounded">
+          <div className="mb-2 rounded">
             <label
-              className="block text-gray-700 text-sm font-bold mb-2 ml-3"
+              className="block text-gray-700 text-sm font-bold mb-1 ml-2"
               htmlFor="newpassword"
             >
               Cadastre sua Senha
@@ -151,16 +151,16 @@ export function Invite() {
               id="newpassword"
               {...register("newpassword", { required: true })}
               className={
-                `bg-gray-200 rounded w-full text-gray-700 focus:outline-none border-b-4 border-gray-300 transition duration-500 px-3 pb-3 ` +
+                `bg-gray-200 rounded w-full text-gray-700 focus:outline-none border-b-4 border-gray-300 transition duration-500 px-2 pb-1 ` +
                 (errors.newpassword
                   ? `border-red-600 `
                   : `focus:border-primary-600`)
               }
             />
           </div>
-          <div className="mb-6 rounded">
+          <div className="mb-2 rounded">
             <label
-              className="block text-gray-700 text-sm font-bold mb-2 ml-3"
+              className="block text-gray-700 text-sm font-bold mb-1 ml-2"
               htmlFor="repeatnewpassword"
             >
               Repita a Senha
@@ -170,7 +170,7 @@ export function Invite() {
               id="repeatnewpassword"
               {...register("repeatnewpassword", { required: true })}
               className={
-                `bg-gray-200 rounded w-full text-gray-700 focus:outline-none border-b-4 border-gray-300 transition duration-500 px-3 pb-3 ` +
+                `bg-gray-200 rounded w-full text-gray-700 focus:outline-none border-b-4 border-gray-300 transition duration-500 px-2 pb-1 ` +
                 (errors.repeatnewpassword
                   ? `border-red-600 `
                   : `focus:border-primary-600`)

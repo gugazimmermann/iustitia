@@ -7,6 +7,7 @@ import { PlanBasicIcon, PlanProfessionalIcon } from "@iustitia/site/icons";
 import { GetRoutes, ModulesEnum, AuthRoutesInterface } from "@iustitia/modules";
 import { BasicFeatures, ProfessionalFeatures } from "./features";
 import { SignUpForm } from "..";
+import { Title } from "../../components";
 
 type PlanType = SubscriptionsServices.PlanRes;
 
@@ -124,7 +125,7 @@ export function Plans() {
           message: err.message as string,
           type: WARNING_TYPES.ERROR,
           time: 3000,
-        })
+        });
       }
     }
   }
@@ -133,21 +134,17 @@ export function Plans() {
     return <Redirect to={authRoutes.signUp} />;
   } else {
     return (
-      <main className="bg-white max-w-lg mx-auto p-6 py-8 md:p-12 my-10 rounded-lg shadow-2xl">
+      <main className="bg-white max-w-lg mx-auto p-4 md:p-6 my-10 rounded-lg shadow-2xl">
+        <Title title="Selecione seu Plano" />
+        {showAlert.show && <Alert alert={showAlert} setAlert={setShowAlert} />}
         <section>
-          <div className="mb-4 md:mb-6 md:mx-auto text-center">
-            <h1 className="mb-2 text-2xl font-bold text-gray-700">
-              Selecione seu Plano
-            </h1>
-          </div>
-          {showAlert.show && <Alert alert={showAlert} setAlert={setShowAlert} />}
           <form className="flex flex-col">
-            <div className="mb-6 rounded">
+            <div className="mb-2 rounded">
               <select
                 id="plan"
                 value={selectedPlan || ""}
                 onChange={(e) => handleSelectPlan(e.target.value)}
-                className="bg-gray-200 rounded w-full text-gray-700 focus:outline-none border-b-4 border-gray-300 transition duration-500 px-3 pb-3"
+                className="bg-gray-200 rounded w-full text-gray-700 focus:outline-none border-b-4 border-gray-300 transition duration-500 px-2 pb-1"
               >
                 {plans &&
                   plans.length &&

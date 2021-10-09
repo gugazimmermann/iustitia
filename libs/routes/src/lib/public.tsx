@@ -16,11 +16,7 @@ export function PublicRoute({ children, ...rest }: RouteProps) {
   const [user, setUser] = useState({} as AuthServices.UserRes);
 
   useEffect(() => {
-    if (AuthServices.getUser()) {
-      currentUser();
-    } else {
-      setLoading(false);
-    }
+    currentUser();
   }, []);
 
   async function currentUser() {
@@ -31,7 +27,6 @@ export function PublicRoute({ children, ...rest }: RouteProps) {
     } catch (err) {
       AuthServices.logout();
       setLoading(false);
-      console.log(err);
     }
   }
 
@@ -45,3 +40,5 @@ export function PublicRoute({ children, ...rest }: RouteProps) {
     </div>
   );
 }
+
+export default PublicRoute;
