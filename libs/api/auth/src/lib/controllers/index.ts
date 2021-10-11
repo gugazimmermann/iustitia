@@ -3,7 +3,7 @@ import * as jwt from "jsonwebtoken";
 import * as bcrypt from "bcryptjs";
 import { v4 as uuidv4 } from 'uuid';
 import { DateTime } from "luxon";
-import * as mercadopago from 'mercadopago';
+// import * as mercadopago from 'mercadopago';
 import {  database } from '@iustitia/api/database';
 import { ForgotPasswordEmail } from '@iustitia/api/email';
 import { validateEmail } from "@iustitia/site/shared-utils";
@@ -13,12 +13,12 @@ import { createToken, createUser, createUserPayment, verifyExpiration } from '..
 
 const route = GetRoutes(ModulesEnum.auth) as AuthRoutesInterface;
 
-const ACCESS_TOKEN =
-  process.env.NX_STAGE === "dev"
-    ? process.env.NX_MERCADOPAGO_ACCESS_TOKEN_TEST
-    : process.env.NX_MERCADOPAGO_ACCESS_TOKEN;
+// const ACCESS_TOKEN =
+//   process.env.NX_STAGE === "dev"
+//     ? process.env.NX_MERCADOPAGO_ACCESS_TOKEN_TEST
+//     : process.env.NX_MERCADOPAGO_ACCESS_TOKEN;
 
-mercadopago.configure({ access_token: ACCESS_TOKEN as string });
+// mercadopago.configure({ access_token: ACCESS_TOKEN as string });
 
 export async function signup(req: Request, res: Response): Promise<Response> {
   if (!req.body?.name || !req.body?.password || !req.body?.email || !validateEmail(req.body.email) || !req.body?.planId) {
@@ -140,14 +140,10 @@ export async function forgotPassword(req: Request, res: Response): Promise<Respo
 }
 
 export async function forgotPasswordCode(req: Request, res: Response): Promise<Response> {
-  if (!req.body.urlcode) {
-    return res.status(400).json({ message: "Código é necessário!" });
-  }
+  if (!req.body.codeurl) return res.status(400).json({ message: "Código é necessário!" });
   try {
-    const forgotPassword = await database.ForgotPassword.findOne({ where: { codeurl: req.body.urlcode } });
-    if (!forgotPassword) {
-      return res.status(404).send({ message: "Código não encontrado!" });
-    }
+    const forgotPassword = await database.ForgotPassword.findOne({ where: { codeurl: req.body.codeurl } });
+    if (!forgotPassword) return res.status(404).send({ message: "Código não encontrado!" });
     return res.status(200).json({ code: forgotPassword.code });
   } catch (err) {
     return res.status(500).send({ message: err.message });

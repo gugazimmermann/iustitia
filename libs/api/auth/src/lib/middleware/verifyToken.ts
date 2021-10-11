@@ -19,10 +19,13 @@ function catchError(err, res) {
 export default function verifyToken(req, res, next) {
   const token = req.headers["x-access-token"];
   if (!token) return res.status(403).send({ message: "Token é necessário!" });
-  jwt.verify((token as string), config.jwtSecret, (err, decoded) => {
+  try {
+    const decoded = jwt.verify((token as string), config.jwtSecret);
     if (!decoded) return res.sendStatus(401).send({ message: "Não Autorizado!" });
-    if (err) return catchError(err, res);
-    req.userId = decoded.id;
+    req.userId = (decoded as jwt.JwtPayload).id;
     next();
-  });
+  } catch (err) {
+    return catchError(err, res);
+  }
+
 }

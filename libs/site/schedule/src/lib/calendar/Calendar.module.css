@@ -1,0 +1,20 @@
+.containerHeight {
+  height: calc(100%  - 4.5rem);
+}
+
+.mainHeight {
+  height: calc(100%  - 2.0rem);
+}
+
+.rowHeightMonth {
+  height: calc((100% / 5) - 0.5rem);
+}
+
+.rowHeightWeek {
+  height: calc(100% - 2.7rem);
+}
+
+.fullEvent {
+  width: calc(100% + 1px);
+}
+

@@ -69,9 +69,9 @@ export async function getAll(req, res): Promise<Response> {
     const data = await database.Users.findAll({
       where: {
         tenant: user.tenant,
-        id: {
-          [Op.not]: user.id
-        },
+        // id: {
+        //   [Op.not]: user.id
+        // },
       }, include: ["profile", "roles"]
     });
     const resultData = [] as MembersSimpleInterface[];

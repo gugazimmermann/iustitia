@@ -82,7 +82,6 @@ export function Places({ profile, setPlaces }: PlacesProps) {
         setWhatToShow("list");
       }
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id, pathname]);
 
   async function reloadList() {
@@ -100,7 +99,6 @@ export function Places({ profile, setPlaces }: PlacesProps) {
       const sortedData = Sort(data.slice(0), sort);
       setShowDataList(sortedData);
       setLoading(false);
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       setLoading(false);
       setShowAlert({
@@ -118,7 +116,6 @@ export function Places({ profile, setPlaces }: PlacesProps) {
       const data = (await PlacesServices.getOne({ id })) as PlacesType;
       setSelected(data);
       setLoading(false);
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       setLoading(false);
       setShowAlert({
@@ -147,7 +144,6 @@ export function Places({ profile, setPlaces }: PlacesProps) {
       id = newPlace.id as string;
       history.push(`${placesRoutes.details}/${newPlace.id}`);
       setLoading(false);
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       setLoading(false);
       setShowAlert({
@@ -172,7 +168,6 @@ export function Places({ profile, setPlaces }: PlacesProps) {
       reloadList();
       history.push(placesRoutes.list);
       setLoading(false);
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       setLoading(false);
       setShowAlert({
@@ -197,7 +192,6 @@ export function Places({ profile, setPlaces }: PlacesProps) {
         });
         reloadList();
         setLoading(false);
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } catch (err: any) {
         setLoading(false);
         setShowAlert({
@@ -213,7 +207,6 @@ export function Places({ profile, setPlaces }: PlacesProps) {
   useEffect(() => {
     const sortedData = Sort(dataList.slice(0), sort);
     setShowDataList(sortedData);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sort]);
 
   useEffect(() => {
@@ -226,7 +219,6 @@ export function Places({ profile, setPlaces }: PlacesProps) {
     } else {
       setShowDataList(data);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchParam]);
 
   const createSearch = () => {
@@ -248,7 +240,7 @@ export function Places({ profile, setPlaces }: PlacesProps) {
   return (
     <div className="container mx-auto">
       <Header
-        before={[""]}
+        before={[]}
         main={placesModule.plural}
         search={createSearch}
         button={createButton}

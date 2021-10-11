@@ -1,10 +1,10 @@
 import { render } from "@testing-library/react";
 
-import Schedule from "./Schedule";
+import Calendar from "./Calendar";
 
-describe("Schedule", () => {
+describe("Calendar", () => {
   it("should render successfully", () => {
-    const { baseElement } = render(<Schedule />);
+    const { baseElement } = render(<Calendar />);
     expect(baseElement).toBeTruthy();
   });
 });

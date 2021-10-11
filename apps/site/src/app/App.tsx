@@ -9,6 +9,7 @@ import {
   ModulesEnum,
   PlacesRoutesInterface,
   ProfilesRoutesInterface,
+  ScheduleRoutesInterface,
   SubscriptionsRoutesInterface,
 } from "@iustitia/modules";
 import {
@@ -28,6 +29,7 @@ import { Subscriptions } from "@iustitia/site/subscriptions";
 import { Places } from "@iustitia/site/places";
 import { Members } from "@iustitia/site/members";
 import { Persons, Companies } from "@iustitia/site/business-contacts";
+import { Calendar} from "@iustitia/site/schedule";
 import { NotFound } from "@iustitia/site/not-found";
 
 const authRoutes = GetRoutes(ModulesEnum.auth) as AuthRoutesInterface;
@@ -37,6 +39,8 @@ const subscriptionsRoutes = GetRoutes(ModulesEnum.subscriptions) as Subscription
 const placesRoutes = GetRoutes(ModulesEnum.places) as PlacesRoutesInterface;
 const membersRoutes = GetRoutes(ModulesEnum.members) as MembersRoutesInterface;
 const businessContactsRoutes = GetRoutes(ModulesEnum.businessContacts) as BCRoutesInterface;
+const scheduleRoutes = GetRoutes(ModulesEnum.schedule) as ScheduleRoutesInterface;
+
 
 export const App = () => {
   return (
@@ -232,6 +236,12 @@ export const App = () => {
       <ProtectedRoute exact path={`${businessContactsRoutes.updateCompany}/:id`}>
         <Layout>
           <Companies />
+        </Layout>
+      </ProtectedRoute>
+
+      <ProtectedRoute exact path={`${scheduleRoutes.calendar}`}>
+        <Layout>
+          <Calendar />
         </Layout>
       </ProtectedRoute>
 

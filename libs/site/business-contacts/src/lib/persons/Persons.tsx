@@ -87,20 +87,17 @@ export function Persons() {
         setShowCreate(false);
       }
     }
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id, pathname]);
 
   useEffect(() => {
     getDataList(selectedType);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedType]);
 
   async function seePlaces() {
     try {
-      const places = (await PlacesServices.getAll()) as PlacesType[];
+      const placesData = (await PlacesServices.getAll()) as PlacesType[];
+      const places = placesData.filter(p => p.active)
       if (places.length) setPlaces(places);
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       setShowAlert({
         show: true,
@@ -116,7 +113,6 @@ export function Persons() {
       const companies = await BusinessContactsServices.getAllPersons();
       if ((companies as BCCompaniesType[]).length)
         setCompanies(companies as BCCompaniesType[]);
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       setShowAlert({
         show: true,
@@ -131,7 +127,6 @@ export function Persons() {
     try {
       const data = await BusinessContactsServices.getOnePerson({ id });
       setSelected(data);
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       setShowAlert({
         show: true,
@@ -154,7 +149,6 @@ export function Persons() {
 
   useEffect(() => {
     handleSort();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sort]);
 
   function handleSort(data?: BCPersonsType[]) {
@@ -197,7 +191,6 @@ export function Persons() {
     } else {
       setShowDataList(data);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchParam]);
 
   function handleSearch(data: BCPersonsType[], param: string) {
@@ -260,7 +253,6 @@ export function Persons() {
         data = allData.filter((d) => d.placeId === selectedType);
       setDataList(data);
       handleSort(data);
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       setShowAlert({
         show: true,
@@ -288,7 +280,6 @@ export function Persons() {
         time: 3000,
       });
       setLoading(false);
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       setLoading(false);
       setShowAlert({
@@ -313,7 +304,6 @@ export function Persons() {
         time: 3000,
       });
       setLoading(false);
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       setLoading(false);
       setShowAlert({
@@ -338,7 +328,6 @@ export function Persons() {
           time: 3000,
         });
         setLoading(false);
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } catch (err: any) {
         setLoading(false);
         setShowAlert({
@@ -354,7 +343,7 @@ export function Persons() {
   return (
     <>
       <Header
-        before={[""]}
+        before={[]}
         main={BCModule.singular}
         select={showList ? createSelect : undefined}
         search={createSearch}

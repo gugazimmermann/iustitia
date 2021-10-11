@@ -57,8 +57,6 @@ export function Details({
       })) as PlacesType;
       setData(res);
       setLoading(false);
-
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       setShowAlert({
         show: true,
@@ -72,7 +70,6 @@ export function Details({
 
   useEffect(() => {
     getListOfMembers();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   async function getListOfMembers() {
@@ -81,7 +78,6 @@ export function Details({
       const res = (await MembersServices.getAll()) as MembersSimpleType[];
       setMembersList(res);
       setLoading(false);
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       setShowAlert({
         show: true,
@@ -96,7 +92,6 @@ export function Details({
   useEffect(() => {
     if (data.managersPlace) addDataManagersToSelected(data.managersPlace);
     if (data.usersPlace) addDataUsersToSelected(data.usersPlace);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data.managersPlace]);
 
   function addDataManagersToSelected(managersPlace: ProfilesListType[]) {
@@ -134,7 +129,6 @@ export function Details({
       })) as PlacesType;
       setData(res);
       setLoading(false);
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       setShowAlert({
         show: true,
@@ -155,7 +149,6 @@ export function Details({
       })) as PlacesType;
       setData(res);
       setLoading(false);
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       setShowAlert({
         show: true,
