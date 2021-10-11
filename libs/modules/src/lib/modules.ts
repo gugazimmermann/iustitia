@@ -28,6 +28,7 @@ export const Modules: ModulesInterface[] = [
     menu: [
       {
         name: "Relatórios",
+        route: "relatorios",
         icon: "DashboardIcon",
         subItems: [
           {
@@ -73,6 +74,7 @@ export const Modules: ModulesInterface[] = [
     menu: [
       {
         name: "Escritórios",
+        route: "escritorios",
         icon: "PlacesIcon",
         subItems: [
           {
@@ -97,6 +99,7 @@ export const Modules: ModulesInterface[] = [
     menu: [
       {
         name: "Colaboradores",
+        route: "colaboradores",
         icon: "MembersIcon",
         subItems: [
           {
@@ -136,6 +139,7 @@ export const Modules: ModulesInterface[] = [
     menu: [
       {
         name: "Cadastros",
+        route: "cadastros",
         icon: "BusinessContactsIcon",
         subItems: [
           {
@@ -175,12 +179,13 @@ export const Modules: ModulesInterface[] = [
     singular: "Eventos",
     plural: "Evento",
     routes: {
-      calendar: "/calendario",
-      schedule: "/agenda",
+      calendar: "/eventos/calendario",
+      schedule: "/eventos/agenda",
     },
     menu: [
       {
         name: "Agenda",
+        route: "eventos",
         icon: "ScheduleIcon",
         subItems: [
           {
@@ -208,6 +213,7 @@ export const Modules: ModulesInterface[] = [
     menu: [
       {
         name: "Financeiro",
+        route: "financeiro",
         icon: "FinancialIcon",
         subItems: [
           {

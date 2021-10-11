@@ -1,7 +1,15 @@
-import { useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useContext, useEffect, useState } from "react";
+import { MenuContext } from "../../../context";
 import { MenuItemInterface } from "@iustitia/modules";
-import { BusinessContactsIcon, DashboardIcon, FinancialIcon, MembersIcon, MenuArrowIcon, PlacesIcon, ScheduleIcon } from "@iustitia/site/icons";
+import {
+  BusinessContactsIcon,
+  DashboardIcon,
+  FinancialIcon,
+  MembersIcon,
+  MenuArrowIcon,
+  PlacesIcon,
+  ScheduleIcon,
+} from "@iustitia/site/icons";
 import { MenuLink } from "..";
 
 interface MenuItemProps {
@@ -9,16 +17,13 @@ interface MenuItemProps {
 }
 
 export function MenuItem({ item }: MenuItemProps) {
-  const { pathname } = useLocation();
-  const { icon, name, subItems } = item;
+  const { name, icon, route, subItems } = item;
+  const { state } = useContext(MenuContext);
   const [active, setActive] = useState(false);
 
   useEffect(() => {
-    const activePath = subItems.find(
-      (s) => s.link.split("/")[1] === pathname.split("/")[1]
-    );
-    if (activePath) setActive(true);
-  }, [pathname, subItems]);
+    setActive(route === state.activeMenu);
+  }, [state]);
 
   function menuIcons(icon: string): JSX.Element {
     switch (icon) {

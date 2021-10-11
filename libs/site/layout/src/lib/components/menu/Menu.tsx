@@ -1,5 +1,8 @@
+import { useContext, useEffect } from "react";
+import { useLocation } from "react-router-dom";
 import { GetMenu } from "@iustitia/modules";
 import { ProfilesServices } from "@iustitia/site/services";
+import { MenuContext } from "../../context";
 import { MenuFooter, MenuItem, MenuTitle } from ".";
 
 type ProfilesType = ProfilesServices.ProfilesRes;
@@ -12,6 +15,14 @@ interface MenuProps {
 }
 
 export function Menu({ profile, places, setMenuOpen, menuOpen }: MenuProps) {
+  const { pathname } = useLocation();
+  const { state, dispatch } = useContext(MenuContext);
+
+  useEffect(() => {
+    const activeMenu = pathname.split("/")[1];
+    if (activeMenu) dispatch({ type: "UPDATE_MENU", payload: pathname.split("/")[1] });
+  }, [pathname]);
+
   return (
     <aside
       className={`flex-shrink-0 w-64 bg-white ${

@@ -1,5 +1,6 @@
 export interface MenuItemInterface {
   name: string;
+  route: string;
   icon: string;
   subItems: MenuSubItemInterface[];
 }
