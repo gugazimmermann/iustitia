@@ -9,7 +9,6 @@ import {
   SearchField,
 } from "@iustitia/site/shared-components";
 import { Sort, WARNING_TYPES } from "@iustitia/site/shared-utils";
-import { List, Details, Form } from "./components";
 import {
   GetModule,
   ModulesEnum,
@@ -17,11 +16,11 @@ import {
   GetRoutes,
   BCRoutesInterface,
 } from "@iustitia/modules";
-import { SearchIcon } from "@iustitia/site/icons";
 import {
   BusinessContactsServices,
   ProfilesServices,
 } from "@iustitia/site/services";
+import { List, Details, Form } from "./components";
 
 const BCModule = GetModule(ModulesEnum.businessContacts) as ModulesInterface;
 const BCRoutes = GetRoutes(ModulesEnum.businessContacts) as BCRoutesInterface;
@@ -254,8 +253,6 @@ export function Companies({ profile }: CompaniesProps) {
           {whatToShow === "details" && (
             <Details
               loading={loading}
-              setLoading={setLoading}
-              setShowAlert={setShowAlert}
               data={selected}
               setConfirm={setConfirm}
             />

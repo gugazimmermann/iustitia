@@ -1,9 +1,5 @@
 import { Link, useHistory } from "react-router-dom";
-import {
-  AlertInterface,
-  FormatAddress,
-  LoadingButton,
-} from "@iustitia/site/shared-components";
+import { FormatAddress, LoadingButton } from "@iustitia/site/shared-components";
 import { ModulesEnum, GetRoutes, BCRoutesInterface } from "@iustitia/modules";
 import { BusinessContactsServices } from "@iustitia/site/services";
 
@@ -13,19 +9,11 @@ type BCCompaniesType = BusinessContactsServices.BCCompaniesRes;
 
 export interface DetailsProps {
   loading: boolean;
-  setLoading(loading: boolean): void;
-  setShowAlert(showAlert: AlertInterface): void;
   data: BCCompaniesType;
   setConfirm(confirm: boolean): void;
 }
 
-export function Details({
-  loading,
-  setLoading,
-  setShowAlert,
-  data,
-  setConfirm,
-}: DetailsProps) {
+export function Details({ loading, data, setConfirm }: DetailsProps) {
   const history = useHistory();
 
   return (
@@ -35,7 +23,9 @@ export function Details({
         <div className="flex space-x-2  justify-center md:justify-end">
           <button
             type="button"
-            onClick={() => history.push(`${BCRoutes.updateCompany}/${data?.id}`)}
+            onClick={() =>
+              history.push(`${BCRoutes.updateCompany}/${data?.id}`)
+            }
             className="px-2 py-1 text-xs text-white rounded-md bg-yellow-500 hover:bg-yellow-900 focus:ring-yellow-500"
           >
             Editar

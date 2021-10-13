@@ -1,3 +1,4 @@
+import { useHistory } from "react-router-dom";
 import {
   GetModule,
   ModulesEnum,
@@ -12,7 +13,6 @@ import {
   ListHeaderItems,
 } from "@iustitia/site/shared-components";
 import { formatAddress, WARNING_TYPES } from "@iustitia/site/shared-utils";
-import { useHistory } from "react-router-dom";
 
 const BCModule = GetModule(ModulesEnum.businessContacts) as ModulesInterface;
 const BCRoutes = GetRoutes(ModulesEnum.businessContacts) as BCRoutesInterface;
@@ -50,7 +50,9 @@ export function List({ dataList, sort, setSort }: ListProps) {
               <tr
                 key={i}
                 className="border-b border-gray-200 hover:bg-gray-100 cursor-pointer"
-                onClick={() => history.push(`${BCRoutes.detailsCompany}/${data.id}`)}
+                onClick={() =>
+                  history.push(`${BCRoutes.detailsCompany}/${data.id}`)
+                }
               >
                 <td className="py-3 px-3 text-left whitespace-nowrap">
                   <span className="font-medium">{data.name}</span>

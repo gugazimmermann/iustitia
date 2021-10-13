@@ -27,11 +27,9 @@ import {
   PlacesServices,
 } from "@iustitia/site/services";
 
-const BCModule = GetModule(ModulesEnum.businessContacts) as ModulesInterface;
 const BCRoutes = GetRoutes(ModulesEnum.businessContacts) as BCRoutesInterface;
 
 type BCPersonsType = BusinessContactsServices.BCPersonsRes;
-type BCCompaniesType = BusinessContactsServices.BCCompaniesRes;
 type PlacesType = PlacesServices.PlacesRes;
 type NotesType = NotesServices.NotesRes;
 type AttachmentsType = AttachmentsServices.AttachmentsRes;

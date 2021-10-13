@@ -55,7 +55,9 @@ export function List({ dataList, sort, setSort }: ListProps) {
               <tr
                 key={i}
                 className="border-b border-gray-200 hover:bg-gray-100 cursor-pointer"
-                onClick={() => history.push(`${BCRoutes.detailsPerson}/${data.id}`)}
+                onClick={() =>
+                  history.push(`${BCRoutes.detailsPerson}/${data.id}`)
+                }
               >
                 <td className="py-3 px-3">
                   {data.avatar ? (

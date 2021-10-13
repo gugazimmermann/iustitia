@@ -4,9 +4,19 @@ import NumberFormat from "react-number-format";
 import TextareaAutosize from "react-textarea-autosize";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { formatSite, getAddressFromCEP, validateEmail } from "@iustitia/site/shared-utils";
+import {
+  formatSite,
+  getAddressFromCEP,
+  validateEmail,
+} from "@iustitia/site/shared-utils";
 import { LoadingButton } from "@iustitia/site/shared-components";
-import { GetModule, ModulesEnum, ModulesInterface, GetRoutes, BCRoutesInterface } from "@iustitia/modules";
+import {
+  GetModule,
+  ModulesEnum,
+  ModulesInterface,
+  GetRoutes,
+  BCRoutesInterface,
+} from "@iustitia/modules";
 import { BusinessContactsServices } from "@iustitia/site/services";
 
 const BCModule = GetModule(ModulesEnum.businessContacts) as ModulesInterface;
@@ -118,7 +128,7 @@ export function Form({ loading, data, create, update }: FormProps) {
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col mx-auto">
       <fieldset className="grid grid-cols-1 gap-4 p-4 bg-white shadow-sm">
-      <div className="grid grid-cols-12 gap-4 col-span-full lg:col-span-4">
+        <div className="grid grid-cols-12 gap-4 col-span-full lg:col-span-4">
           <div className="col-span-full sm:col-span-6">
             <label htmlFor="name" className="text-sm">
               Nome *

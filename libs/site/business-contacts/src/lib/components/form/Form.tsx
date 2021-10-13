@@ -9,7 +9,7 @@ import {
   getUserInitials,
   validateEmail,
 } from "@iustitia/site/shared-utils";
-import { LoadingButton,   AvatarCropper, } from "@iustitia/site/shared-components";
+import { LoadingButton, AvatarCropper } from "@iustitia/site/shared-components";
 import {
   GetModule,
   ModulesEnum,
@@ -24,7 +24,6 @@ import {
 } from "@iustitia/site/services";
 
 const BCModule = GetModule(ModulesEnum.businessContacts) as ModulesInterface;
-const BCRoutes = GetRoutes(ModulesEnum.businessContacts) as BCRoutesInterface;
 
 type BCPersonsType = BusinessContactsServices.BCPersonsRes;
 type BCCompaniesType = BusinessContactsServices.BCCompaniesRes;
