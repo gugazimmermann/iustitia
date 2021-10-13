@@ -205,12 +205,13 @@ export function Members({ profile }: MembersProps) {
     );
   }
 
+  // TODO: edit members permissions
   return (
     <div className="container mx-auto">
       <Header
         before={[]}
         main={membersModule.plural}
-        search={createSearch}
+        search={whatToShow === "list" ? createSearch : undefined}
         button={createButton}
         back={whatToShow !== "list"}
       />

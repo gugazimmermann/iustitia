@@ -106,10 +106,6 @@ export const Modules: ModulesInterface[] = [
             name: "Colaboradores",
             link: "/colaboradores",
           },
-          {
-            name: "Permissões",
-            link: "/colaboradores/permissoes",
-          },
         ],
       },
     ],

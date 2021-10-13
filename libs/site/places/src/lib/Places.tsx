@@ -242,7 +242,7 @@ export function Places({ profile, setPlaces }: PlacesProps) {
       <Header
         before={[]}
         main={placesModule.plural}
-        search={createSearch}
+        search={whatToShow === "list" ? createSearch : undefined}
         button={createButton}
         back={whatToShow !== "list"}
       />

@@ -4,13 +4,7 @@ import {
   getUserInitials,
   WARNING_TYPES,
 } from "@iustitia/site/shared-utils";
-import {
-  ModulesEnum,
-  GetRoutes,
-  BCRoutesInterface,
-  GetModule,
-  ModulesInterface,
-} from "@iustitia/modules";
+import { ModulesEnum, GetModule, ModulesInterface } from "@iustitia/modules";
 import { BusinessContactsServices } from "@iustitia/site/services";
 import {
   Callout,
@@ -19,17 +13,17 @@ import {
 } from "@iustitia/site/shared-components";
 
 const BCModule = GetModule(ModulesEnum.businessContacts) as ModulesInterface;
-const BCRoutes = GetRoutes(ModulesEnum.businessContacts) as BCRoutesInterface;
 
 type BCPersonsType = BusinessContactsServices.BCPersonsRes;
 
 export interface ListProps {
   dataList: BCPersonsType[];
+  detailsRoute: string;
   sort: string;
   setSort(order: "ASC" | "DESC"): void;
 }
 
-export function List({ dataList, sort, setSort }: ListProps) {
+export function List({ dataList, detailsRoute, sort, setSort }: ListProps) {
   const history = useHistory();
 
   const headerItems: ListHeaderItems[] = [
@@ -55,9 +49,7 @@ export function List({ dataList, sort, setSort }: ListProps) {
               <tr
                 key={i}
                 className="border-b border-gray-200 hover:bg-gray-100 cursor-pointer"
-                onClick={() =>
-                  history.push(`${BCRoutes.detailsPerson}/${data.id}`)
-                }
+                onClick={() => history.push(`${detailsRoute}/${data.id}`)}
               >
                 <td className="py-3 px-3">
                   {data.avatar ? (

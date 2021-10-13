@@ -35,6 +35,13 @@ interface BusinessContactsProps {
   profile?: ProfilesType;
 }
 
+interface routeTypeInterface {
+  list: string;
+  details: string;
+  add: string;
+  update: string;
+}
+
 export function BusinessContacts({ profile }: BusinessContactsProps) {
   const history = useHistory();
   const { pathname } = useLocation();
@@ -61,6 +68,7 @@ export function BusinessContacts({ profile }: BusinessContactsProps) {
   const [selectedType, setSelectedType] = useState<
     "Clientes" | "Contatos" | "Fornecedores"
   >();
+  const [routeType, setRouteType] = useState({} as routeTypeInterface);
   const [searchParam, setSearchParam] = useState<string>();
   const [sort, setSort] = useState<"ASC" | "DESC">("ASC");
 
@@ -90,6 +98,47 @@ export function BusinessContacts({ profile }: BusinessContactsProps) {
     else if (pathType.includes("contatos")) return "Contatos";
     return "Fornecedores";
   }
+
+  useEffect(() => {
+    switch (selectedType) {
+      case "Clientes": {
+        setRouteType({
+          list: BCRoutes.listPersons,
+          details: BCRoutes.detailsPerson,
+          add: BCRoutes.addPerson,
+          update: BCRoutes.updatePerson,
+        });
+        break;
+      }
+      case "Contatos": {
+        setRouteType({
+          list: BCRoutes.listContacts,
+          details: BCRoutes.detailsContact,
+          add: BCRoutes.addContact,
+          update: BCRoutes.updateContact,
+        });
+        break;
+      }
+      case "Fornecedores": {
+        setRouteType({
+          list: BCRoutes.listSuppliers,
+          details: BCRoutes.detailsSupplier,
+          add: BCRoutes.addSupplier,
+          update: BCRoutes.updateSupplier,
+        });
+        break;
+      }
+      default: {
+        setRouteType({
+          list: BCRoutes.listPersons,
+          details: BCRoutes.detailsPerson,
+          add: BCRoutes.addPerson,
+          update: BCRoutes.updatePerson,
+        });
+        break;
+      }
+    }
+  }, [selectedType]);
 
   async function getPlaces() {
     try {
@@ -167,7 +216,7 @@ export function BusinessContacts({ profile }: BusinessContactsProps) {
         type: WARNING_TYPES.ERROR,
         time: 3000,
       });
-      history.push(BCRoutes.listPersons);
+      history.push(routeType.list);
     }
   }
 
@@ -185,7 +234,7 @@ export function BusinessContacts({ profile }: BusinessContactsProps) {
         time: 3000,
       });
       id = newPerson.id as string;
-      history.push(`${BCRoutes.detailsPerson}/${newPerson.id}`);
+      history.push(`${routeType.details}/${newPerson.id}`);
       setLoading(false);
     } catch (err: any) {
       setLoading(false);
@@ -209,7 +258,7 @@ export function BusinessContacts({ profile }: BusinessContactsProps) {
         time: 3000,
       });
       reloadList();
-      history.push(BCRoutes.listPersons);
+      history.push(routeType.list);
       setLoading(false);
     } catch (err: any) {
       setLoading(false);
@@ -297,8 +346,8 @@ export function BusinessContacts({ profile }: BusinessContactsProps) {
     return (
       <AddButton
         back={whatToShow !== "list"}
-        backRoute={BCRoutes.listPersons}
-        addRoute={BCRoutes.addPerson}
+        backRoute={routeType.list}
+        addRoute={routeType.add}
         reload={reloadList}
         isProfessional={profile?.isProfessional && profile.isAdmin}
       />
@@ -321,7 +370,12 @@ export function BusinessContacts({ profile }: BusinessContactsProps) {
             <Alert alert={showAlert} setAlert={setShowAlert} />
           )}
           {whatToShow === "list" && (
-            <List dataList={showDataList} sort={sort} setSort={setSort} />
+            <List
+              dataList={showDataList}
+              detailsRoute={routeType.details}
+              sort={sort}
+              setSort={setSort}
+            />
           )}
           {whatToShow === "details" && (
             <Details

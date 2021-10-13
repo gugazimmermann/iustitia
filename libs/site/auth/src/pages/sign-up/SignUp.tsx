@@ -91,7 +91,6 @@ export function SignUp() {
               }
             />
           </div>
-          {/* TODO: verify if email exists */}
           <div className="mb-2 rounded">
             <label
               className="block text-gray-700 text-sm font-bold mb-1 ml-2"

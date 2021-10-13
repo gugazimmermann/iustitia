@@ -481,11 +481,7 @@ export function Form({
             <select
               {...register("companyId")}
               id="company"
-              className={`w-full rounded-md focus:ring-0 focus:ring-opacity-75 text-gray-900 ${
-                errors.companyId
-                  ? `focus:ring-red-500 border-red-500`
-                  : `focus:ring-primary-500 border-gray-300`
-              }`}
+              className={`w-full rounded-md focus:ring-0 focus:ring-opacity-75 text-gray-900`}
             >
               <option value={""}></option>
               {companies &&
@@ -505,11 +501,7 @@ export function Form({
               id="position"
               type="text"
               placeholder="Cargo"
-              className={`w-full rounded-md focus:ring-0 focus:ring-opacity-75 text-gray-900 ${
-                errors.position
-                  ? `focus:ring-red-500 border-red-500`
-                  : `focus:ring-primary-500 border-gray-300`
-              }`}
+              className={`w-full rounded-md focus:ring-0 focus:ring-opacity-75 text-gray-900`}
             />
           </div>
           <div className="col-span-full sm:col-span-12">
@@ -520,11 +512,7 @@ export function Form({
               {...register("comments")}
               minRows={3}
               id="comments"
-              className={`w-full rounded-md focus:ring-0 focus:ring-opacity-75 text-gray-900 ${
-                errors.comments
-                  ? `focus:ring-red-500 border-red-500`
-                  : `focus:ring-primary-500 border-gray-300`
-              }`}
+              className={`w-full rounded-md focus:ring-0 focus:ring-opacity-75 text-gray-900`}
             />
           </div>
           <div className="col-span-full flex flex-col items-center md:items-end">
