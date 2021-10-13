@@ -104,6 +104,7 @@ export function Details({
     setSelectedUsers(users);
   }
 
+  // TODO: if user is already manager do not need to be on users list
   function handleSelectManager(manager: MembersSimpleType) {
     let managersList = selectedManagers.slice(0);
     if (managersList.some((m) => m.id === manager.id))
