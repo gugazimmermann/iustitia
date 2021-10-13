@@ -9,6 +9,10 @@ export type BCPersonsRes = PersonsInterface
 
 export type BCCompaniesRes = CompaniesInterface
 
+export interface BCTypeReq {
+  type: string;
+}
+
 export interface BCFormDataCompaniesReq {
   formData: BCCompaniesRes;
 }
@@ -23,10 +27,10 @@ export async function getOnePerson({ id }: ApiIdReq): Promise<BCPersonsRes | Err
   }
 };
 
-export async function getAllPersons(): Promise<BCPersonsRes[] | Error> {
+export async function getAllPersons({ type }: BCTypeReq): Promise<BCPersonsRes[] | Error> {
   try {
     const tenantId = token.getLocalTenantId();
-    const { data } = await api.get(`/api/${ModulesEnum.businessContacts}/persons/${tenantId}`);
+    const { data } = await api.get(`/api/${ModulesEnum.businessContacts}/persons/get/${type}/${tenantId}`);
     return data
   } catch (err) {
     return errorHandler(err)

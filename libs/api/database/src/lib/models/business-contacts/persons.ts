@@ -3,6 +3,7 @@ import { CompaniesInstance } from "./companies";
 
 interface PersonsAttributes {
   id: string;
+  type: string;
   avatar: string;
   name: string;
   email: string;
@@ -60,6 +61,7 @@ export default function persons(sequelize: Sequelize) {
       unique: true,
       primaryKey: true,
     },
+    type: { type: DataTypes.TEXT, allowNull: true },
     avatar: { type: DataTypes.TEXT, allowNull: true },
     name: { type: DataTypes.TEXT, allowNull: false },
     phone: { type: DataTypes.TEXT, allowNull: true },

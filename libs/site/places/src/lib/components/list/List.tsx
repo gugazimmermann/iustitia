@@ -8,8 +8,8 @@ import {
 } from "@iustitia/site/shared-components";
 import { WARNING_TYPES } from "@iustitia/site/shared-utils";
 import { GetModule, GetRoutes, ModulesEnum, ModulesInterface, PlacesRoutesInterface } from "@iustitia/modules";
-import { convertProfileToSimpleProfile } from "@iustitia/site/places";
 import { PlacesServices } from "@iustitia/site/services";
+import { convertProfileToSimpleProfile } from "../../Places";
 
 const placesModule = GetModule(ModulesEnum.places) as ModulesInterface;
 const placesRoutes = GetRoutes(ModulesEnum.places) as PlacesRoutesInterface;
@@ -38,7 +38,7 @@ export function List({
   ];
 
   return dataList.length === 0 ? (
-    <Callout title={`Nenhum ${placesModule.singular}Cadastrado`} type={WARNING_TYPES.INFO} />
+    <Callout title={`Nenhum ${placesModule.singular} Cadastrado`} type={WARNING_TYPES.INFO} />
   ) : (
     <div className=" overflow-x-auto">
       <table className="w-full table">

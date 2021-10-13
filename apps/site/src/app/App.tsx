@@ -28,7 +28,7 @@ import { Profiles } from "@iustitia/site/profiles";
 import { Subscriptions } from "@iustitia/site/subscriptions";
 import { Places } from "@iustitia/site/places";
 import { Members } from "@iustitia/site/members";
-import { Persons, Companies } from "@iustitia/site/business-contacts";
+import { BusinessContacts, Companies } from "@iustitia/site/business-contacts";
 import { Calendar} from "@iustitia/site/schedule";
 import { NotFound } from "@iustitia/site/not-found";
 
@@ -160,62 +160,62 @@ export const App = () => {
 
       <ProtectedRoute exact path={businessContactsRoutes.listPersons}>
         <Layout>
-          <Persons />
+          <BusinessContacts />
         </Layout>
       </ProtectedRoute>
       <ProtectedRoute exact path={`${businessContactsRoutes.detailsPerson}/:id`}>
         <Layout>
-          <Persons />
+          <BusinessContacts />
         </Layout>
       </ProtectedRoute>
       <ProtectedRoute exact path={`${businessContactsRoutes.addPerson}`}>
         <Layout>
-          <Persons />
+          <BusinessContacts />
         </Layout>
       </ProtectedRoute>
       <ProtectedRoute exact path={`${businessContactsRoutes.updatePerson}/:id`}>
         <Layout>
-          <Persons />
+          <BusinessContacts />
         </Layout>
       </ProtectedRoute>
       <ProtectedRoute exact path={businessContactsRoutes.listContacts}>
         <Layout>
-          <Persons />
+          <BusinessContacts />
         </Layout>
       </ProtectedRoute>
       <ProtectedRoute exact path={`${businessContactsRoutes.detailsContact}/:id`}>
         <Layout>
-          <Persons />
+          <BusinessContacts />
         </Layout>
       </ProtectedRoute>
       <ProtectedRoute exact path={`${businessContactsRoutes.addContact}`}>
         <Layout>
-          <Persons />
+          <BusinessContacts />
         </Layout>
       </ProtectedRoute>
       <ProtectedRoute exact path={`${businessContactsRoutes.updateContact}/:id`}>
         <Layout>
-          <Persons />
+          <BusinessContacts />
         </Layout>
       </ProtectedRoute>
       <ProtectedRoute exact path={businessContactsRoutes.listSuppliers}>
         <Layout>
-          <Persons />
+          <BusinessContacts />
         </Layout>
       </ProtectedRoute>
       <ProtectedRoute exact path={`${businessContactsRoutes.detailsSupplier}/:id`}>
         <Layout>
-          <Persons />
+          <BusinessContacts />
         </Layout>
       </ProtectedRoute>
       <ProtectedRoute exact path={`${businessContactsRoutes.addSupplier}`}>
         <Layout>
-          <Persons />
+          <BusinessContacts />
         </Layout>
       </ProtectedRoute>
       <ProtectedRoute exact path={`${businessContactsRoutes.updateSupplier}/:id`}>
         <Layout>
-          <Persons />
+          <BusinessContacts />
         </Layout>
       </ProtectedRoute>
       <ProtectedRoute exact path={businessContactsRoutes.listCompanies}>

@@ -65,23 +65,6 @@ export function Form({ loading, data, create, update }: FormProps) {
   });
   const [validZip, setValidZip] = useState(!!defaultValues.zip);
 
-  useEffect(() => {
-    if (data?.name) {
-      setValue("name", data?.name);
-      setValue("site", data?.site);
-      setValue("email", data?.email);
-      setValue("phone", data?.phone);
-      setValue("zip", data?.zip);
-      setValue("address", data?.address);
-      setValue("number", data?.number);
-      setValue("complement", data?.complement);
-      setValue("neighborhood", data?.neighborhood);
-      setValue("city", data?.city);
-      setValue("state", data?.state);
-      setValue("comments", data?.comments);
-    }
-  }, [data, setValue]);
-
   async function fetchCEP(zip: string) {
     try {
       const data = await getAddressFromCEP(zip);
@@ -134,8 +117,8 @@ export function Form({ loading, data, create, update }: FormProps) {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col mx-auto">
-      <fieldset className="grid grid-cols-1 gap-4 p-4">
-        <div className="grid grid-cols-12 gap-4 col-span-full lg:col-span-3">
+      <fieldset className="grid grid-cols-1 gap-4 p-4 bg-white shadow-sm">
+      <div className="grid grid-cols-12 gap-4 col-span-full lg:col-span-4">
           <div className="col-span-full sm:col-span-6">
             <label htmlFor="name" className="text-sm">
               Nome *

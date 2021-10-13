@@ -9,10 +9,19 @@ import {
   getUserInitials,
   validateEmail,
 } from "@iustitia/site/shared-utils";
-import {LoadingButton} from "@iustitia/site/shared-components";
-import { GetModule, ModulesEnum, ModulesInterface, GetRoutes, BCRoutesInterface } from "@iustitia/modules";
+import { LoadingButton,   AvatarCropper, } from "@iustitia/site/shared-components";
+import {
+  GetModule,
+  ModulesEnum,
+  ModulesInterface,
+  GetRoutes,
+  BCRoutesInterface,
+} from "@iustitia/modules";
 import { UploadCloudIcon } from "@iustitia/site/icons";
-import { BusinessContactsServices, PlacesServices } from "@iustitia/site/services";
+import {
+  BusinessContactsServices,
+  PlacesServices,
+} from "@iustitia/site/services";
 
 const BCModule = GetModule(ModulesEnum.businessContacts) as ModulesInterface;
 const BCRoutes = GetRoutes(ModulesEnum.businessContacts) as BCRoutesInterface;
@@ -23,6 +32,7 @@ type PlacesType = PlacesServices.PlacesRes;
 
 export interface FormProps {
   loading: boolean;
+  type: "Clientes" | "Contatos" | "Fornecedores" | undefined;
   data?: BCPersonsType;
   places?: PlacesType[];
   companies?: BCCompaniesType[];
@@ -32,7 +42,6 @@ export interface FormProps {
 
 const schema = yup.object({
   name: yup.string().required(),
-  type: yup.string(),
   avatar: yup.mixed(),
   email: yup.string(),
   phone: yup.string(),
@@ -46,11 +55,20 @@ const schema = yup.object({
   position: yup.string(),
   companyId: yup.string(),
   comments: yup.string(),
+  owner: yup.string(),
 });
 
-export function Form({ loading, data, places, companies, create, update }: FormProps) {
+export function Form({
+  loading,
+  type,
+  data,
+  places,
+  companies,
+  create,
+  update,
+}: FormProps) {
   const defaultValues: BCPersonsType = {
-    type: "Personal",
+    owner: "Personal",
     name: data?.name || "",
     email: data?.email || "",
     phone: data?.phone || "",
@@ -82,7 +100,10 @@ export function Form({ loading, data, places, companies, create, update }: FormP
   const [selectedFile, setSelectedFile] = useState<File>();
   const [previewName, setPreviewName] = useState(defaultValues.name);
   const [preview, setPreview] = useState<string | undefined>("");
-  const [validZip, setValidZip] = useState(!!defaultValues.zip);
+
+  const [showAvatarModal, setShowAvatarModal] = useState(false);
+  const [blob, setBlob] = useState<Blob>();
+  const [inputImg, setInputImg] = useState<string>();
 
   useEffect(() => {
     if (data?.name) {
@@ -99,30 +120,13 @@ export function Form({ loading, data, places, companies, create, update }: FormP
       setValue("position", data?.position);
       setValue("companyId", data?.companyId);
       setValue("comments", data?.comments);
-      if (data?.userId) setValue("type", "Personal");
-      if (data?.placeId) setValue("type", data.placeId);
-      if (!data?.userId && !data?.placeId) setValue("type", "All")
+      if (data?.userId) setValue("owner", "Personal");
+      if (data?.placeId) setValue("owner", data.placeId);
+      if (!data?.userId && !data?.placeId) setValue("owner", "All");
     }
   }, [data, setValue]);
 
-  useEffect(() => {
-    const name = watch((value) => {
-      if (!preview && value.name) setPreviewName(value.name);
-    });
-    return () => name.unsubscribe();
-  }, [preview, watch]);
-
-  useEffect(() => {
-    if (!selectedFile) {
-      if (data?.avatar) {
-        setPreview(`${process.env.NX_BUCKET_AVATAR_URL}${data?.avatar}`);
-      }
-      return;
-    }
-    const objectUrl = URL.createObjectURL(selectedFile);
-    setPreview(objectUrl);
-    return () => URL.revokeObjectURL(objectUrl);
-  }, [data?.avatar, selectedFile]);
+  const [validZip, setValidZip] = useState(!!defaultValues.zip);
 
   async function fetchCEP(zip: string) {
     try {
@@ -149,6 +153,18 @@ export function Form({ loading, data, places, companies, create, update }: FormP
     }
   }
 
+  useEffect(() => {
+    const name = watch((value) => {
+      if (!preview && value.name) setPreviewName(value.name);
+    });
+    return () => name.unsubscribe();
+  }, [preview, watch]);
+
+  useEffect(() => {
+    if (data?.avatar)
+      setPreview(`${process.env.NX_BUCKET_AVATAR_URL}${data?.avatar}`);
+  }, [data?.avatar]);
+
   const onSelectFile = (e: ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files || e.target.files.length === 0) {
       setSelectedFile(undefined);
@@ -165,7 +181,24 @@ export function Form({ loading, data, places, companies, create, update }: FormP
       return;
     }
     clearErrors("avatar");
-    setSelectedFile(file);
+    const reader = new FileReader();
+    reader.addEventListener(
+      "load",
+      () => {
+        setInputImg(reader.result as string);
+        setShowAvatarModal(true);
+      },
+      false
+    );
+    if (file) {
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const getBlob = (blob: Blob) => {
+    const blobURL = URL.createObjectURL(blob);
+    setPreview(blobURL);
+    setBlob(blob);
   };
 
   async function onSubmit(dataFromForm: BCPersonsType) {
@@ -186,6 +219,7 @@ export function Form({ loading, data, places, companies, create, update }: FormP
           formData.append("avatar", dataFromForm.avatar[0]);
         }
       }
+      formData.append("type", type as string);
     });
     if (create) {
       create(formData);
@@ -204,15 +238,12 @@ export function Form({ loading, data, places, companies, create, update }: FormP
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col mx-auto">
-      <fieldset className="grid grid-cols-1 gap-4 p-4">
-        <div className="grid grid-cols-12 gap-4 col-span-full lg:col-span-3">
-          <div className="col-span-full sm:col-span-6">
-            <label htmlFor="type" className="text-sm">
-              Tipo
-            </label>
+      <fieldset className="grid grid-cols-1 gap-4 p-4 bg-white shadow-sm">
+        <div className="grid grid-cols-12 gap-4 col-span-full lg:col-span-4">
+          <div className="col-span-full sm:col-span-4">
             <select
-              {...register("type")}
-              id="type"
+              {...register("owner")}
+              id="owner"
               className={`w-full rounded-md focus:ring-0 focus:ring-opacity-75 text-gray-900 ${
                 errors.state
                   ? `focus:ring-red-500 border-red-500`
@@ -458,7 +489,7 @@ export function Form({ loading, data, places, companies, create, update }: FormP
               }`}
             >
               <option value={""}></option>
-               {companies &&
+              {companies &&
                 companies.map((c, i) => (
                   <option key={i} value={c.id}>
                     {c.name}
@@ -530,9 +561,16 @@ export function Form({ loading, data, places, companies, create, update }: FormP
               </div>
             </label>
             {errors.avatar && (
-              <p className="text-red-500 text-sm">{errors.avatar.message}</p>
+              <p className="text-red-500">{errors.avatar.message}</p>
             )}
           </div>
+          {showAvatarModal && (
+            <AvatarCropper
+              setShow={setShowAvatarModal}
+              getBlob={getBlob}
+              inputImg={inputImg as string}
+            />
+          )}
           <div className="col-span-full flex justify-center">
             <LoadingButton
               styles="w-full md:w-64 px-2 py-2 text-sm text-white rounded-md bg-primary-500 hover:bg-primary-900 focus:outline-none focus:ring focus:ring-primary-500 focus:ring-offset-1 focus:ring-offset-white"

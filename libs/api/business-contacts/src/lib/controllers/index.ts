@@ -14,6 +14,7 @@ AWS.config.update({
 
 export interface PersonsInterface {
   id?: string;
+  type?: string;
   avatar?: string;
   name: string;
   email?: string;
@@ -29,7 +30,7 @@ export interface PersonsInterface {
   companyId?: string;
   company?: string;
   comments?: string;
-  type?: string;
+  owner?: string;
   userId?: string;
   placeId?: string;
   tenantId?: string;
@@ -152,12 +153,12 @@ export async function getOnePerson(req, res): Promise<Response> {
 }
 
 export async function getAllPersons(req, res): Promise<Response> {
-  const { tenantId } = req.params;
-  if (!tenantId) return res.status(400).send({ message: "Dados inválidos!" });
+  const { tenantId, type } = req.params;
+  if (!tenantId || !type) return res.status(400).send({ message: "Dados inválidos!" });
   try {
     const user = await database.Users.findOne({ where: { id: req.userId } });
     if (!user || user.tenant !== tenantId) return res.status(401).send({ message: "Sem permissão!" });
-    const data = await database.Persons.findAll({ where: { tenantId } });
+    const data = await database.Persons.findAll({ where: { type, tenantId } });
     const resultData = [] as PersonsInterface[];
     if (data.length > 0) data.forEach(d => resultData.push(dataToPersonsResult(d)));
     return res.status(200).send(resultData);
