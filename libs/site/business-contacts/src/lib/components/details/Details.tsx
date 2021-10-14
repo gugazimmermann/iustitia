@@ -222,6 +222,13 @@ export function Details({
     }
   }
 
+  function seeType() {
+    console.log(data)
+    if (data.type === "Clientes") return "Cliente";
+    else if (data.type === "Contatos") return "Contato";
+    return "Fornecedor";
+  }
+
   return (
     <>
       {attUploadProgress && attUploadProgress < 100 && (
@@ -257,15 +264,15 @@ export function Details({
       <div className="bg-white shadow-sm rounded">
         <div className="mb-6 grid grid-cols-12 items-center justify-center">
           <div className="col-span-full flex flex-col md:flex-row w-full items-center justify-start py-4 md:p-4 border-b">
-            <div className="w-20">
+            <div className="w-14">
               {data.avatar ? (
                 <img
-                  className="w-16 h-16 rounded-full"
+                  className="w-12 h-12 rounded-full"
                   src={`${process.env.NX_BUCKET_AVATAR_URL}${data.avatar}`}
                   alt={data.name}
                 />
               ) : (
-                <span className="w-16 h-16 text-4xl rounded-full flex justify-center items-center text-center font-bold text-primary-500 bg-primary-50 hover:text-primary-900 hover:bg-primary-100 focus:outline-none focus:bg-primary-100 focus:ring-primary-900">
+                <span className="w-10 h-10 text-2xl rounded-full flex justify-center items-center text-center font-bold text-primary-500 bg-primary-50 hover:text-primary-900 hover:bg-primary-100 focus:outline-none focus:bg-primary-100 focus:ring-primary-900">
                   {data.name ? getUserInitials(data.name) : "I"}
                 </span>
               )}
@@ -280,7 +287,7 @@ export function Details({
           </div>
           <div className="col-span-full">
             <div className="md:grid md:grid-cols-12 hover:bg-gray-50 md:space-y-0 space-y-1 p-4 border-b">
-              <p className="col-span-3 font-bold">Contato de</p>
+              <p className="col-span-3 font-bold">{seeType()} de</p>
               <p className="col-span-9">
                 {data.userId && `Pessoal`}
                 {data.placeId &&

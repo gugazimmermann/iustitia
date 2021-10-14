@@ -39,6 +39,7 @@ export interface PersonsInterface {
 function dataToPersonsResult(data: PersonsInstance): PersonsInterface {
   return {
     id: data.id,
+    type: data.type,
     userId: data.userId,
     placeId: data.placeId,
     avatar: data.avatar,

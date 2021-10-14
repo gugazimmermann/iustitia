@@ -64,7 +64,7 @@ export function BusinessContacts({ profile }: BusinessContactsProps) {
   const [selected, setSelected] = useState({} as BCPersonsType);
   const [places, setPlaces] = useState<PlacesType[]>();
   const [companies, setCompanies] = useState<BCCompaniesType[]>();
-  const [selectedOwner, setSelectedOwner] = useState<string>("Personal");
+  const [selectedOwner, setSelectedOwner] = useState<string>("All");
   const [selectedType, setSelectedType] = useState<
     "Clientes" | "Contatos" | "Fornecedores"
   >();
