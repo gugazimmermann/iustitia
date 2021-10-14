@@ -29,16 +29,7 @@ const placesModule = GetModule(ModulesEnum.places) as ModulesInterface;
 const placesRoutes = GetRoutes(ModulesEnum.places) as PlacesRoutesInterface;
 
 type PlacesType = PlacesServices.PlacesRes;
-type ProfilesListType = PlacesServices.ProfilesListRes;
 type ProfilesType = ProfilesServices.ProfilesRes;
-type MembersSimpleType = MembersServices.MembersSimpleRes;
-
-export function convertProfileToSimpleProfile(profiles: ProfilesListType[]) {
-  const simpleProfiles: MembersSimpleType[] = [];
-  for (const profile of profiles)
-    simpleProfiles.push(profile as unknown as MembersSimpleType);
-  return simpleProfiles;
-}
 
 interface PlacesProps {
   profile?: ProfilesType;

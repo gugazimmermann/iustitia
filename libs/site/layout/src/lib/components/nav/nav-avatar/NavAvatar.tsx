@@ -1,12 +1,23 @@
 import { useEffect, useRef, useState } from "react";
 import { Link, useHistory } from "react-router-dom";
-import { getUserInitials } from "@iustitia/site/shared-utils";
 import { AuthServices, ProfilesServices } from "@iustitia/site/services";
-import { GetRoutes, ModulesEnum, DashboardsRoutesInterface, AuthRoutesInterface, ProfilesRoutesInterface, SubscriptionsRoutesInterface } from "@iustitia/modules";
+import {
+  GetRoutes,
+  ModulesEnum,
+  DashboardsRoutesInterface,
+  AuthRoutesInterface,
+  ProfilesRoutesInterface,
+  SubscriptionsRoutesInterface,
+} from "@iustitia/modules";
+import { getUserInitials } from "@iustitia/site/shared-utils";
 
 const authRoutes = GetRoutes(ModulesEnum.auth) as AuthRoutesInterface;
-const profilesRoutes = GetRoutes(ModulesEnum.profiles) as ProfilesRoutesInterface;
-const subscriptionsRoutes = GetRoutes(ModulesEnum.subscriptions) as SubscriptionsRoutesInterface;
+const profilesRoutes = GetRoutes(
+  ModulesEnum.profiles
+) as ProfilesRoutesInterface;
+const subscriptionsRoutes = GetRoutes(
+  ModulesEnum.subscriptions
+) as SubscriptionsRoutesInterface;
 
 type ProfilesType = ProfilesServices.ProfilesRes;
 
@@ -44,7 +55,9 @@ export function NavAvatar({ profile }: NavAvatarProps) {
           onClick={() => setOpen(!open)}
           className="w-11 h-11 rounded-full flex justify-center items-center text-center font-bold text-2xl text-primary-500 bg-primary-50 hover:text-primary-900 hover:bg-primary-100 focus:outline-none focus:bg-primary-100 focus:ring-primary-900"
         >
-          {profile.name ? getUserInitials(profile.name) : "I"}
+          {profile.name
+            ? getUserInitials(profile.name)
+            : (process.env.NX_APP_TITLE as string)[0]}
         </button>
       );
     }

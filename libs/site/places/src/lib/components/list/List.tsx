@@ -1,15 +1,20 @@
 import { useHistory } from "react-router-dom";
 import {
   ActiveBadge,
+  AvatarList,
   Callout,
   ListHeader,
   ListHeaderItems,
-  ShowAvatars,
 } from "@iustitia/site/shared-components";
 import { WARNING_TYPES } from "@iustitia/site/shared-utils";
-import { GetModule, GetRoutes, ModulesEnum, ModulesInterface, PlacesRoutesInterface } from "@iustitia/modules";
+import {
+  GetModule,
+  GetRoutes,
+  ModulesEnum,
+  ModulesInterface,
+  PlacesRoutesInterface,
+} from "@iustitia/modules";
 import { PlacesServices } from "@iustitia/site/services";
-import { convertProfileToSimpleProfile } from "../../Places";
 
 const placesModule = GetModule(ModulesEnum.places) as ModulesInterface;
 const placesRoutes = GetRoutes(ModulesEnum.places) as PlacesRoutesInterface;
@@ -22,11 +27,7 @@ export interface ListProps {
   setSort(order: "ASC" | "DESC"): void;
 }
 
-export function List({
-  dataList,
-  sort,
-  setSort,
-}: ListProps) {
+export function List({ dataList, sort, setSort }: ListProps) {
   const history = useHistory();
 
   const headerItems: ListHeaderItems[] = [
@@ -38,7 +39,10 @@ export function List({
   ];
 
   return dataList.length === 0 ? (
-    <Callout title={`Nenhum ${placesModule.singular} Cadastrado`} type={WARNING_TYPES.INFO} />
+    <Callout
+      title={`Nenhum ${placesModule.singular} Cadastrado`}
+      type={WARNING_TYPES.INFO}
+    />
   ) : (
     <div className=" overflow-x-auto">
       <table className="w-full table">
@@ -49,7 +53,9 @@ export function List({
               <tr
                 key={i}
                 className="border-b border-gray-200 hover:bg-gray-50 cursor-pointer"
-                onClick={() => history.push(`${placesRoutes.details}/${data.id}`)}
+                onClick={() =>
+                  history.push(`${placesRoutes.details}/${data.id}`)
+                }
               >
                 <td className="py-3 px-3 text-left whitespace-nowrap">
                   <span className="font-medium">{data.name}</span>
@@ -62,8 +68,8 @@ export function List({
                 <td className="text-center hidden sm:table-cell">
                   <div className="flex items-center justify-start">
                     {
-                      <ShowAvatars
-                      toShow={convertProfileToSimpleProfile(data.managersPlace as ProfilesListType[])}
+                      <AvatarList
+                        toShow={data.managersPlace as ProfilesListType[]}
                         qtd={8}
                         smallQtd={3}
                       />
@@ -73,8 +79,8 @@ export function List({
                 <td className="text-center hidden sm:table-cell">
                   <div className="flex items-center justify-start">
                     {
-                      <ShowAvatars
-                      toShow={convertProfileToSimpleProfile(data.usersPlace as ProfilesListType[])}
+                      <AvatarList
+                        toShow={data.usersPlace as ProfilesListType[]}
                         qtd={8}
                         smallQtd={3}
                       />

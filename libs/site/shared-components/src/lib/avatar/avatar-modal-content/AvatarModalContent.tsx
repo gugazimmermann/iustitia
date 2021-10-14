@@ -1,14 +1,16 @@
 import { useState } from "react";
 import { SelectorIcon } from "@iustitia/site/icons";
-import { MembersServices } from "@iustitia/site/services";
-import { AvatarModalContentList, ShowAvatars } from "../..";
+import { MembersServices, PlacesServices } from "@iustitia/site/services";
+import AvatarModalContentList from "../avatar-modal-content-list/AvatarModalContentList";
+import AvatarList from "../avatar-list/AvatarList";
 
 type MembersSimpleType = MembersServices.MembersSimpleRes;
+type ProfilesListType = PlacesServices.ProfilesListRes;
 
 export interface AvatarModalContentProps {
   title: string;
-  membersList: MembersSimpleType[];
-  currentList: MembersSimpleType[];
+  membersList: ProfilesListType[];
+  currentList: ProfilesListType[];
   handleSelect(p: MembersSimpleType): void;
 }
 
@@ -25,7 +27,7 @@ export function AvatarModalContent({
       <div className="grid grid-cols-12 gap-4 col-span-full lg:col-span-3 ">
         <div className="col-span-full flex items-center space-x-2">
           <span>Selecionados:</span>
-          {<ShowAvatars toShow={currentList} qtd={8} smallQtd={3} />}
+          {<AvatarList toShow={currentList} qtd={8} smallQtd={3} />}
         </div>
         <div className="col-span-full">
           <div className="mt-1 relative">

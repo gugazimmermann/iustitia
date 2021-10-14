@@ -4,12 +4,12 @@ import NumberFormat from "react-number-format";
 import TextareaAutosize from "react-textarea-autosize";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
+import { getAddressFromCEP, validateEmail } from "@iustitia/site/shared-utils";
 import {
-  getAddressFromCEP,
-  getUserInitials,
-  validateEmail,
-} from "@iustitia/site/shared-utils";
-import { LoadingButton, AvatarCropper } from "@iustitia/site/shared-components";
+  LoadingButton,
+  AvatarCropper,
+  AvatarOrInitial,
+} from "@iustitia/site/shared-components";
 import {
   GetModule,
   ModulesEnum,
@@ -521,17 +521,12 @@ export function Form({
               className="w-52 flex flex-col items-center px-1 py-2 bg-white rounded-md shadow-sm tracking-wide uppercase border border-blue cursor-pointer hover:bg-primary-300 hover:text-white text-primary-500 ease-linear transition-all duration-150"
             >
               <div className="flex items-center space-x-4">
-                {preview ? (
-                  <img
-                    src={preview}
-                    alt="Avatar"
-                    className="w-12 h-12 rounded-full"
-                  />
-                ) : (
-                  <div className="w-11 h-11 rounded-full flex justify-center items-center text-center font-bold text-2xl text-primary-500 bg-primary-50 hover:text-primary-900 hover:bg-primary-100 focus:outline-none focus:bg-primary-100 focus:ring-primary-900">
-                    {previewName ? getUserInitials(previewName) : "I"}
-                  </div>
-                )}
+                <AvatarOrInitial
+                  avatar={preview}
+                  name={previewName}
+                  avatarStyle="h-12 w-12"
+                  initialStyle="h-11 w-11"
+                />
                 <UploadCloudIcon styles="w-8 h-8" />
                 <span className="mt-2 text-base leading-normal">Foto</span>
                 <input

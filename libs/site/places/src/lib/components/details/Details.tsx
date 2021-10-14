@@ -3,15 +3,14 @@ import { useHistory } from "react-router-dom";
 import {
   FormatAddress,
   AvatarModal,
-  ShowAvatars,
   ConfirmationModal,
   AlertInterface,
   LoadingButton,
+  AvatarList,
 } from "@iustitia/site/shared-components";
 import { WARNING_TYPES } from "@iustitia/site/shared-utils";
 import { GetModule, ModulesEnum, ModulesInterface, GetRoutes, PlacesRoutesInterface, DashboardsRoutesInterface } from "@iustitia/modules";
 import { PlacesServices, MembersServices } from "@iustitia/site/services";
-import { convertProfileToSimpleProfile } from "../../Places";
 
 const placesModule = GetModule(ModulesEnum.places) as ModulesInterface;
 const placesRoutes = GetRoutes(ModulesEnum.places) as PlacesRoutesInterface;
@@ -40,13 +39,13 @@ export function Details({
 }: DetailsProps) {
   const history = useHistory();
   const [confirmInative, setConfirmInative] = useState(false);
-  const [membersList, setMembersList] = useState<MembersSimpleType[]>([]);
+  const [membersList, setMembersList] = useState<ProfilesListType[]>([]);
   const [showManagersModal, setShowManagersModal] = useState(false);
   const [selectedManagers, setSelectedManagers] = useState<
-    MembersSimpleType[]
+  ProfilesListType[]
   >([]);
   const [showUsersModal, setShowUsersModal] = useState(false);
-  const [selectedUsers, setSelectedUsers] = useState<MembersSimpleType[]>([]);
+  const [selectedUsers, setSelectedUsers] = useState<ProfilesListType[]>([]);
 
   async function handleActive() {
     setLoading(true);
@@ -69,13 +68,13 @@ export function Details({
   }
 
   useEffect(() => {
-    getListOfMembers();
+    getMembersList();
   }, []);
 
-  async function getListOfMembers() {
+  async function getMembersList() {
     setLoading(true);
     try {
-      const res = (await MembersServices.getAll()) as MembersSimpleType[];
+      const res = (await MembersServices.getAll()) as ProfilesListType[];
       setMembersList(res);
       setLoading(false);
     } catch (err: any) {
@@ -95,17 +94,15 @@ export function Details({
   }, [data.managersPlace]);
 
   function addDataManagersToSelected(managersPlace: ProfilesListType[]) {
-    const managers = convertProfileToSimpleProfile(managersPlace);
-    setSelectedManagers(managers);
+    setSelectedManagers(managersPlace);
   }
 
   function addDataUsersToSelected(usersPlace: ProfilesListType[]) {
-    const users = convertProfileToSimpleProfile(usersPlace);
-    setSelectedUsers(users);
+    setSelectedUsers(usersPlace);
   }
 
   // TODO: if user is already manager do not need to be on users list
-  function handleSelectManager(manager: MembersSimpleType) {
+  function handleSelectManager(manager: ProfilesListType) {
     let managersList = selectedManagers.slice(0);
     if (managersList.some((m) => m.id === manager.id))
       managersList = managersList.filter((m) => m.id !== manager.id);
@@ -113,7 +110,7 @@ export function Details({
     setSelectedManagers(managersList);
   }
 
-  function handleSelectUser(user: MembersSimpleType) {
+  function handleSelectUser(user: ProfilesListType) {
     let usersList = selectedUsers.slice(0);
     if (usersList.some((u) => u.id === user.id))
       usersList = usersList.filter((u) => u.id !== user.id);
@@ -278,7 +275,7 @@ export function Details({
             <div className="md:grid md:grid-cols-12 hover:bg-gray-50 md:space-y-0 space-y-1 p-4 border-b">
               <p className="col-span-3 font-bold">Responsáveis</p>
               <div className="col-span-9 flex justify-between">
-                {<ShowAvatars toShow={selectedManagers} qtd={8} smallQtd={5} />}
+                {<AvatarList toShow={selectedManagers} qtd={8} smallQtd={5} />}
                 <button
                   type="button"
                   onClick={() => setShowManagersModal(true)}
@@ -294,7 +291,7 @@ export function Details({
             <div className="md:grid md:grid-cols-12 hover:bg-gray-50 md:space-y-0 space-y-1 p-4 border-b">
               <p className="col-span-3 font-bold">Usuários</p>
               <div className="col-span-9 flex justify-between">
-                {<ShowAvatars toShow={selectedUsers} qtd={8} smallQtd={5} />}
+                {<AvatarList toShow={selectedUsers} qtd={8} smallQtd={5} />}
                 <button
                   type="button"
                   onClick={() => setShowUsersModal(true)}

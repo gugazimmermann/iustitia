@@ -1,12 +1,9 @@
 import { useHistory } from "react-router-dom";
-import {
-  formatAddress,
-  getUserInitials,
-  WARNING_TYPES,
-} from "@iustitia/site/shared-utils";
+import { formatAddress, WARNING_TYPES } from "@iustitia/site/shared-utils";
 import { ModulesEnum, GetModule, ModulesInterface } from "@iustitia/modules";
 import { BusinessContactsServices } from "@iustitia/site/services";
 import {
+  AvatarOrInitial,
   Callout,
   ListHeader,
   ListHeaderItems,
@@ -52,17 +49,12 @@ export function List({ dataList, detailsRoute, sort, setSort }: ListProps) {
                 onClick={() => history.push(`${detailsRoute}/${data.id}`)}
               >
                 <td className="py-3 px-3">
-                  {data.avatar ? (
-                    <img
-                      className="w-6 h-6 rounded-full"
-                      src={`${process.env.NX_BUCKET_AVATAR_URL}${data.avatar}`}
-                      alt={data.name}
-                    />
-                  ) : (
-                    <span className="w-6 h-6 rounded-full flex justify-center items-center text-center font-bold text-primary-500 bg-primary-50 hover:text-primary-900 hover:bg-primary-100 focus:outline-none focus:bg-primary-100 focus:ring-primary-900">
-                      {data.name ? getUserInitials(data.name) : "I"}
-                    </span>
-                  )}
+                  <AvatarOrInitial
+                    avatar={data.avatar}
+                    name={data.name}
+                    avatarStyle="w-6 h-6"
+                    initialStyle="w-6 h-6"
+                  />
                 </td>
                 <td className="py-3 px-3 text-left whitespace-nowrap">
                   <span className="font-medium">{data.name}</span>

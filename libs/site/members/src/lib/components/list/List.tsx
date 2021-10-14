@@ -1,14 +1,21 @@
 import { useHistory } from "react-router-dom";
 import {
   ActiveBadge,
+  AvatarOrInitial,
   Callout,
   ListHeader,
   ListHeaderItems,
   RoleBadge,
 } from "@iustitia/site/shared-components";
-import { getUserInitials, WARNING_TYPES } from "@iustitia/site/shared-utils";
+import { WARNING_TYPES } from "@iustitia/site/shared-utils";
 import { MembersServices } from "@iustitia/site/services";
-import { GetModule, ModulesEnum, ModulesInterface, GetRoutes, MembersRoutesInterface } from "@iustitia/modules";
+import {
+  GetModule,
+  ModulesEnum,
+  ModulesInterface,
+  GetRoutes,
+  MembersRoutesInterface,
+} from "@iustitia/modules";
 
 const membersModule = GetModule(ModulesEnum.members) as ModulesInterface;
 const membersRoutes = GetRoutes(ModulesEnum.members) as MembersRoutesInterface;
@@ -48,20 +55,17 @@ export function List({ dataList, sort, setSort }: ListProps) {
               <tr
                 key={i}
                 className="border-b border-gray-200 hover:bg-gray-50 cursor-pointer"
-                onClick={() => history.push(`${membersRoutes.details}/${data.id}`)}
+                onClick={() =>
+                  history.push(`${membersRoutes.details}/${data.id}`)
+                }
               >
                 <td className="py-3 px-3 text-left">
-                  {data.avatar ? (
-                    <img
-                      className="w-6 h-6 rounded-full"
-                      src={`${process.env.NX_BUCKET_AVATAR_URL}${data.avatar}`}
-                      alt={data.name}
-                    />
-                  ) : (
-                    <span className="w-6 h-6 rounded-full flex justify-center items-center text-center font-bold text-primary-500 bg-primary-50 hover:text-primary-900 hover:bg-primary-100 focus:outline-none focus:bg-primary-100 focus:ring-primary-900">
-                      {data.name ? getUserInitials(data.name) : "I"}
-                    </span>
-                  )}
+                  <AvatarOrInitial
+                    avatar={data.avatar}
+                    name={data.name}
+                    avatarStyle="w-6 h-6"
+                    initialStyle="w-6 h-6"
+                  />
                 </td>
                 <td className="py-3 px-3 text-left whitespace-nowrap">
                   <span className="font-medium">{data.name}</span>

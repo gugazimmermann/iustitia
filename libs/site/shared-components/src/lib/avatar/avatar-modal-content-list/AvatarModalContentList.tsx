@@ -1,7 +1,7 @@
 import { CheckIcon } from "@iustitia/site/icons";
-import { getUserInitials } from "@iustitia/site/shared-utils";
 import { MembersServices } from "@iustitia/site/services";
-import { useCloseModal } from "../..";
+import useCloseModal from "../../use-close-modal/useCloseModal";
+import AvatarOrInitial from "../avatar-or-initial/AvatarOrInitial";
 
 type MembersSimpleType = MembersServices.MembersSimpleRes;
 
@@ -37,17 +37,12 @@ export function AvatarModalContentList({
             }}
           >
             <div className="flex items-center">
-              {p.avatar ? (
-                <img
-                  className="flex-shrink-0 h-8 w-8 rounded-full"
-                  src={`${process.env.NX_BUCKET_AVATAR_URL}${p.avatar}`}
-                  alt={p.name}
-                />
-              ) : (
-                <span className="flex-shrink-0 h-8 w-8 rounded-full flex justify-center items-center text-center font-bold text-primary-500 bg-primary-50">
-                  {p.name ? getUserInitials(p.name) : "I"}
-                </span>
-              )}
+              <AvatarOrInitial
+                avatar={p.avatar}
+                name={p.name}
+                avatarStyle="flex-shrink-0 h-8 w-8"
+                initialStyle="flex-shrink-0 h-8 w-8"
+              />
               <span className="ml-3 block font-normal truncate">{p.name}</span>
             </div>
             {currentList.some((s) => s.id === p.id) && (
