@@ -34,7 +34,7 @@ export function List({ dataList, sort, setSort }: ListProps) {
     { name: "Escritório", sort: true },
     { name: "Cidade" },
     { name: "Responsáveis" },
-    { name: "Usuários" },
+    { name: "Colaboradores" },
     { name: "Status", align: "center" },
   ];
 

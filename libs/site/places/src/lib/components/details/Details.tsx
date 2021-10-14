@@ -9,16 +9,24 @@ import {
   AvatarList,
 } from "@iustitia/site/shared-components";
 import { WARNING_TYPES } from "@iustitia/site/shared-utils";
-import { GetModule, ModulesEnum, ModulesInterface, GetRoutes, PlacesRoutesInterface, DashboardsRoutesInterface } from "@iustitia/modules";
+import {
+  GetModule,
+  ModulesEnum,
+  ModulesInterface,
+  GetRoutes,
+  PlacesRoutesInterface,
+  DashboardsRoutesInterface,
+} from "@iustitia/modules";
 import { PlacesServices, MembersServices } from "@iustitia/site/services";
 
 const placesModule = GetModule(ModulesEnum.places) as ModulesInterface;
 const placesRoutes = GetRoutes(ModulesEnum.places) as PlacesRoutesInterface;
-const dashboardsRoutes = GetRoutes(ModulesEnum.dashboards) as DashboardsRoutesInterface;
+const dashboardsRoutes = GetRoutes(
+  ModulesEnum.dashboards
+) as DashboardsRoutesInterface;
 
 type PlacesType = PlacesServices.PlacesRes;
 type ProfilesListType = PlacesServices.ProfilesListRes;
-type MembersSimpleType = MembersServices.MembersSimpleRes;
 
 export interface DetailsProps {
   loading: boolean;
@@ -39,13 +47,16 @@ export function Details({
 }: DetailsProps) {
   const history = useHistory();
   const [confirmInative, setConfirmInative] = useState(false);
+
   const [membersList, setMembersList] = useState<ProfilesListType[]>([]);
   const [showManagersModal, setShowManagersModal] = useState(false);
-  const [selectedManagers, setSelectedManagers] = useState<
-  ProfilesListType[]
+  const [selectedManagers, setSelectedManagers] = useState<ProfilesListType[]>(
+    []
+  );
+  const [showEmployeesModal, setShowEmployeesModal] = useState(false);
+  const [selectedEmployees, setSelectedEmployees] = useState<
+    ProfilesListType[]
   >([]);
-  const [showUsersModal, setShowUsersModal] = useState(false);
-  const [selectedUsers, setSelectedUsers] = useState<ProfilesListType[]>([]);
 
   async function handleActive() {
     setLoading(true);
@@ -89,61 +100,60 @@ export function Details({
   }
 
   useEffect(() => {
-    if (data.managersPlace) addDataManagersToSelected(data.managersPlace);
-    if (data.usersPlace) addDataUsersToSelected(data.usersPlace);
-  }, [data.managersPlace]);
+    if (data.managersPlace) setSelectedManagers(data.managersPlace);
+    if (data.usersPlace) setSelectedEmployees(data.usersPlace);
+  }, [data]);
 
-  function addDataManagersToSelected(managersPlace: ProfilesListType[]) {
-    setSelectedManagers(managersPlace);
+  function ManagerOrEmployee(member: ProfilesListType, type: string) {
+    if (type === "manager") {
+      if (selectedEmployees.some((u) => u.id === member.id)) {
+        let usersList = selectedEmployees.slice(0);
+        usersList = usersList.filter((u) => u.id !== member.id);
+        setSelectedEmployees(usersList);
+      }
+    } else {
+      if (selectedManagers.some((u) => u.id === member.id)) {
+        let managersList = selectedManagers.slice(0);
+        managersList = managersList.filter((u) => u.id !== member.id);
+        setSelectedManagers(managersList);
+      }
+    }
   }
 
-  function addDataUsersToSelected(usersPlace: ProfilesListType[]) {
-    setSelectedUsers(usersPlace);
-  }
-
-  // TODO: if user is already manager do not need to be on users list
   function handleSelectManager(manager: ProfilesListType) {
     let managersList = selectedManagers.slice(0);
     if (managersList.some((m) => m.id === manager.id))
       managersList = managersList.filter((m) => m.id !== manager.id);
-    else managersList.push(manager);
+    else {
+      managersList.push(manager);
+      ManagerOrEmployee(manager, "manager");
+    }
     setSelectedManagers(managersList);
   }
 
-  function handleSelectUser(user: ProfilesListType) {
-    let usersList = selectedUsers.slice(0);
-    if (usersList.some((u) => u.id === user.id))
-      usersList = usersList.filter((u) => u.id !== user.id);
-    else usersList.push(user);
-    setSelectedUsers(usersList);
-  }
-
-  async function handleSendManagers() {
-    setLoading(true);
-    try {
-      const res = (await PlacesServices.managers({
-        placeId: data.id as string,
-        managersList: selectedManagers
-      })) as PlacesType;
-      setData(res);
-      setLoading(false);
-    } catch (err: any) {
-      setShowAlert({
-        show: true,
-        message: err.message as string,
-        type: WARNING_TYPES.ERROR,
-        time: 3000,
-      });
-      setLoading(false);
+  function handleSelectEmployee(employee: ProfilesListType) {
+    let employeesList = selectedEmployees.slice(0);
+    if (employeesList.some((u) => u.id === employee.id))
+    employeesList = employeesList.filter((u) => u.id !== employee.id);
+    else {
+      employeesList.push(employee);
+      ManagerOrEmployee(employee, "employee");
     }
+    setSelectedEmployees(employeesList);
   }
 
-  async function handleSendUsers() {
+  async function sendManagersAndEmployees() {
     setLoading(true);
+    setShowManagersModal(false);
+    setShowEmployeesModal(false);
     try {
+      await PlacesServices.managers({
+        placeId: data.id as string,
+        managersList: selectedManagers,
+      });
       const res = (await PlacesServices.users({
         placeId: data.id as string,
-        usersList: selectedUsers
+        usersList: selectedEmployees,
       })) as PlacesType;
       setData(res);
       setLoading(false);
@@ -158,24 +168,11 @@ export function Details({
     }
   }
 
-  function handleModalSendManagers() {
-    handleSendManagers();
+  function cancelModalManagersAndEmployees() {
+    setSelectedManagers(data.managersPlace as ProfilesListType[]);
+    setSelectedEmployees(data.usersPlace as ProfilesListType[]);
     setShowManagersModal(false);
-  }
-
-  function handleModalSendUsers() {
-    handleSendUsers();
-    setShowUsersModal(false);
-  }
-
-  function handleModalCancelManagers() {
-    addDataManagersToSelected(data.managersPlace as ProfilesListType[]);
-    setShowManagersModal(false);
-  }
-
-  function handleModalCancelUsers() {
-    addDataUsersToSelected(data.usersPlace as ProfilesListType[]);
-    setShowUsersModal(false);
+    setShowEmployeesModal(false);
   }
 
   return (
@@ -279,7 +276,11 @@ export function Details({
                 <button
                   type="button"
                   onClick={() => setShowManagersModal(true)}
-                  className={`p-2 py-1 text-xs rounded-md ${data.active ? `text-white bg-primary-500 hover:bg-primary-900 focus:ring-primary-500` : `text-white bg-gray-500`}`}
+                  className={`p-2 py-1 text-xs rounded-md ${
+                    data.active
+                      ? `text-white bg-primary-500 hover:bg-primary-900 focus:ring-primary-500`
+                      : `text-white bg-gray-500`
+                  }`}
                   disabled={!data.active}
                 >
                   Adicionar
@@ -289,13 +290,17 @@ export function Details({
           </div>
           <div className="col-span-full">
             <div className="md:grid md:grid-cols-12 hover:bg-gray-50 md:space-y-0 space-y-1 p-4 border-b">
-              <p className="col-span-3 font-bold">Usuários</p>
+              <p className="col-span-3 font-bold">Colaboradores</p>
               <div className="col-span-9 flex justify-between">
-                {<AvatarList toShow={selectedUsers} qtd={8} smallQtd={5} />}
+                {<AvatarList toShow={selectedEmployees} qtd={8} smallQtd={5} />}
                 <button
                   type="button"
-                  onClick={() => setShowUsersModal(true)}
-                  className={`p-2 py-1 text-xs rounded-md ${data.active ? `text-white bg-primary-500 hover:bg-primary-900 focus:ring-primary-500` : `text-white bg-gray-500`}`}
+                  onClick={() => setShowEmployeesModal(true)}
+                  className={`p-2 py-1 text-xs rounded-md ${
+                    data.active
+                      ? `text-white bg-primary-500 hover:bg-primary-900 focus:ring-primary-500`
+                      : `text-white bg-gray-500`
+                  }`}
                   disabled={!data.active}
                 >
                   Adicionar
@@ -323,24 +328,24 @@ export function Details({
           membersList={membersList}
           currentList={selectedManagers}
           handleSelect={handleSelectManager}
-          cancel={handleModalCancelManagers}
-          submit={handleModalSendManagers}
+          cancel={cancelModalManagersAndEmployees}
+          submit={sendManagersAndEmployees}
           submitText="Salvar Responsáveis"
           open={showManagersModal}
           setOpen={setShowManagersModal}
         />
       )}
-      {showUsersModal && (
+      {showEmployeesModal && (
         <AvatarModal
           title="Selecione os Usuários"
           membersList={membersList}
-          currentList={selectedUsers}
-          handleSelect={handleSelectUser}
-          cancel={handleModalCancelUsers}
-          submit={handleModalSendUsers}
+          currentList={selectedEmployees}
+          handleSelect={handleSelectEmployee}
+          cancel={cancelModalManagersAndEmployees}
+          submit={sendManagersAndEmployees}
           submitText="Salvar Usuários"
-          open={showUsersModal}
-          setOpen={setShowUsersModal}
+          open={showEmployeesModal}
+          setOpen={setShowEmployeesModal}
         />
       )}
       {confirmInative && (
