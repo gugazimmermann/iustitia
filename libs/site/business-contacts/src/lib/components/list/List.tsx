@@ -43,12 +43,12 @@ export function List({ dataList, detailsRoute, sort, setSort }: ListProps) {
     <div className=" overflow-x-auto">
       <table className="w-full table">
         <ListHeader items={headerItems} sort={sort} setSort={setSort} />
-        <tbody className="bg-white text-gray-600 text-sm font-light">
+        <tbody className="bg-white text-gray-600 text-sm">
           {dataList &&
             dataList.map((data, i) => (
               <tr
                 key={i}
-                className="border-b border-gray-200 hover:bg-gray-100 cursor-pointer"
+                className="border-b border-gray-200 hover:bg-gray-50 cursor-pointer"
                 onClick={() => history.push(`${detailsRoute}/${data.id}`)}
               >
                 <td className="py-3 px-3">

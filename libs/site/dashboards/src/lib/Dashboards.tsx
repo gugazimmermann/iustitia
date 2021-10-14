@@ -103,7 +103,7 @@ export function Dashboards() {
           <div className="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-4">
             <div className="p-4 border border-gray-300 rounded">
               <div className="flex items-start justify-between">
-                <h2 className="mb-2 font-mono text-2xl font-light leading-none text-gray-900 truncate">
+                <h2 className="mb-2 font-mono text-2xl leading-none text-gray-900 truncate">
                   23,455
                 </h2>
                 <span className="flex items-center space-x-1 text-sm  leading-none text-green-600">
@@ -126,7 +126,7 @@ export function Dashboards() {
             </div>
             <div className="p-4 border border-gray-300 rounded">
               <div className="flex items-start justify-between">
-                <h2 className="mb-2 font-mono text-2xl font-light leading-none text-gray-900 truncate">
+                <h2 className="mb-2 font-mono text-2xl leading-none text-gray-900 truncate">
                   55
                 </h2>
                 <span className="flex items-center space-x-1 text-sm  leading-none text-green-600">
@@ -149,7 +149,7 @@ export function Dashboards() {
             </div>
             <div className="p-4 border border-gray-300 rounded">
               <div className="flex items-start justify-between">
-                <h2 className="mb-2 font-mono text-2xl font-light leading-none text-gray-900 truncate">
+                <h2 className="mb-2 font-mono text-2xl leading-none text-gray-900 truncate">
                   129,752
                 </h2>
                 <span className="flex items-center space-x-1 text-sm  leading-none text-red-600">
@@ -172,7 +172,7 @@ export function Dashboards() {
             </div>
             <div className="p-4 border border-gray-300 rounded">
               <div className="flex items-start justify-between">
-                <h2 className="mb-2 font-mono text-2xl font-light leading-none text-gray-900 truncate">
+                <h2 className="mb-2 font-mono text-2xl leading-none text-gray-900 truncate">
                   1,255
                 </h2>
                 <span className="flex items-center space-x-1 text-sm  leading-none text-green-600">

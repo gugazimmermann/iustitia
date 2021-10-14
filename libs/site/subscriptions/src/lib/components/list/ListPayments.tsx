@@ -38,12 +38,12 @@ export function ListPayments({ payments }: ListPaymentsProps) {
             <th className="py-2 px-2 text-right">Status</th>
           </tr>
         </thead>
-        <tbody className="text-gray-600 text-sm font-light">
+        <tbody className="text-gray-600 text-sm">
           {payments &&
             payments.map((payment, i) => (
               <tr
                 key={i}
-                className="border-b border-gray-200 hover:bg-gray-100"
+                className="border-b border-gray-200 hover:bg-gray-50"
               >
                 <td className="py-3 px-3 text-left whitespace-nowrap">
                   <span>

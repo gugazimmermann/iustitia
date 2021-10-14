@@ -67,7 +67,7 @@ export function CalendarDayInput({
         <div>
           <button
             type="button"
-            className="inline-flex p-1 transition duration-100 ease-in-out rounded-full cursor-pointer focus:outline-none focus:shadow-outline hover:bg-gray-100"
+            className="inline-flex p-1 transition duration-100 ease-in-out rounded-full cursor-pointer focus:outline-none focus:shadow-outline hover:bg-gray-50"
             onClick={() =>
               setCurrentMonth(
                 currentMonth?.startOf("month").minus({ months: 1 })
@@ -81,7 +81,7 @@ export function CalendarDayInput({
           </button>
           <button
             type="button"
-            className="inline-flex p-1 transition duration-100 ease-in-out rounded-full cursor-pointer focus:outline-none focus:shadow-outline hover:bg-gray-100"
+            className="inline-flex p-1 transition duration-100 ease-in-out rounded-full cursor-pointer focus:outline-none focus:shadow-outline hover:bg-gray-50"
             onClick={() =>
               setCurrentMonth(
                 currentMonth?.startOf("month").plus({ months: 1 })
