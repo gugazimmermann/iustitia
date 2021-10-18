@@ -12,7 +12,7 @@ export { default as getAddressFromCEP } from "./lib/get-address-from-cep";
 export { default as getUserInitials } from "./lib/get-user-initials";
 export { default as InternvalOfDays } from "./lib/internval-of-days";
 export { default as IsWeekend } from "./lib/is-weekend";
-export { default as Sort } from "./lib/sort";
+export { default as Sort, SORT_TYPES } from "./lib/sort";
 export { default as useElementSize } from "./lib/useElementSize";
 export { default as useEventListener } from "./lib/useEventListener";
 export { default as validateEmail } from "./lib/validate-email";

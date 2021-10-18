@@ -1,4 +1,5 @@
 import { ArrowDownIcon, ArrowUpIcon } from "@iustitia/site/icons";
+import { SORT_TYPES } from "@iustitia/site/shared-utils";
 
 export interface ListHeaderItems {
   name: string;
@@ -9,7 +10,7 @@ export interface ListHeaderItems {
 export interface ListHeaderProps {
   items: ListHeaderItems[];
   sort: string;
-  setSort(order: "ASC" | "DESC"): void;
+  setSort(order: SORT_TYPES): void;
 }
 
 export function ListHeader({ items, sort, setSort }: ListHeaderProps) {
@@ -28,13 +29,13 @@ export function ListHeader({ items, sort, setSort }: ListHeaderProps) {
             }`}
           >
             {item.name}
-            {item.sort && sort === "ASC" && (
-              <button onClick={() => setSort("DESC")}>
+            {item.sort && sort === SORT_TYPES.ASC && (
+              <button onClick={() => setSort(SORT_TYPES.DESC)}>
                 <ArrowDownIcon styles="h-4 w-4 inline" stroke={2} />
               </button>
             )}
-            {item.sort && sort === "DESC" && (
-              <button onClick={() => setSort("ASC")}>
+            {item.sort && sort === SORT_TYPES.DESC && (
+              <button onClick={() => setSort(SORT_TYPES.ASC)}>
                 <ArrowUpIcon styles="h-4 w-4 inline" stroke={2} />
               </button>
             )}

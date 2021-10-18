@@ -9,10 +9,9 @@ import {
   Header,
   SearchField,
 } from "@iustitia/site/shared-components";
-import { Sort, WARNING_TYPES } from "@iustitia/site/shared-utils";
+import { Sort, SORT_TYPES, WARNING_TYPES } from "@iustitia/site/shared-utils";
 
 import {
-  MembersServices,
   PlacesServices,
   ProfilesServices,
 } from "@iustitia/site/services";
@@ -56,7 +55,7 @@ export function Places({ profile, setPlaces }: PlacesProps) {
   const [selected, setSelected] = useState({} as PlacesType);
   const [confirm, setConfirm] = useState(false);
   const [searchParam, setSearchParam] = useState<string>();
-  const [sort, setSort] = useState<"ASC" | "DESC">("ASC");
+  const [sort, setSort] = useState<SORT_TYPES>(SORT_TYPES.ASC);
 
   useEffect(() => {
     if (pathname.includes("adicionar")) {

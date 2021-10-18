@@ -17,16 +17,22 @@ import {
   PlacesRoutesInterface,
   DashboardsRoutesInterface,
 } from "@iustitia/modules";
-import { PlacesServices, MembersServices } from "@iustitia/site/services";
+import {
+  PlacesServices,
+  MembersServices,
+  BusinessContactsServices,
+} from "@iustitia/site/services";
 
 const placesModule = GetModule(ModulesEnum.places) as ModulesInterface;
 const placesRoutes = GetRoutes(ModulesEnum.places) as PlacesRoutesInterface;
+
 const dashboardsRoutes = GetRoutes(
   ModulesEnum.dashboards
 ) as DashboardsRoutesInterface;
 
 type PlacesType = PlacesServices.PlacesRes;
 type ProfilesListType = PlacesServices.ProfilesListRes;
+type BCPersonsType = BusinessContactsServices.BCPersonsRes;
 
 export interface DetailsProps {
   loading: boolean;
@@ -58,6 +64,13 @@ export function Details({
     ProfilesListType[]
   >([]);
 
+  const [showClientsModal, setShowClientsModal] = useState(false);
+  const [selectedClients, setSelectedClients] = useState<BCPersonsType[]>([]);
+  const [showSupliersModal, setShowSupliersModal] = useState(false);
+  const [selectedSupliers, setSelectedSupliers] = useState<BCPersonsType[]>([]);
+  const [showContactsModal, setShowContactsModal] = useState(false);
+  const [selectedContacts, setSelectedContacts] = useState<BCPersonsType[]>([]);
+
   async function handleActive() {
     setLoading(true);
     try {
@@ -80,6 +93,7 @@ export function Details({
 
   useEffect(() => {
     getMembersList();
+    getBusinessContacts();
   }, []);
 
   async function getMembersList() {
@@ -99,9 +113,39 @@ export function Details({
     }
   }
 
+  async function getBusinessContacts() {
+    setLoading(true);
+    try {
+      const clients = (await BusinessContactsServices.getAllPersons({
+        type: "Clientes",
+      })) as BCPersonsType[];
+      const supliers = (await BusinessContactsServices.getAllPersons({
+        type: "Fornecedores",
+      })) as BCPersonsType[];
+      const contacts = (await BusinessContactsServices.getAllPersons({
+        type: "Contatos",
+      })) as BCPersonsType[];
+      // const placeClients = clients.filter((c) => c.placeId === data.id);
+      setSelectedClients(clients);
+      // const placeSupliers = clients.filter((c) => c.placeId === data.id);
+      setSelectedSupliers(supliers);
+      // const placeContacts = clients.filter((c) => c.placeId === data.id);
+      setSelectedContacts(contacts);
+      setLoading(false);
+    } catch (err: any) {
+      setShowAlert({
+        show: true,
+        message: err.message as string,
+        type: WARNING_TYPES.ERROR,
+        time: 3000,
+      });
+      setLoading(false);
+    }
+  }
+
   useEffect(() => {
     if (data.managersPlace) setSelectedManagers(data.managersPlace);
-    if (data.usersPlace) setSelectedEmployees(data.usersPlace);
+    if (data.employeesPlace) setSelectedEmployees(data.employeesPlace);
   }, [data]);
 
   function ManagerOrEmployee(member: ProfilesListType, type: string) {
@@ -134,7 +178,7 @@ export function Details({
   function handleSelectEmployee(employee: ProfilesListType) {
     let employeesList = selectedEmployees.slice(0);
     if (employeesList.some((u) => u.id === employee.id))
-    employeesList = employeesList.filter((u) => u.id !== employee.id);
+      employeesList = employeesList.filter((u) => u.id !== employee.id);
     else {
       employeesList.push(employee);
       ManagerOrEmployee(employee, "employee");
@@ -170,7 +214,7 @@ export function Details({
 
   function cancelModalManagersAndEmployees() {
     setSelectedManagers(data.managersPlace as ProfilesListType[]);
-    setSelectedEmployees(data.usersPlace as ProfilesListType[]);
+    setSelectedEmployees(data.employeesPlace as ProfilesListType[]);
     setShowManagersModal(false);
     setShowEmployeesModal(false);
   }
@@ -308,12 +352,70 @@ export function Details({
               </div>
             </div>
           </div>
+
+          <div className="col-span-full">
+            <div className="md:grid md:grid-cols-12 hover:bg-gray-50 md:space-y-0 space-y-1 p-4 border-b">
+              <p className="col-span-3 font-bold">Clientes</p>
+              <div className="col-span-9 flex justify-between">
+                {<AvatarList toShow={selectedEmployees} qtd={8} smallQtd={5} />}
+                <button
+                  type="button"
+                  onClick={() => setShowEmployeesModal(true)}
+                  className={`p-2 py-1 text-xs rounded-md ${
+                    data.active
+                      ? `text-white bg-primary-500 hover:bg-primary-900 focus:ring-primary-500`
+                      : `text-white bg-gray-500`
+                  }`}
+                  disabled={!data.active}
+                >
+                  Adicionar
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div className="col-span-full">
+            <div className="md:grid md:grid-cols-12 hover:bg-gray-50 md:space-y-0 space-y-1 p-4 border-b">
+              <p className="col-span-3 font-bold">Fornecedores</p>
+              <div className="col-span-9 flex justify-between">
+                {<AvatarList toShow={selectedEmployees} qtd={8} smallQtd={5} />}
+                <button
+                  type="button"
+                  onClick={() => setShowEmployeesModal(true)}
+                  className={`p-2 py-1 text-xs rounded-md ${
+                    data.active
+                      ? `text-white bg-primary-500 hover:bg-primary-900 focus:ring-primary-500`
+                      : `text-white bg-gray-500`
+                  }`}
+                  disabled={!data.active}
+                >
+                  Adicionar
+                </button>
+              </div>
+            </div>
+          </div>
+
           <div className="col-span-full">
             <div className="md:grid md:grid-cols-12 hover:bg-gray-50 md:space-y-0 space-y-1 p-4 border-b">
               <p className="col-span-3 font-bold">Contatos</p>
-              <p className="col-span-9"></p>
+              <div className="col-span-9 flex justify-between">
+                {<AvatarList toShow={selectedEmployees} qtd={8} smallQtd={5} />}
+                <button
+                  type="button"
+                  onClick={() => setShowEmployeesModal(true)}
+                  className={`p-2 py-1 text-xs rounded-md ${
+                    data.active
+                      ? `text-white bg-primary-500 hover:bg-primary-900 focus:ring-primary-500`
+                      : `text-white bg-gray-500`
+                  }`}
+                  disabled={!data.active}
+                >
+                  Adicionar
+                </button>
+              </div>
             </div>
           </div>
+
           <div className="col-span-full">
             <div className="md:grid md:grid-cols-12 hover:bg-gray-50 md:space-y-0 space-y-1 p-4 border-b">
               <p className="col-span-3 font-bold">Eventos</p>

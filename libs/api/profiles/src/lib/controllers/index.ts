@@ -29,6 +29,7 @@ export interface ProfilesInterface {
 
 function dataToProfilesResult(user: UsersInstance): ProfilesInterface {
   return {
+    id: user?.id || "",
     isAdmin: (user.roles && user.roles.length && user.roles[0].name === "Admin") ? true : false,
     isProfessional: (user.subscription && user.subscription.type === "professional") ? true : false,
     avatar: user?.profile?.avatar || "",

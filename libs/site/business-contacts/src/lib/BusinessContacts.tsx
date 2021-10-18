@@ -5,12 +5,14 @@ import {
   Alert,
   AlertInterface,
   ConfirmationModal,
+  DefaultAlert,
   Header,
   SearchField,
 } from "@iustitia/site/shared-components";
-import { Sort, WARNING_TYPES } from "@iustitia/site/shared-utils";
+import { Sort, SORT_TYPES, WARNING_TYPES } from "@iustitia/site/shared-utils";
 import {
-  BusinessContactsServices,
+  BusinessContactsServices as BCServices,
+  MembersServices,
   PlacesServices,
   ProfilesServices,
 } from "@iustitia/site/services";
@@ -22,18 +24,23 @@ import {
   BCRoutesInterface,
 } from "@iustitia/modules";
 import { Details, Form, List } from "./components";
+import { filterOnwer, getRouteType, seeType } from "./utils";
 
 const BCModule = GetModule(ModulesEnum.businessContacts) as ModulesInterface;
 const BCRoutes = GetRoutes(ModulesEnum.businessContacts) as BCRoutesInterface;
 
-type BCPersonsType = BusinessContactsServices.BCPersonsRes;
-type BCCompaniesType = BusinessContactsServices.BCCompaniesRes;
-type PlacesType = PlacesServices.PlacesRes;
+type BCTypes = BCServices.BCTypes;
+type BCPersonsType = BCServices.BCPersonsRes;
+type BCCompaniesType = BCServices.BCCompaniesRes;
 type ProfilesType = ProfilesServices.ProfilesRes;
+type ProfilesListType = PlacesServices.ProfilesListRes;
+type PlacesType = PlacesServices.PlacesRes;
 
 interface BusinessContactsProps {
   profile?: ProfilesType;
 }
+
+type toShow = "list" | "details" | "update" | "create";
 
 interface routeTypeInterface {
   list: string;
@@ -48,34 +55,31 @@ export function BusinessContacts({ profile }: BusinessContactsProps) {
   let { id } = useParams<{ id: string }>();
 
   const [loading, setLoading] = useState(false);
-  const [showAlert, setShowAlert] = useState<AlertInterface>({
-    show: false,
-    message: "",
-    type: WARNING_TYPES.NONE,
-    time: 3000,
-  });
-  const [whatToShow, setWhatToShow] = useState<
-    "list" | "details" | "update" | "create"
-  >();
+  const [showAlert, setShowAlert] = useState<AlertInterface>(DefaultAlert);
+  const [whatToShow, setWhatToShow] = useState<toShow>();
+
+  const [members, setMembers] = useState<ProfilesListType[]>([]);
+  const [places, setPlaces] = useState<PlacesType[]>([]);
+  const [companies, setCompanies] = useState<BCCompaniesType[]>([]);
 
   const [confirm, setConfirm] = useState(false);
-  const [dataList, setDataList] = useState([] as BCPersonsType[]);
-  const [showDataList, setShowDataList] = useState([] as BCPersonsType[]);
-  const [selected, setSelected] = useState({} as BCPersonsType);
-  const [places, setPlaces] = useState<PlacesType[]>();
-  const [companies, setCompanies] = useState<BCCompaniesType[]>();
+  const [dataList, setDataList] = useState<BCPersonsType[]>();
+  const [showDataList, setShowDataList] = useState<BCPersonsType[]>();
+  const [selected, setSelected] = useState<BCPersonsType>();
   const [selectedOwner, setSelectedOwner] = useState<string>("All");
-  const [selectedType, setSelectedType] = useState<
-    "Clientes" | "Contatos" | "Fornecedores"
-  >();
+  const [selectedType, setSelectedType] = useState<BCTypes>();
   const [routeType, setRouteType] = useState({} as routeTypeInterface);
   const [searchParam, setSearchParam] = useState<string>();
-  const [sort, setSort] = useState<"ASC" | "DESC">("ASC");
+  const [sort, setSort] = useState<SORT_TYPES>(SORT_TYPES.ASC);
 
   useEffect(() => {
+    getMembers();
     getPlaces();
     getCompanies();
-    setSelectedType(seeType());
+  }, []);
+
+  useEffect(() => {
+    setSelectedType(seeType(pathname));
     if (pathname.includes("adicionar")) {
       setWhatToShow("create");
     } else if (pathname.includes("alterar")) {
@@ -92,59 +96,40 @@ export function BusinessContacts({ profile }: BusinessContactsProps) {
     }
   }, [id, pathname]);
 
-  function seeType() {
-    const pathType = pathname.split("/");
-    if (pathType.includes("clientes")) return "Clientes";
-    else if (pathType.includes("contatos")) return "Contatos";
-    return "Fornecedores";
-  }
+  useEffect(() => {
+    const routes = getRouteType(BCRoutes, selectedType);
+    setRouteType(routes);
+  }, [selectedType]);
 
   useEffect(() => {
-    switch (selectedType) {
-      case "Clientes": {
-        setRouteType({
-          list: BCRoutes.listPersons,
-          details: BCRoutes.detailsPerson,
-          add: BCRoutes.addPerson,
-          update: BCRoutes.updatePerson,
-        });
-        break;
-      }
-      case "Contatos": {
-        setRouteType({
-          list: BCRoutes.listContacts,
-          details: BCRoutes.detailsContact,
-          add: BCRoutes.addContact,
-          update: BCRoutes.updateContact,
-        });
-        break;
-      }
-      case "Fornecedores": {
-        setRouteType({
-          list: BCRoutes.listSuppliers,
-          details: BCRoutes.detailsSupplier,
-          add: BCRoutes.addSupplier,
-          update: BCRoutes.updateSupplier,
-        });
-        break;
-      }
-      default: {
-        setRouteType({
-          list: BCRoutes.listPersons,
-          details: BCRoutes.detailsPerson,
-          add: BCRoutes.addPerson,
-          update: BCRoutes.updatePerson,
-        });
-        break;
-      }
+    getDataList(selectedOwner);
+  }, [selectedOwner]);
+
+  async function reloadList() {
+    await getDataList(selectedOwner);
+    setWhatToShow("list");
+  }
+
+  async function getMembers() {
+    try {
+      const membersData =
+        (await MembersServices.getAll()) as ProfilesListType[];
+      if (membersData.length) setMembers(membersData);
+    } catch (err: any) {
+      setShowAlert({
+        show: true,
+        message: err.message as string,
+        type: WARNING_TYPES.ERROR,
+        time: 3000,
+      });
     }
-  }, [selectedType]);
+  }
 
   async function getPlaces() {
     try {
       const placesData = (await PlacesServices.getAll()) as PlacesType[];
-      const places = placesData.filter((p) => p.active);
-      if (places.length) setPlaces(places);
+      const placesFilter = placesData.filter((p) => p.active);
+      if (placesFilter.length) setPlaces(placesFilter);
     } catch (err: any) {
       setShowAlert({
         show: true,
@@ -157,7 +142,7 @@ export function BusinessContacts({ profile }: BusinessContactsProps) {
 
   async function getCompanies() {
     try {
-      const companies = await BusinessContactsServices.getAllCompanies();
+      const companies = await BCServices.getAllCompanies();
       if ((companies as BCCompaniesType[]).length)
         setCompanies(companies as BCCompaniesType[]);
     } catch (err: any) {
@@ -170,26 +155,15 @@ export function BusinessContacts({ profile }: BusinessContactsProps) {
     }
   }
 
-  async function reloadList() {
-    await getDataList(selectedOwner);
-    setWhatToShow("list");
-  }
-
-  async function getDataList(selectedType: string) {
+  async function getDataList(selectedOwner: string) {
     setLoading(true);
     try {
-      const type = seeType();
-      const allData = (await BusinessContactsServices.getAllPersons({
-        type,
+      const allData = (await BCServices.getAllPersons({
+        type: seeType(pathname),
       })) as BCPersonsType[];
-      let data: BCPersonsType[] = [];
-      if (selectedType === "All") data = allData;
-      if (selectedType === "Personal") data = allData.filter((d) => d.userId);
-      if (selectedType !== "All" && selectedType !== "Personal")
-        data = allData.filter((d) => d.placeId === selectedType);
+      const data = filterOnwer(allData, selectedOwner, profile?.id as string);
       setDataList(data);
-      const sortedData = Sort(data.slice(0), sort);
-      setShowDataList(sortedData);
+      setShowDataList(Sort(data.slice(0), sort));
       setLoading(false);
     } catch (err: any) {
       setLoading(false);
@@ -205,7 +179,7 @@ export function BusinessContacts({ profile }: BusinessContactsProps) {
   async function getSelected(id: string) {
     setLoading(true);
     try {
-      const data = await BusinessContactsServices.getOnePerson({ id });
+      const data = await BCServices.getOnePerson({ id });
       setSelected(data);
       setLoading(false);
     } catch (err: any) {
@@ -223,7 +197,7 @@ export function BusinessContacts({ profile }: BusinessContactsProps) {
   async function handleCreate(data: FormData) {
     setLoading(true);
     try {
-      const newPerson = (await BusinessContactsServices.createPerson({
+      const newPerson = (await BCServices.createPerson({
         formData: data,
       })) as BCPersonsType;
       await getDataList(selectedOwner);
@@ -250,7 +224,7 @@ export function BusinessContacts({ profile }: BusinessContactsProps) {
   async function handleUpate(data: FormData) {
     setLoading(true);
     try {
-      await BusinessContactsServices.updatePerson({ formData: data });
+      await BCServices.updatePerson({ formData: data });
       setShowAlert({
         show: true,
         message: `${BCModule.singular} alterado com sucesso.`,
@@ -272,10 +246,10 @@ export function BusinessContacts({ profile }: BusinessContactsProps) {
   }
 
   async function handleDelete() {
-    if (selected.id) {
+    if (selected?.id) {
       setLoading(true);
       try {
-        await BusinessContactsServices.deleteOnePerson({ id: selected.id });
+        await BCServices.deleteOnePerson({ id: selected.id });
         setShowAlert({
           show: true,
           message: `${BCModule.singular} removido com sucesso.`,
@@ -297,12 +271,14 @@ export function BusinessContacts({ profile }: BusinessContactsProps) {
   }
 
   useEffect(() => {
-    const sortedData = Sort(dataList.slice(0), sort);
-    setShowDataList(sortedData);
+    if (dataList) {
+      const sortedData = Sort(dataList.slice(0), sort);
+      setShowDataList(sortedData);
+    }
   }, [sort]);
 
   useEffect(() => {
-    const data = dataList.length ? dataList.slice(0) : [];
+    const data = dataList?.length ? dataList.slice(0) : [];
     if (searchParam) {
       const res = data.filter((d) =>
         (d.name as string)
@@ -319,10 +295,6 @@ export function BusinessContacts({ profile }: BusinessContactsProps) {
     return <SearchField setSearchParam={setSearchParam} />;
   };
 
-  useEffect(() => {
-    getDataList(selectedOwner);
-  }, [selectedOwner]);
-
   const createSelect = () => {
     return (
       <select
@@ -330,7 +302,7 @@ export function BusinessContacts({ profile }: BusinessContactsProps) {
         className="rounded-md text-sm focus:ring-0 focus:ring-opacity-75 text-gray-900 focus:ring-primary-500 border-gray-300"
         onChange={(e) => setSelectedOwner(e.target.value)}
       >
-        <option value={"All"}>Geral</option>
+        <option value={"All"}>Todos</option>
         <option value={"Personal"}>Pessoal</option>
         {places &&
           places.map((o, i) => (
@@ -383,15 +355,17 @@ export function BusinessContacts({ profile }: BusinessContactsProps) {
               setLoading={setLoading}
               setShowAlert={setShowAlert}
               data={selected}
-              places={places as PlacesType[]}
+              setData={setSelected}
               setConfirm={setConfirm}
+              profile={profile as ProfilesType}
+              places={places}
+              members={members}
             />
           )}
           {whatToShow === "create" && (
             <Form
               loading={loading}
               type={selectedType}
-              places={places}
               companies={companies}
               create={handleCreate}
             />
@@ -401,7 +375,6 @@ export function BusinessContacts({ profile }: BusinessContactsProps) {
               loading={loading}
               type={selectedType}
               data={selected}
-              places={places}
               companies={companies}
               update={handleUpate}
             />
@@ -410,8 +383,8 @@ export function BusinessContacts({ profile }: BusinessContactsProps) {
             <ConfirmationModal
               setConfirm={setConfirm}
               type={WARNING_TYPES.ERROR}
-              title={`Excluir ${BCModule.singular}: ${selected.name}?`}
-              content={`Você tem certeza que quer excluir o ${BCModule.singular} ${selected.name}? Todos os dados desse ${BCModule.singular} serão perdidos. Essa ação não poderá ser desfeita.`}
+              title={`Excluir ${BCModule.singular}: ${selected?.name}?`}
+              content={`Você tem certeza que quer excluir o ${BCModule.singular} ${selected?.name}? Todos os dados desse ${BCModule.singular} serão perdidos. Essa ação não poderá ser desfeita.`}
               action={handleDelete}
             />
           )}

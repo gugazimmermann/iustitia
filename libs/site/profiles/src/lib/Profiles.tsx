@@ -88,8 +88,7 @@ export function Profiles({ profile, setProfile }: ProfileProps) {
   const [validZip, setValidZip] = useState(!!defaultValues.zip);
 
   useEffect(() => {
-    if (profile?.avatar)
-      setPreview(`${process.env.NX_BUCKET_AVATAR_URL}${profile?.avatar}`);
+    if (profile?.avatar) setPreview(profile?.avatar);
   }, [profile?.avatar]);
 
   const onSelectFile = (e: ChangeEvent<HTMLInputElement>) => {

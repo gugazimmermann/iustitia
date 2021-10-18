@@ -1,5 +1,5 @@
 import { useHistory } from "react-router-dom";
-import { formatAddress, WARNING_TYPES } from "@iustitia/site/shared-utils";
+import { formatAddress, SORT_TYPES, WARNING_TYPES } from "@iustitia/site/shared-utils";
 import { ModulesEnum, GetModule, ModulesInterface } from "@iustitia/modules";
 import { BusinessContactsServices } from "@iustitia/site/services";
 import {
@@ -7,6 +7,7 @@ import {
   Callout,
   ListHeader,
   ListHeaderItems,
+  Loading,
 } from "@iustitia/site/shared-components";
 
 const BCModule = GetModule(ModulesEnum.businessContacts) as ModulesInterface;
@@ -14,10 +15,10 @@ const BCModule = GetModule(ModulesEnum.businessContacts) as ModulesInterface;
 type BCPersonsType = BusinessContactsServices.BCPersonsRes;
 
 export interface ListProps {
-  dataList: BCPersonsType[];
+  dataList: BCPersonsType[] | undefined;
   detailsRoute: string;
   sort: string;
-  setSort(order: "ASC" | "DESC"): void;
+  setSort(order: SORT_TYPES): void;
 }
 
 export function List({ dataList, detailsRoute, sort, setSort }: ListProps) {
@@ -28,12 +29,16 @@ export function List({ dataList, detailsRoute, sort, setSort }: ListProps) {
     { name: "Nome", sort: true },
     { name: "Telefone" },
     { name: "Email" },
-    { name: "Cidade / UF" },
+    { name: "Cidade | UF" },
   ];
 
-  return dataList.length === 0 ? (
+  if (!dataList) {
+    return <Loading />
+  }
+
+  return (dataList && dataList.length === 0) ? (
     <Callout
-      title={`Nenhum ${BCModule.singular} Cadastrado`}
+      title={`Nenhum Registro Encontrado`}
       type={WARNING_TYPES.INFO}
     />
   ) : (

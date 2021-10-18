@@ -7,7 +7,7 @@ import {
   ListHeaderItems,
   RoleBadge,
 } from "@iustitia/site/shared-components";
-import { WARNING_TYPES } from "@iustitia/site/shared-utils";
+import { SORT_TYPES, WARNING_TYPES } from "@iustitia/site/shared-utils";
 import { MembersServices } from "@iustitia/site/services";
 import {
   GetModule,
@@ -25,7 +25,7 @@ type MembersSimpleType = MembersServices.MembersSimpleRes;
 export interface ListProps {
   dataList: MembersSimpleType[];
   sort: string;
-  setSort(order: "ASC" | "DESC"): void;
+  setSort(order: SORT_TYPES): void;
 }
 
 export function List({ dataList, sort, setSort }: ListProps) {

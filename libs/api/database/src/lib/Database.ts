@@ -79,11 +79,23 @@ database.Users.hasOne(database.Profiles);
 
 database.Users.belongsToMany(database.Places, { as: 'placeManagers', through: { model: "place_managers" } });
 database.Places.belongsToMany(database.Users, { as: 'managersPlace', through: { model: "place_managers" } });
-database.Users.belongsToMany(database.Places, { as: 'placeUsers', through: { model: "place_users" } });
-database.Places.belongsToMany(database.Users, { as: 'usersPlace', through: { model: "place_users" } });
+database.Users.belongsToMany(database.Places, { as: 'placeEmployees', through: { model: "place_employees" } });
+database.Places.belongsToMany(database.Users, { as: 'employeesPlace', through: { model: "place_employees" } });
 
-database.Users.hasMany(database.Persons);
-database.Places.hasMany(database.Persons);
+database.Persons.belongsToMany(database.Users, { as: 'userClients', through: { model: "user_clients" } });
+database.Users.belongsToMany(database.Persons, { as: 'clientsUser', through: { model: "user_clients" } });
+database.Persons.belongsToMany(database.Users, { as: 'userSupliers', through: { model: "user_supliers" } });
+database.Users.belongsToMany(database.Persons, { as: 'supliersUser', through: { model: "user_supliers" } });
+database.Persons.belongsToMany(database.Users, { as: 'userContacts', through: { model: "user_contacts" } });
+database.Users.belongsToMany(database.Persons, { as: 'contactsUser', through: { model: "user_contacts" } });
+
+database.Persons.belongsToMany(database.Places, { as: 'placeClients', through: { model: "place_clients" } });
+database.Places.belongsToMany(database.Persons, { as: 'clientsPlace', through: { model: "place_clients" } });
+database.Persons.belongsToMany(database.Places, { as: 'placeSupliers', through: { model: "place_supliers" } });
+database.Places.belongsToMany(database.Persons, { as: 'supliersPlace', through: { model: "place_supliers" } });
+database.Persons.belongsToMany(database.Places, { as: 'placeContacts', through: { model: "place_contacts" } });
+database.Places.belongsToMany(database.Persons, { as: 'contactsPlace', through: { model: "place_contacts" } });
+
 database.Persons.belongsTo(database.Companies);
 database.Persons.hasMany(database.Attachments);
 database.Persons.hasMany(database.Notes);

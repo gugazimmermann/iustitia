@@ -1,3 +1,4 @@
+import { lazy, Suspense } from "react";
 import { Route, Switch } from "react-router";
 import { PublicRoute, ProtectedRoute } from "@iustitia/routes";
 import {

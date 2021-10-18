@@ -3,17 +3,17 @@
 module.exports = {
   up: async (queryInterface, Sequelize) => {
     await queryInterface.bulkInsert(
-      "place_users",
+      "user_contacts",
       [
         {
-          userId: "4e573fa5-00b3-45cf-bdf5-c88ddf8cbabe",
-          placeId: "099330a1-ddb2-402b-8560-a95848b69033",
+          personId: "a134551a-528f-4154-a916-5d0749377fee",
+          userId: "fd6bc51e-195e-4433-b404-8a9fdfa0f632",
           createdAt: new Date(),
           updatedAt: new Date(),
         },
         {
-          userId: "a5109879-c5c0-48d2-9f9b-f17450b89c7d",
-          placeId: "099330a1-ddb2-402b-8560-a95848b69033",
+          personId: "57b7c8f7-4bc7-42b7-9124-f38ce1402033",
+          userId: "fd6bc51e-195e-4433-b404-8a9fdfa0f632",
           createdAt: new Date(),
           updatedAt: new Date(),
         },
@@ -23,6 +23,6 @@ module.exports = {
   },
 
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.bulkDelete("place_users", null, {});
+    await queryInterface.bulkDelete("user_contacts", null, {});
   }
 };

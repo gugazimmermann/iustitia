@@ -8,7 +8,7 @@ import {
   Header,
   SearchField,
 } from "@iustitia/site/shared-components";
-import { Sort, WARNING_TYPES } from "@iustitia/site/shared-utils";
+import { Sort, SORT_TYPES, WARNING_TYPES } from "@iustitia/site/shared-utils";
 import {
   GetModule,
   ModulesEnum,
@@ -53,7 +53,7 @@ export function Companies({ profile }: CompaniesProps) {
   const [showDataList, setShowDataList] = useState([] as BCCompaniesType[]);
   const [selected, setSelected] = useState({} as BCCompaniesType);
   const [searchParam, setSearchParam] = useState<string>();
-  const [sort, setSort] = useState<"ASC" | "DESC">("ASC");
+  const [sort, setSort] = useState<SORT_TYPES>(SORT_TYPES.ASC);
 
   useEffect(() => {
     if (pathname.includes("adicionar")) {

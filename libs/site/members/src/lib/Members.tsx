@@ -9,7 +9,7 @@ import {
   Header,
   SearchField,
 } from "@iustitia/site/shared-components";
-import { Sort, WARNING_TYPES } from "@iustitia/site/shared-utils";
+import { Sort, SORT_TYPES, WARNING_TYPES } from "@iustitia/site/shared-utils";
 import { List, Form, ListInvites } from "./components";
 import {
   GetModule,
@@ -50,7 +50,7 @@ export function Members({ profile }: MembersProps) {
   const [dataListInvite, setDataListInvite] = useState([] as MembersType[]);
   const [showDataList, setShowDataList] = useState([] as MembersSimpleType[]);
   const [searchParam, setSearchParam] = useState<string>();
-  const [sort, setSort] = useState<"ASC" | "DESC">("ASC");
+  const [sort, setSort] = useState<SORT_TYPES>(SORT_TYPES.ASC);
 
   const [selectedInvite, setSelectedInvite] = useState({} as MembersType);
   const [sendInviteConfirm, setSendInviteConfirm] = useState(false);

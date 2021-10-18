@@ -8,7 +8,7 @@ module.exports = {
         {
           id: "45a2d648-f814-49f7-8024-51512ec9b512",
           avatar:
-            "fd6bc51e195e4433b4048a9fdfa0f632/fd6bc51e195e4433b4048a9fdfa0f63261139204.jpeg",
+            "fd6bc51e195e4433b4048a9fdfa0f632/fd6bc51e195e4433b4048a9fdfa0f63221584694.jpeg",
           name: "Guga",
           email: "gugazimmermann@gmail.com",
           phone: "(47) 98870-4247",

@@ -1,17 +1,14 @@
 import { ModulesEnum } from "@iustitia/modules";
-import { CompaniesInterface, PersonsInterface } from "@iustitia/api/business-contacts";
+import { CompaniesInterface, OnwersListType, PersonsInterface, PersonsTypes } from "@iustitia/api/business-contacts";
 import { errorHandler } from "@iustitia/site/shared-utils";
 import api from "../api";
 import token from "../auth/token";
 import { ApiFormDataReq, ApiIdReq, ApiMessageRes } from "../interfaces";
 
-export type BCPersonsRes = PersonsInterface
-
-export type BCCompaniesRes = CompaniesInterface
-
-export interface BCTypeReq {
-  type: string;
-}
+export type BCPersonsRes = PersonsInterface;
+export type OnwersListRes = OnwersListType;
+export type BCTypes = PersonsTypes;
+export type BCCompaniesRes = CompaniesInterface;
 
 export interface BCFormDataCompaniesReq {
   formData: BCCompaniesRes;
@@ -27,10 +24,19 @@ export async function getOnePerson({ id }: ApiIdReq): Promise<BCPersonsRes | Err
   }
 };
 
-export async function getAllPersons({ type }: BCTypeReq): Promise<BCPersonsRes[] | Error> {
+export async function getAllPersons({ type }: { type: PersonsTypes }): Promise<BCPersonsRes[] | Error> {
   try {
     const tenantId = token.getLocalTenantId();
     const { data } = await api.get(`/api/${ModulesEnum.businessContacts}/persons/get/${type}/${tenantId}`);
+    return data
+  } catch (err) {
+    return errorHandler(err)
+  }
+};
+
+export async function changePersonOwner({ id, owners }: { id: string; owners: OnwersListType[] }): Promise<BCPersonsRes[] | Error> {
+  try {
+    const { data } = await api.put(`/api/${ModulesEnum.businessContacts}/persons/owners/${id}`, { owners });
     return data
   } catch (err) {
     return errorHandler(err)

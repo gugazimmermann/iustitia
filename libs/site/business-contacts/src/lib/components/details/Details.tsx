@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Link, useHistory } from "react-router-dom";
+import { Link, useHistory, useLocation } from "react-router-dom";
 import { WARNING_TYPES } from "@iustitia/site/shared-utils";
 import {
   Alert,
@@ -13,35 +13,40 @@ import {
   AlertInterface,
   LoadingButton,
   AvatarOrInitial,
+  OwnersModal,
 } from "@iustitia/site/shared-components";
+import { ModulesEnum, GetRoutes, BCRoutesInterface } from "@iustitia/modules";
 import {
-  GetModule,
-  ModulesEnum,
-  ModulesInterface,
-  GetRoutes,
-  BCRoutesInterface,
-} from "@iustitia/modules";
-import {
+  BusinessContactsServices as BCServices,
   AttachmentsServices,
   BusinessContactsServices,
   NotesServices,
   PlacesServices,
+  ProfilesServices,
 } from "@iustitia/site/services";
+import { seeType, seeTypeText } from "../../utils";
 
 const BCRoutes = GetRoutes(ModulesEnum.businessContacts) as BCRoutesInterface;
 
+type BCTypes = BusinessContactsServices.BCTypes;
 type BCPersonsType = BusinessContactsServices.BCPersonsRes;
-type PlacesType = PlacesServices.PlacesRes;
+type OnwersListType = BusinessContactsServices.OnwersListRes;
 type NotesType = NotesServices.NotesRes;
 type AttachmentsType = AttachmentsServices.AttachmentsRes;
+type ProfilesType = ProfilesServices.ProfilesRes;
+type ProfilesListType = PlacesServices.ProfilesListRes;
+type PlacesType = PlacesServices.PlacesRes;
 
 export interface DetailsProps {
   loading: boolean;
   setLoading(loading: boolean): void;
   setShowAlert(showAlert: AlertInterface): void;
-  data: BCPersonsType;
-  places: PlacesType[];
+  data: BCPersonsType | undefined;
+  setData(data: BCPersonsType): void;
   setConfirm(confirm: boolean): void;
+  profile: ProfilesType;
+  places: PlacesType[];
+  members: ProfilesListType[];
 }
 
 export function Details({
@@ -49,10 +54,18 @@ export function Details({
   setLoading,
   setShowAlert,
   data,
-  places,
+  setData,
   setConfirm,
+  profile,
+  places,
+  members,
 }: DetailsProps) {
   const history = useHistory();
+  const { pathname } = useLocation();
+  const [selectedType, setSelectedType] = useState<BCTypes>();
+
+  const [ownersList, setOwnersList] = useState<OnwersListType[]>([]);
+  const [showOwnersModal, setShowOwnersModal] = useState(false);
 
   const [notesList, setNotesList] = useState<NotesType[]>();
   const [showNoteModal, setShowNoteModal] = useState(false);
@@ -67,16 +80,32 @@ export function Details({
   const [confirmAttchment, setConfirmAttchment] = useState(false);
 
   useEffect(() => {
-    if (data.id) {
-      getAllNotes(data.id);
-      getAllAttachments(data.id);
-    }
+    setSelectedType(seeType(pathname));
+    getAllNotes(data?.id);
+    getAllAttachments(data?.id);
+    setOwnersList(data?.onwers as OnwersListType[]);
   }, [data]);
 
-  async function getAllNotes(id: string) {
+  function handleSelectOwner(owner: OnwersListType) {
+    let oList = ownersList.slice(0);
+    if (oList.some((o) => o.id === owner.id))
+      oList = oList.filter((o) => o.id !== owner.id);
+    else {
+      oList.push(owner);
+    }
+    setOwnersList(oList);
+  }
+
+  async function sendOwners() {
+    setLoading(true);
+    setShowOwnersModal(false);
     try {
-      const notes = await NotesServices.getAll({ ownerId: id });
-      setNotesList(notes as NotesType[]);
+      const res = (await BCServices.changePersonOwner({
+        id: data?.id as string,
+        owners: ownersList,
+      })) as BCPersonsType;
+      setData(res);
+      setLoading(false);
     } catch (err: any) {
       setShowAlert({
         show: true,
@@ -84,20 +113,37 @@ export function Details({
         type: WARNING_TYPES.ERROR,
         time: 3000,
       });
+      setLoading(false);
     }
   }
 
-  async function getAllAttachments(id: string) {
-    try {
-      const atts = await AttachmentsServices.getAll({ ownerId: id });
-      setAttList(atts as AttachmentsType[]);
-    } catch (err: any) {
-      setShowAlert({
-        show: true,
-        message: err.message as string,
-        type: WARNING_TYPES.ERROR,
-        time: 3000,
-      });
+  function cancelOwnersModal() {
+    setOwnersList(data?.onwers as OnwersListType[]);
+    setShowOwnersModal(false);
+  }
+
+  useEffect(() => {
+    if (editNote?.id) setShowNoteModal(true);
+  }, [editNote]);
+
+  useEffect(() => {
+    if (selectedNote?.id) setConfirmNote(true);
+    if (selectedAttchment?.id) setConfirmAttchment(true);
+  }, [selectedNote, selectedAttchment]);
+
+  async function getAllNotes(id: string | undefined) {
+    if (id) {
+      try {
+        const notes = await NotesServices.getAll({ ownerId: id });
+        setNotesList(notes as NotesType[]);
+      } catch (err: any) {
+        setShowAlert({
+          show: true,
+          message: err.message as string,
+          type: WARNING_TYPES.ERROR,
+          time: 3000,
+        });
+      }
     }
   }
 
@@ -110,11 +156,30 @@ export function Details({
   }
 
   async function createNote(note: NotesType) {
+    if (data?.id) {
+      setLoading(true);
+      try {
+        const ownerId = data.id;
+        await NotesServices.create({ formData: { ...note, ownerId } });
+        await getAllNotes(ownerId);
+        setLoading(false);
+      } catch (err: any) {
+        setLoading(false);
+        setShowAlert({
+          show: true,
+          message: err.message as string,
+          type: WARNING_TYPES.ERROR,
+          time: 3000,
+        });
+      }
+    }
+  }
+
+  async function updateNote(note: NotesType) {
     setLoading(true);
     try {
-      const ownerId = data.id as string;
-      await NotesServices.create({ formData: { ...note, ownerId } });
-      await getAllNotes(ownerId);
+      await NotesServices.update({ formData: { ...editNote, ...note } });
+      await getAllNotes(data?.id);
       setLoading(false);
     } catch (err: any) {
       setLoading(false);
@@ -127,20 +192,38 @@ export function Details({
     }
   }
 
-  async function updateNote(note: NotesType) {
-    setLoading(true);
-    try {
-      await NotesServices.update({ formData: { ...editNote, ...note } });
-      await getAllNotes(data.id as string);
-      setLoading(false);
-    } catch (err: any) {
-      setLoading(false);
-      setShowAlert({
-        show: true,
-        message: err.message as string,
-        type: WARNING_TYPES.ERROR,
-        time: 3000,
-      });
+  async function deleteOneNote() {
+    if (selectedNote?.id && data?.id) {
+      setLoading(true);
+      try {
+        await NotesServices.deleteOne({ id: selectedNote.id });
+        getAllNotes(data.id);
+        setLoading(false);
+      } catch (err: any) {
+        setLoading(false);
+        setShowAlert({
+          show: true,
+          message: err.message as string,
+          type: WARNING_TYPES.ERROR,
+          time: 3000,
+        });
+      }
+    }
+  }
+
+  async function getAllAttachments(id: string | undefined) {
+    if (id) {
+      try {
+        const atts = await AttachmentsServices.getAll({ ownerId: id });
+        setAttList(atts as AttachmentsType[]);
+      } catch (err: any) {
+        setShowAlert({
+          show: true,
+          message: err.message as string,
+          type: WARNING_TYPES.ERROR,
+          time: 3000,
+        });
+      }
     }
   }
 
@@ -153,84 +236,57 @@ export function Details({
 
   async function uploadAttachmentsFromModal(files: AttachmentFile[]) {
     setLoading(true);
-    try {
-      const formData = new FormData();
-      for (const file of files) {
-        formData.append("attachments", file, file.name);
+    if (data?.id) {
+      try {
+        const formData = new FormData();
+        for (const file of files) {
+          formData.append("attachments", file, file.name);
+        }
+        formData.append("ownerId", data.id);
+        await AttachmentsServices.create({
+          formData,
+          onUploadProgress: (event: any) => {
+            setAttUploadProgress(
+              Math.round((100 * event.loaded) / event.total)
+            );
+          },
+        });
+        getAllAttachments(data.id);
+        setLoading(false);
+      } catch (err: any) {
+        setLoading(false);
+        setShowAlert({
+          show: true,
+          message: err.message as string,
+          type: WARNING_TYPES.ERROR,
+          time: 3000,
+        });
       }
-      formData.append("ownerId", data?.id as string);
-      await AttachmentsServices.create({
-        formData,
-        onUploadProgress: (event: any) => {
-          setAttUploadProgress(Math.round((100 * event.loaded) / event.total));
-        },
-      });
-      getAllAttachments(data?.id as string);
-      setLoading(false);
-    } catch (err: any) {
-      setLoading(false);
-      setShowAlert({
-        show: true,
-        message: err.message as string,
-        type: WARNING_TYPES.ERROR,
-        time: 3000,
-      });
-    }
-  }
-
-  useEffect(() => {
-    if (editNote?.id) setShowNoteModal(true);
-  }, [editNote]);
-
-  useEffect(() => {
-    if (selectedNote?.id) setConfirmNote(true);
-    if (selectedAttchment?.id) setConfirmAttchment(true);
-  }, [selectedNote, selectedAttchment]);
-
-  async function deleteOneNote() {
-    setLoading(true);
-    try {
-      await NotesServices.deleteOne({ id: selectedNote?.id as string });
-      getAllNotes(data?.id as string);
-      setLoading(false);
-    } catch (err: any) {
-      setLoading(false);
-      setShowAlert({
-        show: true,
-        message: err.message as string,
-        type: WARNING_TYPES.ERROR,
-        time: 3000,
-      });
     }
   }
 
   async function deleteOneAttachment() {
-    setLoading(true);
-    try {
-      await AttachmentsServices.deleteOne({
-        id: selectedAttchment?.id as string,
-      });
-      getAllAttachments(data?.id as string);
-      setLoading(false);
-    } catch (err: any) {
-      setLoading(false);
-      setShowAlert({
-        show: true,
-        message: err.message as string,
-        type: WARNING_TYPES.ERROR,
-        time: 3000,
-      });
+    if (selectedAttchment?.id && data?.id) {
+      setLoading(true);
+      try {
+        await AttachmentsServices.deleteOne({
+          id: selectedAttchment.id,
+        });
+        getAllAttachments(data.id);
+        setLoading(false);
+      } catch (err: any) {
+        setLoading(false);
+        setShowAlert({
+          show: true,
+          message: err.message as string,
+          type: WARNING_TYPES.ERROR,
+          time: 3000,
+        });
+      }
     }
   }
 
-  function seeType() {
-    console.log(data);
-    if (data.type === "Clientes") return "Cliente";
-    else if (data.type === "Contatos") return "Contato";
-    return "Fornecedor";
-  }
-
-  return (
+  return !data ? null : (
     <>
       {attUploadProgress && attUploadProgress < 100 && (
         <Alert
@@ -283,24 +339,33 @@ export function Details({
           </div>
           <div className="col-span-full">
             <div className="md:grid md:grid-cols-12 hover:bg-gray-50 md:space-y-0 space-y-1 p-4 border-b">
-              <p className="col-span-3 font-bold">{seeType()} de</p>
-              <p className="col-span-9">
-                {data.userId && `Pessoal`}
-                {data.placeId &&
-                  places?.find((o) => o.id === data.placeId)?.name}
-                {!data.userId && !data.placeId && `Geral`}
-              </p>
+              <div className="col-span-2 font-bold">
+                {seeTypeText(data.type)} de
+              </div>
+              <div className="col-span-10 flex justify-between">
+                <p>
+                  {data.onwers && data.onwers.map((o) => o.name).join(", ")}
+                </p>
+
+                <button
+                  onClick={() => setShowOwnersModal(!showOwnersModal)}
+                  disabled={loading}
+                  className="px-2 py-1 text-xs text-white rounded-md bg-primary-500 hover:bg-primary-900 focus:ring-primary-500"
+                >
+                  Alterar Propriedade
+                </button>
+              </div>
             </div>
             {data.phone && (
               <div className="md:grid md:grid-cols-12 hover:bg-gray-50 md:space-y-0 space-y-1 p-4 border-b">
-                <p className="col-span-3 font-bold">Telefone</p>
-                <p className="col-span-9">{data.phone}</p>
+                <p className="col-span-2 font-bold">Telefone</p>
+                <p className="col-span-10">{data.phone}</p>
               </div>
             )}
             {data.email && (
               <div className="md:grid md:grid-cols-12 hover:bg-gray-50 md:space-y-0 space-y-1 p-4 border-b">
-                <p className="col-span-3 font-bold">E-Mail</p>
-                <p className="col-span-9">
+                <p className="col-span-2 font-bold">E-Mail</p>
+                <p className="col-span-10">
                   {data.email ? (
                     <a href={`mailto:${data.email}`} className="underline">
                       {data.email}
@@ -319,7 +384,7 @@ export function Details({
               data.state ||
               data.zip) && (
               <div className="md:grid md:grid-cols-12 hover:bg-gray-50 md:space-y-0 space-y-1 p-4 border-b">
-                <p className="col-span-3 font-bold">Endereço</p>
+                <p className="col-span-2 font-bold">Endereço</p>
                 <FormatAddress
                   address={data.address}
                   number={data.number}
@@ -333,8 +398,8 @@ export function Details({
             )}
             {(data.companyId || data.position) && (
               <div className="md:grid md:grid-cols-12 hover:bg-gray-50 md:space-y-0 space-y-1 p-4 border-b">
-                <p className="col-span-3 font-bold">Empresa</p>
-                <p className="col-span-9">
+                <p className="col-span-2 font-bold">Empresa</p>
+                <p className="col-span-10">
                   {data.position} {data.position && data.company && `em`}{" "}
                   <Link
                     to={`${BCRoutes.detailsCompany}/${data.companyId}`}
@@ -347,22 +412,22 @@ export function Details({
             )}
             {data.comments && (
               <div className="md:grid md:grid-cols-12 hover:bg-gray-50 md:space-y-0 space-y-1 p-4 border-b">
-                <p className="col-span-3 font-bold">Observações</p>
-                <p className="col-span-9 whitespace-pre-line text-sm">
+                <p className="col-span-2 font-bold">Observações</p>
+                <p className="col-span-10 whitespace-pre-line text-sm">
                   {data.comments}
                 </p>
               </div>
             )}
             <div className="md:grid md:grid-cols-12 hover:bg-gray-50 md:space-y-0 space-y-1 p-4 border-b">
-              <p className="col-span-3 font-bold">Notas</p>
-              <div className="col-span-9">
+              <p className="col-span-2 font-bold">Notas</p>
+              <div className="col-span-10">
                 <div className="text-right mb-6">
                   <button
                     onClick={() => setShowNoteModal(!showNoteModal)}
                     disabled={loading}
                     className="px-2 py-1 text-xs text-white rounded-md bg-primary-500 hover:bg-primary-900 focus:ring-primary-500"
                   >
-                    Adcionar Nota
+                    Adicionar Nota
                   </button>
                 </div>
                 {notesList &&
@@ -378,15 +443,15 @@ export function Details({
               </div>
             </div>
             <div className="md:grid md:grid-cols-12 hover:bg-gray-50 md:space-y-0 space-y-1 p-4">
-              <p className="col-span-3 font-bold">Anexos</p>
-              <div className="col-span-9 space-y-2 text-right">
+              <p className="col-span-2 font-bold">Anexos</p>
+              <div className="col-span-10 space-y-2 text-right">
                 {!attUploadProgress || attUploadProgress === 100 ? (
                   <button
                     disabled={loading}
                     onClick={() => setShowAttModal(!showAttModal)}
                     className="px-2 py-1 text-xs text-white rounded-md bg-primary-500 hover:bg-primary-900 focus:ring-primary-500"
                   >
-                    Adcionar Anexo
+                    Adicionar Anexo
                   </button>
                 ) : (
                   <h2 className="text-base font-bold mb-4">
@@ -422,6 +487,20 @@ export function Details({
           </div>
         </div>
       </div>
+      {showOwnersModal && (
+        <OwnersModal
+          title="Selecione os Proprietarios"
+          membersList={members}
+          placesList={places}
+          currentList={ownersList}
+          handleSelect={handleSelectOwner}
+          cancel={cancelOwnersModal}
+          submit={sendOwners}
+          submitText="Salvar Proprietarios"
+          open={showOwnersModal}
+          setOpen={setShowOwnersModal}
+        />
+      )}
       {showNoteModal && (
         <NoteNewModal
           setShowModal={setShowNoteModal}

@@ -12,7 +12,7 @@ import {
   ListHeader,
   ListHeaderItems,
 } from "@iustitia/site/shared-components";
-import { formatAddress, WARNING_TYPES } from "@iustitia/site/shared-utils";
+import { formatAddress, SORT_TYPES, WARNING_TYPES } from "@iustitia/site/shared-utils";
 
 const BCModule = GetModule(ModulesEnum.businessContacts) as ModulesInterface;
 const BCRoutes = GetRoutes(ModulesEnum.businessContacts) as BCRoutesInterface;
@@ -22,7 +22,7 @@ type BCCompaniesType = BusinessContactsServices.BCCompaniesRes;
 export interface ListProps {
   dataList: BCCompaniesType[];
   sort: string;
-  setSort(order: "ASC" | "DESC"): void;
+  setSort(order: SORT_TYPES): void;
 }
 
 export function List({ dataList, sort, setSort }: ListProps) {

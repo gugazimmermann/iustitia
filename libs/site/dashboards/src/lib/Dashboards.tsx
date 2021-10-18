@@ -242,7 +242,7 @@ export function Dashboards() {
           <div className="p-4 flex flex-col items-center justify-center bg-white rounded-md shadow">
             <PeopleIcon styles="w-12 h-12 text-primary-400" stroke={2} />
             <h2 className="title-font  text-3xl text-gray-900">
-              {selectedPlace && selectedPlace.usersPlace ? `${selectedPlace.usersPlace?.length}` : `0`}
+              {selectedPlace && selectedPlace.employeesPlace ? `${selectedPlace.employeesPlace?.length}` : `0`}
             </h2>
             <p className="leading-relaxed">Usuários</p>
           </div>

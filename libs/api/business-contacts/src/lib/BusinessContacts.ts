@@ -3,6 +3,7 @@ import multer from 'multer';
 import { verifyToken } from '@iustitia/api/auth';
 import { ModulesEnum } from "@iustitia/modules";
 import {
+  changePersonOwner,
   createCompany,
   createPerson,
   deleteOneCompany,
@@ -20,6 +21,7 @@ export function BusinessContacts(app: Express) {
   app.get(`/api/${ModulesEnum.businessContacts}/persons/:tenantId/:id`, [verifyToken], getOnePerson);
   app.get(`/api/${ModulesEnum.businessContacts}/persons/get/:type/:tenantId`, [verifyToken], getAllPersons);
   app.post(`/api/${ModulesEnum.businessContacts}/persons`, upload.single('avatar'), [verifyToken], createPerson);
+  app.put(`/api/${ModulesEnum.businessContacts}/persons/owners/:id`, [verifyToken], changePersonOwner);
   app.put(`/api/${ModulesEnum.businessContacts}/persons`, upload.single('avatar'), [verifyToken], updatePerson);
   app.delete(`/api/${ModulesEnum.businessContacts}/persons/:id`, [verifyToken], deleteOnePerson);
 

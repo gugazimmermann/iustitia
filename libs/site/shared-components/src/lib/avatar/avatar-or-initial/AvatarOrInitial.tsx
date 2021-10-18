@@ -13,10 +13,16 @@ export function AvatarOrInitial({
   avatarStyle,
   initialStyle,
 }: AvatarOrInitialProps) {
+
+  function avatarToShow(a: string) {
+    if (a.indexOf("http") === 0 || a.indexOf("blob") === 0) return a
+    else return `${process.env.NX_BUCKET_AVATAR_URL}${avatar}`
+  }
+
   return avatar ? (
     <img
       className={`${avatarStyle} rounded-full`}
-      src={`${process.env.NX_BUCKET_AVATAR_URL}${avatar}`}
+      src={`${avatarToShow(avatar)}`}
       alt={name}
     />
   ) : (

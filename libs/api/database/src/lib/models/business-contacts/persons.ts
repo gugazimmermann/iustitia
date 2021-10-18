@@ -1,5 +1,7 @@
-import { Sequelize, DataTypes, Optional, Model } from "sequelize";
+import { Sequelize, DataTypes, Optional, Model, HasManyAddAssociationsMixin, HasManyGetAssociationsMixin, HasManyRemoveAssociationsMixin } from "sequelize";
 import { CompaniesInstance } from "./companies";
+import { UsersInstance } from "../auth/users";
+import { PlacesInstance } from "../places/places";
 
 interface PersonsAttributes {
   id: string;
@@ -18,8 +20,6 @@ interface PersonsAttributes {
   comments: string;
   position: string;
   companyId: string;
-  userId: string;
-  placeId: string;
   tenantId: string;
 }
 
@@ -37,9 +37,7 @@ type PersonsCreationAttributes = Optional<PersonsAttributes,
   'state' |
   'comments' |
   'position' |
-  'companyId' |
-  'userId' |
-  'placeId'
+  'companyId'
 >
 
 export interface PersonsInstance
@@ -49,6 +47,36 @@ export interface PersonsInstance
   updatedAt?: Date;
   deletedAt?: Date;
   company?: CompaniesInstance;
+  userClients?: UsersInstance[];
+  userSupliers?: UsersInstance[];
+  userContacts?: UsersInstance[];
+  placeClients?: PlacesInstance[];
+  placeSupliers?: PlacesInstance[];
+  placeContacts?: PlacesInstance[];
+
+  getUserClients?: HasManyGetAssociationsMixin<UsersInstance>;
+  addUserClients?: HasManyAddAssociationsMixin<UsersInstance, string>;
+  removeUserClients?: HasManyRemoveAssociationsMixin<UsersInstance, string>;
+
+  getUserSupliers?: HasManyGetAssociationsMixin<UsersInstance>;
+  addUserSupliers?: HasManyAddAssociationsMixin<UsersInstance, string>;
+  removeUserSupliers?: HasManyRemoveAssociationsMixin<UsersInstance, string>;
+
+  getUserContacts?: HasManyGetAssociationsMixin<UsersInstance>;
+  addUserContacts?: HasManyAddAssociationsMixin<UsersInstance, string>;
+  removeUserContacts?: HasManyRemoveAssociationsMixin<UsersInstance, string>;
+
+  getPlaceClients?: HasManyGetAssociationsMixin<PlacesInstance>;
+  addPlaceClients?: HasManyAddAssociationsMixin<PlacesInstance, string>;
+  removePlaceClients?: HasManyRemoveAssociationsMixin<PlacesInstance, string>;
+
+  getPlaceSupliers?: HasManyGetAssociationsMixin<PlacesInstance>;
+  addPlaceSupliers?: HasManyAddAssociationsMixin<PlacesInstance, string>;
+  removePlaceSupliers?: HasManyRemoveAssociationsMixin<PlacesInstance, string>;
+
+  getPlaceContacts?: HasManyGetAssociationsMixin<PlacesInstance>;
+  addPlaceContacts?: HasManyAddAssociationsMixin<PlacesInstance, string>;
+  removePlaceContacts?: HasManyRemoveAssociationsMixin<PlacesInstance, string>;
 }
 
 export default function persons(sequelize: Sequelize) {
@@ -76,8 +104,6 @@ export default function persons(sequelize: Sequelize) {
     comments: { type: DataTypes.TEXT, allowNull: true },
     position: { type: DataTypes.TEXT, allowNull: true },
     companyId: { type: DataTypes.UUID, allowNull: true },
-    userId: { type: DataTypes.UUID, allowNull: true },
-    placeId: { type: DataTypes.UUID, allowNull: true },
     tenantId: { type: DataTypes.UUID, allowNull: true },
   }, {
     paranoid: true,

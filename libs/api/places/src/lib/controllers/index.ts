@@ -1,16 +1,6 @@
 import { Response } from "express";
-import { UsersInstance, database, PlacesInstance } from '@iustitia/api/database';
+import { database, PlacesInstance, UsersInstance, PersonsInstance } from '@iustitia/api/database';
 import { validateEmail } from '@iustitia/site/shared-utils';
-
-// export interface ProfilesListInterface {
-//   id: string;
-//   avatar: string;
-//   name: string;
-//   phone: string;
-//   email: string;
-//   role: string;
-//   active: boolean;
-// }
 
 export interface ProfilesListInterface {
   id: string;
@@ -18,7 +8,7 @@ export interface ProfilesListInterface {
   avatar: string;
 }
 
-function userDataToResult(data: UsersInstance): ProfilesListInterface {
+export function userDataToResult(data: UsersInstance): ProfilesListInterface {
   return {
     id: data.id,
     name: data?.profile?.name || "",
@@ -26,9 +16,17 @@ function userDataToResult(data: UsersInstance): ProfilesListInterface {
   }
 }
 
+function personDataToResult(data: PersonsInstance): ProfilesListInterface {
+  return {
+    id: data.id,
+    name: data?.name || "",
+    avatar: data?.avatar || "",
+  }
+}
+
 export interface PlacesInterface {
-  id?: string;
-  name?: string;
+  id: string;
+  name: string;
   email?: string;
   phone?: string;
   zip?: string;
@@ -41,7 +39,10 @@ export interface PlacesInterface {
   active?: boolean;
   tenantId?: string;
   managersPlace?: ProfilesListInterface[];
-  usersPlace?: ProfilesListInterface[];
+  employeesPlace?: ProfilesListInterface[];
+  clientsPlace?: ProfilesListInterface[];
+  supliersPlace?: ProfilesListInterface[];
+  contactsPlace?: ProfilesListInterface[];
 }
 
 function dataToResult(data: PlacesInstance): PlacesInterface {
@@ -59,7 +60,10 @@ function dataToResult(data: PlacesInstance): PlacesInterface {
     state: data.state,
     active: data.active,
     managersPlace: (data.managersPlace) && data.managersPlace.map(m => userDataToResult(m)),
-    usersPlace: (data.usersPlace) && data.usersPlace.map(u => userDataToResult(u))
+    employeesPlace: (data.employeesPlace) && data.employeesPlace.map(u => userDataToResult(u)),
+    clientsPlace: (data.clientsPlace) && data.clientsPlace.map(p => personDataToResult(p)),
+    supliersPlace: (data.supliersPlace) && data.supliersPlace.map(p => personDataToResult(p)),
+    contactsPlace: (data.contactsPlace) && data.contactsPlace.map(p => personDataToResult(p)),
   }
 }
 
@@ -81,7 +85,7 @@ async function findPlaceById(id: string): Promise<PlacesInstance | Error | null>
           ],
         },
         {
-          association: "usersPlace",
+          association: "employeesPlace",
           attributes: ['id'],
           where: { active: true },
           required: false,
@@ -91,6 +95,18 @@ async function findPlaceById(id: string): Promise<PlacesInstance | Error | null>
               attributes: ['id', 'avatar', 'name'],
             },
           ],
+        },
+        {
+          association: "clientsPlace",
+          attributes: ['id', 'avatar', 'name'],
+        },
+        {
+          association: "supliersPlace",
+          attributes: ['id', 'avatar', 'name'],
+        },
+        {
+          association: "contactsPlace",
+          attributes: ['id', 'avatar', 'name'],
         },
       ],
     });
@@ -109,10 +125,8 @@ export async function getAll(req, res): Promise<Response> {
       where: { tenantId },
       attributes: ['id', 'name', 'city', 'state', 'active'],
       include: [
-
         {
           association: "managersPlace",
-          as: "managers",
           attributes: ['id'],
           where: { active: true },
           required: false,
@@ -124,8 +138,7 @@ export async function getAll(req, res): Promise<Response> {
           ],
         },
         {
-          association: "usersPlace",
-          as: "users",
+          association: "employeesPlace",
           attributes: ['id'],
           where: { active: true },
           required: false,
@@ -135,6 +148,18 @@ export async function getAll(req, res): Promise<Response> {
               attributes: ['id', 'avatar', 'name'],
             },
           ],
+        },
+        {
+          association: "clientsPlace",
+          attributes: ['id', 'avatar', 'name'],
+        },
+        {
+          association: "supliersPlace",
+          attributes: ['id', 'avatar', 'name'],
+        },
+        {
+          association: "contactsPlace",
+          attributes: ['id', 'avatar', 'name'],
         },
       ],
     });
@@ -142,6 +167,7 @@ export async function getAll(req, res): Promise<Response> {
     if (data.length > 0) data.forEach(d => resultData.push(dataToResult(d)));
     return res.status(200).send(resultData);
   } catch (err) {
+    console.error(err)
     return res.status(500).send({ message: err.message });
   }
 }
@@ -265,12 +291,12 @@ export async function users(req, res): Promise<Response> {
   try {
     const place = (await findPlaceById(body.placeId as string)) as PlacesInstance;
     if (!place) return res.status(404).send({ message: "Nenhum registro encontrado!" });
-    if (place.usersPlace) {
-      const exintingIds: string[] = place.usersPlace.map((u) => u.id)
-      if (place.removeUsersPlace) await place.removeUsersPlace(exintingIds);
+    if (place.employeesPlace) {
+      const exintingIds: string[] = place.employeesPlace.map((u) => u.id)
+      if (place.removeEmployeesPlace) await place.removeEmployeesPlace(exintingIds);
     }
     const userIds: string[] = body.usersList.map((u: ProfilesListInterface) => u.id)
-    if (userIds && place.addUsersPlace) await place.addUsersPlace(userIds)
+    if (userIds && place.addEmployeesPlace) await place.addEmployeesPlace(userIds)
     const savedPlace = (await findPlaceById(place.id as string)) as PlacesInstance;
     return res.status(200).send(dataToResult(savedPlace));
   } catch (err) {

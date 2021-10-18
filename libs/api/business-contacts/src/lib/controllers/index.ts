@@ -2,7 +2,7 @@ import { Response } from "express";
 import * as AWS from 'aws-sdk';
 import sharp from 'sharp';
 import { validateEmail } from '@iustitia/site/shared-utils';
-import { CompaniesInstance, PersonsInstance, database } from "@iustitia/api/database";
+import { database, PersonsInstance, CompaniesInstance } from "@iustitia/api/database";
 import { ModulesEnum } from "@iustitia/modules";
 
 const S3 = new AWS.S3();
@@ -12,9 +12,17 @@ AWS.config.update({
   region: "us-east-1"
 });
 
+export type PersonsTypes = "Clientes" | "Contatos" | "Fornecedores";
+
+export type OnwersListType = {
+  id: string;
+  name: string;
+  type: "person" | "place";
+}
+
 export interface PersonsInterface {
   id?: string;
-  type?: string;
+  type?: PersonsTypes;
   avatar?: string;
   name: string;
   email?: string;
@@ -31,17 +39,27 @@ export interface PersonsInterface {
   company?: string;
   comments?: string;
   owner?: string;
-  userId?: string;
-  placeId?: string;
   tenantId?: string;
+  onwers?: OnwersListType[];
 }
 
 function dataToPersonsResult(data: PersonsInstance): PersonsInterface {
+  const onwers: OnwersListType[] = [];
+  if (data.type === "Clientes") {
+    if (data.userClients) data.userClients.forEach(u => onwers.push({ id: u.id, name: u?.profile?.name || "", type: "person" }));
+    if (data.placeClients) data.placeClients.forEach(p => onwers.push({ id: p.id, name: p.name, type: "place" }));
+  }
+  if (data.type === "Contatos") {
+    if (data.userContacts) data.userContacts.forEach(u => onwers.push({ id: u.id, name: u?.profile?.name || "", type: "person" }));
+    if (data.placeContacts) data.placeContacts.forEach(p => onwers.push({ id: p.id, name: p.name, type: "place" }));
+  }
+  if (data.type === "Fornecedores") {
+    if (data.userSupliers) data.userSupliers.forEach(u => onwers.push({ id: u.id, name: u?.profile?.name || "", type: "person" }));
+    if (data.placeSupliers) data.placeSupliers.forEach(p => onwers.push({ id: p.id, name: p.name, type: "place" }));
+  }
   return {
     id: data.id,
-    type: data.type,
-    userId: data.userId,
-    placeId: data.placeId,
+    type: data.type as PersonsTypes,
     avatar: data.avatar,
     name: data.name,
     email: data.email,
@@ -57,6 +75,7 @@ function dataToPersonsResult(data: PersonsInstance): PersonsInterface {
     companyId: data.companyId,
     company: data.company?.name,
     comments: data.comments,
+    onwers: onwers
   }
 }
 
@@ -100,6 +119,57 @@ function dataToCompaniesResult(data: CompaniesInstance): CompaniesInterface {
     contacts: data.contacts
   }
 }
+
+const includeOwners = [
+  {
+    association: "userClients",
+    attributes: ['id'],
+    where: { active: true },
+    required: false,
+    include: [
+      {
+        model: database.Profiles,
+        attributes: ['name'],
+      },
+    ],
+  },
+  {
+    association: "userSupliers",
+    attributes: ['id'],
+    where: { active: true },
+    required: false,
+    include: [
+      {
+        model: database.Profiles,
+        attributes: ['name'],
+      },
+    ],
+  },
+  {
+    association: "userContacts",
+    attributes: ['id'],
+    where: { active: true },
+    required: false,
+    include: [
+      {
+        model: database.Profiles,
+        attributes: ['name'],
+      },
+    ],
+  },
+  {
+    association: "placeClients",
+    attributes: ['id', 'name'],
+  },
+  {
+    association: "placeSupliers",
+    attributes: ['id', 'name'],
+  },
+  {
+    association: "placeContacts",
+    attributes: ['id', 'name'],
+  },
+];
 
 function avatarName(id: string, tenantId: string): string {
   const d = new Date();
@@ -145,7 +215,7 @@ export async function getOnePerson(req, res): Promise<Response> {
     if (!user || user.tenant !== tenantId) return res.status(401).send({ message: "Sem permissão!" });
     const data = await database.Persons.findOne({
       where: { id },
-      include: ["company"]
+      include: includeOwners
     });
     return res.status(200).send(dataToPersonsResult(data as PersonsInstance));
   } catch (err) {
@@ -159,7 +229,11 @@ export async function getAllPersons(req, res): Promise<Response> {
   try {
     const user = await database.Users.findOne({ where: { id: req.userId } });
     if (!user || user.tenant !== tenantId) return res.status(401).send({ message: "Sem permissão!" });
-    const data = await database.Persons.findAll({ where: { type, tenantId } });
+    const data = await database.Persons.findAll({
+      where: { type, tenantId },
+      attributes: ['id', 'type', 'avatar', 'name', 'phone', 'email', 'city', 'state'],
+      include: includeOwners
+    });
     const resultData = [] as PersonsInterface[];
     if (data.length > 0) data.forEach(d => resultData.push(dataToPersonsResult(d)));
     return res.status(200).send(resultData);
@@ -168,12 +242,60 @@ export async function getAllPersons(req, res): Promise<Response> {
   }
 }
 
+export async function changePersonOwner(req, res): Promise<Response> {
+  const { id } = req.params;
+  if (!id) return res.status(400).send({ message: "Dados inválidos!" });
+  const { body } = req;
+  if (!body.owners) return res.status(400).send({ message: "Dados inválidos!" });
+  try {
+    const data = await await database.Persons.findOne({ where: { id }, include: includeOwners });
+    if (!data) return res.status(404).send({ message: "Nenhum registro encontrado!" });
+    const user = await database.Users.findOne({ where: { id: req.userId } });
+    if (!user || user.tenant !== data.tenantId) return res.status(401).send({ message: "Sem permissão!" });
+    const userIds: string[] = body.owners.filter((o: OnwersListType) => o.type === "person").map((x: OnwersListType) => x.id)
+    const placeIds: string[] = body.owners.filter((o: OnwersListType) => o.type === "place").map((x: OnwersListType) => x.id)
+    if (data.type === "Clientes") {
+      if (data.getUserClients && data.removeUserClients && data.getPlaceClients && data.removePlaceClients) {
+        const currentUsers = await data.getUserClients();
+        await data.removeUserClients(currentUsers);
+        const currentPlaces = await data.getPlaceClients();
+        await data.removePlaceClients(currentPlaces);
+      }
+      if (userIds && data.addUserClients) await data.addUserClients(userIds)
+      if (placeIds && data.addPlaceClients) await data.addPlaceClients(placeIds)
+    }
+    if (data.type === "Contatos") {
+      if (data.getUserContacts && data.removeUserContacts && data.getPlaceContacts && data.removePlaceContacts) {
+        const currentUsers = await data.getUserContacts();
+        await data.removeUserContacts(currentUsers);
+        const currentPlaces = await data.getPlaceContacts();
+        await data.removePlaceContacts(currentPlaces);
+      }
+      if (userIds && data.addUserContacts) await data.addUserContacts(userIds)
+      if (placeIds && data.addPlaceClients) await data.addPlaceClients(placeIds)
+    }
+    if (data.type === "Fornecedores") {
+      if (data.getUserSupliers && data.removeUserSupliers && data.getPlaceSupliers && data.removePlaceSupliers) {
+        const currentUsers = await data.getUserSupliers();
+        await data.removeUserSupliers(currentUsers);
+        const currentPlaces = await data.getPlaceSupliers();
+        await data.removePlaceSupliers(currentPlaces);
+      }
+      if (userIds && data.addUserSupliers) await data.addUserSupliers(userIds)
+      if (placeIds && data.addPlaceClients) await data.addPlaceClients(placeIds)
+    }
+    const savedPlace = await database.Persons.findOne({ where: { id }, include: includeOwners });
+    return res.status(200).send(dataToPersonsResult(savedPlace));
+  } catch (err) {
+    console.log(err)
+    return res.status(500).send({ message: err.message });
+  }
+}
+
 export async function createPerson(req, res): Promise<Response> {
   const { body } = req;
   if (!body.type || !body.name || !body.tenantId) return res.status(400).send({ message: "Dados inválidos!" });
   if (body.email && !validateEmail(body.email)) return res.status(400).send({ message: "Dados inválidos!" });
-  if (body.type === "Personal") body.userId = req.userId;
-  if (body.type !== "All" && body.type !== "Personal") body.placeId = body.type;
   try {
     for (const key in body) if (body[key] === "") body[key] = null;
     const data = await database.Persons.create(body);

@@ -10,28 +10,23 @@ import {
   AvatarCropper,
   AvatarOrInitial,
 } from "@iustitia/site/shared-components";
-import {
-  GetModule,
-  ModulesEnum,
-  ModulesInterface,
-  GetRoutes,
-  BCRoutesInterface,
-} from "@iustitia/modules";
+import { GetModule, ModulesEnum, ModulesInterface } from "@iustitia/modules";
 import { UploadCloudIcon } from "@iustitia/site/icons";
 import {
-  BusinessContactsServices,
+  BusinessContactsServices as BCServices,
   PlacesServices,
 } from "@iustitia/site/services";
 
 const BCModule = GetModule(ModulesEnum.businessContacts) as ModulesInterface;
 
-type BCPersonsType = BusinessContactsServices.BCPersonsRes;
-type BCCompaniesType = BusinessContactsServices.BCCompaniesRes;
+type BCTypes = BCServices.BCTypes;
+type BCPersonsType = BCServices.BCPersonsRes;
+type BCCompaniesType = BCServices.BCCompaniesRes;
 type PlacesType = PlacesServices.PlacesRes;
 
 export interface FormProps {
   loading: boolean;
-  type: "Clientes" | "Contatos" | "Fornecedores" | undefined;
+  type: BCTypes | undefined;
   data?: BCPersonsType;
   places?: PlacesType[];
   companies?: BCCompaniesType[];
@@ -54,7 +49,6 @@ const schema = yup.object({
   position: yup.string(),
   companyId: yup.string(),
   comments: yup.string(),
-  owner: yup.string(),
 });
 
 export function Form({
@@ -67,7 +61,6 @@ export function Form({
   update,
 }: FormProps) {
   const defaultValues: BCPersonsType = {
-    owner: "Personal",
     name: data?.name || "",
     email: data?.email || "",
     phone: data?.phone || "",
@@ -103,27 +96,6 @@ export function Form({
   const [showAvatarModal, setShowAvatarModal] = useState(false);
   const [blob, setBlob] = useState<Blob>();
   const [inputImg, setInputImg] = useState<string>();
-
-  useEffect(() => {
-    if (data?.name) {
-      setValue("name", data?.name);
-      setValue("email", data?.email);
-      setValue("phone", data?.phone);
-      setValue("zip", data?.zip);
-      setValue("address", data?.address);
-      setValue("number", data?.number);
-      setValue("complement", data?.complement);
-      setValue("neighborhood", data?.neighborhood);
-      setValue("city", data?.city);
-      setValue("state", data?.state);
-      setValue("position", data?.position);
-      setValue("companyId", data?.companyId);
-      setValue("comments", data?.comments);
-      if (data?.userId) setValue("owner", "Personal");
-      if (data?.placeId) setValue("owner", data.placeId);
-      if (!data?.userId && !data?.placeId) setValue("owner", "All");
-    }
-  }, [data, setValue]);
 
   const [validZip, setValidZip] = useState(!!defaultValues.zip);
 
@@ -218,8 +190,8 @@ export function Form({
           formData.append("avatar", dataFromForm.avatar[0]);
         }
       }
-      formData.append("type", type as string);
     });
+    formData.append("type", type as string);
     if (create) {
       create(formData);
       return;
@@ -239,27 +211,6 @@ export function Form({
     <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col mx-auto">
       <fieldset className="grid grid-cols-1 gap-4 p-4 bg-white shadow-sm">
         <div className="grid grid-cols-12 gap-4 col-span-full lg:col-span-4">
-          <div className="col-span-full sm:col-span-4">
-            <select
-              {...register("owner")}
-              id="owner"
-              className={`w-full rounded-md focus:ring-0 focus:ring-opacity-75 text-gray-900 ${
-                errors.state
-                  ? `focus:ring-red-500 border-red-500`
-                  : `focus:ring-primary-500 border-gray-300`
-              }`}
-            >
-              <option value={"All"}>Geral</option>
-              <option value={"Personal"}>Pessoal</option>
-              {places &&
-                places.map((o, i) => (
-                  <option key={i} value={o.id}>
-                    {o.name}
-                  </option>
-                ))}
-            </select>
-          </div>
-          <div className="col-span-full sm:col-span-6"></div>
           <div className="col-span-full sm:col-span-5">
             <label htmlFor="name" className="text-sm">
               Nome *
@@ -481,7 +432,7 @@ export function Form({
             <select
               {...register("companyId")}
               id="company"
-              className={`w-full rounded-md focus:ring-0 focus:ring-opacity-75 text-gray-900`}
+              className="w-full rounded-md focus:ring-0 focus:ring-opacity-75 text-gray-900 border-gray-300"
             >
               <option value={""}></option>
               {companies &&
@@ -501,7 +452,7 @@ export function Form({
               id="position"
               type="text"
               placeholder="Cargo"
-              className={`w-full rounded-md focus:ring-0 focus:ring-opacity-75 text-gray-900`}
+              className="w-full rounded-md focus:ring-0 focus:ring-opacity-75 text-gray-900 border-gray-300"
             />
           </div>
           <div className="col-span-full sm:col-span-12">
@@ -512,7 +463,7 @@ export function Form({
               {...register("comments")}
               minRows={3}
               id="comments"
-              className={`w-full rounded-md focus:ring-0 focus:ring-opacity-75 text-gray-900`}
+              className="w-full rounded-md focus:ring-0 focus:ring-opacity-75 text-gray-900 border-gray-300"
             />
           </div>
           <div className="col-span-full flex flex-col items-center md:items-end">

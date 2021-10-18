@@ -1,5 +1,6 @@
 import { Sequelize, DataTypes, Optional, Model, HasManyAddAssociationsMixin, HasManyRemoveAssociationsMixin, HasManyGetAssociationsMixin } from "sequelize";
 import { UsersInstance } from "../auth/users";
+import { PersonsInstance } from "../business-contacts/persons";
 
 interface PlacesAttributes {
   id: string;
@@ -26,15 +27,30 @@ export interface PlacesInstance
   updatedAt?: Date;
   deletedAt?: Date;
   managersPlace?: UsersInstance[];
-  usersPlace?: UsersInstance[];
+  employeesPlace?: UsersInstance[];
+  clientsPlace?: PersonsInstance[];
+  supliersPlace?: PersonsInstance[];
+  contactsPlace?: PersonsInstance[];
 
   getManagersPlace?: HasManyGetAssociationsMixin<UsersInstance>;
   addManagersPlace?: HasManyAddAssociationsMixin<UsersInstance, string>;
   removeManagersPlace?: HasManyRemoveAssociationsMixin<UsersInstance, string>;
 
-  getUsersPlace?: HasManyGetAssociationsMixin<UsersInstance>;
-  addUsersPlace?: HasManyAddAssociationsMixin<UsersInstance, string>;
-  removeUsersPlace?: HasManyRemoveAssociationsMixin<UsersInstance, string>;
+  getEmployeesPlace?: HasManyGetAssociationsMixin<UsersInstance>;
+  addEmployeesPlace?: HasManyAddAssociationsMixin<UsersInstance, string>;
+  removeEmployeesPlace?: HasManyRemoveAssociationsMixin<UsersInstance, string>;
+
+  getClientsPlace?: HasManyGetAssociationsMixin<PersonsInstance>;
+  addClientsPlace?: HasManyAddAssociationsMixin<PersonsInstance, string>;
+  removeClientsPlace?: HasManyRemoveAssociationsMixin<PersonsInstance, string>;
+
+  getSupliersPlace?: HasManyGetAssociationsMixin<PersonsInstance>;
+  addSupliersPlace?: HasManyAddAssociationsMixin<PersonsInstance, string>;
+  removeSupliersPlace?: HasManyRemoveAssociationsMixin<PersonsInstance, string>;
+
+  getContactsPlace?: HasManyGetAssociationsMixin<PersonsInstance>;
+  addContactsPlace?: HasManyAddAssociationsMixin<PersonsInstance, string>;
+  removeContactsPlace?: HasManyRemoveAssociationsMixin<PersonsInstance, string>;
 }
 
 export default function places(sequelize: Sequelize) {

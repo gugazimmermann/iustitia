@@ -13,6 +13,13 @@ interface AlertSuccessProps {
   setAlert?(alert: AlertInterface): void;
 }
 
+export const DefaultAlert = {
+  show: false,
+  message: "",
+  type: WARNING_TYPES.NONE,
+  time: 3000,
+}
+
 export function Alert({ alert, setAlert }: AlertSuccessProps) {
   const { message, type, time } = alert;
   useEffect(() => {

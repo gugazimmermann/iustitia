@@ -6,7 +6,7 @@ import {
   ListHeader,
   ListHeaderItems,
 } from "@iustitia/site/shared-components";
-import { WARNING_TYPES } from "@iustitia/site/shared-utils";
+import { SORT_TYPES, WARNING_TYPES } from "@iustitia/site/shared-utils";
 import {
   GetModule,
   GetRoutes,
@@ -24,7 +24,7 @@ type ProfilesListType = PlacesServices.ProfilesListRes;
 export interface ListProps {
   dataList: PlacesType[];
   sort: string;
-  setSort(order: "ASC" | "DESC"): void;
+  setSort(order: SORT_TYPES): void;
 }
 
 export function List({ dataList, sort, setSort }: ListProps) {
@@ -80,7 +80,7 @@ export function List({ dataList, sort, setSort }: ListProps) {
                   <div className="flex items-center justify-start">
                     {
                       <AvatarList
-                        toShow={data.usersPlace as ProfilesListType[]}
+                        toShow={data.employeesPlace as ProfilesListType[]}
                         qtd={8}
                         smallQtd={3}
                       />
