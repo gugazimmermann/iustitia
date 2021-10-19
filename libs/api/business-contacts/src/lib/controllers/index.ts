@@ -122,6 +122,10 @@ function dataToCompaniesResult(data: CompaniesInstance): CompaniesInterface {
 
 const includeOwners = [
   {
+    association: "company",
+    attributes: ['name'],
+  },
+  {
     association: "userClients",
     attributes: ['id'],
     where: { active: true },
@@ -284,7 +288,7 @@ export async function changePersonOwner(req, res): Promise<Response> {
       if (userIds && data.addUserSupliers) await data.addUserSupliers(userIds)
       if (placeIds && data.addPlaceClients) await data.addPlaceClients(placeIds)
     }
-    const savedPlace = await database.Persons.findOne({ where: { id }, include: includeOwners });
+    const savedPlace = (await database.Persons.findOne({ where: { id }, include: includeOwners })) as PersonsInstance;
     return res.status(200).send(dataToPersonsResult(savedPlace));
   } catch (err) {
     console.log(err)

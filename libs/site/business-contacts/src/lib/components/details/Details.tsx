@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Link, useHistory, useLocation } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import { WARNING_TYPES } from "@iustitia/site/shared-utils";
 import {
   Alert,
@@ -22,18 +22,15 @@ import {
   BusinessContactsServices,
   NotesServices,
   PlacesServices,
-  ProfilesServices,
 } from "@iustitia/site/services";
-import { seeType, seeTypeText } from "../../utils";
+import { seeTypeText } from "../../utils";
 
 const BCRoutes = GetRoutes(ModulesEnum.businessContacts) as BCRoutesInterface;
 
-type BCTypes = BusinessContactsServices.BCTypes;
 type BCPersonsType = BusinessContactsServices.BCPersonsRes;
 type OnwersListType = BusinessContactsServices.OnwersListRes;
 type NotesType = NotesServices.NotesRes;
 type AttachmentsType = AttachmentsServices.AttachmentsRes;
-type ProfilesType = ProfilesServices.ProfilesRes;
 type ProfilesListType = PlacesServices.ProfilesListRes;
 type PlacesType = PlacesServices.PlacesRes;
 
@@ -44,7 +41,6 @@ export interface DetailsProps {
   data: BCPersonsType | undefined;
   setData(data: BCPersonsType): void;
   setConfirm(confirm: boolean): void;
-  profile: ProfilesType;
   places: PlacesType[];
   members: ProfilesListType[];
 }
@@ -56,13 +52,10 @@ export function Details({
   data,
   setData,
   setConfirm,
-  profile,
   places,
   members,
 }: DetailsProps) {
   const history = useHistory();
-  const { pathname } = useLocation();
-  const [selectedType, setSelectedType] = useState<BCTypes>();
 
   const [ownersList, setOwnersList] = useState<OnwersListType[]>([]);
   const [showOwnersModal, setShowOwnersModal] = useState(false);
@@ -80,7 +73,6 @@ export function Details({
   const [confirmAttchment, setConfirmAttchment] = useState(false);
 
   useEffect(() => {
-    setSelectedType(seeType(pathname));
     getAllNotes(data?.id);
     getAllAttachments(data?.id);
     setOwnersList(data?.onwers as OnwersListType[]);

@@ -357,7 +357,6 @@ export function BusinessContacts({ profile }: BusinessContactsProps) {
               data={selected}
               setData={setSelected}
               setConfirm={setConfirm}
-              profile={profile as ProfilesType}
               places={places}
               members={members}
             />
