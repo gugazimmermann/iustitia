@@ -101,10 +101,6 @@ export function BusinessContacts({ profile }: BusinessContactsProps) {
     setRouteType(routes);
   }, [selectedType]);
 
-  useEffect(() => {
-    getDataList(selectedOwner);
-  }, [selectedOwner]);
-
   async function reloadList() {
     await getDataList(selectedOwner);
     setWhatToShow("list");
@@ -161,7 +157,7 @@ export function BusinessContacts({ profile }: BusinessContactsProps) {
       const allData = (await BCServices.getAllPersons({
         type: seeType(pathname),
       })) as BCPersonsType[];
-      const data = filterOnwer(allData, selectedOwner, profile?.id as string);
+      const data = filterOnwer(allData, selectedOwner);
       setDataList(data);
       setShowDataList(Sort(data.slice(0), sort));
       setLoading(false);
@@ -291,6 +287,10 @@ export function BusinessContacts({ profile }: BusinessContactsProps) {
     }
   }, [searchParam]);
 
+  useEffect(() => {
+    getDataList(selectedOwner);
+  }, [selectedOwner]);
+
   const createSearch = () => {
     return <SearchField setSearchParam={setSearchParam} />;
   };
@@ -303,7 +303,12 @@ export function BusinessContacts({ profile }: BusinessContactsProps) {
         onChange={(e) => setSelectedOwner(e.target.value)}
       >
         <option value={"All"}>Todos</option>
-        <option value={"Personal"}>Pessoal</option>
+        {members &&
+          members.map((m, i) => (
+            <option key={i} value={m.id}>
+              {m.name}
+            </option>
+          ))}
         {places &&
           places.map((o, i) => (
             <option key={i} value={o.id}>

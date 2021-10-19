@@ -51,12 +51,10 @@ export function getRouteType(
   }
 }
 
-export function filterOnwer(data: BCPersonsType[], owner: string, id: string) {
+export function filterOnwer(data: BCPersonsType[], owner: string) {
   let res: BCPersonsType[] = [];
   if (owner === "All") {
     res = data;
-  } else if (owner === "Personal") {
-    res = data.filter(d => d.onwers?.some(o => o.id === id));
   } else {
     res = data.filter(d => d.onwers?.some(o => o.id === owner));
   }
